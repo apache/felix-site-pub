@@ -1,0 +1,143 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - 5.1. Troubleshooting, Debugging and Profiling</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD width="33%" class="ScrollbarPrevName">&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="5-using-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="5-using-karaf.html">5. Using Karaf</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="52-developping-applications.html">5.2. Developping applications</A></TD><TD class="ScrollbarNextIcon"><A href="52-developping-applications.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+<P><A name="5.1.Troubleshooting%2CDebuggingandProfiling-top"></A></P>
+
+<H1><A name="5.1.Troubleshooting%2CDebuggingandProfiling-5.1.Troubleshooting%2CDebuggingandProfiling"></A>5.1. Troubleshooting, Debugging and Profiling</H1>
+
+<H2><A name="5.1.Troubleshooting%2CDebuggingandProfiling-Troubleshooting"></A>Troubleshooting</H2>
+
+<H3><A name="5.1.Troubleshooting%2CDebuggingandProfiling-Logging"></A>Logging</H3>
+
+<P>Logging is easy to control through the console, with commands grouped under <EM>log</EM> shell. To learn about the available logging commands type:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+karaf@root&gt; log&lt;tab&gt;
+
+log:display              log:display-exception    log:get                  log:set
+karaf@root&gt;
+</PRE>
+</DIV></DIV>
+
+<P>Typical usage is:</P>
+
+<OL>
+	<LI>Use <TT>log:set</TT> to dynamically change the global log level</LI>
+	<LI>Execute the problematic operation</LI>
+	<LI>Use <TT>log:display</TT> (or <TT>log:display-exception</TT> to display the log</LI>
+</OL>
+
+
+
+
+<H3><A name="5.1.Troubleshooting%2CDebuggingandProfiling-WorstCaseScenario"></A>Worst Case Scenario</H3>
+
+<P>If you end up with a Karaf in a really bad state (i.e. you can not boot it anymore) or you just want to revert to a clean state quickly, you can safely remove the <TT>data</TT> directory just in the installation directory.  This folder contains transient data and will be recreated if you remove it and relaunch Karaf.<BR>
+You may also want to remove the files in the <TT>deploy</TT> folder to avoid them being automatically installed when Karaf is started the first time.</P>
+
+<H2><A name="5.1.Troubleshooting%2CDebuggingandProfiling-Debugging"></A>Debugging</H2>
+
+<P>Usually, the easiest way to debug Karaf or any application deployed onto it is to use remote debugging.<BR>
+Remote debugging can be easily activated by setting the <TT>KARAF_DEBUG</TT> environment variable to <TT>TRUE</TT>.</P>
+
+<P>This can be done using the following command on Unix systems:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>export KARAF_DEBUG=true
+</PRE>
+</DIV></DIV>
+
+<P>On Windows, use the following command</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>set KARAF_DEBUG=true
+</PRE>
+</DIV></DIV>
+
+<P>Then, you can launch Karaf using the usual way:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>bin/karaf
+</PRE>
+</DIV></DIV>
+<P>or</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>bin\karaf.bat
+</PRE>
+</DIV></DIV>
+
+<P>Last, inside your IDE, connect to the remote application (the default port to connect to is 5005).</P>
+
+<P><A href="#5.1.Troubleshooting%252CDebuggingandProfiling-top">top</A></P>
+
+<H2><A name="5.1.Troubleshooting%2CDebuggingandProfiling-Profiling"></A>Profiling</H2>
+
+<H3><A name="5.1.Troubleshooting%2CDebuggingandProfiling-YourKit"></A>YourKit</H3>
+
+<P>You need a few steps to be able to profile Karaf using YourKit.<BR>
+The first one is to edit the <TT>etc/config.properties</TT> configuration file and add the following property:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>org.osgi.framework.bootdelegation=com.yourkit.*
+</PRE>
+</DIV></DIV>
+
+<P>Then, set the <TT>JAVA_OPTS</TT> environment variable:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>export JAVA_OPTS='-Xmx512M -agentlib:yjpagent'
+</PRE>
+</DIV></DIV>
+
+<P>or, on Windows</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>set JAVA_OPTS='-Xmx512M -agentlib:yjpagent'
+</PRE>
+</DIV></DIV>
+
+<P>Run Karaf from the console, and you should now be able to connect using YourKit standalone or from your favorite IDE.</P>
+
+<P><A href="#5.1.Troubleshooting%252CDebuggingandProfiling-top">top</A></P>
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD width="33%" class="ScrollbarPrevName">&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="5-using-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="5-using-karaf.html">5. Using Karaf</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="52-developping-applications.html">5.2. Developping applications</A></TD><TD class="ScrollbarNextIcon"><A href="52-developping-applications.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+    </DIV>
+  </BODY>
+</HTML>

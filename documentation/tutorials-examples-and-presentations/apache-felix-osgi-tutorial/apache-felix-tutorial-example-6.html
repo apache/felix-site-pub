@@ -1,0 +1,401 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Tutorial Example 6</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-tutorial-example-6.html" target="felix_cwiki">/site/apache-felix-tutorial-example-6.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Tutorial Example 6</h1>
+      <h1 id="example-6-spell-checker-service-bundle">Example 6 - Spell Checker Service Bundle</h1>
+<p><em>(This example should be rewritten to use the Service Tracker.)</em></p>
+<p>In this example, we complicate things further by defining a new service that uses an arbitrary number of dictionary services to perform its function. More precisely, we define a spell checker service will aggregate all dictionary services and provide another service that allows us to spell check passages using our underlying dictionary services to verify the spelling of words. Our bundle will only provide the spell checker service if there is at least one dictionary service available. First, we will start by defining the spell checker service interface in a file called <code>SpellChecker.java</code>:</p>
+<div class="codehilite"><pre><span class="o">/*</span>
+ <span class="o">*</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">tutorial</span><span class="o">.</span>
+<span class="o">**/</span>
+
+<span class="nb">package</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example6</span><span class="o">.</span><span class="n">service</span><span class="p">;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">A</span> <span class="n">simple</span> <span class="n">service</span> <span class="n">interface</span> <span class="n">that</span> <span class="n">defines</span> <span class="n">a</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span><span class="o">.</span>
+ <span class="o">*</span> <span class="n">A</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="n">checks</span> <span class="n">the</span> <span class="n">spelling</span> <span class="n">of</span> <span class="n">all</span> <span class="n">words</span> <span class="n">in</span> <span class="n">a</span>
+ <span class="o">*</span> <span class="n">given</span> <span class="n">passage</span><span class="o">.</span> <span class="n">A</span> <span class="n">passage</span> <span class="n">is</span> <span class="n">any</span> <span class="n">number</span> <span class="n">of</span> <span class="n">words</span> <span class="n">separated</span> <span class="n">by</span>
+ <span class="o">*</span> <span class="n">a</span> <span class="n">space</span> <span class="n">character</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">following</span> <span class="n">punctuation</span> <span class="n">marks:</span> <span class="n">comma</span><span class="p">,</span>
+ <span class="o">*</span> <span class="n">period</span><span class="p">,</span> <span class="n">exclamation</span> <span class="n">mark</span><span class="p">,</span> <span class="n">question</span> <span class="n">mark</span><span class="p">,</span> <span class="n">semi</span><span class="o">-</span><span class="n">colon</span><span class="p">,</span> <span class="ow">and</span> <span class="n">colon</span><span class="o">.</span>
+<span class="o">**/</span>
+<span class="n">public</span> <span class="n">interface</span> <span class="n">SpellChecker</span>
+<span class="p">{</span>
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Checks</span> <span class="n">a</span> <span class="n">given</span> <span class="n">passage</span> <span class="k">for</span> <span class="n">spelling</span> <span class="n">errors</span><span class="o">.</span> <span class="n">A</span> <span class="n">passage</span> <span class="n">is</span> <span class="n">any</span>
+     <span class="o">*</span> <span class="n">number</span> <span class="n">of</span> <span class="n">words</span> <span class="n">separated</span> <span class="n">by</span> <span class="n">a</span> <span class="n">space</span> <span class="ow">and</span> <span class="n">any</span> <span class="n">of</span> <span class="n">the</span> <span class="n">following</span>
+     <span class="o">*</span> <span class="n">punctuation</span> <span class="n">marks:</span> <span class="n">comma</span> <span class="p">(,),</span> <span class="n">period</span> <span class="p">(</span><span class="o">.</span><span class="p">),</span> <span class="n">exclamation</span> <span class="n">mark</span> <span class="p">(</span><span class="o">!</span><span class="p">),</span>
+     <span class="o">*</span> <span class="n">question</span> <span class="n">mark</span> <span class="p">(?),</span> <span class="n">semi</span><span class="o">-</span><span class="n">colon</span> <span class="p">(;),</span> <span class="ow">and</span> <span class="n">colon</span><span class="p">(:)</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">passage</span> <span class="n">the</span> <span class="n">passage</span> <span class="n">to</span> <span class="n">spell</span> <span class="n">check</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@return</span> <span class="n">An</span> <span class="n">array</span> <span class="n">of</span> <span class="n">misspelled</span> <span class="n">words</span> <span class="ow">or</span> <span class="n">null</span> <span class="k">if</span> <span class="nb">no</span>
+     <span class="o">*</span>         <span class="n">words</span> <span class="n">are</span> <span class="n">misspelled</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">String</span><span class="o">[]</span> <span class="n">check</span><span class="p">(</span><span class="n">String</span> <span class="n">passage</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The service interface is quite simple, with only one method that needs to be implemented. Notice that we put the service interface in the package <code>tutorial.example6.service</code>, instead of just putting it in <code>tutorial.example6</code>. We did this because we need to share the interface definition with other bundles, therefore it is better to separate service interfaces that need to be shared from code that does not need to be shared. Such an approach ensures a strong separation between interface and implementation.</p>
+<p>In the following bundle source code, the bundle needs to create a complete list of all dictionary services; this is somewhat tricky and must be done carefully. First, the bundle uses its bundle context to register itself as a service event listener, then it queries for all currently available dictionary services. After creating the list of dictionary services, the bundle then registers its spell checker service if and only if there is at least one dictionary service available. These actions must be performed in a synchronized block to avoid interference from service events. Additionally, since the bundle is monitoring the dynamic availability of the dictionary services, when the number of dictionary services falls to zero or increases from zero, the bundle must unregister and register its spell checker service, respectively. We implement our bundle in a file called <code>Activator.java</code>:</p>
+<div class="codehilite"><pre><span class="o">/*</span>
+ <span class="o">*</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">tutorial</span><span class="o">.</span>
+<span class="o">**/</span>
+
+<span class="nb">package</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example6</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">InputStreamReader</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">IOException</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">ArrayList</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">HashMap</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">StringTokenizer</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceRegistration</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceReference</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceListener</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceEvent</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">DictionaryService</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example6</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">SpellChecker</span><span class="p">;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">This</span> <span class="n">class</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">spell</span>
+ <span class="o">*</span> <span class="n">checker</span> <span class="n">service</span><span class="o">.</span> <span class="n">The</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="n">uses</span> <span class="n">all</span> <span class="n">available</span>
+ <span class="o">*</span> <span class="n">dictionary</span> <span class="n">services</span> <span class="n">to</span> <span class="n">check</span> <span class="k">for</span> <span class="n">the</span> <span class="n">existence</span> <span class="n">of</span> <span class="n">words</span> <span class="n">in</span>
+ <span class="o">*</span> <span class="n">a</span> <span class="n">given</span> <span class="n">sentence</span><span class="o">.</span> <span class="n">This</span> <span class="n">bundle</span> <span class="ow">not</span> <span class="n">only</span> <span class="n">monitors</span> <span class="n">the</span> <span class="n">dynamic</span>
+ <span class="o">*</span> <span class="n">availability</span> <span class="n">of</span> <span class="n">dictionary</span> <span class="n">services</span><span class="p">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">manages</span> <span class="n">the</span>
+ <span class="o">*</span> <span class="n">aggregation</span> <span class="n">of</span> <span class="n">all</span> <span class="n">available</span> <span class="n">dictionary</span> <span class="n">services</span> <span class="n">as</span> <span class="n">they</span>
+ <span class="o">*</span> <span class="n">arrive</span> <span class="ow">and</span> <span class="n">depart</span><span class="o">.</span> <span class="n">The</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="n">is</span> <span class="n">only</span> <span class="n">registered</span>
+ <span class="o">*</span> <span class="k">if</span> <span class="n">there</span> <span class="n">are</span> <span class="n">dictionary</span> <span class="n">services</span> <span class="n">available</span><span class="p">,</span> <span class="n">thus</span> <span class="n">the</span> <span class="n">spell</span>
+ <span class="o">*</span> <span class="n">checker</span> <span class="n">service</span> <span class="n">will</span> <span class="n">appear</span> <span class="ow">and</span> <span class="n">disappear</span> <span class="n">as</span> <span class="n">dictionary</span>
+ <span class="o">*</span> <span class="n">services</span> <span class="n">appear</span> <span class="ow">and</span> <span class="n">disappear</span><span class="p">,</span> <span class="n">respectively</span><span class="o">.</span>
+<span class="o">**/</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span><span class="p">,</span> <span class="n">ServiceListener</span>
+<span class="p">{</span>
+    <span class="sr">//</span> <span class="n">Bundle</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">context</span><span class="o">.</span>
+    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="sr">//</span> <span class="n">List</span> <span class="n">of</span> <span class="n">available</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">references</span><span class="o">.</span>
+    <span class="n">private</span> <span class="n">ArrayList</span> <span class="n">m_refList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+    <span class="sr">//</span> <span class="n">Maps</span> <span class="n">service</span> <span class="n">references</span> <span class="n">to</span> <span class="n">service</span> <span class="n">objects</span><span class="o">.</span>
+    <span class="n">private</span> <span class="n">HashMap</span> <span class="n">m_refToObjMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
+    <span class="sr">//</span> <span class="n">The</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="n">registration</span><span class="o">.</span>
+    <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">m_reg</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">start</span><span class="p">()</span><span class="o">.</span> <span class="n">Adds</span> <span class="n">itself</span>
+     <span class="o">*</span> <span class="n">as</span> <span class="n">a</span> <span class="n">service</span> <span class="n">listener</span> <span class="ow">and</span> <span class="n">queries</span> <span class="k">for</span> <span class="n">all</span> <span class="n">currently</span>
+     <span class="o">*</span> <span class="n">available</span> <span class="n">dictionary</span> <span class="n">services</span><span class="o">.</span> <span class="n">Any</span> <span class="n">available</span> <span class="n">dictionary</span>
+     <span class="o">*</span> <span class="n">services</span> <span class="n">are</span> <span class="n">added</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span> <span class="n">reference</span> <span class="n">list</span><span class="o">.</span> <span class="n">If</span>
+     <span class="o">*</span> <span class="n">dictionary</span> <span class="n">services</span> <span class="n">are</span> <span class="n">found</span><span class="p">,</span> <span class="k">then</span> <span class="n">the</span> <span class="n">spell</span> <span class="n">checker</span>
+     <span class="o">*</span> <span class="n">service</span> <span class="n">is</span> <span class="n">registered</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
+    <span class="p">{</span>
+        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+
+        <span class="n">synchronized</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="sr">//</span> <span class="n">Listen</span> <span class="k">for</span> <span class="n">events</span> <span class="n">pertaining</span> <span class="n">to</span> <span class="n">dictionary</span> <span class="n">services</span><span class="o">.</span>
+            <span class="n">m_context</span><span class="o">.</span><span class="n">addServiceListener</span><span class="p">(</span><span class="n">this</span><span class="p">,</span>
+                <span class="s">&quot;(&amp;(objectClass=&quot;</span> <span class="o">+</span> <span class="n">DictionaryService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span> <span class="o">+</span>
+                <span class="s">&quot;(Language=*))&quot;</span><span class="p">);</span>
+
+            <span class="sr">//</span> <span class="n">Query</span> <span class="k">for</span> <span class="n">all</span> <span class="n">dictionary</span> <span class="n">services</span><span class="o">.</span>
+            <span class="n">ServiceReference</span><span class="o">[]</span> <span class="n">refs</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getServiceReferences</span><span class="p">(</span>
+                <span class="n">DictionaryService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="s">&quot;(Language=*)&quot;</span><span class="p">);</span>
+
+            <span class="sr">//</span> <span class="n">Add</span> <span class="n">any</span> <span class="n">dictionaries</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span> <span class="n">reference</span> <span class="n">list</span><span class="o">.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">refs</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">refs</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">Get</span> <span class="n">the</span> <span class="n">service</span> <span class="n">object</span><span class="o">.</span>
+                    <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+
+                    <span class="sr">//</span> <span class="n">Make</span> <span class="n">that</span> <span class="n">the</span> <span class="n">service</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">being</span> <span class="n">duplicated</span><span class="o">.</span>
+                    <span class="k">if</span> <span class="p">((</span><span class="n">service</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+                        <span class="p">(</span><span class="n">m_refToObjMap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="n">null</span><span class="p">))</span>
+                    <span class="p">{</span>
+                        <span class="sr">//</span> <span class="n">Add</span> <span class="n">to</span> <span class="n">the</span> <span class="n">reference</span> <span class="n">list</span><span class="o">.</span>
+                        <span class="n">m_refList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+                        <span class="sr">//</span> <span class="n">Map</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">service</span> <span class="n">object</span> <span class="k">for</span> <span class="n">easy</span> <span class="n">look</span> <span class="n">up</span><span class="o">.</span>
+                        <span class="n">m_refToObjMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">service</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="sr">//</span> <span class="n">Register</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="k">if</span> <span class="n">there</span> <span class="n">are</span> <span class="n">any</span>
+                <span class="sr">//</span> <span class="n">dictionary</span> <span class="n">services</span><span class="o">.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">m_refList</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">m_reg</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
+                        <span class="n">SpellChecker</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
+                        <span class="k">new</span> <span class="n">SpellCheckerImpl</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span><span class="o">.</span> <span class="n">Does</span> <span class="n">nothing</span> <span class="n">since</span>
+     <span class="o">*</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">will</span> <span class="n">automatically</span> <span class="n">unregister</span> <span class="n">any</span> <span class="n">registered</span> <span class="n">services</span><span class="p">,</span>
+     <span class="o">*</span> <span class="n">release</span> <span class="n">any</span> <span class="n">used</span> <span class="n">services</span><span class="p">,</span> <span class="ow">and</span> <span class="n">remove</span> <span class="n">any</span> <span class="n">event</span> <span class="n">listeners</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="sr">//</span> <span class="n">NOTE:</span> <span class="n">The</span> <span class="n">services</span> <span class="n">automatically</span> <span class="n">released</span><span class="o">.</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">ServiceListener</span><span class="o">.</span><span class="n">serviceChanged</span><span class="p">()</span><span class="o">.</span> <span class="n">Monitors</span>
+     <span class="o">*</span> <span class="n">the</span> <span class="n">arrival</span> <span class="ow">and</span> <span class="n">departure</span> <span class="n">of</span> <span class="n">dictionary</span> <span class="n">services</span><span class="p">,</span> <span class="n">adding</span> <span class="ow">and</span>
+     <span class="o">*</span> <span class="n">removing</span> <span class="n">them</span> <span class="n">from</span> <span class="n">the</span> <span class="n">service</span> <span class="n">reference</span> <span class="n">list</span><span class="p">,</span> <span class="n">respectively</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="k">case</span> <span class="n">where</span> <span class="nb">no</span> <span class="n">more</span> <span class="n">dictionary</span> <span class="n">services</span> <span class="n">are</span> <span class="n">available</span><span class="p">,</span>
+     <span class="o">*</span> <span class="n">the</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="n">is</span> <span class="n">unregistered</span><span class="o">.</span> <span class="n">As</span> <span class="n">soon</span> <span class="n">as</span> <span class="n">any</span> <span class="n">dictionary</span>
+     <span class="o">*</span> <span class="n">service</span> <span class="n">becomes</span> <span class="n">available</span><span class="p">,</span> <span class="n">the</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="n">is</span>
+     <span class="o">*</span> <span class="n">reregistered</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">event</span> <span class="n">the</span> <span class="n">fired</span> <span class="n">service</span> <span class="n">event</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">serviceChanged</span><span class="p">(</span><span class="n">ServiceEvent</span> <span class="n">event</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">synchronized</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="sr">//</span> <span class="n">Add</span> <span class="n">the</span> <span class="k">new</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span> <span class="n">list</span><span class="o">.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="o">.</span><span class="n">REGISTERED</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="sr">//</span> <span class="n">Get</span> <span class="n">the</span> <span class="n">service</span> <span class="n">object</span><span class="o">.</span>
+                <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+
+                <span class="sr">//</span> <span class="n">Make</span> <span class="n">that</span> <span class="n">the</span> <span class="n">service</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">being</span> <span class="n">duplicated</span><span class="o">.</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">service</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+                    <span class="p">(</span><span class="n">m_refToObjMap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">())</span> <span class="o">==</span> <span class="n">null</span><span class="p">))</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">Add</span> <span class="n">to</span> <span class="n">the</span> <span class="n">reference</span> <span class="n">list</span><span class="o">.</span>
+                    <span class="n">m_refList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+                    <span class="sr">//</span> <span class="n">Map</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">service</span> <span class="n">object</span> <span class="k">for</span> <span class="n">easy</span> <span class="n">look</span> <span class="n">up</span><span class="o">.</span>
+                    <span class="n">m_refToObjMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">(),</span> <span class="n">service</span><span class="p">);</span>
+
+                    <span class="sr">//</span> <span class="n">Register</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span> <span class="k">if</span> <span class="n">necessary</span><span class="o">.</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">m_reg</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+                    <span class="p">{</span>
+                        <span class="n">m_reg</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
+                            <span class="n">SpellChecker</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
+                            <span class="k">new</span> <span class="n">SpellCheckerImpl</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">service</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">m_context</span><span class="o">.</span><span class="n">ungetService</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="sr">//</span> <span class="n">Remove</span> <span class="n">the</span> <span class="n">departing</span> <span class="n">service</span> <span class="n">from</span> <span class="n">the</span> <span class="n">service</span> <span class="n">list</span><span class="o">.</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="o">.</span><span class="n">UNREGISTERING</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="sr">//</span> <span class="n">Make</span> <span class="n">sure</span> <span class="n">the</span> <span class="n">service</span> <span class="n">is</span> <span class="n">in</span> <span class="n">the</span> <span class="n">list</span><span class="o">.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">m_refToObjMap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">())</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">Unget</span> <span class="n">the</span> <span class="n">service</span> <span class="n">object</span><span class="o">.</span>
+                    <span class="n">m_context</span><span class="o">.</span><span class="n">ungetService</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+                    <span class="sr">//</span> <span class="n">Remove</span> <span class="n">service</span> <span class="n">reference</span><span class="o">.</span>
+                    <span class="n">m_refList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+                    <span class="sr">//</span> <span class="n">Remove</span> <span class="n">service</span> <span class="n">reference</span> <span class="n">from</span> <span class="nb">map</span><span class="o">.</span>
+                    <span class="n">m_refToObjMap</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+
+                    <span class="sr">//</span> <span class="n">If</span> <span class="n">there</span> <span class="n">are</span> <span class="nb">no</span> <span class="n">more</span> <span class="n">dictionary</span> <span class="n">services</span><span class="p">,</span>
+                    <span class="sr">//</span> <span class="k">then</span> <span class="n">unregister</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span><span class="o">.</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">m_refList</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="p">{</span>
+                        <span class="n">m_reg</span><span class="o">.</span><span class="n">unregister</span><span class="p">();</span>
+                        <span class="n">m_reg</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">A</span> <span class="n">private</span> <span class="n">inner</span> <span class="n">class</span> <span class="n">that</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span><span class="p">;</span>
+     <span class="o">*</span> <span class="n">see</span> <span class="n">SpellChecker</span> <span class="k">for</span> <span class="n">details</span> <span class="n">of</span> <span class="n">the</span> <span class="n">service</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">private</span> <span class="n">class</span> <span class="n">SpellCheckerImpl</span> <span class="n">implements</span> <span class="n">SpellChecker</span>
+    <span class="p">{</span>
+        <span class="o">/**</span>
+         <span class="o">*</span> <span class="n">Implements</span> <span class="n">SpellChecker</span><span class="o">.</span><span class="n">check</span><span class="p">()</span><span class="o">.</span> <span class="n">Checks</span> <span class="n">the</span>
+         <span class="o">*</span> <span class="n">given</span> <span class="n">passage</span> <span class="k">for</span> <span class="n">misspelled</span> <span class="n">words</span><span class="o">.</span>
+         <span class="o">*</span> <span class="nv">@param</span> <span class="n">passage</span> <span class="n">the</span> <span class="n">passage</span> <span class="n">to</span> <span class="n">spell</span> <span class="n">check</span><span class="o">.</span>
+         <span class="o">*</span> <span class="nv">@return</span> <span class="n">An</span> <span class="n">array</span> <span class="n">of</span> <span class="n">misspelled</span> <span class="n">words</span> <span class="ow">or</span> <span class="n">null</span> <span class="k">if</span> <span class="nb">no</span>
+         <span class="o">*</span>         <span class="n">words</span> <span class="n">are</span> <span class="n">misspelled</span><span class="o">.</span>
+        <span class="o">**/</span>
+        <span class="n">public</span> <span class="n">String</span><span class="o">[]</span> <span class="n">check</span><span class="p">(</span><span class="n">String</span> <span class="n">passage</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="sr">//</span> <span class="n">No</span> <span class="n">misspelled</span> <span class="n">words</span> <span class="k">for</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">string</span><span class="o">.</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">passage</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">passage</span><span class="o">.</span><span class="nb">length</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">ArrayList</span> <span class="n">errorList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+
+            <span class="sr">//</span> <span class="n">Tokenize</span> <span class="n">the</span> <span class="n">passage</span> <span class="n">using</span> <span class="n">spaces</span> <span class="ow">and</span> <span class="n">punctionation</span><span class="o">.</span>
+            <span class="n">StringTokenizer</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringTokenizer</span><span class="p">(</span><span class="n">passage</span><span class="p">,</span> <span class="s">&quot; ,.!?;:&quot;</span><span class="p">);</span>
+
+            <span class="sr">//</span> <span class="n">Lock</span> <span class="n">the</span> <span class="n">service</span> <span class="n">list</span><span class="o">.</span>
+            <span class="n">synchronized</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="sr">//</span> <span class="n">Loop</span> <span class="n">through</span> <span class="nb">each</span> <span class="n">word</span> <span class="n">in</span> <span class="n">the</span> <span class="n">passage</span><span class="o">.</span>
+                <span class="k">while</span> <span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">hasMoreTokens</span><span class="p">())</span>
+                <span class="p">{</span>
+                    <span class="n">String</span> <span class="n">word</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nextToken</span><span class="p">();</span>
+
+                    <span class="n">boolean</span> <span class="n">correct</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+
+                    <span class="sr">//</span> <span class="n">Check</span> <span class="nb">each</span> <span class="n">available</span> <span class="n">dictionary</span> <span class="k">for</span> <span class="n">the</span> <span class="n">current</span> <span class="n">word</span><span class="o">.</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="o">!</span><span class="n">correct</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_refList</span><span class="o">.</span><span class="n">size</span><span class="p">());</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+                    <span class="p">{</span>
+                        <span class="n">DictionaryService</span> <span class="n">dictionary</span> <span class="o">=</span>
+                            <span class="p">(</span><span class="n">DictionaryService</span><span class="p">)</span> <span class="n">m_refToObjMap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">m_refList</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+
+                        <span class="k">if</span> <span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">checkWord</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+                        <span class="p">{</span>
+                            <span class="n">correct</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+
+                    <span class="sr">//</span> <span class="n">If</span> <span class="n">the</span> <span class="n">word</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">correct</span><span class="p">,</span> <span class="k">then</span> <span class="n">add</span> <span class="n">it</span>
+                    <span class="sr">//</span> <span class="n">to</span> <span class="n">the</span> <span class="n">incorrect</span> <span class="n">word</span> <span class="n">list</span><span class="o">.</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">correct</span><span class="p">)</span>
+                    <span class="p">{</span>
+                        <span class="n">errorList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">word</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="sr">//</span> <span class="n">Return</span> <span class="n">null</span> <span class="k">if</span> <span class="nb">no</span> <span class="n">words</span> <span class="n">are</span> <span class="n">incorrect</span><span class="o">.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">errorList</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="sr">//</span> <span class="n">Return</span> <span class="n">the</span> <span class="n">array</span> <span class="n">of</span> <span class="n">incorrect</span> <span class="n">words</span><span class="o">.</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="p">)</span> <span class="n">errorList</span><span class="o">.</span><span class="n">toArray</span><span class="p">(</span><span class="k">new</span> <span class="n">String</span><span class="p">[</span><span class="n">errorList</span><span class="o">.</span><span class="n">size</span><span class="p">()]);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Note that we do not need to unregister the service in stop() method, because the OSGi framework will automatically do so for us. The spell checker service that we have implemented is very simple; it simply parses a given passage into words and then loops through all available dictionary services for each word until it determines that the word is correct. Any incorrect words are added to an error list that will be returned to the caller. This solution is not optimal and is only intended for educational purposes. Next, we create a <code>manifest.mf</code> file that contains the meta-data for our bundle:</p>
+<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">Spell</span> <span class="n">checker</span> <span class="n">service</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Description:</span> <span class="n">A</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">simple</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Vendor:</span> <span class="n">Richard</span> <span class="n">Hall</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Version:</span> <span class="mf">1.0.0</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator:</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example6</span><span class="o">.</span><span class="n">Activator</span>
+<span class="n">Export</span><span class="o">-</span><span class="n">Package:</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example6</span><span class="o">.</span><span class="n">service</span>
+<span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="p">,</span>
+ <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+
+
+<p>We specify which class used to activate the bundle via the <code>Bundle-Activator</code> attribute. Our bundle exports the spell checker service interface using the <code>Export-Package</code> attribute and imports the OSGi core framework and dictionary service interface packages using the <code>Import-Package</code> attribute. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
+<p>To compile our source, we need to have the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) and the example2.jar file in our class path. We compile the source file using a command like:</p>
+<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*.</span><span class="n">java</span>
+</pre></div>
+
+
+<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory; this subdirectory is <code>tutorial\example6</code>, named after the package we specified in the source file. For the above command to work, the <code>c:\classes</code> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</p>
+<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">example6</span><span class="o">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="o">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="n">tutorial</span><span class="o">\</span><span class="n">example6</span>
+</pre></div>
+
+
+<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example6</code> directory inside of the <code>c:\classes</code> directory. Once the JAR file is created, we are ready to install and start the bundle.</p>
+<p>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>. After running Felix, we should stop all tutorial bundles except for the service bundles. Use the <code>lb</code> command to make sure that only the bundles from Example 2 and Example 2b are active; use the <code>start</code> and <code>stop</code> commands as appropriate to start and stop the various tutorial bundles, respectively. (Note: Felix uses some bundles to provide its command shell, so do not stop these bundles.) Now we can install and start our spell checker service bundle. Assuming that we created our bundle in the directory <code>c:\tutorial</code>, we can install and start it in Felix' shell using the following command:</p>
+<div class="codehilite"><pre><span class="n">start</span> <span class="n">file:</span><span class="sr">/c:/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">example6</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands. To stop the bundle, use the Felix <code>stop</code> shell command. Using the Felix shell <code>lb</code> command to get the bundle identifier number for our spell checker service bundle and we can stop and restart it at will using the <code>stop</code> and <code>start</code> commands, respectively. Using the <code>services</code> command, we can see which services are currently available in the OSGi framework, including our dictionary and spell checker services. We can experiment with our spell checker service's dynamic availability by stopping the dictionary service bundles; when both dictionary services are stopped, the <code>services</code> command will reveal that our bundle is no longer offering its spell checker service. Likewise, when the dictionary services comeback, so will our spell checker service. We create a client for our spell checker service in Example 7. To exit Felix, we use the <code>shutdown</code> command.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

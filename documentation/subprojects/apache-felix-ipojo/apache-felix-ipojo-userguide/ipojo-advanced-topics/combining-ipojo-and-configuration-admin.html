@@ -1,0 +1,364 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Combining iPOJO and Configuration Admin</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics.html">iPOJO Advanced Topics</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/combining-ipojo-and-configuration-admin.html" target="felix_cwiki">/site/combining-ipojo-and-configuration-admin.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Combining iPOJO and Configuration Admin</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# Combining iPOJO and Configuration Admin
+
+*This page presents how creating, reconfiguring and destroying iPOJO component instance with the OSGi Configuration Admin.*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## Configuration Admin
+
+The Configuration Admin service is a configuration manager describe in the OSGi R4 Compendium. It allows an operator to set the configuration information of deployed applications The Configuration Admin defines the Configuration as the process of defining the configuration data of applications and assuring that those applications receive that data when they are running. The Configuration Admin is becoming an important piece on OSGi Gateway. It is become the standard way to configure applications on OSGi gateways.
+
+## Why using Configuration Admin with iPOJO
+
+As the configuration admin offer an administration support, it seems reasonable to combine iPOJO and the Configuration Admin to control the gateway. Indeed, thanks to the configuration admin it should be possible to:
+* Create new component instances
+* Configuring / reconfiguring these instances
+* Destroying these instances
+* Reconfiguring instances by using Managed Services (not addressed in this page, see [here](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html) for further information)
+
+The configuration admin is persistent, so stored configuration will be reload it the framework restarts.
+Moreover, using the configuration admin allows avoiding describing instances inside iPOJO metadata file. These instances are created by inserting new configurations in the configuration admin.
+
+## Combining iPOJO and the Configuration Admin
+
+iPOJO has a component type concept. For each (public) component type, a `ManagedServiceFactory` is published. For each configurations matching with the component type from the Configuration Admin, a new component instance is created. Moreover, when this configuration is updated, the instance is dynamically reconfigured. If the configuration is removed, the instance is disposed.
+
+If a new Configuration is created:
+* If the factory is available or an instance is create immediately,
+* Else the factory is not available and the instance will be created as soon as the factory appears.
+
+## Examples
+
+This section presents 3 examples about the management of iPOJO instances with the configuration admin:
+* A simple instantiation example and destruction
+* An instantiation with property injection and dynamic reconfiguration
+* A property propagation example
+
+All these examples are downloadable [here](http://people.apache.org/~clement/ipojo/tutorials/ca/config.admin.tutorial.zip). The archive contains both the project sources and a pre-configured version of felix.
+To compile the project, launch ant from the *config.admin.tutorial* directory
+Then, you can launch Felix by launching the following command from the `felix` directory:
+
+    Java -jar bin/felix.jar
+
+### Prerequisites
+
+Let's take 4 Felix shell commands to manage configuration admin configurations (available in the example archive):
+* `create_conf <type>  <property-key=property-value>\*` allows to create a new Factory Configuration attached to the given type. The configuration contains the given properties.
+* `update*conf <configuration*name> < property-key=property-value>\*` allows to update the configuration with the given name with the given properties.
+* `delete*conf <configuration*name>` allows deleting the configuration with the given name. If the name is 'all', delete all stored configurations.
+* `list_conf` allows listing all stored configuration.
+
+Moreover iPOJO and an implementation of the Configuration Admin must be deployed on the gateway:
+
+    -> ps
+    START LEVEL 1
+       ID   State         Level  Name
+    [   0] [Active     ] [    0] System Bundle (1.0.3)
+    [   1] [Active     ] [    1] Apache Felix Shell Service (1.0.0)
+    [   2] [Active     ] [    1] Apache Felix Shell TUI (1.0.0)
+    [   3] [Active     ] [    1] Apache Felix Bundle Repository (1.0.2)
+    [   4] [Active     ] [    1] Apache Felix Configuration Admin Service (1.0.10) 
+    [   5] [Active     ] [    1] Apache Felix iPOJO (1.2.0) 
+    [   6] [Active     ] [    1] Apache Felix iPOJO Arch Command (1.2.0) 
+
+### Simple Instantiation
+
+Imagine the following very simple component implementation:
+{code:java}
+public class Hello1 {
+    public Hello1() {
+        System.out.println("Hello");
+    }
+}
+
+    The component type is defined with following metadata:
+    {code:xml}
+    <component 
+        classname="org.apache.felix.ipojo.example.ca.component.Hello1" 
+        factory="hello1" immediate="true" architecture="true"/>
+
+The defined component type (*Hello1*) just creates a Hello1 object when the instance is created (thanks to the *immediate* attribute).
+So if we deploy this bundle and add a consistent configuration we obtain (note that bundle need to be already compiled):
+
+    -> start file:..\config.admin.tutorial\output\config.admin.tutorial.jar
+    -> create_conf org.apache.felix.ipojo.example.ca.component.Hello1 
+    Insert the configuration : {org.apache.felix.ipojo.example.ca.component.Hello1}
+    -> Hello
+
+*Note*: Debug messages from the configuration admin were removed
+So as predicted, the Hello message appears. To be really sure of the creating, we can ask for the instance architecture (the component type allows architecture introspection thank to the architecture attribute):
+
+    -> arch 
+    Instance ArchCommand -> valid 
+    Instance org.apache.felix.ipojo.example.ca.component.Hello1.e40fe80a-2c0d-4c51-b00b-a82565874cd8 -> valid 
+    -> 
+    -> arch -instance 
+    org.apache.felix.ipojo.example.ca.component.Hello1.e40fe80a-2c0d-4c51-b00b-a82565874cd8 
+    instance name=
+        "org.apache.felix.ipojo.example.ca.component.Hello1.e40fe80a-2c0d-4c51-b00b-a82565874cd8" 
+            component.type="hello1" 
+            state="valid" bundle="7" 
+        object name="org.apache.felix.ipojo.example.ca.component.Hello1@120cc56" 
+        handler 
+            name="org.apache.felix.ipojo.handlers.lifecycle.callback.LifecycleCallbackHandler" 
+            state="valid" 
+        handler 
+            name="org.apache.felix.ipojo.handlers.architecture.ArchitectureHandler" 
+            state="valid" 
+    ->
+
+So, the instance is correctly created. The name of the instance was created by the configuration admin. It could change according to your configuration admin implementation.
+Then, we can delete the instance by removing the configuration from the configuration admin:
+
+    -> delete_conf 
+    org.apache.felix.ipojo.example.ca.component.Hello1.e40fe80a-2c0d-4c51-b00b-a82565874cd8 
+    Delete the configuration : 
+    org.apache.felix.ipojo.example.ca.component.Hello1.e40fe80a-2c0d-4c51-b00b-a82565874cd8 
+    -> arch 
+    Instance ArchCommand -> valid
+
+So, arch does no more displayed any *hello* instances, the created instance was disposed.
+
+### Reconfiguring instances with the Configuration Admin
+
+Imagine the following component implementation:
+{code:java}
+public class Hello2 {
+     String m_name;
+    public void stop() {
+        System.out.println("Good by " + m_name);
+    }
+    public void setName(String newName) {
+        m_name = newName;
+        System.out.println("Hello " + m_name);
+    }
+
+    And the following metadata:
+    {code:xml}
+    <component 
+            classname="org.apache.felix.ipojo.example.ca.component.Hello2" 
+            factory="hello2" immediate="true" architecture="true">
+        <callback transition="validate" method="stop"/>
+        <properties>
+            <property field="m_name" name="to" method="setName"/>
+        </properties>
+    </component>
+
+The defined component type (*Hello2*) write "Hello + $name" when the property 'to' (attached to the field m_name) receive a new value. A value is necessary insert in the instance configuration. Moreover when killed, the instance will display a "Good By" message.
+Let's play a simple scenario:
+* Create a Hello2 instance
+* Update the instance configuration
+* Kill the created instance
+
+    -> create_conf org.apache.felix.ipojo.example.ca.component.Hello2 to=ipojo 
+    Insert the configuration : 
+    {service.factoryPid=org.apache.felix.ipojo.example.ca.component.Hello2, to=ipojo} 
+    Created configuration: 
+    org.apache.felix.ipojo.example.ca.component.Hello2.75082279-9b4b-4c49-b0e0-8efb38b67aa3 
+    Hello ipojo 
+    -> list_conf 
+    org.apache.felix.ipojo.example.ca.component.Hello2.75082279-9b4b-4c49-b0e0-8efb38b67aa3 : 
+     {service.pid=org.apache.felix.ipojo.example.ca.component.Hello2.75082279-9b4b-4c49-b0e0-8efb38b67aa3, 
+      service.factorypid=org.apache.felix.ipojo.example.ca.component.Hello2, 
+    to=ipojo} 
+    -> update_conf 
+    org.apache.felix.ipojo.example.ca.component.Hello2.75082279-9b4b-4c49-b0e0-8efb38b67aa3 to=felix 
+    Update: 
+    pid=org.apache.felix.ipojo.example.ca.component.Hello2.75082279-9b4b-4c49-b0e0-8efb38b67aa3 
+    Update the configuration : {to=felix} 
+    Hello felix 
+    -> delete_conf 
+    org.apache.felix.ipojo.example.ca.component.Hello2.75082279-9b4b-4c49-b0e0-8efb38b67aa3 
+    Delete the configuration : 
+    org.apache.felix.ipojo.example.ca.component.Hello2.75082279-9b4b-4c49-b0e0-8efb38b67aa3 
+    Good by felix-> list_conf
+
+In this simple scenario, we see that when the configuration is updated, the instance receives the new value. The *setName* method is immediately invoked to inject the new value. Moreover, when the configuration is deleted, the instance is going to be killed: the "Good Bye" message appears and the instance is disposed.
+Obviously it is possible to create several instance of the same type:
+
+    -> create_conf org.apache.felix.ipojo.example.ca.component.Hello2 to=ipojo 
+    Insert the configuration : 
+    {service.factoryPid=org.apache.felix.ipojo.example.ca.component.Hello2, to=ipojo} 
+    Hello ipojo 
+    -> create_conf org.apache.felix.ipojo.example.ca.component.Hello2 to=felix 
+    Insert the configuration : 
+    {service.factoryPid=org.apache.felix.ipojo.example.ca.component.Hello2, to=felix} 
+    Hello felix 
+    -> arch 
+    Instance ArchCommand -> valid 
+    Instance org.apache.felix.ipojo.example.ca.component.Hello2.aaf1927c-1a81-490d-bd7b-21b13d454987 -> valid 
+    Instance org.apache.felix.ipojo.example.ca.component.Hello2.9344fdbe-c35e-4afc-b839-f7ad0ea59a9d -> valid
+
+The 'arch' command displays the two created instances.
+
+<div class="info" markdown="1">
+**Delete configurations**
+you can delete all created configurations with the *delete*conf all_ command
+</div>
+
+### Property Propagation
+
+It is possible to propagate the instance configuration to the published service properties. To activate property propagation you need to write the *'propagation'* attribute in the 'properties' element as in
+
+    <component 
+        classname="org.apache.felix.ipojo.example.ca.component.Hello3"
+        factory="hello3" architecture="true">
+        <provides/>
+        <properties propagation="true">
+            <property field="m_name" value="clement"/>
+        </properties>
+    </component>
+
+The defined type provides a service. Moreover it supports properties propagation. So all property, except listed one (m_name), will be published inside the provided services.
+So create an instance of the Hello3 component type as follow:
+
+    -> create_conf  org.apache.felix.ipojo.example.ca.component.Hello3 
+    Insert the configuration : 
+    {service.factoryPid=org.apache.felix.ipojo.example.ca.component.Hello3}
+
+Then, you can check provided services with the *services 7* command
+
+    -> services 7 
+    // Factories and Managed Service factories // 
+    ---- 
+    factory.name = org.apache.felix.ipojo.example.ca.component.Hello3 
+    instance.name = 
+    org.apache.felix.ipojo.example.ca.component.Hello3.a5ca5901-6e20-4636-8805-fbca2db1d68b 
+    objectClass = org.apache.felix.ipojo.example.ca.service.Hello 
+    service.factoryPid = org.apache.felix.ipojo.example.ca.component.Hello3 
+    service.id = 69 
+    -> 
+
+Now, we update the instance configuration with a new property 'p1':
+
+    -> update_conf 
+    org.apache.felix.ipojo.example.ca.component.Hello3.a5ca5901-6e20-4636-8805-fbca2db1d68b p1=v1 
+    Update the configuration : {p1=v1} 
+    -> services 7 
+    config.admin.tutorial (7) provides: 
+    // Factories and Managed Service factories // 
+    ---- 
+    factory.name = org.apache.felix.ipojo.example.ca.component.Hello3 
+    instance.name = 
+    org.apache.felix.ipojo.example.ca.component.Hello3.a5ca5901-6e20-4636-8805-fbca2db1d68b 
+    objectClass = org.apache.felix.ipojo.example.ca.service.Hello 
+    p1 = v1 
+    service.factoryPid = org.apache.felix.ipojo.example.ca.component.Hello3 
+    service.id = 69 
+
+Remark that the new property p1 is published. 
+Now we can remove this property by reconfiguring the instance with an empty configuration:
+
+    -> update_conf 
+    org.apache.felix.ipojo.example.ca.component.Hello3.a5ca5901-6e20-4636-8805-fbca2db1d68b 
+    Update the configuration : {} 
+    -> services 7 
+    ConfigAdminExample (8) provides: 
+    // Factories and Managed Service factories // 
+    ---- 
+    factory.name = org.apache.felix.ipojo.example.ca.component.Hello3 
+    instance.name = 
+    org.apache.felix.ipojo.example.ca.component.Hello3.a5ca5901-6e20-4636-8805-fbca2db1d68b 
+    objectClass = org.apache.felix.ipojo.example.ca.service.Hello 
+    service.factoryPid = org.apache.felix.ipojo.example.ca.component.Hello3 
+    service.id = 69 
+
+The service does no more publish the `p1` property.
+
+## Conclusion
+
+This page has presented how to combine the configuration admin and iPOJO. You can also use [FileInstall in combination with iPOJO and the Configuration Admin](http://ipojo-dark-side.blogspot.com/2009/04/ipojo-and-file-install-configuring.html). Subscribe to the Felix users mailing list by sending a message to [mailto:users-subscribe@felix.apache.org]; after subscribing, email questions or feedback to [mailto:users@felix.apache.org]
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

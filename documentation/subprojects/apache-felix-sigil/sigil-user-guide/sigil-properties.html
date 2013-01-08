@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Sigil Properties</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-sigil.html">Apache Felix Sigil</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-sigil/sigil-user-guide.html">Sigil User Guide</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/sigil-properties.html" target="felix_cwiki">/site/sigil-properties.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Sigil Properties</h1>
+      <h2 id="overview">Overview</h2>
+<p>sigil.properties is the common configuration file used in both the Eclipse and Ivy plugins. It is also used for the repository configuration (sigil-repos.properties).</p>
+<p>It supports 4 types of property:</p>
+<ul>
+<li>
+<p><em>simple</em> - e.g. name: foo or -activator: org.acme.Activator</p>
+</li>
+<li>
+<p><em>list</em> - e.g. -bundles: foo-api, foo-impl</p>
+</li>
+<li>
+<p><em>map</em> - e.g. -imports: org.foo; version=1.2, org.bar; version="[1.0, 1.1)"</p>
+</li>
+<li>
+<p><em>sub-property</em> - e.g. header;Bundle-Vendor: Acme or foo-api;-exports: org.foo</p>
+</li>
+</ul>
+<p>The sub-property type allows values to be set that are groups of properties. The key prefix before ';' identifies the sub-property name. All keys with the same prefix contribute to the sub-property value.</p>
+<p>The -defaults mechanism allows projects to share common bundle headers and default package import versions.</p>
+<p>Most values are passed to <a href="http://www.aqute.biz/Code/Bnd">Bnd</a>, so Bnd syntax can usually be used, for example: -resources: @lib, to embed a library.</p>
+<h2 id="reference">Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-bundles</td>
+<td>list</td>
+<td>Set bundles to create. Each bundle should be defined as sub-properties prefixed with the bundle name, unless only a single bundle is defined, when the prefix can be omitted.</td>
+</tr>
+<tr>
+<td>-repositories</td>
+<td>list</td>
+<td>Set repositories to use. Each repository should be defined as sub-properties prefixed with the repository name.</td>
+</tr>
+<tr>
+<td>-defaults</td>
+<td>simple</td>
+<td>Reads in specified defaults file. If prefixed with '-' then any error reading file is ignored. Default is -../sigil-defaults.properties</td>
+</tr>
+<tr>
+<td>header;<em>key</em></td>
+<td>sub-property</td>
+<td>Specify additional bundle headers.</td>
+</tr>
+<tr>
+<td>package;<em>key</em></td>
+<td>sub-property</td>
+<td>Specify default Import-Package versions. e.g. package;org.osgi.framework: 1.4</td>
+</tr>
+<tr>
+<td>bundle;<em>key</em></td>
+<td>sub-property</td>
+<td>Specify default Require-Bundle versions.</td>
+</tr>
+<tr>
+<td>name</td>
+<td>simple</td>
+<td>Set Bundle-SymbolicName. Default is bundle id from -bundles.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>simple</td>
+<td>Set bundle version and default export version.</td>
+</tr>
+<tr>
+<td>-activator</td>
+<td>simple</td>
+<td>Set bundle activator.</td>
+</tr>
+<tr>
+<td>-contents</td>
+<td>list</td>
+<td>Add specified packages to bundle. Defaults from -sourcedirs, or if not set -exports.</td>
+</tr>
+<tr>
+<td>-sourcedirs</td>
+<td>list</td>
+<td>Alternative way to specify bundle contents.</td>
+</tr>
+<tr>
+<td>-resources</td>
+<td>list</td>
+<td>Specify additional resources to add to bundle. Supports BND use of {} to filter files and @name.jar to embed jar from classpath.</td>
+</tr>
+<tr>
+<td>-exports</td>
+<td>map</td>
+<td>Set Export-Package bundle header. Export version defaults from bundle version.</td>
+</tr>
+<tr>
+<td>-requires</td>
+<td>map</td>
+<td>Specify Require-Bundle dependencies.</td>
+</tr>
+<tr>
+<td>-imports</td>
+<td>map</td>
+<td>Specify Import-Package dependencies. Sigil adds the resolve attribute:</td>
+</tr>
+<tr>
+<td>* resolve=compile Only use import to determine compile dependencies; do NOT add to bundle headers.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>* resolve=runtime Always add import to bundle headers (even if it appears unneeded). Do NOT generate compile dependency.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>-fragment</td>
+<td>map</td>
+<td>Set Fragment-Host bundle header.</td>
+</tr>
+<tr>
+<td>-libs</td>
+<td>map</td>
+<td>Add jars to bundle. Attributes:</td>
+</tr>
+<tr>
+<td>* kind=classpath also adds jar to Bundle-Classpath</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>* kind=codebase sets Newton RMI-Codebase</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>option;<em>name</em></td>
+<td>sub-property</td>
+<td>Specify Sigil options:</td>
+</tr>
+<tr>
+<td>* option;addMissingImports=true Let Bnd calculate imports (i.e. specify *) then update with Sigil versions. Default: true.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>* option;omitUnusedImports=true (implies addMissingImports=true) Avoids Bnd warnings when project contains multiple bundles which don't all use all imports. Default: true for projects with multiple bundles; otherwise false.</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

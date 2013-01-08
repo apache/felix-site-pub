@@ -1,0 +1,86 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - 6.5. Deploying security providers</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="64-embedding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="64-embedding-karaf.html">6.4. Embedding Karaf</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="6-advanced-uses.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="6-advanced-uses.html">6. Advanced uses</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="66-installing-additional-features.html">6.6. Installing additional features</A></TD><TD class="ScrollbarNextIcon"><A href="66-installing-additional-features.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+<P><A name="6.5.Deployingsecurityproviders-top"></A></P>
+
+<H1><A name="6.5.Deployingsecurityproviders-6.5.Deployingsecurityproviders"></A>6.5. Deploying security providers</H1>
+
+<P>Some applications require specific security providers to be available, such as <A href="http://www.bouncycastle.org/" class="external-link" rel="nofollow">BouncyCastle</A>.  The JVM impose some restrictions about the use of such jars: they have to be signed and be available on the boot classpath.  One way to deploy those providers is to put them in the JRE folder at <TT>$JAVA_HOME/jre/lib/ext</TT> and modify the security policy configuration (<TT>$JAVA_HOME/jre/lib/security/java.security</TT>) in order to register such providers.</P>
+
+<P>While this approach works fine, it has a global effect and require you to configure all your servers accordingly.</P>
+
+<P>Karaf offers a simple way to configure additional security providers:</P>
+<UL>
+	<LI>put your provider jar in <TT>[KARAF]/lib</TT></LI>
+	<LI>modify the <TT>[KARAF]/etc/config.properties</TT> configuration file to add the following property</LI>
+</UL>
+
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+org.apache.felix.karaf.security.providers = xxx,yyy
+</PRE>
+</DIV></DIV>
+
+<P>The value of this property is a comma separated list of the provider class names to register.<BR>
+For example:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+org.apache.felix.karaf.security.providers = org.bouncycastle.jce.provider.BouncyCastleProvider
+</PRE>
+</DIV></DIV>
+
+<P>In addition, you may want to provide access to the classes from those providers from the system bundle so that all bundles can access those.  It can be done by modifying the <TT>org.osgi.framework.bootdelegation</TT> property in the same configuration file:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+org.osgi.framework.bootdelegation = ...,org.bouncycastle*
+</PRE>
+</DIV></DIV>
+
+<P><A href="#6.5.Deployingsecurityproviders-top">top</A></P>
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="64-embedding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="64-embedding-karaf.html">6.4. Embedding Karaf</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="6-advanced-uses.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="6-advanced-uses.html">6. Advanced uses</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="66-installing-additional-features.html">6.6. Installing additional features</A></TD><TD class="ScrollbarNextIcon"><A href="66-installing-additional-features.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+    </DIV>
+  </BODY>
+</HTML>

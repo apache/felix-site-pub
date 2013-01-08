@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Framework Usage Documentation</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-framework-usage-documentation.html" target="felix_cwiki">/site/apache-felix-framework-usage-documentation.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Framework Usage Documentation</h1>
+      <h1 id="apache-felix-framework-usage-documentation">Apache Felix Framework Usage Documentation</h1>
+<ul>
+<li><a href="">Downloading the Framework</a></li>
+<li><a href="">Starting the Framework</a></li>
+<li><a href="">Framework Shell</a>
+<strong> <a href="">Installing Bundles</a>
+</strong> <a href="">Web Proxy Issues when Installing Bundles</a></li>
+<li><a href="">Bundle Auto-Deploy</a></li>
+<li><a href="">Configuring the Framework</a>
+** <a href="">System Property Substitution</a></li>
+<li><a href="">Configuring Bundles</a></li>
+<li><a href="">Feedback</a></li>
+</ul>
+<h2 id="downloading-the-framework">Downloading the Framework</h2>
+<p>Go to the <a href="">downloads</a> page and download the latest Felix framework distribution.</p>
+<h2 id="starting-the-framework">Starting the Framework</h2>
+<p>Start the framework from the installation directory by typing:</p>
+<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="o">/</span><span class="n">felix</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>The framework launcher starts the framework and installs and starts all bundles contained in the <code>bundle</code> directory of the current directory. By default, the bundle directory contains shell-related bundles providing a textual user interface to interact with the framework. Bundles installed into the framework are copied into a bundle cache directory for subsequent executions. By default, the framework creates a cache directory, called <code>felix-cache</code>, in your current working directory. If you want to start the framework using a different bundle cache directory, you can do so like this:</p>
+<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="o">/</span><span class="n">felix</span><span class="o">.</span><span class="n">jar</span> <span class="sr">&lt;cache-path&gt;</span>
+</pre></div>
+
+
+<p>Where <code>&lt;cache-path&gt;</code> is the path you want to use as the bundle cache. If you specify a relative cache path, then it will be treated as relative to the current working directory.</p>
+<div class="info" markdown="1">
+**Useful Information**
+Previous versions of the framework prompted for a profile name when executed. The profile name was used to create a directory inside `.felix/` in the user home directory. This approach allowed users to have different sets of bundles for different purposes, e.g., testing, production, etc. If this behavior is still desired, it is very easy to mimic. Modify `conf/config.properties` to include "`felix.cache.rootdir=$\{user.home}/.felix`". Now, if you start Felix with something like "`java -jar bin/felix.jar foo`", it will use "`$\{user.home}/.felix/foo/`" as the bundle cache directory, where "`$\{user.home\`}" is automatically substituted with the appropriate system property by the launcher.
+</div>
+
+<h2 id="framework-shell">Framework Shell</h2>
+<p>The main way to interact with the framework is via the supplied Apache Felix Gogo shell. After starting the framework, type <code>help</code> into the shell to see the list of the available commands and <code>help &lt;command-name&gt;</code> to get help for a specific command.</p>
+<div class="info" markdown="1">
+**Useful Information**
+In Gogo, command names are made up of two parts: `<scope>:<name>`. This is similar to a fully qualified class name in Java and is used to avoid naming collisions. If the `<name>` portion of the command is unique, then you only need to type it. If not, then you must either type the full `<scope>:<name>` or arrange the scope search path accordingly.
+</div>
+
+<p>To install bundles, use the <code>felix:install</code> command, which is described in more detail in the next <a href="">sub-section</a>. To list installed bundles, use the <code>felix:lb</code> command. To stop the framework type <code>stop 0</code> to stop the System Bundle; any installed bundles will automatically be reloaded (and potentially restarted) the next time you launch with the associated cache.</p>
+<h3 id="installing-bundles">Installing Bundles</h3>
+<p>A bundle is the OSGi term for a component for the OSGi framework. A bundle is simply a JAR file containing a manifest and some combination of Java classes, embedded JAR files, native code, and resources. A bundle may provide some specific functionality for the user or it may implement a service that other bundles can use; bundles can only use functionality from other bundles through shared services and packages.</p>
+<p>The Felix framework distribution comes with three bundles, which are located in the <code>bundle/</code> directory of the framework distribution installation directory. These bundles include the Gogo Runtime (core command processing functionality), Gogo Shell (text-based shell user interface), Gogo Command (basic set of commands), and Bundle Repository (a bundle repository service). In addition to these bundles, the bundle repository provides access to other bundles for easy installation. The bundle repository service provides a set of shell commands in the <code>obr:*</code> scope; refer to the <a href="/documentation/subprojects/apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository</a> for more information.</p>
+<p>Before installing any bundles, it is important to understand how bundles are manually deployed into the framework. Bundles are deployed in two stages; first they are installed, then they are started. To install a bundle use the <code>felix:install</code> shell command followed by a bundle URL. For example, to install a <code>bundle.jar</code> bundle you type:</p>
+<div class="codehilite"><pre><span class="err">felix:install</span> <span class="err">file:/path/to/bundle/bundle.jar</span>
+</pre></div>
+
+
+<p>Once a bundle is installed, it can then be started by using the <code>felix:start</code> command and the bundle identifier of the desired bundle. The <code>felix:lb</code> command is used to list installed bundles and to obtain the bundle's identifier. The following Felix shell session illustrates how to start the <code>bundle.jar</code> bundle:</p>
+<div class="codehilite"><pre><span class="n">g</span><span class="o">!</span> <span class="n">install</span> <span class="n">file:</span><span class="sr">/path/</span><span class="n">to</span><span class="sr">/bundle/</span><span class="n">bundle</span><span class="o">.</span><span class="n">jar</span>
+<span class="n">g</span><span class="o">!</span> <span class="n">lb</span>
+<span class="n">START</span> <span class="n">LEVEL</span> <span class="mi">1</span>
+   <span class="n">ID</span><span class="o">|</span><span class="n">State</span>      <span class="o">|</span><span class="n">Level</span><span class="o">|</span><span class="n">Name</span>
+    <span class="mi">0</span><span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    <span class="mi">0</span><span class="o">|</span><span class="n">System</span> <span class="n">Bundle</span> <span class="p">(</span><span class="mf">3.0.0</span><span class="p">)</span>
+    <span class="mi">1</span><span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    <span class="mi">1</span><span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Bundle</span> <span class="n">Repository</span> <span class="p">(</span><span class="mf">1.6.2</span><span class="p">)</span>
+    <span class="mi">2</span><span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    <span class="mi">1</span><span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Gogo</span> <span class="n">Command</span> <span class="p">(</span><span class="mf">0.6.0</span><span class="p">)</span>
+    <span class="mi">3</span><span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    <span class="mi">1</span><span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Gogo</span> <span class="n">Runtime</span> <span class="p">(</span><span class="mf">0.6.0</span><span class="p">)</span>
+    <span class="mi">4</span><span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    <span class="mi">1</span><span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Gogo</span> <span class="n">Shell</span> <span class="p">(</span><span class="mf">0.6.0</span><span class="p">)</span>
+    <span class="mi">5</span><span class="o">|</span><span class="n">Installed</span>  <span class="o">|</span>    <span class="mi">1</span><span class="o">|</span><span class="n">Example</span> <span class="n">Bundle</span> <span class="p">(</span><span class="mf">1.0.0</span><span class="p">)</span>
+<span class="n">g</span><span class="o">!</span> <span class="n">start</span> <span class="mi">5</span>
+<span class="n">Hello</span> <span class="n">from</span> <span class="n">Bundle</span> <span class="mi">5</span><span class="o">.</span>
+<span class="n">g</span><span class="o">!</span>
+</pre></div>
+
+
+<p>The <code>felix:stop</code> command is used to stop a bundle and the <code>felix:uninstall</code> command is used to remove a bundle from the bundle cache. As an alternative to using the <code>felix:install</code> and <code>felix:start</code> commands explicitly, it is also possible to install and start a bundle in one step by using the <code>felix:start</code> command with a bundle URL.</p>
+<p>Bundles can be updated using the <code>felix:update</code> command. The update command allows you to specify an URL from which to retrieve the updated bundle, but if one is not specified it will try to update the bundle from the bundle's <code>Bundle-UpdateLocation</code> manifest attribute, if present, or the bundle's original location URL.</p>
+<div class="info" markdown="1">
+**Useful Information**
+When you use `felix:update` or `felix:uninstall`, the changes appear to take effect immediately, but in reality the changes are only partially enacted. If a bundle is updated or uninstalled and it was exporting packages, these packages are not removed until the framework is refreshed using the `PackageAdmin` service. The Felix shell offers a convenient `refresh` command for this purpose. This is the correct behavior as defined by the OSGi specification.
+</div>
+
+<p>For an introduction to writing bundles and services, refer to the Felix bundle tutorial.</p>
+<h3 id="web-proxy-issues-when-installing-bundles">Web Proxy Issues when Installing Bundles</h3>
+<p>If you use a proxy for Web access, then you may run into difficulty using the Gogo shell to install bundles from remote URLs. To remedy this situation, certain system properties must be set to make the framework work with your proxy. These properties are:</p>
+<ul>
+<li><code>http.proxyHost</code> - the name of the proxy host.</li>
+<li><code>http.proxyPort</code> - the port of the proxy host.</li>
+<li><code>http.proxyAuth</code> - the user name and password to use when connecting to the proxy; this string should be the user name and password separated by a colon (e.g., <code>rickhall:mypassword</code>).</li>
+</ul>
+<p>These system properties can be set directly on the command line when starting the JVM using the standard "<code>\-D&lt;prop&gt;=&lt;value&gt;</code>" syntax or you can put them in the <code>lib/system.properties</code> file of your Felix installation; see the next section on <a href="">configuring Felix</a> for more information.</p>
+<h2 id="bundle-auto-deploy">Bundle Auto-Deploy</h2>
+<p>To minimize the amount of configuration necessary to install bundles when you launch the framework, the Felix launcher uses the concept of an "auto-deploy" directory. The Felix launcher deploys all bundles in the auto-deploy directory into the framework instance during startup. By default, the auto-deploy directory is "<code>bundle</code>" in the current directory, but it can be specified on the command line like this:</p>
+<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="sr">/felix.jar -b /</span><span class="n">path</span><span class="sr">/to/</span><span class="n">dir</span>
+</pre></div>
+
+
+<p>Specifying an auto-deploy directory replaces the default directory, it does not augment it. The framework distribution is configured to install and start bundles in the auto-deploy directory. Both the location of the auto-deploy directory and the deployment actions performed can be controlled by the following configuration properties, respectively:</p>
+<ul>
+<li><code>felix.auto.deploy.dir</code> - Specifies the auto-deploy directory from which bundles are automatically deploy at framework startup. The default is the <code>bundle/</code> directory of the current directory.</li>
+<li><code>felix.auto.deploy.action</code> - Specifies the auto-deploy actions to be performed on the bundle JAR files found in the auto-deploy directory. The possible actions are <code>install</code>, <code>update</code>, <code>start</code>, and <code>uninstall</code>. If no actions are specified, then the auto-deploy directory is not processed (i.e., it is disabled). There is no default value for this property, but the default <code>config.properties</code> file installed with the Felix framework distribution sets the value to: <code>install, start</code></li>
+</ul>
+<p>The next section describes how to set and use configuration properties.</p>
+<h2 id="configuring-the-framework">Configuring the Framework</h2>
+<p>Both the Felix framework and the launcher use configuration properties to alter their default behavior. The framework can only be configured by passing properties into its constructor, but the launcher provides a mechanism to configure the framework via a property file. The framework launcher reads configuration properties from <code>conf/config.properties</code>. This file uses standard Java property file syntax.</p>
+<p>The launcher also supports setting system properties via the <code>conf/system.properties</code> file. This file is purely for convenience when you need to repeatedly set system properties when running the framework. While the framework itself does not look at system properties, the launcher does copy any framework configuration properties found in the system properties into the framework configuration map, also for your convenience.</p>
+<p>It is possible to specify different locations for these property files using the <code>felix.config.properties</code> and <code>felix.system.properties</code> system properties when executing the framework. For example:</p>
+<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">Dfelix</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">properties</span><span class="o">=</span><span class="n">file:</span><span class="sr">/home/</span><span class="n">rickhall</span><span class="sr">/config.properties -jar bin/</span><span class="n">felix</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>Configuration and system properties are accessible at run time via <code>BundleContext.getProperty()</code>, but configuration properties override system properties. For more information about available configuration properties, refer to the <a href="/documentation/subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a> document. The Felix framework distribution contains a default <code>conf/config.properties</code>.</p>
+<h3 id="system-property-substitution">System Property Substitution</h3>
+<p>It is possible to use system properties to specify the values of properties in the <code>conf/config.properties</code> file. This is achieved through system property substitution, which is instigated by using <code>$\{&lt;property&gt;\</code>} syntax, where <code>&lt;property&gt;</code> is the name of a system property to substitute. When the properties file is read, any such property values are substituted as appropriate. It is possible to have nested system property substitution, in which case the inner-most property is substituted first, then the next inner most, until reaching the outer most.</p>
+<h2 id="configuring-bundles">Configuring Bundles</h2>
+<p>Some bundles use properties to configure certain aspects of their behavior. It is a good idea, when implementing bundles, to parameterize them with properties where appropriate. To learn about the configuration options for specific bundles, refer to the documentation that accompanies them.</p>
+<p>Bundle properties may also be defined in the <code>conf/config.properties</code> property file. Any property placed in this file will be accessible via <code>BundleContext.getProperty()</code> at run time. The property file uses the standard Java property file syntax (i.e., attribute-value pairs). For information on changing the default location of this file, refer to the section on <a href="">configuring Felix</a>.</p>
+<h2 id="feedback">Feedback</h2>
+<p>Subscribe to the Felix users mailing list by sending a message to <a href="">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [users@felix.apache.org|mailto:users@felix.apache.org].</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

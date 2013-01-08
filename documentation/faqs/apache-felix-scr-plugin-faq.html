@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix SCR Plugin FAQ</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/faqs.html">FAQs</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-scr-plugin-faq.html" target="felix_cwiki">/site/apache-felix-scr-plugin-faq.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix SCR Plugin FAQ</h1>
+      <h1 id="apache-felix-scr-plugin-frequently-asked-questions">Apache Felix SCR Plugin Frequently Asked Questions</h1>
+<div class="toc">
+<ul>
+<li><a href="#apache-felix-scr-plugin-frequently-asked-questions">Apache Felix SCR Plugin Frequently Asked Questions</a><ul>
+<li><a href="#syntax-error-when-enums-are-used">Syntax Error when Enums are used?</a></li>
+<li><a href="#noclassdeffounderror-during-build">NoClassDefFoundError during build</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="syntax-error-when-enums-are-used">Syntax Error when Enums are used?</h2>
+<p>During a SCR plugin run, a syntax error might occur if enums are used in the source code. This is a know problem of the used QDox version that reads the Java source files. Usually this happens when an enum is used inline and does not end with a ";". So adding this character should solve the problem:</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">MyTest</span> <span class="p">{</span>
+
+     <span class="sr">/** more error codes may be added */</span>
+     <span class="n">enum</span> <span class="n">Result</span> <span class="p">{</span>
+    <span class="n">OK</span><span class="p">,</span> <span class="n">UNKNOWN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">DENIED</span>
+     <span class="p">};</span>     <span class="sr">//</span> <span class="o">&lt;!--</span> <span class="n">HERE</span>
+
+     <span class="sr">/** @return the result */</span>
+     <span class="n">public</span> <span class="n">void</span> <span class="n">getResult</span><span class="p">();</span> 
+  <span class="p">}</span>
+</pre></div>
+
+
+<h2 id="noclassdeffounderror-during-build">NoClassDefFoundError during build</h2>
+<p>If the javadoc tags are used (and not the annotations) then the QDox library is used to parse/introspect the java class. For this the classes have to be loaded and static fields have to be initialized. If you have have for example something like</p>
+<div class="codehilite"><pre>  <span class="n">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">org</span><span class="o">.</span><span class="n">slf4f</span><span class="o">.</span><span class="n">Logger</span> <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">slf4j</span><span class="o">.</span><span class="n">LoggerFactory</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<p>in your code, during the plugin run, a slf4j logger is tried to instantiated. This requires an implementation of the logger. Ususally your module only depends on the slf4j API and therefore a </p>
+<div class="codehilite"><pre><span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">NoClassDefFoundError:</span> <span class="n">org</span><span class="sr">/slf4j/im</span><span class="n">pl</span><span class="o">/</span><span class="n">StaticLoggerBinder</span>
+</pre></div>
+
+
+<p>is thrown - this often happens with slf4j but might also happen with other libraries.</p>
+<p>In these cases you should add a dependency to the missing class to the dependency list of the plugin, like:</p>
+<div class="codehilite"><pre>     <span class="nt">&lt;plugin&gt;</span>
+         <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+         <span class="nt">&lt;artifactId&gt;</span>maven-scr-plugin<span class="nt">&lt;/artifactId&gt;</span>
+         <span class="nt">&lt;version&gt;</span>1.4.2<span class="nt">&lt;/version&gt;</span>
+         <span class="nt">&lt;dependencies&gt;</span>
+             <span class="nt">&lt;dependency&gt;</span>
+                 <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
+                 <span class="nt">&lt;artifactId&gt;</span>slf4j-simple<span class="nt">&lt;/artifactId&gt;</span>
+                 <span class="nt">&lt;version&gt;</span>1.5.2<span class="nt">&lt;/version&gt;</span>
+             <span class="nt">&lt;/dependency&gt;</span>
+         <span class="nt">&lt;/dependencies&gt;</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

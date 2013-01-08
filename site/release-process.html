@@ -1,0 +1,149 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Release process</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="Releaseprocess-Releaseprocess"></A>Release process</H1>
+
+<P>We use Maven release plugin to perform most of the operation needed when releasing ServiceMix Kernel.</P>
+
+<H2><A name="Releaseprocess-1.Createthereleasenotes"></A>1. Create the release notes</H2>
+
+<P>Use the following steps</P>
+<UL>
+	<LI>In JIRA, mark the release as released with a date a few days later to allow the vote to take place.</LI>
+	<LI>Grab the release notes in text format:
+	<UL>
+		<LI>Go to the <A href="https://issues.apache.org/activemq/browse/SMX4KNL?report=com.atlassian.jira.plugin.system.project:changelog-panel" class="external-link" rel="nofollow">changelog panel</A> and select the needed release</LI>
+		<LI>Click on <TT>release notes</TT>, then change the URL parameter to use <TT>styleName=Text</TT>, it should give something like the <A href="https://issues.apache.org/activemq/secure/ReleaseNote.jspa?projectId=11050&styleName=Text&version=11913" class="external-link" rel="nofollow">following</A></LI>
+		<LI>Copy the content of the text panel to the clipboard and edit the <TT>RELEASE_NOTES</TT> file in svn</LI>
+	</UL>
+	</LI>
+	<LI>Commit the changed release notes in svn</LI>
+</UL>
+
+
+<H2><A name="Releaseprocess-2.Preparetherelease"></A>2. Prepare the release</H2>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn release:prepare
+</PRE>
+</DIV></DIV>
+
+<P>You will need to answer a few questions:</P>
+<UL>
+	<LI>the version to release</LI>
+	<LI>the name of the tag to use for the release</LI>
+	<LI>the new version to use</LI>
+</UL>
+
+
+<H2><A name="Releaseprocess-3.Performingtherelease"></A>3. Performing the release</H2>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+svn checkout https:<SPAN class="code-comment">//svn.apache.org/repos/asf/servicemix/smx4/kernel/tags/kernel-1.0-rc1
+</SPAN>cd kernel-1.0-rc1
+mvn -Prelease -Dgpg.passphrase=xxx -Ddeploy.altRepository=yyy deploy
+</PRE>
+</DIV></DIV>
+<P>where <TT>xxx</TT> is your passphrase for signing the artifacts and <TT>yyy</TT> is the url of the staging repo, for example:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+staging::<SPAN class="code-keyword">default</SPAN>::file:<SPAN class="code-comment">///Users/gnodet/tmp/servicemix-kernel-1.0-rc1</SPAN>
+</PRE>
+</DIV></DIV>
+<P>to deploy on your local file system, or:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+staging::<SPAN class="code-keyword">default</SPAN>::scpexe:<SPAN class="code-comment">//people.apache.org/home/gnodet/public_html/staging/servicemix-kernel-1.0-rc1</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>To deploy to a staging repo at Apache, a good thing is to use an ssh master connection using the following command in another terminal:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ssh -M people.apache.org
+</PRE>
+</DIV></DIV>
+
+<H2><A name="Releaseprocess-4.Createthedownloadpage"></A>4. Create the download page</H2>
+
+<P>In the wiki, go to the <A href="http://cwiki.apache.org/confluence/pages/viewpage.action?spaceKey=SMX4KNL&title=Download" class="external-link" rel="nofollow">download page</A> and create a new child page named with the version of the release, for example <TT>ServiceMix Kernel 1.0-rc1</TT>.  Copy the content of a previous release and update the links with the current release.<BR>
+Use the edited release notes to update the page too.</P>
+
+<P>While the vote is ongoing, add a notice at the beginning of the page:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+{warning:title=This release is not official}
+This page is a preview of the download page <SPAN class="code-keyword">for</SPAN> Apache ServiceMix Kernel 1.0-m1, but <SPAN class="code-keyword">this</SPAN> release is not official yet.  Please, come back in a few days.
+{warning}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="Releaseprocess-5.Startthevote"></A>5. Start the vote</H2>
+
+<P>Start a vote on the dev list with pointers to the download page, binary distribution and svn tags.</P>
+
+<H2><A name="Releaseprocess-6.Finishingtheprocess"></A>6. Finishing the process</H2>
+
+<P>Once the vote is over, move the binaries to from the staging repo to the final repository and copy the distributions to the ASF mirrored location.<BR>
+Remove the notice on the download page.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn stage:copy \
+   -Dsource=<SPAN class="code-quote">&quot;http:<SPAN class="code-comment">//people.apache.org/~gnodet/staging/specs-1.0.0/&quot;</SPAN> \
+</SPAN>   -Dtarget=<SPAN class="code-quote">&quot;scp:<SPAN class="code-comment">//people.apache.org/www/people.apache.org/repo/m2-ibiblio-rsync-repository&quot;</SPAN> \
+</SPAN>   -Dversion=1.0.0
+</PRE>
+</DIV></DIV>
+
+<P>Wait one hour until everything is synced and send the announcement email to the users and dev list (and announce[SMX4KNL:at]apache.org from an apache email account).</P>
+
+<H2><A name="Releaseprocess-7.Rollingbackarelease"></A>7. Rolling back a release</H2>
+
+<P>In case there is a problem, you can easily roll back the release using maven:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn release:rollback
+</PRE>
+</DIV></DIV>
+
+<P>For the above command to work, you need to run it from the same local directory where the release was prepared and not clean the directory using the <TT>mvn release:clean</TT> command, else all the needed informations would have been lost.</P>
+
+<P>Also, note that the create tag is not removed so you need to run the following command too:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+svn remote https:<SPAN class="code-comment">//svn.apache.org/repos/asf/servicemix/smx4/kernel/tags/kernel-1.0-rc1 -m <SPAN class="code-quote">&quot;Rollback release&quot;</SPAN></SPAN>
+</PRE>
+</DIV></DIV>
+
+    </DIV>
+  </BODY>
+</HTML>

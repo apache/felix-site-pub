@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix File Install</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-file-install.html" target="felix_cwiki">/site/apache-felix-file-install.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix File Install</h1>
+      <h1 id="apache-felix-file-install">Apache Felix File Install</h1>
+<p>File Install is a directory based OSGi management agent. It uses a directory in the file system to install and start a bundle when it is first placed there. It updates the bundle when you update the bundle file in the directory and, when the file is deleted, it will stop and uninstall the bundle.</p>
+<p>File Install can do the same for configuration configuration files. This surprisingly simple bundle is very powerful because there are so many programs that work with the file system. For example:</p>
+<ul>
+<li>If you use Ant, you can just copy the resulting bundle to the watched directory.</li>
+<li>You can download bundles from the web and directly install them without any extra effort.</li>
+<li>You can easily drag and drop bundles in and out of the framework.</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>The bundle runs on any framework. For its configuration, it will use the following system properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>felix.fileinstall.poll</code></td>
+<td>2000 ms</td>
+<td>Number of milliseconds between 2 polls of the directory</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.dir</code></td>
+<td>./load</td>
+<td>The name of the directory to watch. Several directories can be specified by using a comma separated list.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.log.level</code></td>
+<td>1</td>
+<td>Threshold of logging information</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.bundles.new.start</code></td>
+<td>true</td>
+<td>Automatically start newly discovered bundles</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.filter</code></td>
+<td></td>
+<td>A regular expression to be used to filter file names</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.tmpdir</code></td>
+<td></td>
+<td>The name of the temporary directory to use with exploded or transformed bundles (defaults to the temporary dir for the JVM)</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.noInitialDelay</code></td>
+<td>false</td>
+<td>Determines if File Install waits <code>felix.fileinstall.poll</code> milliseconds before doing an initial scan or not.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.bundles.startTransient</code></td>
+<td>false</td>
+<td>If <code>true</code>, File Install will start the bundles transiently.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.bundles.startActivationPolicy</code></td>
+<td>true</td>
+<td>Start bundles with their default activation policy or not</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.start.level</code></td>
+<td>0</td>
+<td>If set to a value different from <code>0</code>, File Install will set the start level for deployed bundles to that value. If set to <code>0</code>, the default framework bundle start level will be used.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.active.level</code></td>
+<td>0</td>
+<td>FileInstall won't scan for files unless the active framework start level is greater than this value</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.enableConfigSave</code></td>
+<td>true</td>
+<td>If <code>false</code>, File Install will not write back in the file configurations changes. Note that this setting is global and can not be modified per polled directory.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.bundles.updateWithListeners</code></td>
+<td>false</td>
+<td>If <code>true</code>, FileInstall will update managed bundles when a new version of an artifact handler is detected.  This detection is performed based on the last modification date of the bundle registering the handler.</td>
+</tr>
+</tbody>
+</table>
+<p>Once started, the values of these properties are printed to the console.</p>
+<h2 id="configurations">Configurations</h2>
+<p>Configuration files are plain property files (<code>java.util.Property</code>). The format is simple:</p>
+<div class="codehilite"><pre><span class="n">header</span> <span class="o">::=</span> <span class="sr">&lt;header&gt;</span> <span class="p">(</span> <span class="s">&#39;:&#39;</span> <span class="o">|</span> <span class="s">&#39;=&#39;</span> <span class="p">)</span> <span class="sr">&lt;value&gt;</span> <span class="p">(</span> <span class="s">&#39;\&lt;nl&gt; &lt;value&gt; ) *</span>
+<span class="s">comment ::= &#39;</span><span class="c1">#&#39; &lt;any&gt;</span>
+</pre></div>
+
+
+<p>Notice that this model only supports string properties. For example:</p>
+<div class="codehilite"><pre><span class="c1"># default port</span>
+<span class="n">ftp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">21</span>
+</pre></div>
+
+
+<p>Configuration file names are related to the PID and factory PID. The structure of the file name is as follows:</p>
+<div class="codehilite"><pre>
+</pre></div>
+
+
+<p>If the form is <code>&lt;pid&gt;.cfg</code>, the file contains the properties for a Managed Service. The <code>&lt;pid&gt;</code> is then the PID of the Managed Service. See the Configuration Admin service for details.</p>
+<p>When a Managed Service Factory is used, the situation is different. The <code>&lt;pid&gt;</code> part then describes the PID of the Managed Service Factory. You can pick any <code>&lt;subname&gt;</code>, this bundle will then create an instance for the factory for each unique name. For example:</p>
+<div class="codehilite"><pre><span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">cfg</span> <span class="sr">//</span> <span class="n">configuration</span> <span class="k">for</span> <span class="n">Managed</span> <span class="n">Service</span>
+<span class="sr">//</span> <span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">xyz</span>
+<span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">abc</span><span class="o">-</span><span class="n">default</span><span class="o">.</span><span class="n">cfg</span> <span class="sr">//</span> <span class="n">Managed</span> <span class="n">Service</span> <span class="n">Factory</span><span class="p">,</span>
+<span class="sr">//</span> <span class="n">creates</span> <span class="n">an</span> <span class="n">instance</span> <span class="k">for</span> <span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">abc</span>
+</pre></div>
+
+
+<p>If a configuration managed by File Install is modified, File Install will write the configuration back to a property file to ensure peristence across restarts.</p>
+<h2 id="property-substitution-in-configuration-files">Property substitution in configuration files</h2>
+<p>It is possible to use system properties to specify the values of properties in configuration files. This is achieved through system property substitution, which is instigated by using <code>$\{&lt;property&gt;\</code>} syntax, where <property> is the name of a system property to substitute.  Bundle context properties will take precedence over system properties if available.
+Example:</p>
+<div class="codehilite"><pre>ftp.port = <span class="cp">${</span><span class="n">system</span><span class="o">.</span><span class="n">ftp</span><span class="o">.</span><span class="n">port</span><span class="cp">}</span>
+</pre></div>
+
+
+<h2 id="watching-multiple-directories-with-file-install">Watching multiple directories with File Install</h2>
+<p>Starting with version 3.1.0 it is possible to specify several directories to watch with the system property <code>felix.fileinstall.dir</code>; this property can either point to a single directory or a comma separated list of directories. In addition, Apache Felix File Install provides a ManagedServiceFactory to create multiple instances of File Install. Asuming you have a File Install bundle watching a <code>bundles</code> folder, creating a new instance is as simple as creating a new configuration file <code>org.apache.felix.fileinstall-&lt;pid&gt;.cfg</code> in that folder (substitute <pid> with a unique Id for the new service instance):</p>
+<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>org.apache.felix.fileinstall-configDir.cfg</B></DIV><DIV class="codeContent panelContent">
+    felix.fileinstall.poll=2000
+    felix.fileinstall.dir=/configDir
+    felix.fileinstall.debug=-1
+    felix.fileinstall.filter=.*\.cfg
+    felix.fileinstall.bundles.new.start=false</p>
+<h2 id="exploded-bundles">Exploded bundles</h2>
+<p>Apache Felix File Install has the ability to watch for exploded bundles and automatically update such bundles if the content is changed in any way.  If a watched directory contains a sub directory, its content will be jar'ed and deployed to the OSGi framework.  Any change to a file in this directory or one of its subdirectories will result in the directory to be jar'ed again and the corresponding bundle to be updated.</p>
+<h2 id="custom-artifacts">Custom artifacts</h2>
+<p>Apache Felix File Install can support deployment of custom artifacts.  By default, configurations and plain OSGi bundles are supported, but other kind of artifacts can be deployed through custom artifact handlers.</p>
+<p>To add support for a custom artifact, a service implementing one of <code>org.apache.felix.fileinstall.ArtifactListener</code>'s sub interfaces must be registered in the OSGi registry.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

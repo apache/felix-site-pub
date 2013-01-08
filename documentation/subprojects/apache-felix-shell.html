@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Shell</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-shell.html" target="felix_cwiki">/site/apache-felix-shell.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Shell</h1>
+      <h1 id="apache-felix-shell">Apache Felix Shell</h1>
+<ul>
+<li><a href="">Overview</a></li>
+<li><a href="">How the Shell Service Works</a></li>
+<li><a href="">How Commands Work</a></li>
+<li><a href="">Creating a Command</a></li>
+<li><a href="">Security and the Shell Service</a></li>
+<li><a href="">Feedback</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>In order to interact with Felix it is necessary to have some sort of interactive shell that allows you to issue commands to the framework and to obtain information from it. The OSGi specification does not define how an OSGi framework should provide this interactivity. Felix defines a shell service for creating and executing arbitrary commands. The shell service does not define a user interface, only a service API.</p>
+<p>The benefit of the Felix shell service approach is that it is possible to:</p>
+<ul>
+<li>have multiple shell user interfaces (e.g., textual and graphical),</li>
+<li>add custom commands to the shell (i.e., bundles can make commands available via the shell service), and</li>
+<li>use the shell service from other bundles/services.</li>
+</ul>
+<p>The remainder of this document describes how the shell service works and how to create custom commands for it. This document does not describe how to use the command shell, nor does it describe the text-based or GUI-based user interfaces that are available for the shell.</p>
+<h2 id="how-the-shell-service-works">How the Shell Service Works</h2>
+<p>The Felix shell service is intended to be a simple, but extensible shell service that can have multiple user interface implementations, all of which are independent from the Felix framework. The shell service is currently not intended to be sophisticated, rather it is just a mechanism to execute commands. The shell service maintains a list of command services, each of which have a unique command name. The shell service is defined by the following service interface:</p>
+<div class="codehilite"><pre><span class="nb">package</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">interface</span> <span class="n">ShellService</span>
+<span class="p">{</span>
+    <span class="n">public</span> <span class="n">String</span><span class="o">[]</span> <span class="n">getCommands</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getCommandUsage</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getCommandDescription</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">ServiceReference</span> <span class="n">getCommandReference</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">executeCommand</span><span class="p">(</span>
+        <span class="n">String</span> <span class="n">commandLine</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">out</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">err</span><span class="p">)</span>
+        <span class="n">throws</span> <span class="n">Exception</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Using the shell service interface, it is possible to access and execute available commands. The shell service methods perform the following functions:</p>
+<ul>
+<li><code>getCommands()</code> - returns an array of strings that correspond to the names of the installed shell commands.</li>
+<li><code>getCommandUsage()</code> - returns the command usage string for a particular command name</li>
+<li><code>getCommandDescription()</code> - returns a short description for a particular command name.</li>
+<li><code>getCommandReference()</code> - returns the service reference for a particular command name.</li>
+<li><code>executeCommand()</code> - executes a particular command using the specified command line and print streams.</li>
+</ul>
+<p>Most of the shell service methods require no explanation except for the executeCommand() method. Even though this method is the most complex, it is still fairly simplistic. The assumption of the shell service is that a command line will be typed by the user (or perhaps constructed by a GUI) and passed into it for execution. The shell service interprets the command line in a very simplistic fashion; it takes the leading string of characters terminated by a space character (not including it) and assumes that this leading token is the command name. Consider the following command line:</p>
+<div class="codehilite"><pre><span class="n">update</span> <span class="mi">3</span> <span class="n">http:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">foo</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">bar</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>The shell service interprets this as an <code>update</code> command and will search for a command service with the same name. If a corresponding command service is not found, then it will print an error message to the error print stream. If a corresponding command service is found, then it will pass the entire command line string and the print streams into the <code>executeCommand()</code> method of the command service (for a more detailed description of command services, see the next section).</p>
+<p>Notice that there is no method to add commands to the shell service interface. This is because commands are implemented as OSGi services and the shell service listens for service events and when a command service registers/unregisters it automatically updates its list of commands accordingly.</p>
+<h2 id="how-commands-work">How Commands Work</h2>
+<p>All commands available in the shell service are implemented as OSGi services. The advantage of this approach is two-fold: the shell service can leverage OSGi service events to maintain its list of available commands and the set available commands is dynamically extendable by installed bundles. The command service interface is defined as follows:</p>
+<div class="codehilite"><pre><span class="nb">package</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">interface</span> <span class="n">Command</span>
+<span class="p">{</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getName</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getUsage</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getShortDescription</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">execute</span><span class="p">(</span><span class="n">String</span> <span class="n">line</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">out</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">err</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The semantics of the command service methods are:</p>
+<ul>
+<li><code>getName()</code> - returns the name of the command; this must not contain whitespace and must be unique.</li>
+<li><code>getUsage()</code> - returns the usage string of the command; this should be one line and as short as possible (this is used for generating the help command output).</li>
+<li><code>getShortDescription()</code> - returns a short description of the command; this should be one line and as short as possible (this is used for generating the help command output).</li>
+<li><code>execute()</code> - executes the command's functionality using supplied command line and print streams.</li>
+</ul>
+<h2 id="creating-a-command">Creating a Command</h2>
+<p>The following example creates a simple version of the <code>start</code> command.</p>
+<div class="codehilite"><pre><span class="nb">package</span> <span class="n">test</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">PrintStream</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">URL</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">MalformedURLException</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">StringTokenizer</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.*</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellService</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">Command</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">class</span> <span class="n">MyStartCommandImpl</span> <span class="n">implements</span> <span class="n">Command</span>
+<span class="p">{</span>
+    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">MyStartCommandImpl</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getName</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s">&quot;mystart&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getUsage</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s">&quot;mystart &lt;id&gt; [&lt;id&gt; ...]&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getShortDescription</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s">&quot;start bundle(s).&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">execute</span><span class="p">(</span><span class="n">String</span> <span class="n">s</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">out</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">err</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">StringTokenizer</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringTokenizer</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">);</span>
+
+        <span class="sr">//</span> <span class="n">Ignore</span> <span class="n">the</span> <span class="n">command</span> <span class="n">name</span><span class="o">.</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">nextToken</span><span class="p">();</span>
+
+        <span class="sr">//</span> <span class="n">There</span> <span class="n">should</span> <span class="n">be</span> <span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">bundle</span> <span class="n">id</span><span class="o">.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">countTokens</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">hasMoreTokens</span><span class="p">())</span>
+            <span class="p">{</span>
+                <span class="n">String</span> <span class="n">id</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nextToken</span><span class="p">()</span><span class="o">.</span><span class="n">trim</span><span class="p">();</span>
+
+                <span class="n">try</span> <span class="p">{</span>
+                    <span class="n">long</span> <span class="n">l</span> <span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">longValue</span><span class="p">();</span>
+                    <span class="n">Bundle</span> <span class="n">bundle</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getBundle</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">bundle</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                    <span class="p">{</span>
+                        <span class="n">bundle</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span>
+                    <span class="p">{</span>
+                        <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Bundle ID &quot;</span> <span class="o">+</span> <span class="n">id</span> <span class="o">+</span> <span class="s">&quot; is invalid.&quot;</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">NumberFormatException</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Unable to parse id &#39;&quot;</span> <span class="o">+</span> <span class="n">id</span> <span class="o">+</span> <span class="s">&quot;&#39;.&quot;</span><span class="p">);</span>
+                <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">BundleException</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">getNestedException</span><span class="p">()</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                        <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">getNestedException</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">());</span>
+                    <span class="k">else</span>
+                        <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">toString</span><span class="p">());</span>
+                <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">toString</span><span class="p">());</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Incorrect number of arguments&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>A bundle activator class is needed for packaging the command servce; the bundle activator registers the command service in its <code>start()</code> method. Note: You do not need one activator per command, a single activator can register any number of commands.</p>
+<div class="codehilite"><pre><span class="nb">package</span> <span class="n">test</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">class</span> <span class="n">MyStartActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
+<span class="p">{</span>
+    <span class="n">private</span> <span class="n">transient</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+
+        <span class="sr">//</span> <span class="n">Register</span> <span class="n">the</span> <span class="n">command</span> <span class="n">service</span><span class="o">.</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
+            <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">Command</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
+            <span class="k">new</span> <span class="n">MyStartCommandImpl</span><span class="p">(</span><span class="n">m_context</span><span class="p">),</span> <span class="n">null</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="sr">//</span> <span class="n">Services</span> <span class="n">are</span> <span class="n">automatically</span> <span class="n">unregistered</span> <span class="n">so</span>
+        <span class="sr">//</span> <span class="n">we</span> <span class="n">don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">to</span> <span class="n">unregister</span> <span class="n">the</span> <span class="n">factory</span> <span class="n">here</span><span class="o">.</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>To compile these classes you will need to have <code>org.apache.felix.framework-x.y.z.jar</code> and <code>org.apache.felix.shell-x.y.z.jar</code> on your class path. Compile all of the source files using a command like:</p>
+<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">cp</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">-</span><span class="mf">1.8.1</span><span class="o">.</span><span class="n">jar:org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">-</span><span class="mf">1.2.0</span><span class="o">.</span><span class="n">jar</span> <span class="o">-</span><span class="n">d</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*.</span><span class="n">java</span>
+</pre></div>
+
+
+<p>This command compiles all of the source files and outputs the generated class files into a subdirectory of the <code>c:\classes</code> directory, called test, named after the package of the source files; for the above command to work, the <code>c:\classes</code> directory must exist. Once you have compiled all of the above classes, you need to create a bundle JAR file of the generated package directory. The bundle JAR file needs a manifest, so create a file called <code>manifest.mf</code> with the following contents:</p>
+<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">My</span> <span class="n">Start</span> <span class="n">Command</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Description:</span> <span class="n">A</span> <span class="s">&#39;start&#39;</span> <span class="n">command</span> <span class="k">for</span> <span class="n">the</span> <span class="n">shell</span> <span class="n">service</span><span class="o">.</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator:</span> <span class="n">test</span><span class="o">.</span><span class="n">MyStartActivator</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">ClassPath:</span> <span class="o">.</span>
+<span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="p">,</span><span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span>
+</pre></div>
+
+
+<p>To create the bundle JAR file, issue the command:</p>
+<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">mystart</span><span class="o">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="o">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="n">test</span>
+</pre></div>
+
+
+<p>This command creates a JAR file using the manifest you created and includes all of the classes in the test directory inside of the <code>c:\classes</code> directory. Once the bundle JAR file is created, you are ready to add the command service to the shell service; simply start Felix and install and start the bundle created by the above command. By doing so, the new <code>mystart</code> command is made available via the shell service.</p>
+<h2 id="security-and-the-shell-service">Security and the Shell Service</h2>
+<p>The shell service security handling is quite simple, all security is handled by the standard OSGi framework mechanisms. For example, if a bundle should not be able to register a shell service, then it should not be given the corresponding service permission. Security handling may change in future release after some experience is gained through usage.</p>
+<h2 id="feedback">Feedback</h2>
+<p>Subscribe to the Felix users mailing list by sending a message to <a href="">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [users@felix.apache.org|mailto:users@felix.apache.org].</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

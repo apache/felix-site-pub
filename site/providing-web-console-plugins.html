@@ -1,0 +1,115 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Providing Web Console Plugins</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ProvidingWebConsolePlugins-ProvidingWebConsolePlugins"></A>Providing Web Console Plugins</H1>
+
+
+<P>The Web Console can be extended by registering an OSGi service for the interface <TT>javax.servlet.Servlet</TT> with the service property <TT>felix.webconsole.label</TT> set to the label (last segment in the URL) of the page. The respective service is called a Web Console Plugin or a plugin for short.</P>
+
+<P>The most basic plugin is a plain old Servlet whose <TT>service(ServletRequest, ServletResponse)</TT> method is called by the Apache Felix Web Console. Before calling the servlet the web console sets two request attributes helping the plugin rendering the response:</P>
+
+
+<UL>
+	<LI><B><TT>felix.webconsole.appRoot</TT></B> &ndash; This request attribute of type <TT>String</TT> provides the absolute path of the Web Console root. This path consists of the servlet context path (from &lt;code&gt;ServletRequest.getContextPath()&lt;/code&gt;) and the Web Console servlet path (from <TT>HttpServletRequest.getServletPath()</TT>, <TT>/system/console</TT> by default). This attribute can be used to provide absolute links to resources (images, CSS, scripts, etc.) or other plugins. This request attribute is available to client side JavaScript as the global <B><TT>appRoot</TT></B> variable.</LI>
+	<LI><B><TT>felix.webconsole.pluginRoot</TT></B> &ndash; This request attribute of type <TT>String</TT> provides the absolute path of the current plugin. This path consists of the servlet context path (from &lt;code&gt;ServletRequest.getContextPath()&lt;/code&gt;), the Web Console servlet path (from <TT>HttpServletRequest.getServletPath()</TT>, <TT>/system/console</TT> by default) and the plugin label. This attribute can be used to provide absolute links to the plugin itself. This request attribute is available to client side JavaScript as the global <B><TT>pluginRoot</TT></B> variable.</LI>
+	<LI><B><TT>felix.webconsole.labelMap</TT></B> &ndash; This request attribute of type <TT>Map</TT> provides a mapping of labels to page titles of registered console plugins. This map may be used to render a navigation of the console plugins such as the <TT>AbstractWebConsolePlugin.renderTopNavigation</TT> method does. The keys and values of the map are of type <TT>String</TT>.</LI>
+</UL>
+
+
+<P>To help rendering the response the Apache Felix Web Console bundle provides two options: One option is to extend the <TT>AbstractWebConsolePlugin</TT> overwriting the <TT>renderContent</TT> method. The other option is to register the servlet with another service registration property to indicate the desire to wrap the response.</P>
+
+
+
+<H2><A name="ProvidingWebConsolePlugins-ExtendingTheAbstractWebConsolePlugin"></A>Extending The AbstractWebConsolePlugin</H2>
+
+<P>To leverage the rendering of the common header and footer around the plugin's data area, the plugin can extend the abstract <TT>org.apache.felix.webconsole.AbstractWebConsolePlugin</TT> class implementing the following methods:</P>
+
+<UL>
+	<LI><B><TT>renderContext(HttpServletRequest, HttpServletResponse)</TT></B> &ndash; This method is called to render the actual plugin data area.</LI>
+	<LI><B><TT>getLabel()</TT></B> &ndash; Returns the last path segment of the plugin page. This should return the value to which the <TT>felix.webconsole.label</TT> service registration propery is set.</LI>
+	<LI><B><TT>getTitle()</TT></B> &ndash; Returns a human readable title to be displayed at the top of the plugin page.</LI>
+	<LI><B><TT>getCssReferences()</TT></B> &ndash; See the section <EM>Providing CSS Files</EM> below.</LI>
+</UL>
+
+
+<P>To fully leverage the <TT>AbstractWebConsolePlugin</TT> it must be initialiazed before registering the extension as a service. Likewise after unregistering the service, the plugin should be destroyed. To this avail the following methods are provided in the <TT>AbstractWebConsolePlugin</TT>:</P>
+
+<UL>
+	<LI><B><TT>activateBundle(BundleContext)</TT></B> &ndash; Initializes the plugin with the <TT>BundleContext</TT> and prepares some data to be rendered in the header and footer areas.</LI>
+	<LI><B><TT>deactivate()</TT></B> &ndash; Destroys the plugin.</LI>
+</UL>
+
+
+<P>In addition to these OSGi-oriented setup methods the Web Console itself will call the <TT>Servlet.init(ServletConfig)</TT> method before putting the plugin into service and the <TT>Servlet.destroy()</TT> method when the plugin is removed.</P>
+
+
+<H4><A name="ProvidingWebConsolePlugins-ProvidingCSSFiles"></A>Providing CSS Files</H4>
+
+<P>Part of rendering the header, the <TT>AbstractWebConsolePlugin</TT> also emits links to CSS files to include for displaying the page. Since such CSS links may only be present in the header section of the generated HTML the <TT>getCssReferences()</TT> method is provided. This method is called to create links for additional CSS files. The default implementation of this method returns <TT>null</TT> meaning no additional CSS links to be rendered. Extensions of the <TT>AbstractWebConsolePlugin</TT> may overwrite this method to provide a list of CSS links.</P>
+
+<P>The CSS links provided by the <TT>getCssReferences()</TT> method may be absolute or relative paths, though relative paths are recommended. Relative paths are turned into absolute path by prepending them with the value of the <TT>felix.webconsole.appRoot</TT> request attribute.</P>
+
+
+
+<H2><A name="ProvidingWebConsolePlugins-TransparentResponseWrapping"></A>Transparent Response Wrapping</H2>
+
+<P>While being very simple and straight forward, extending the <TT>AbstractWebConsolePlugin</TT> actually creates a binding from the plugin provider bundle to the Web Console bundle, which may be undesired. To support the use case of wanting the benefits of the <TT>AbstractWebConsolePlugin</TT> but wiring independency of the Web Console, a plugin servlet may be registered with a second service registration property (besides the required <TT>felix.webconsole.label</TT>):</P>
+
+<UL>
+	<LI><B><TT>felix.webconsole.title</TT></B> &ndash; If registered servlet does not extend the <TT>AbstractWebConsolePlugin</TT> but provides this property (of type <TT>String</TT>) the servlet is wrapped in an adapter to the <TT>AbstractWebConsolePlugin</TT> which calls <TT>Servlet.service(ServletRequest, ServletResponse)</TT> method on behalf of the <TT>renderContent</TT> implementation.</LI>
+	<LI><B><TT>felix.webconsole.css</TT></B> &ndash; Defines a single string, an array of strings or a Collection of strings to be used as the values provided by the <TT>getCssReferences()</TT> method. This property is optional. If this property is missing or if the value does not have the correct type, the <TT>getCssReferences()</TT> just returns <TT>null</TT> assuming there are no additional CSS resources to reference.</LI>
+</UL>
+
+
+
+<P>The wrapper around the plugin itself extends the <TT>AbstractWebConsolePlugin</TT> as follows:</P>
+
+<UL>
+	<LI><B><TT>renderContext(HttpServletRequest, HttpServletResponse)</TT></B> &ndash; Calls the <TT>service(HttpServletRequest, HttpServletResponse)</TT> method of the plugin to render the actual contents of the plugin.</LI>
+	<LI><B><TT>getLabel()</TT></B> &ndash; Returns the value of the <TT>felix.webconsole.label</TT> service registration property of the plugin.</LI>
+	<LI><B><TT>getTitle()</TT></B> &ndash; Returns the value of the <TT>felix.webconsole.title</TT> service registration property of the plugin.</LI>
+	<LI><B><TT>getCssReferences()</TT></B> &ndash; Returns the values of the <TT>felix.webconsole.css</TT> service registration property of the plugin.</LI>
+	<LI><B><TT>service(ServletRequest, ServletResponse)</TT></B> &ndash; If the request method is <TT>GET</TT> the <TT>service(ServletRequest, ServletResponse)</TT> method of the <TT>AbstractWebConsolePlugin</TT> is called which ultimately calls the <TT>service</TT> method. For all other requests, the <TT>service(ServletRequest, ServletResponse)</TT> method of the plugin is called directly to have the plugin handle any non-<TT>GET</TT> requests directly.</LI>
+</UL>
+
+
+
+<P>Please note, that sometimes it is not desirable to have the <TT>AbstractWebConsolePlugin</TT> render the header and footer of the response. For this reason, the <TT>AbstractWebConsolePlugin</TT> only renders the header and footer if the request to such a wrapped plugin either has no extension or if the extension is <TT>.html</TT>. For any other extension, e.g. <TT>.txt</TT> or <TT>.json</TT>, the header and footer is not rendered and the <TT>service</TT> method of the plugin is directly called.</P>
+
+
+<P>It is suggested that plugins extend from the <TT>javax.servlet.http.HttpServlet</TT> class and implement the appropriate <TT>doXxx(HttpServletRequest, HttpServletResponse)</TT> methods such as <TT>doGet</TT> and <TT>doPost</TT>. In addition, unless non-GET requests are handled through AJAX calls, it is suggested that non-GET requests return a redirect after processing the request.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on Fri Nov 16 11:27:46 EST 2012
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

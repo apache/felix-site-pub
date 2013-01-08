@@ -1,0 +1,201 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Branding the Web Console</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="BrandingtheWebConsole-BrandingtheWebConsole"></A>Branding the Web Console</H1>
+
+<P>Branding the Web Consle mainly concerns hooking into the looks of the Web Console providing vendor-provided setup like CSS, Logo, Main Title, Vendor URL, etc.</P>
+
+
+
+<H2><A name="BrandingtheWebConsole-BrandingPluginandDefaultBrandingPlugin"></A>BrandingPlugin and DefaultBrandingPlugin</H2>
+
+
+<P>Branding for the Web Console can be provided in two ways: By registering a <TT>BrandingPlugin</TT> service or by providing a branding properties files. The Web Console uses the branding from the <TT>BrandingPlugin</TT> service registered with the highest ranking.</P>
+
+<P>The <TT>BrandingPlugin</TT> interface provides the following information used for branding:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-comment">// Returns an indicative name of the branding plugin
+</SPAN><SPAN class="code-comment">// This value is used as the Window/Page title together with the
+</SPAN><SPAN class="code-comment">// title of the respective plugin
+</SPAN><SPAN class="code-object">String</SPAN> getBrandName();
+
+<SPAN class="code-comment">// Returns the name of the product in which the web console is contained
+</SPAN><SPAN class="code-comment">// and to which the web console is branded.
+</SPAN><SPAN class="code-object">String</SPAN> getProductName();
+
+<SPAN class="code-comment">// Returns an (absolute) URL to a web site representing the product to
+</SPAN><SPAN class="code-comment">// which the web console is branded.
+</SPAN><SPAN class="code-object">String</SPAN> getProductURL();
+
+<SPAN class="code-comment">// Returns an absolute path to an image to be rendered as the logo of the
+</SPAN><SPAN class="code-comment">// branding product.
+</SPAN><SPAN class="code-object">String</SPAN> getProductImage();
+
+<SPAN class="code-comment">// Returns the name of the branding product vendor.
+</SPAN><SPAN class="code-object">String</SPAN> getVendorName();
+
+<SPAN class="code-comment">// Returns an (absolute) URL to the web site of the branding product
+</SPAN><SPAN class="code-comment">// vendor.
+</SPAN><SPAN class="code-object">String</SPAN> getVendorURL();
+
+<SPAN class="code-comment">// Returns an absolute path to an image to be rendered as the logo of the
+</SPAN><SPAN class="code-comment">// branding product vendor.
+</SPAN><SPAN class="code-object">String</SPAN> getVendorImage();
+
+<SPAN class="code-comment">// Returns the absolute path to an icon to be used as the web console
+</SPAN><SPAN class="code-comment">// <SPAN class="code-quote">&quot;favicon&quot;</SPAN>.
+</SPAN><SPAN class="code-object">String</SPAN> getFavIcon();
+
+<SPAN class="code-comment">// Returns the absolute path to a CSS file to be used as the main CSS <SPAN class="code-keyword">for</SPAN>
+</SPAN><SPAN class="code-comment">// the basic admin site.
+</SPAN><SPAN class="code-object">String</SPAN> getMainStyleSheet();
+</PRE>
+</DIV></DIV>
+
+
+<P>If no <TT>BrandingPlugin</TT> service is registered, the <TT>DefaultBrandingPlugin</TT> is used.</P>
+
+
+<P>The <TT>DefaultBrandingPlugin</TT> reads the <TT>/META-INF/webconsole.properties</TT> from the web console bundle to setup the branding using the following properties:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Property Name </TH>
+<TH class="confluenceTh"> Default Value </TH>
+<TH class="confluenceTh"> <TT>BrandingPlugin</TT> method name </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.brand.name</TT> </TD>
+<TD class="confluenceTd"> Apache Felix Web Console </TD>
+<TD class="confluenceTd"> <TT>getBrandName()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.product.name</TT> </TD>
+<TD class="confluenceTd"> Apache Felix </TD>
+<TD class="confluenceTd"> <TT>getProductName()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.product.url</TT> </TD>
+<TD class="confluenceTd"> <A href="http://felix.apache.org/" class="external-link" rel="nofollow">http://felix.apache.org</A> </TD>
+<TD class="confluenceTd"> <TT>getProductURL()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.product.image</TT> </TD>
+<TD class="confluenceTd"> /res/imgs/logo.png </TD>
+<TD class="confluenceTd"> <TT>getProductImage()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.vendor.name</TT> </TD>
+<TD class="confluenceTd"> The Apache Software Foundation </TD>
+<TD class="confluenceTd"> <TT>getVendorName()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.vendor.url</TT> </TD>
+<TD class="confluenceTd"> <A href="http://www.apache.org/" class="external-link" rel="nofollow">http://www.apache.org</A> </TD>
+<TD class="confluenceTd"> <TT>getVendorURL()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.vendor.image</TT> </TD>
+<TD class="confluenceTd"> /res/imgs/logo.png </TD>
+<TD class="confluenceTd"> <TT>getVendorImage()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.favicon</TT> </TD>
+<TD class="confluenceTd"> /res/imgs/favicon.ico </TD>
+<TD class="confluenceTd"> <TT>getFavIcon()</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>webconsole.stylesheet</TT> </TD>
+<TD class="confluenceTd"> /res/ui/webconsole.css </TD>
+<TD class="confluenceTd"> <TT>getMainStyleSheet()</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P><B>Note:</B> The <TT>/META-INF/webconsole.properties</TT> file is not contained in the Apache Felix Web Console bundle itself. It may be provided by a Fragment Bundle attaching to the Apache Felix Web Console bundle. For an example of such a fragment bundle see prototype <A href="https://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/webconsolebranding/" class="external-link" rel="nofollow">Sling Web Console Branding Bundle</A> with its <A href="https://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/webconsolebranding/src/main/resources/META-INF/webconsole.properties?view=markup" class="external-link" rel="nofollow"><TT>webconsole.properties</TT></A></P>
+
+
+<H2><A name="BrandingtheWebConsole-BrandingtheStylesheet"></A>Branding the Stylesheet</H2>
+
+<P>Branding the CSS Stylesheet is basically possible with the <TT>BrandingPlugin.getMainStyleSheet()</TT> method. The default value of the <TT>DefaultBrandingPlugin</TT> points to <A href="http://svn.apache.org/viewvc/felix/trunk/webconsole/src/main/resources/res/ui/webconsole.css?view=markup" class="external-link" rel="nofollow"><TT>webconsole.css</TT></A>. This allows styling the main content structure as shown here:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-html">
+<SPAN class="code-tag">&lt;body&gt;</SPAN>
+    <SPAN class="code-tag">&lt;div id=<SPAN class="code-quote">&quot;main&quot;</SPAN>&gt;</SPAN>
+
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- Lead --&gt;</SPAN></SPAN>
+        <SPAN class="code-tag">&lt;div id=<SPAN class="code-quote">&quot;lead&quot;</SPAN>&gt;</SPAN>
+            <SPAN class="code-tag">&lt;h1&gt;</SPAN>
+                Bundle Name
+                <SPAN class="code-tag">&lt;br&gt;</SPAN>
+                Page Title
+            <SPAN class="code-tag">&lt;/h1&gt;</SPAN>
+            <SPAN class="code-tag">&lt;p&gt;</SPAN>
+                <SPAN class="code-tag">&lt;a target=<SPAN class="code-quote">&quot;_blank&quot;</SPAN> href=<SPAN class="code-quote">&quot;productURL&quot;</SPAN> title=<SPAN class="code-quote">&quot;productName&quot;</SPAN>&gt;</SPAN>
+                    <SPAN class="code-tag">&lt;img src=<SPAN class="code-quote">&quot;productImage&quot;</SPAN> border=<SPAN class="code-quote">&quot;0&quot;</SPAN>/&gt;</SPAN>
+                <SPAN class="code-tag">&lt;/a&gt;</SPAN>
+            <SPAN class="code-tag">&lt;/p&gt;</SPAN>
+        <SPAN class="code-tag">&lt;/div&gt;</SPAN>
+
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- Top Navigation --&gt;</SPAN></SPAN>
+        <SPAN class="code-tag">&lt;div id=<SPAN class="code-quote">&quot;technav&quot;</SPAN>&gt;</SPAN>
+            <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- regular link --&gt;</SPAN></SPAN>
+            <SPAN class="code-tag">&lt;a href=&quot;&quot;&gt;</SPAN>title<SPAN class="code-tag">&lt;/a&gt;</SPAN>
+            <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- label of current page --&gt;</SPAN></SPAN>
+            <SPAN class="code-tag">&lt;span class=<SPAN class="code-quote">&quot;technavat&quot;</SPAN>&gt;</SPAN>title<SPAN class="code-tag">&lt;/span&gt;</SPAN>
+            <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- label of current page if drawing as link --&gt;</SPAN></SPAN>
+            <SPAN class="code-tag">&lt;a href=<SPAN class="code-quote">&quot;&quot; class=&quot;</SPAN>technavat&quot;&gt;</SPAN>title<SPAN class="code-tag">&lt;/a&gt;</SPAN>
+        <SPAN class="code-tag">&lt;/div&gt;</SPAN>
+
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- this should be inside a div ... --&gt;</SPAN></SPAN>
+        <SPAN class="code-tag">&lt;div id=<SPAN class="code-quote">&quot;content&quot;</SPAN>&gt;</SPAN>
+            <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- here comes the content --&gt;</SPAN></SPAN>
+        <SPAN class="code-tag">&lt;/div&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/div&gt;</SPAN>
+<SPAN class="code-tag">&lt;/body&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>Predefined plugins use other styles defined by further CSS styles contained in the web console bundle.</P>
+
+<P>It is yet unclear how these plugins can be styled....</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on 2010-02-02 14:50:17.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

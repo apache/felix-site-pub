@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - apache-felix-ipojo-junit4osgi-methods</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi.html">apache-felix-ipojo-junit4osgi</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-ipojo-junit4osgi-methods.html" target="felix_cwiki">/site/apache-felix-ipojo-junit4osgi-methods.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>apache-felix-ipojo-junit4osgi-methods</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# OSGi and friends methods
+
+*Developing OSGi tests can be definitely boring. First, testing is generally not a very exciting experience, but imagine if you have to handle all the OSGi issues in your tests... Don't worry junit4osgi provides methods allowing to interact easily with OSGi!*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## OSGi methods
+
+junit4osgi test case extends the `OSGiTestCase` class. This class provides useful methods allowing to find services, get them, get the `PackageAdmin` service...  The description of these methods can be found afterward.
+
+The most part of the methods are available statically and non-statically. Static methods require a `Bundle`. Non static methods use the current bundle context, and track get services to release them when the test is done. So, we advise you to use the non-static methods. Static methods just allow you to check that a specific bundle can access to services / resources.
+
+### Service interaction
+* `boolean isServiceAvailable(String svc)` : returns `true` if the service `svc` is available.
+* `boolean isServiceAvailableByPID(String itf, String pid)` : return `true` if the service `svc` is available and exposed with `pid` as `service.pid`.
+
+* `ServiceReference getServiceReference(String itf)`: returns a service reference exposing the `itf` service specification, or `null` if not available.
+* `ServiceReference getServiceReference(String itf, String filter)`: returns a service reference matching with the  \<service interface, filter\> request, or `null` is not available.
+* `ServiceReference getServiceReferenceByPID(String itf, String pid)`: returns a service reference exposing the service `itf` and exposed with a `service.pid` equals to `pid`, or `null` if not available.
+* `ServiceReference[]() getServiceReferences(String itf, String filter)`: returns all the service references matching with the  \<service interface, filter\> request, or an empty array is not available.
+
+* `Object getServiceObject(String itf, String filter)`: returns a service object matching with the \<service interface, filter\> request or `null` is not available.
+* `Object getServiceObject(ServiceReference ref)`: returns the service object associated with the given `service reference` or `null` if not available.
+* `Object[]() getServiceObjects(String itf, String filter)`: gets all the service objects matching with the \<service interface, filter\> request or an empty array is no providers are available.
+
+* `void waitForService(String itf, String filter, long timeout)`: waits for a service arrival matching with the \<service interface, filter\> request. If the timeout expires, this method fails. 
+
+### Get the bundle context
+* `BundleContext getContext()` : gives access to the OSGiTestCase bundle context.
+
+### Install/Start/Uninstall bundles
+* `Bundle installBundle(String url)`: installs a bundle from the given url. This method fails if the bundle cannot be installed.
+* `Bundle installBundle(String url, InputStream stream)`: installs a bundle from the given input stream. This methods fails if the bundle cannot be installed.
+* `Bundle installAndStart(String url)`: installs a bundle from the given url and starts it. This methods fails if the bundle cannot be installed and started correctly.
+* `Bundle installAndStart(String url, InputStream stream)`: installs a bundle from the given input stream and starts it. This methods fails if the bundle cannot be installed and started correctly.
+* `Bundle getBundle(long bundleId)`: gets an installed bundle by its bundle id, or `null` if not found.
+* `Bundle getBundle(String name)`: gets an installed bundle by its symbolic name. Fails if not found.
+
+### PackageAdmin
+* `PackageAdmin getPackageAdmin()`: gives access to the `Package Admin` service exposed by the framework.
+* `refresh()`: refresh package wires.
+
+## Extensibility: Helper objects
+junit4osgi provides an extensibility mechanism to reduce the pain of testing. So, if you're interacting with specific services or environment, you can use `Helper` objects. Those object have to be created in the `setUp` method and `disposed` in the `tearDown` method. 
+
+So, for example, if you write iPOJO tests, you can use the iPOJO helper providing a lot of utility functions simplifying the development of tests.
+{code:java}
+public class MyTest extends OSGiTestCase {
+    ComponentInstance fooProvider1, fooProvider2;
+
+    IPOJOHelper helper; // Helper object
+
+    public void setUp() {
+        helper = new IPOJOHelper(this); // Create the object.   
+    String type2 = "PS-FooProviderType";
+
+    fooProvider1 = helper.createComponentInstance(type2, p3);
+        fooProvider2 = helper.createComponentInstance(type2, "FooProvider-4");
+    }
+
+    public void tearDown() {
+    helper.dispose(); // Dispose it, instances will be disposed too.
+    }
+
+    You can also implements your own helper (for specific purpose) by just implementing the  interface.
+    \\
+    \\
+    {include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

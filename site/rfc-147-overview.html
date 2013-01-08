@@ -1,0 +1,232 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - RFC 147 Overview</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="RFC147Overview-RFC147Overview"></A>RFC-147 Overview</H1>
+
+<P>The RFC-147 draft is not yet publicly available. It used to be called RFC-132, which can be found in an <A href="http://www.osgi.org/download/osgi-4.2-early-draft.pdf" class="external-link" rel="nofollow">early specification draft</A></P>
+
+<P>This is an overview of its main features:</P>
+
+<STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1275248914620 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1275248914620 ul {margin-left: 0px;padding-left: 10px;}
+div.rbtoc1275248914620 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1275248914620">
+<UL>
+    <LI><A href="#RFC147Overview-StandardwaytoimplementandruncommandsforanyOSGi4.2framework">Standard way to implement and run commands for any OSGi 4.2 framework</A></LI>
+    <LI><A href="#RFC147Overview-Easytouseinteractivelynounnecessarysyntax.">Easy to use interactively - no unnecessary syntax.</A></LI>
+    <LI><A href="#RFC147Overview-Provideslists%252Cpipesandclosures.">Provides lists, pipes and closures.</A></LI>
+    <LI><A href="#RFC147Overview-LeveragesexistingJavacapabilities%252Cviareflection.">Leverages existing Java capabilities, via reflection.</A></LI>
+    <LI><A href="#RFC147Overview-EasytoimplementandtestcommandswithoutneedingOSGi.">Easy to implement and test commands without needing OSGi.</A></LI>
+    <LI><A href="#RFC147Overview-Normalcommandscanprovidecontrolprimitives.">Normal commands can provide control primitives.</A></LI>
+</UL></DIV>
+
+<H2><A name="RFC147Overview-StandardwaytoimplementandruncommandsforanyOSGi4.2framework"></A>Standard way to implement and run commands for any OSGi 4.2 framework</H2>
+
+<P>Commands are registered via service attributes, you don't have to register a specific service. This allows commands to be registered by existing services, just by adding the new attributes:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+Dictionary&lt;<SPAN class="code-object">String</SPAN>, <SPAN class="code-object">Object</SPAN>&gt; dict = <SPAN class="code-keyword">new</SPAN> Hashtable&lt;<SPAN class="code-object">String</SPAN>, <SPAN class="code-object">Object</SPAN>&gt;();
+dict.put(CommandProcessor.COMMAND_SCOPE, <SPAN class="code-quote">&quot;shell&quot;</SPAN>);
+dict.put(CommandProcessor.COMMAND_FUNCTION, <SPAN class="code-keyword">new</SPAN> <SPAN class="code-object">String</SPAN>[] {<SPAN class="code-quote">&quot;sleep&quot;</SPAN>, <SPAN class="code-quote">&quot;grep&quot;</SPAN>});
+context.registerService(name, service, dict);
+</PRE>
+</DIV></DIV>
+
+<P>Scope is used to provide a namespace for commands. The commands above can be invoked as &quot;shell:sleep&quot; and &quot;shell:grep&quot;. If the scope is omitted (e.g. &quot;sleep&quot; and &quot;grep&quot;) then the first matching command is invoked.</P>
+
+<P>Commands can have any signature - arguments are coerced to call the best matching method using reflection. A <TT>CommandSession</TT> argument is inserted if required:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> void sleep(<SPAN class="code-object">long</SPAN> millis) <SPAN class="code-keyword">throws</SPAN> InterruptedException{
+    <SPAN class="code-object">Thread</SPAN>.sleep(millis);
+}
+
+<SPAN class="code-keyword">public</SPAN> void sleep(<SPAN class="code-object">String</SPAN>[] args) <SPAN class="code-keyword">throws</SPAN> Exception;
+
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">boolean</SPAN> grep(CommandSession session, <SPAN class="code-object">String</SPAN>[] args) <SPAN class="code-keyword">throws</SPAN> Exception;
+</PRE>
+</DIV></DIV>
+
+<P>The <TT>CommandSession</TT> interface provides methods for executing commands and getting and setting session variables:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> org.apache.felix.service.command.CommandSession {
+    <SPAN class="code-object">Object</SPAN> execute(CharSequence commandline) <SPAN class="code-keyword">throws</SPAN> Exception;
+    <SPAN class="code-object">Object</SPAN> get(<SPAN class="code-object">String</SPAN> name);
+    void put(<SPAN class="code-object">String</SPAN> name, <SPAN class="code-object">Object</SPAN> value);
+    ...
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="RFC147Overview-Easytouseinteractivelynounnecessarysyntax."></A>Easy to use interactively - no unnecessary syntax.</H2>
+
+<P>// simple command</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! echo hello world
+hello world
+</PRE>
+</DIV></DIV>
+
+<P>// session variables</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! msg = &quot;hello world&quot;
+g! echo $msg
+hello world
+</PRE>
+</DIV></DIV>
+
+<P>// execution quotes () - similar to bash backquotes</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! (bundle 1) location
+file:/Users/derek/Downloads/felix-framework-3.0.0/bundle/org.apache.felix.bundlerepository-1.6.2.jar
+</PRE>
+</DIV></DIV>
+
+<H2><A name="RFC147Overview-Provideslists%2Cpipesandclosures."></A>Provides lists, pipes and closures.</H2>
+
+<P>// lists - []</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! list = [1 2 a b]
+1
+2
+a
+b
+
+g! map = [Jan=1 Feb=2 Mar=3]
+Jan                 1
+Feb                 2
+Mar                 3
+</PRE>
+</DIV></DIV>
+
+<P>// pipes</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! bundles | grep gogo
+    2|Active     |    1|org.apache.felix.gogo.command (0.6.0)
+    3|Active     |    1|org.apache.felix.gogo.runtime (0.6.0)
+    4|Active     |    1|org.apache.felix.gogo.shell (0.6.0)
+</PRE>
+</DIV></DIV>
+
+<P>// closures - {}</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! echo2 = { echo xxx $args yyy }
+g! echo2 hello world
+xxx hello world yyy
+</PRE>
+</DIV></DIV>
+
+<H2><A name="RFC147Overview-LeveragesexistingJavacapabilities%2Cviareflection."></A>Leverages existing Java capabilities, via reflection.</H2>
+
+<P>// exception handling - console shows summary, but full context available</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! start xxx
+E: Cannot coerce start[xxx] to any of [(Bundle)]
+g! $exception printstacktrace
+java.lang.IllegalArgumentException: Cannot coerce start[xxx] to any of [(Bundle)]
+        at org.apache.felix.gogo.runtime.shell.Reflective.method(Reflective.java:162)
+        at org.apache.felix.gogo.runtime.shell.Command.execute(Command.java:40)
+        at org.apache.felix.gogo.runtime.shell.Closure.execute(Closure.java:211)
+        at org.apache.felix.gogo.runtime.shell.Closure.executeStatement(Closure.java:146)
+        at org.apache.felix.gogo.runtime.shell.Pipe.run(Pipe.java:91)
+...
+</PRE>
+</DIV></DIV>
+
+<P>// add all public methods on java.lang.System as commands:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! addcommand system (loadClass java.lang.System)
+g! system:getproperties
+sun.io.unicode.encodingUnicodeLittle
+java.version        1.5.0_19
+java.class.path     bin/felix.jar
+java.awt.graphicsenvapple.awt.CGraphicsEnvironment
+user.language       en
+sun.os.patch.level  unknown
+os.version          10.6.2
+[snip]
+</PRE>
+</DIV></DIV>
+
+<H2><A name="RFC147Overview-EasytoimplementandtestcommandswithoutneedingOSGi."></A>Easy to implement and test commands without needing OSGi.</H2>
+
+<P>Command implementations don't need to reference any OSGi interfaces. They can use System.in, System.out and System.err, just as you would in a trivial Java application. The ThreadIO service transparently manages the singleton System.out etc, so that each thread sees the appropriate stream:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java"><SPAN class="code-keyword">public</SPAN> void cat(<SPAN class="code-object">String</SPAN>[] args) <SPAN class="code-keyword">throws</SPAN> Exception {
+    <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">String</SPAN> arg : args)
+        IOUtil.copy(arg, <SPAN class="code-object">System</SPAN>.out);
+    }
+</PRE>
+</DIV></DIV>
+
+<H2><A name="RFC147Overview-Normalcommandscanprovidecontrolprimitives."></A>Normal commands can provide control primitives.</H2>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java"><SPAN class="code-keyword">public</SPAN> void each(CommandSession session, Collection&lt;<SPAN class="code-object">Object</SPAN>&gt; list, Function, closure) <SPAN class="code-keyword">throws</SPAN> Exception {
+    <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">Object</SPAN> x : list) {
+        closure.execute(session, <SPAN class="code-keyword">null</SPAN>);
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>g! each [Jan Feb Mar] { echo $it | grep . }
+Jan
+Feb
+Mar
+</PRE>
+</DIV></DIV>
+
+<DIV class="panelMacro"><TABLE class="noteMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="https://cwiki.apache.org/confluence/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD>The default <B>echo</B> command <EM>returns</EM> a String and does not write to System.out. Also, by default, the console prints the results of each command, so <B>echo</B> appears to behave as you would expect.<BR>
+However, the console does not see the <B>each</B> closure above, so the result of echo would not be seen. This is why it is piped into <B>grep</B>, as the <EM>result</EM> of the command as well as its output is written to a pipeline.</TD></TR></TABLE></DIV>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2010-05-30 15:48:32.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

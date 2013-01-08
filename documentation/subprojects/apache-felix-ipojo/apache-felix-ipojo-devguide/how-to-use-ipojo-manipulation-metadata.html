@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - How to use iPOJO Manipulation Metadata</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide.html">apache-felix-ipojo-devguide</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/how-to-use-ipojo-manipulation-metadata.html" target="felix_cwiki">/site/how-to-use-ipojo-manipulation-metadata.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>How to use iPOJO Manipulation Metadata</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# How to use iPOJO Manipulation Metadata
+
+*During the manipulation process, iPOJO gathers information about the manipulated classes. These metadata are stored inside the bundle manifest and are used to avoid reflection on the manipulated class. By using these metadata, your handler can check that the implementation class contains required fields, methods, check implemented interfaces.*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## Contained information
+
+Manipulation metadata contains:
+* Interfaces implemented by component type implementation
+* Fields of the component type implementation
+* Methods of the component type implementation
+
+Field Metadata contains field name and type. Method Metadata contains method name, the sorted list of argument types and return type.
+
+## Building Manipulation Metadata
+
+Manipulation (i.e. PojoMetadata) can be obtained form the factory of a (primitive) component type such as in:
+
+    public void configure(InstanceManager im, Element metadata, Dictionary configuration)  {
+        ...
+        PojoMetadata manipulation = getFactory().getPojoMetadata();
+        ...
+    }
+
+## Getting Metadata
+
+From the manipulation metadata, you can query manipulation information by using following methods:
+* MethodMetadata\[\]() getMethods() : Get all methods
+* FieldMetadata\[\]() getFields() : Get all fields
+* String\[\]() getInterfaces() : Get all implemented interfaces
+* FieldMetadata getField(String name) : Look for the field with the given name. Returns null if not found.
+* FieldMetadata getField(String name, String type): Look for the field with the given name and type. Returns null if not found.
+* boolean isInterfaceImplemented(String itf) : Is the given interface name implemented by the manipulated class.
+* MethodMetadata getMethod(String name) : Look for the method with the given name. Returns null if not found. Returns the first found if several method match.
+* MethodMetadata\[\]() getMethods(String name) : Look for all methods with the given name. Returns an empty array if not found.
+* MethodMetadata getMethod(String name, String\[\]() types) : Look for the method with the given name and argument type list. Returns null if not found.
+
+From a Field Metadata object, you can obtain the field name, type, and 'reflective' type. From a Method Metadata object, you can obtain the method name, the argument type array, and the returned type ('void' for void method).
+
+## Creating Callback from Manipulation Metadata
+
+You often need to invoke method on the POJO objects. iPOJO provides an helper class, named Callback, allow you to manage this invocation easily. You can obtain a Callback object from the Method Metadata. By this way, you are sure that the method exists in the implementation. To create the callback, use the following code:
+
+        PojoMetadata manip = getFactory().getPojoMetadata();
+        MethodMetadata method = manip.getMethod("your_method_name");
+        Callback cb = new Callback(method, im);
+
+Then you can directly invoke your method:
+
+        ...
+        Object[] args = ...;  // Build your argument array
+        cb.call(args);
+        ...
+
+## Types & Reflective Types
+
+When querying field (or a method argument) type, the API returns following code identifiers:
+* For primitive types : int, long, short, byte, char, double, float, boolean
+* For primitives type arrays : int\[\](), long\[\], short\[\], byte\[\], char\[\], double\[\], float\[\], boolean\[\]
+* For object : qualified class name as java.lang.String
+* For object arrays : the qualified class name of the content type followed by \[\]() as java.lang.String\[\]
+
+Array types are different from Java internal/reflective array types. To get the internal/reflective array type for field type you can use the `getReflectiveType` method.
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

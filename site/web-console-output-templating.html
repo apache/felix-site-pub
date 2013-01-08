@@ -1,0 +1,112 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Web Console Output Templating</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<P>Templating and Internationalization support of the Web Console is based on Java Resource Bundles loaded from the plugin bundles and is transparent to the plugin itself.</P>
+
+
+<H2><A name="WebConsoleOutputTemplating-BasicMechanism"></A>Basic Mechanism</H2>
+
+<P>All requests handled by web console plugins are wrapped by response wrapper, which installs a Writer filter if the response is a <TT>text/html</TT> response. This writer filter recognizes variables of the pattern <TT>$&#123;name&#125;</TT> and tries to replace that part of the output with another string:</P>
+
+<UL>
+	<LI>If a variable of that name exists, the value of that variable is used. See Variable Resolution below.</LI>
+	<LI>Otherwise if a resource bundle provides a translated string for the name, that string is used. See Resource Bundles below.</LI>
+	<LI>Otherwise the name itself is just placed in the output.</LI>
+</UL>
+
+
+
+<H3><A name="WebConsoleOutputTemplating-Example"></A>Example</H3>
+
+<P>Consider the plugin bundle provides a localization for the default german locale <TT>de</TT>:</P>
+
+<DIV class="panel" style="border-width: 1px;"><DIV class="panelHeader" style="border-bottom-width: 1px;"><B>OSGI-INF/l10n/bundle_de.properties</B></DIV><DIV class="panelContent">
+<P>Hello = Guten Tag</P>
+</DIV></DIV>
+
+<P>And the plugin defines a variable replacement and writes output with the following code:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+WebConsoleUtil.getVariableResolver().put(<SPAN class="code-quote">&quot;world&quot;</SPAN>, <SPAN class="code-quote">&quot;Schweiz&quot;</SPAN>);
+response.getWriter().println(<SPAN class="code-quote">&quot;${Hello} ${world}&quot;</SPAN>);
+</PRE>
+</DIV></DIV>
+
+
+<P>The response sent to the client whose primary locale is <TT>de</TT> is then filtered to be:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+Guten Tag Schweiz
+</PRE>
+</DIV></DIV>
+
+
+
+<H2><A name="WebConsoleOutputTemplating-VariableResolution"></A>Variable Resolution</H2>
+
+<P>Variable Resolution is based on a <TT>org.apache.felix.webconsole.VariableResolver</TT> object provided as a request attribute prior to calling the <TT>ServletResponse.getWriter()</TT> method. If no such resolver is provided in the request, an instance of the <TT>org.apache.felix.webconsole.DefaultVariableResolver</TT> is used and stored in the request. Replacing the <TT>VariableResolver</TT> after the <TT>getWriter()</TT> has been called has no effect for variable resolution. Variables may be added to the <TT>VariableResolver</TT> even after the <TT>getWriter()</TT> method has been called.</P>
+
+
+
+<H2><A name="WebConsoleOutputTemplating-ResourceBundles"></A>Resource Bundles</H2>
+
+<P>Resources for the Resource Bundles is provided by the Web Console bundle on the one hand and by the bundle providing the plugin on the other hand. Resources are identified inside a bundle with the <TT>Bundle-Localization</TT> manifest header as described in Section 3.10 Localization in the Core Specification.</P>
+
+<P>This also means, that additional translations may be provided by fragment bundles.</P>
+
+<P>During request processing the <TT>Locale</TT> of the request (<TT>ServletRequest.getLocale()</TT>) is used to identify the actual resources to use. From this information a <TT>ResourceBundle</TT> is constructed from a collection of the resources provided by the plugin bundle and the resources provided by the Web Console.</P>
+
+
+<H3><A name="WebConsoleOutputTemplating-WebConsoleLocalization"></A>Web Console Localization</H3>
+
+<P>The Web Console contains a single localization file <TT>OSGI-INF/l10n/bundle.properties</TT>. Fragments attached to the Web Console bundle may provide translations for these resources. All plugins of the Web Console itself will use a ReosurceBundle, which is only based on the localization of the Web Console itself.</P>
+
+
+
+<H2><A name="WebConsoleOutputTemplating-UsingTemplating"></A>Using Templating</H2>
+
+<P>To use the described templating, the plugin developer may provide the following:</P>
+
+<OL>
+	<LI>Use templated strings in the generated response. Such templated strings will be replaced with variable values or localization strings as available.</LI>
+	<LI>Set variable mappings in a <TT>VariableResolver</TT>. The simplest thing is to get a default <TT>VariableResolver</TT> calling the <TT>WebConsoleUtil.getVariableResolver(ServletRequest)</TT> method.</LI>
+	<LI>Provide localization files and optionally set the <TT>Bundle-Localization</TT> header if the base file name is not the default <TT>OSGI-INF/l10n/bundle</TT>.</LI>
+</OL>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on Mon May 30 09:01:06 EDT 2011
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

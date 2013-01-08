@@ -1,0 +1,163 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - 4.5. Security framework</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="44-deployer.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="44-deployer.html">4.4. Deployer</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="4-understanding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="4-understanding-karaf.html">4. Understanding Karaf</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="46-provisioning.html">4.6. Provisioning</A></TD><TD class="ScrollbarNextIcon"><A href="46-provisioning.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+<P><A name="4.5.Securityframework-top"></A></P>
+
+<H1><A name="4.5.Securityframework-4.5.Securityframework"></A>4.5. Security framework</H1>
+
+<P>Karaf supports <A href="http://java.sun.com/j2se/1.4.2/docs/guide/security/jaas/JAASRefGuide.html" class="external-link" rel="nofollow">JAAS</A> with some enhancements to allow JAAS to work nicely in an OSGi environment.  This framework also features an OSGi keystore manager with the ability to deploy new keystores or truststores at runtime.  </P>
+
+<H2><A name="4.5.Securityframework-Overview"></A>Overview</H2>
+
+<P>This feature allow the deployment at runtime of JAAS based configuration for use in various parts of the application. This includes the remote console login, which uses the <TT>karaf</TT> realm, but which is configured with a dummy login module by default.  These realms can also be used by the NMR, JBI components or the JMX server to authenticate users logging in or sending messages into the bus.</P>
+
+<P>In addition to JAAS realms, you can also deploy keystores and truststores to secure the remote shell console, setting up HTTPS connectors or using certificates for WS-Security.</P>
+
+<P>A very simple XML schema for spring has been defined, allowing the deployment of a new realm or a new keystore very easily.</P>
+
+<H2><A name="4.5.Securityframework-Schema"></A>Schema</H2>
+
+<P>To deploy a new realm, you can use the following XSD which is supported by a Spring namespace handler and can thus be defined in a spring xml configuration file.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>JAAS XSD Schema</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+&lt;xs:schema elementFormDefault='qualified'
+           targetNamespace='http://felix.apache.org/karaf/xmlns/jaas/v1.0.0'
+           <SPAN class="code-keyword">xmlns:xs</SPAN>='http://www.w3.org/2001/XMLSchema'
+           <SPAN class="code-keyword">xmlns:bp</SPAN>=<SPAN class="code-quote">&quot;http://www.osgi.org/xmlns/blueprint/v1.0.0&quot;</SPAN>
+           <SPAN class="code-keyword">xmlns:tns</SPAN>='http://felix.apache.org/karaf/xmlns/jaas/v1.0.0'&gt;
+
+    <SPAN class="code-tag">&lt;xs:import namespace=<SPAN class="code-quote">&quot;http://www.osgi.org/xmlns/blueprint/v1.0.0&quot;</SPAN>/&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;xs:element name=<SPAN class="code-quote">&quot;config&quot;</SPAN>&gt;</SPAN>
+        <SPAN class="code-tag">&lt;xs:complexType&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:sequence&gt;</SPAN>
+                <SPAN class="code-tag">&lt;xs:element name=<SPAN class="code-quote">&quot;module&quot;</SPAN> minOccurs=<SPAN class="code-quote">&quot;0&quot;</SPAN> maxOccurs=<SPAN class="code-quote">&quot;unbounded&quot;</SPAN>&gt;</SPAN>
+                    <SPAN class="code-tag">&lt;xs:complexType mixed=<SPAN class="code-quote">&quot;true&quot;</SPAN>&gt;</SPAN>
+                        <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;className&quot;</SPAN> use=<SPAN class="code-quote">&quot;required&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:string&quot;</SPAN> /&gt;</SPAN>
+                        <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;flags&quot;</SPAN> default=<SPAN class="code-quote">&quot;required&quot;</SPAN>&gt;</SPAN>
+                            <SPAN class="code-tag">&lt;xs:simpleType&gt;</SPAN>
+                                <SPAN class="code-tag">&lt;xs:restriction base=<SPAN class="code-quote">&quot;xs:NMTOKEN&quot;</SPAN>&gt;</SPAN>
+                                    <SPAN class="code-tag">&lt;xs:enumeration value=<SPAN class="code-quote">&quot;required&quot;</SPAN>/&gt;</SPAN>
+                                    <SPAN class="code-tag">&lt;xs:enumeration value=<SPAN class="code-quote">&quot;requisite&quot;</SPAN>/&gt;</SPAN>
+                                    <SPAN class="code-tag">&lt;xs:enumeration value=<SPAN class="code-quote">&quot;sufficient&quot;</SPAN>/&gt;</SPAN>
+                                    <SPAN class="code-tag">&lt;xs:enumeration value=<SPAN class="code-quote">&quot;optional&quot;</SPAN>/&gt;</SPAN>
+                                <SPAN class="code-tag">&lt;/xs:restriction&gt;</SPAN>
+                            <SPAN class="code-tag">&lt;/xs:simpleType&gt;</SPAN>
+                        <SPAN class="code-tag">&lt;/xs:attribute&gt;</SPAN>
+                    <SPAN class="code-tag">&lt;/xs:complexType&gt;</SPAN>
+                <SPAN class="code-tag">&lt;/xs:element&gt;</SPAN>
+            <SPAN class="code-tag">&lt;/xs:sequence&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;name&quot;</SPAN> use=<SPAN class="code-quote">&quot;required&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:string&quot;</SPAN> /&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;rank&quot;</SPAN> use=<SPAN class="code-quote">&quot;optional&quot;</SPAN> default=<SPAN class="code-quote">&quot;0&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:int&quot;</SPAN> /&gt;</SPAN>
+        <SPAN class="code-tag">&lt;/xs:complexType&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/xs:element&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;xs:element name=<SPAN class="code-quote">&quot;keystore&quot;</SPAN>&gt;</SPAN>
+        <SPAN class="code-tag">&lt;xs:complexType&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;name&quot;</SPAN> use=<SPAN class="code-quote">&quot;required&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:string&quot;</SPAN> /&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;rank&quot;</SPAN> use=<SPAN class="code-quote">&quot;optional&quot;</SPAN> default=<SPAN class="code-quote">&quot;0&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:int&quot;</SPAN> /&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;path&quot;</SPAN> use=<SPAN class="code-quote">&quot;required&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:string&quot;</SPAN> /&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;keystorePassword&quot;</SPAN> use=<SPAN class="code-quote">&quot;optional&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:string&quot;</SPAN> /&gt;</SPAN>
+            <SPAN class="code-tag">&lt;xs:attribute name=<SPAN class="code-quote">&quot;keyPasswords&quot;</SPAN> use=<SPAN class="code-quote">&quot;optional&quot;</SPAN> type=<SPAN class="code-quote">&quot;xs:string&quot;</SPAN> /&gt;</SPAN>
+        <SPAN class="code-tag">&lt;/xs:complexType&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/xs:element&gt;</SPAN>
+    
+<SPAN class="code-tag">&lt;/xs:schema&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>You can find the schema at the following <A href="https://svn.apache.org/repos/asf/felix/releases/karaf-1.0.0/jaas/config/src/main/resources/org/apache/felix/karaf/jaas/config/karaf-jaas.xsd" class="external-link" rel="nofollow">location</A>.</P>
+
+<P>Here are two example using this schema:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>JAAS realm example</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+&lt;blueprint xmlns=<SPAN class="code-quote">&quot;http://www.osgi.org/xmlns/blueprint/v1.0.0&quot;</SPAN>
+           <SPAN class="code-keyword">xmlns:jaas</SPAN>=<SPAN class="code-quote">&quot;http://felix.apache.org/karaf/xmlns/jaas/v1.0.0&quot;</SPAN>
+           <SPAN class="code-keyword">xmlns:ext</SPAN>=<SPAN class="code-quote">&quot;http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0&quot;</SPAN>&gt;
+
+    <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- Bean to allow the $[karaf.base] property to be correctly resolved --&gt;</SPAN></SPAN>
+    <SPAN class="code-tag">&lt;ext:property-placeholder placeholder-prefix=<SPAN class="code-quote">&quot;$[&quot;</SPAN> placeholder-suffix=<SPAN class="code-quote">&quot;]&quot;</SPAN>/&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;jaas:config name=<SPAN class="code-quote">&quot;karaf&quot;</SPAN>&gt;</SPAN>
+        <SPAN class="code-tag">&lt;jaas:module className=<SPAN class="code-quote">&quot;org.apache.felix.karaf.jaas.modules.properties.PropertiesLoginModule&quot;</SPAN> flags=<SPAN class="code-quote">&quot;required&quot;</SPAN>&gt;</SPAN>
+            users = $[karaf.base]/etc/users.properties
+        <SPAN class="code-tag">&lt;/jaas:module&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/jaas:config&gt;</SPAN>
+
+<SPAN class="code-tag">&lt;/blueprint&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>Keystore example</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+&lt;jaas:keystore <SPAN class="code-keyword">xmlns:jaas</SPAN>=<SPAN class="code-quote">&quot;http://felix.apache.org/karaf/xmlns/jaas/v1.0.0&quot;</SPAN>
+               id=<SPAN class="code-quote">&quot;keystore&quot;</SPAN>
+               name=<SPAN class="code-quote">&quot;ks&quot;</SPAN>
+               rank=<SPAN class="code-quote">&quot;1&quot;</SPAN>
+               path=<SPAN class="code-quote">&quot;classpath:privatestore.jks&quot;</SPAN>
+               keystorePassword=<SPAN class="code-quote">&quot;keyStorePassword&quot;</SPAN>
+               keyPasswords=<SPAN class="code-quote">&quot;myalias=myAliasPassword&quot;</SPAN>&gt;
+<SPAN class="code-tag">&lt;/jaas:keystore&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>The <TT>id</TT> attribute is the blueprint id of the bean, but it will be used by default as the name of the realm if no <TT>name</TT> attribute is specified.   Additional attributes on the <TT>config</TT> elements are a <TT>rank</TT>, which is an integer.  When the LoginContext looks for a realm for authenticating a given user, the realms registered in the OSGi registry are matched against the required name.  If more than one realm is found, the one with the highest rank will be used, thus allowing the override of some realms with new values.  The last attribute is <TT>publish</TT> which can be set to false to not publish the realm in the OSGi registry, hereby disabling the use of this realm.</P>
+
+<P>Each realm can contain one or more module definition.  Each module identify a LoginModule and the <TT>className</TT> attribute must be set to the class name of the login module to use.   Note that this login module must be available from the bundle classloader, so either it has to be defined in the bundle itself, or the needed package needs to be correctly imported. The <TT>flags</TT> attribute can take one of four values that are explained on the <A href="http://svn.apache.org/repos/asf/felix/releases/karaf-1.0.0/jaas/boot/src/main/java/org/apache/felix/karaf/jaas/boot/ProxyLoginModule.java" class="external-link" rel="nofollow">JAAS documentation</A>.<BR>
+The content of the <TT>module</TT> element is parsed as a properties file and will be used to further configure the login module.</P>
+
+<P>Deploying such a code will lead to a <A href="http://svn.apache.org/repos/asf/felix/releases/karaf-1.0.0/jaas/config/src/main/java/org/apache/felix/karaf/jaas/config/JaasRealm.java" class="external-link" rel="nofollow">JaasRealm</A> object in the OSGi registry, which will then be used when using the JAAS login module.</P>
+
+<H2><A name="4.5.Securityframework-Architecture"></A>Architecture</H2>
+
+<P>Due to constraints in the JAAS specification, one class has to be available for all bundles.  This class is called <A href="http://svn.apache.org/repos/asf/felix/releases/karaf-1.0.0/jaas/boot/src/main/java/org/apache/felix/karaf/jaas/boot/ProxyLoginModule.java" class="external-link" rel="nofollow">ProxyLoginModule</A> and is a LoginModule that acts as a proxy for an OSGi defines LoginModule.  If you plan to integrate this feature into another OSGi runtime, this class must be made available from the system classloader and the related package be part of the boot delegation classpath (or be deployed as a fragment attached to the system bundle).</P>
+
+<P>The xml schema defined above allow the use of a simple xml (leveraging spring xml extensibility) to configure and register a JAAS configuration for a given realm.  This configuration will be made available into the OSGi registry as a <A href="http://svn.apache.org/repos/asf/felix/releases/karaf-1.0.0/jaas/config/src/main/java/org/apache/felix/karaf/jaas/config/JaasRealm.java" class="external-link" rel="nofollow">JaasRealm</A> and the OSGi specific Configuration will look for such services.  Then the proxy login module will be able to use the information provided by the realm to actually load the class from the bundle containing the real login module.</P>
+
+<P><A href="#4.5.Securityframework-top">top</A></P>
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="44-deployer.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="44-deployer.html">4.4. Deployer</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="4-understanding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="4-understanding-karaf.html">4. Understanding Karaf</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="46-provisioning.html">4.6. Provisioning</A></TD><TD class="ScrollbarNextIcon"><A href="46-provisioning.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+    </DIV>
+  </BODY>
+</HTML>

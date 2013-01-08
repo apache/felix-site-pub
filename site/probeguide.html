@@ -1,0 +1,205 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - ProbeGuide</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ProbeGuide-DeveloppingprobesforMOSGiframework"></A>Developping probes for MOSGi framework</H1>
+
+<BLOCKQUOTE>
+</BLOCKQUOTE>
+<P>MOSGi is a management infrastructure for OSGi gateways remote management. The architecture relies on JMX management infrastructure and is classically build on a three layered system:</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="probeguide.data/ManagementLayers.png" style="border: 0px solid black"></SPAN></P>
+<UL>
+	<LI>The probe layer: are low layer 	elements that drive the gateway. They can either get information 	from the gateway (gateway status) or set information on it (install 	a bundle),</LI>
+	<LI>The Agent layer: there is one 	agent per gateway and is responsible for maintaining access to a 	list of available probes,</LI>
+	<LI>The Manager layer is the remote 	environment that can communicate with the agent to get information 	from the gateway through the probes</LI>
+</UL>
+
+
+<P>There are various way to implements this architecture (CIM/Wbem, Snmp, JMX). We have choose to use the JMX proposal because it is standardized in the java virtual machine since jdk1.5.</P>
+
+<H1><A name="ProbeGuide-JMXmanagementinfrastructuresynthesis"></A>JMX management infrastructure synthesis</H1>
+
+<P>Sun JMX proposal defines the following elements :</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="probeguide.data/JMXLayers.png" style="border: 0px solid black"></SPAN></P>
+<UL>
+	<LI>The agent is the registry for 	probes called MBeans and is accessed through connectors.</LI>
+	<LI>MBeans are java objects that 	register themselves to the agent under some name</LI>
+	<LI>Connectors are end points were 	external managers can communicate with. There are currently two 	available connectors : an xml/http connector and a rmi based 	connector. We are using the rmi connector (JSR160).</LI>
+</UL>
+
+
+<P>In the JMX world probes are represented as MBeans. They are java singleton object that declare a single interface to the agent. This interface is registered under a unique name within the agent namespace. The JMX namespace is structured as a domainname:mbeanname unique name. The following html page represents an example of this kind of namespace (we use the httpconnector connector with the agent to get this information).</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="probeguide.data/jmxmx4jhtml.png" style="border: 0px solid black"></SPAN></P>
+
+<P>These are various mbeans deployed on a specific gateway. We can identify 4 columns : the mbean registered name (and domain), its implementation, a comment and a function to unregister it.</P>
+
+<P>Mbeans are component that declare a management interface that should have a syntactic name similar to the class they instrument. For instance the class foo.Test should implement a management interface whose name is foo.TestMBean. The registration mechanism associates a implementation (conform to the management interface) with an objectName (a unique identifier). The corresponding call is something like :aMbeanServer.register(aMBeanImplementation, anObjectName);. There are many kinds of MBeans (standard, dynamic, model and simple) but their description is out of the scope of this document.</P>
+
+<H1><A name="ProbeGuide-MOSGiprobedeveloppement"></A>MOSGi probe developpement</H1>
+
+<P>Our management infrastructure proposes a framework for deploying standard mbean within OSGi gateways. It also embeds a reference to a graphical part (manager view) directly in the Mbean itself. Thus the management console is automatically populated with client part of the management system.</P>
+
+<H2><A name="ProbeGuide-Gatewayprobes"></A>Gateway probes</H2>
+
+<P>These probes are developed in conformance to the following elements.</P>
+<UL>
+	<LI>A probe must be registered under the domain TabUI. It means 	that they will have a corresponding tab in our management console.</LI>
+	<LI>A probe must implement a management interface conform to the 	JMX specification (ie : foo.LinuxProbe &#45;-&gt; foo.LinuxProbeMBean)</LI>
+	<LI>The management interface must extend TabIfc (which declares a 	single method : getBundleName()). This methods returns an url were 	the management console should find a tab that can establish a 	management dialog with the probe.</LI>
+	<LI>The probe is made available as a standard OSGi Mbean that 	will make its registration during the bundleActivator start method.</LI>
+</UL>
+
+
+<P>The following picture illustrates relations between these elements.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="probeguide.data/MOSGiProbeClasses.png" style="border: 0px solid black"></SPAN></P>
+
+<P>For instance a Probe that declares a single management function <B>int getValue()</B>;should provide the following interface:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> foo;
+<SPAN class="code-keyword">import</SPAN> insa.jmxconsole.gui.service.TabIfc;
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> ProbeMBean <SPAN class="code-keyword">extends</SPAN> TabIfc {
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">int</SPAN> getValue();
+}
+</PRE>
+</DIV></DIV>
+<P>And the following class:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> foo;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.BundleActivator;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.BundleContext;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.ServiceReference;
+<SPAN class="code-keyword">import</SPAN> insa.jmxconsole.gui.service.TabIfc;
+<SPAN class="code-keyword">import</SPAN> javax.management.MBeanServer;
+<SPAN class="code-keyword">public</SPAN> class Probe <SPAN class="code-keyword">implements</SPAN> BundleActivator,ProbeMBean{
+  <SPAN class="code-comment">//////////////////////////////////////////
+</SPAN>  <SPAN class="code-comment">//   BundleActivator Interface          //
+</SPAN>  <SPAN class="code-comment">//////////////////////////////////////////
+</SPAN>  /* The probe lifecycle is linked to the bundle lifecycle */
+  <SPAN class="code-keyword">public</SPAN> void start(BundleContext bc){
+    /* Here we register the Mbean within the agent */
+    ServiceReference sr = context.getServiceReference(MBeanServer.class.getName());
+    <SPAN class="code-keyword">if</SPAN> (sr!=<SPAN class="code-keyword">null</SPAN>){
+      MBeanServer server = (MbeanServer)<SPAN class="code-keyword">this</SPAN>.bc.getService(sr);
+      server.registerMBean(<SPAN class="code-keyword">this</SPAN>,  <SPAN class="code-keyword">new</SPAN> ObjectName(<SPAN class="code-quote">&quot;TabUI:name=Probe&quot;</SPAN>);
+    }
+  }
+  <SPAN class="code-keyword">public</SPAN> void stop(BundleContext bc){...}
+  <SPAN class="code-comment">///////////////////////////
+</SPAN>  <SPAN class="code-comment">// Management <SPAN class="code-keyword">interface</SPAN>  //
+</SPAN>  <SPAN class="code-comment">///////////////////////////
+</SPAN>  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">int</SPAN> getValue(){<SPAN class="code-keyword">return</SPAN> 10;}
+
+  /* A getIfc function comes from RemoteIfc <SPAN class="code-keyword">interface</SPAN> that enable the manager (remote console) to
+  a bundle that can communicate whith <SPAN class="code-keyword">this</SPAN> probe from a remote URL */
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> getBundleName(){
+   <SPAN class="code-keyword">return</SPAN> <SPAN class="code-quote">&quot;http:<SPAN class="code-comment">//somewhere/agraphicaltab.jar&quot;</SPAN>
+</SPAN>  }
+}
+</PRE>
+</DIV></DIV>
+<P>Once the probe is made as a bundle it can be deployed on the remote gateway. Then a manager (management console) can ask communicate with the gateway agent to manage the probe.</P>
+
+<H2><A name="ProbeGuide-MOSGiJmxConsolearchitecture"></A>MOSGi JmxConsole architecture</H2>
+
+<P>When a probe is deployed on a remote gateway it is manageable by standard management consoles like JConsole, MC4J... We have developed our own management console that is able to manage probe in a more dedicated approach.</P>
+
+<P>The management console is based on a plugin mechanism. Each plugin is represented as a tab and each tab manages a probe. The console is launched with two bundles. Remotegui.jar is the execution framework and remotecomponent.jar contains a sole remote logger service that gets remote notification from gateways. The screen represented the gateway status after it has been launched.<SPAN class="image-wrap" style=""><IMG src="probeguide.data/EmptyConsole.png" style="border: 0px solid black"></SPAN><BR>
+The left panel identifies connected gateways,<BR>
+The upper center panel is an container for tabs from managed gateways,</P>
+
+<P>The lower center panel contains the remote logger display that shows notifications from remote gateways.<BR>
+When the user selects a gateway (green flag) the console will do the following actions :</P>
+<OL>
+	<LI>Ask all MBeans in the TabUI domain.</LI>
+	<LI>For each of these MBean, get the URL of bundle that provides 	the tab. This is done through the call to getBundleName( ) method in 	RemoteIfc interface.</LI>
+	<LI>Install the bundle on the gateway</LI>
+</OL>
+
+
+<P>For instance if the user selects the green point he gets the following tabs.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="probeguide.data/TabbedConsole.png" style="border: 0px solid black"></SPAN></P>
+
+<P>4 probes have been deployed on the remote gateway and 4 graphical tabs have been installed.</P>
+
+<H2><A name="ProbeGuide-Graphicaltabintegration"></A>Graphical tab integration</H2>
+
+<P>When developing a probe one shall provide a corresponding MOSGi tab. It should follow these guidelines.</P>
+<UL>
+	<LI>It should be a bundle in order to be remotely installed on 	the console</LI>
+	<LI>It should implement Plugin interface with is the jmxconsole 	container interface specification.</LI>
+</UL>
+
+
+<P>The plugin is mainly conform to the java beans specification development. The jmxconsole acts as a bean container and each tab is a bean in this infrastructure. This is the general architecture of a Tab class.<SPAN class="image-wrap" style=""><IMG src="probeguide.data/MOSGiConsoleTabClasses.png" style="border: 0px solid black"></SPAN></P>
+
+<P>The plugin interface has the following structure:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> insa.jmxconsole.gui.service;
+<SPAN class="code-keyword">import</SPAN> java.awt.Component;
+<SPAN class="code-keyword">import</SPAN> java.beans.PropertyChangeListener;
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> Plugin <SPAN class="code-keyword">extends</SPAN> PropertyChangeListener{
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> getName(); /* The name of the tab */
+  <SPAN class="code-keyword">public</SPAN> Component getGUI(); /* This is called by the container to get the graphical component */
+  <SPAN class="code-keyword">public</SPAN> void registerServicePlugin(); /* This is called by the framework when a <SPAN class="code-keyword">new</SPAN> gateway is selected */
+  <SPAN class="code-keyword">public</SPAN> void unregisterServicePlugin();
+  /* see before */
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> pluginLocation(); /* This a unique identifier of the plugin */
+    /* These are constants that enable communication between container and plugins. They are treated in the
+  propertyChange function brought by the javabean API */
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> NEW_NODE_SELECTED=<SPAN class="code-quote">&quot;newNodeSelected&quot;</SPAN>;
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> NEW_NODE_READY=<SPAN class="code-quote">&quot;newNodeReady&quot;</SPAN>;
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> NEW_NODE_CONNECTION=<SPAN class="code-quote">&quot;newNodeConnection&quot;</SPAN>;
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> EMPTY_NODE=<SPAN class="code-quote">&quot;emptyNode&quot;</SPAN>;
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> PLUGIN_ADDED=<SPAN class="code-quote">&quot;pluggin_added&quot;</SPAN>;
+  <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> PLUGIN_REMOVED=<SPAN class="code-quote">&quot;pluggin_removed&quot;</SPAN>;
+}
+</PRE>
+</DIV></DIV>
+<P>Implementation tabs are provided as open-source code. You can find various implementation of this interface in felix repository in the <B>mosgi.managedelements.xxx.tab</B> elements.</P>
+
+
+<H2><A name="ProbeGuide-Functioncallsequence"></A>Function call sequence</H2>
+
+<P>The next figure presents a function call sequence when using MOSGi framework.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by sfrenot on 2006-11-17 06:05:23.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

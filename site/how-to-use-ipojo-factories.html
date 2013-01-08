@@ -1,0 +1,492 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - How-to use iPOJO factories</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">
+ @import url(http://felix.apache.org/ipojo/site/superfish.css); 
+</STYLE>
+
+<STYLE type="text/css">
+ @import url(http://felix.apache.org/ipojo/site/style.css); 
+</STYLE>
+
+<P>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shCore.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushCSharp.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushPhp.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushJScript.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushVb.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushSql.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushXml.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushShell.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushDelphi.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushPython.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushJava.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/jquery-1.js"></SCRIPT>
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/hoverIntent.js"></SCRIPT>
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/superfish.js"></SCRIPT> 
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/supersubs.js"></SCRIPT> 
+
+<SCRIPT type="text/javascript"> 
+ 
+    $(document).ready(function(){ 
+        $("ul.sf-menu").supersubs({ 
+            minWidth:    14,   // minimum width of sub-menus in em units 
+            maxWidth:    30,   // maximum width of sub-menus in em units 
+            extraWidth:  1     // extra width can ensure lines don't sometimes turn over 
+                               // due to slight rounding differences and font-family 
+        }).superfish();  // call supersubs first, then superfish, so that subs are 
+                         // not display:none when measuring. Call before initialising 
+                         // containing tabs for same reason. 
+    }); 
+ 
+</SCRIPT>
+<DIV class="main">
+<DIV class="page-header">
+<IMG src="http://felix.apache.org/ipojo/site/header.png" class="header">
+<A href="http://ipojo.org/"><IMG src="http://felix.apache.org/ipojo/site/ipojo.png" width="225" class="header-logo"></A>
+<UL class="sf-menu sf-js-enabled sf-shadow" id="ipojo-menu">
+<LI class="current">
+<!-- Menu Overview -->
+<A href="" class="sf-with-ul">Overview<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+	<LI>
+	<A href="apache-felix-ipojo.html" title="Apache Felix iPOJO">Home</A>							
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-why-choose-ipojo.html" title="apache-felix-ipojo-why-choose-ipojo">Why choose iPOJO</A>
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-successstories.html" title="apache-felix-ipojo-successstories">Success stories</A>
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-feature-overview.html" title="Apache Felix iPOJO Feature Overview">Features</A>
+	</LI>
+</UL>
+</LI>	
+
+<LI class="">			
+<!-- Menu download -->
+<LI>
+<A href="download.html" title="Download">Download </A>
+</LI>
+
+<LI class="">					
+<!-- Menu Documentation -->
+<A href="" class="sf-with-ul">Documentation<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+    <!-- sub- menu : getting started -->
+    <LI class="">
+    <A href="" class="sf-with-ul">Getting Started<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+    <UL>
+     <LI><A href="ipojo-in-10-minutes.html" title="iPOJO in 10 minutes">iPOJO in 10 minutes</A></LI>
+     <LI><A href="how-to-use-ipojo-annotations.html" title="How to use iPOJO Annotations">Using Annotations</A></LI>
+     <LI><A href="ipojo-hello-word-maven-based-tutorial.html" title="iPOJO Hello Word (Maven-Based) tutorial">Maven tutorial</A></LI>
+     <LI><A href="ipojo-advanced-tutorial.html" title="iPOJO Advanced Tutorial">Advanced tutorial</A></LI>
+     <LI><A href="apache-felix-ipojo-dosgi.html" title="apache-felix-ipojo-dosgi">Using Distributed OSGi</A></LI>
+     <LI><A href="ipojo-composition-tutorial.html" title="iPOJO Composition Tutorial">Application Composition</A></LI>
+    </UL>
+    </LI> <!-- end of getting started -->
+    <!-- sub menu : Describing Components -->
+     <LI class="">
+        <A href="http://felix.apache.org/site/describing-components.html" class="sf-with-ul">Describing components<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+        <UL>
+        <LI><A href="service-requirement-handler.html" title="Service Requirement Handler">Requiring a service</A></LI>
+        <LI><A href="providing-osgi-services.html" title="Providing OSGi services">Providing a service</A></LI>
+        <LI><A href="lifecycle-callback-handler.html" title="Lifecycle Callback Handler">Lifecycle management</A></LI>
+        <LI><A href="configuration-handler.html" title="Configuration Handler">Configuration</A></LI>
+        <LI><A href="architecture-handler.html" title="Architecture Handler">Introspection</A></LI>
+        <LI><A href="controller-lifecycle-handler.html" title="Controller Lifecycle Handler">Impacting the lifecycle</A></LI>
+        <LI><A href="event-admin-handlers.html" title="Event Admin Handlers">Asynchronous communication</A></LI>
+        <LI><A href="ipojo-jmx-handler.html" title="iPOJO JMX Handler">JMX management</A></LI>
+        <LI><A href="extender-pattern-handler.html" title="Extender Pattern Handler">Extender pattern</A></LI>
+        <LI><A href="white-board-pattern-handler.html" title="White Board Pattern Handler">Whiteboard pattern</A></LI>
+        <LI><A href="temporal-service-dependency.html" title="Temporal Service Dependency">Temporal dependencies</A></LI>
+        </UL>
+     </LI> <!-- End of describing components -->
+    <!-- sub- menu : User Guide -->
+    <LI class="">
+    <A href="" class="sf-with-ul">User Guide<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+        <UL>
+        <LI><A href="combining-ipojo-and-configuration-admin.html" title="Combining iPOJO and Configuration Admin">iPOJO and config admin</A></LI>
+        <LI><A href="" title="How-to use iPOJO factories">Factories and Instances</A></LI>
+        <LI><A href="using-xml-schemas.html" title="Using XML Schemas">XML Schemas</A></LI>
+        <LI><A href="apache-felix-ipojo-api.html" title="apache-felix-ipojo-api">API</A></LI>
+        <LI><A href="apache-felix-ipojo-testing-components.html" title="apache-felix-ipojo-testing-components">Testing components</A></LI>
+        <LI><A href="apache-felix-ipojo-eclipse-integration.html" title="apache-felix-ipojo-eclipse-integration">Eclipse Integration</A></LI>
+        <LI><A href="ipojo-faq.html" title="iPOJO FAQ">FAQ</A></LI>
+        <LI><A href="ipojo-reference-card.html" title="iPOJO-Reference-Card">Reference Card</A></LI>
+        </UL>
+    </LI> <!-- end of user guide -->
+    <!-- sub- menu : Dev Guide -->
+    <LI> 
+    <A href="" class="sf-with-ul">Advanced Topics<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+       <UL>
+        <LI><A href="http://felix.apache.org/ipojo/api/1.6.0" class="external-link" rel="nofollow">Javadoc</A></LI>
+        <LI><A href="how-to-write-your-own-handler.html" title="How to write your own handler">Handler development</A></LI>
+        <LI><A href="how-to-use-ipojo-manipulation-metadata.html" title="How to use iPOJO Manipulation Metadata">Manipulation Metadata </A></LI>
+        <LI><A href="dive-into-the-ipojo-manipulation-depths.html" title="Dive into the iPOJO Manipulation depths">Dive into the iPOJO Manipulation depths</A></LI>
+       </UL>
+    </LI> <!-- End of Dev guide -->
+</UL> 
+</LI> <!-- End of doc -->
+<!-- Menu 4 : Tools -->
+<LI class="">
+<A href="" class="sf-with-ul">Tools<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+   <LI><A href="ipojo-ant-task.html" title="iPOJO Ant Task">Ant Task</A></LI>
+   <LI><A href="ipojo-eclipse-plug-in.html" title="iPOJO Eclipse Plug-in">Eclipse Plugin</A></LI>
+   <LI><A href="ipojo-maven-plug-in.html" title="iPOJO Maven Plug-in">Maven Plugin</A></LI>
+   <LI><A href="ipojo-arch-command.html" title="iPOJO-Arch-Command"><TT>arch</TT> shell command</A></LI>
+   <LI><A href="apache-felix-ipojo-online-manipulator.html" title="apache-felix-ipojo-online-manipulator">Online Manipulator</A></LI>
+   <LI><A href="ipojo-webconsole-plugin.html" title="iPOJO Webconsole Plugin">Webconsole plugin</A></LI>
+   <LI><A href="apache-felix-ipojo-junit4osgi.html" title="apache-felix-ipojo-junit4osgi">Junit4OSGi</A></LI>
+</UL>   
+</LI><!-- End of tools -->	
+<!-- Menu 5 : Support -->
+<LI>
+<A href="ipojo-support.html" title="ipojo-support">Support </A>
+</LI>
+<!-- End of the menu 5 -->			
+<!-- Menu 6 : Misc -->
+<LI class="">
+<A href="" class="sf-with-ul">Misc<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+   <LI><A href="apache-felix-ipojo-supportedvms.html" title="apache-felix-ipojo-supportedVMs">Supported JVMs</A></LI>
+   <LI><A href="apache-felix-ipojo-supportedosgi.html" title="apache-felix-ipojo-supportedOSGi">Supported OSGi Implementations</A></LI>
+   <LI><A href="http://ipojo-dark-side.blogspot.com/" class="external-link" rel="nofollow">iPOJO's Dark Side Blog</A></LI>
+   <LI><A href="article-presentations.html" title="Article & Presentations">Article &amp; Presentations</A></LI>
+   <LI><A href="http://www.apache.org/">ASF</A></LI>
+   <LI><A href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</A></LI>
+   <LI><A href="http://www.apache.org/foundation/thanks.html">Sponsors</A></LI>
+</UL>
+</LI><!-- End of misc -->
+</UL> <!-- End of the menu -->
+</DIV> <!-- Page header -->
+</P>
+
+<DIV class="content">
+
+<H1><A name="How-touseiPOJOfactories-iPOJOFactoriesPrinciples"></A>iPOJO Factories Principles</H1>
+
+<P><EM>iPOJO defines a factory for each declared component type. These factories are used to create component instances. This document presents how to declare instances and configure them. The API to create, dispose and reconfigure instances is also explained.</EM></P>
+
+<DIV class="toc"><DIV>
+<UL>
+    <LI><A href="#How-touseiPOJOfactories-PreliminaryConcepts">Preliminary Concepts</A></LI>
+<UL>
+    <LI><A href="#How-touseiPOJOfactories-ComponentType">Component Type</A></LI>
+    <LI><A href="#How-touseiPOJOfactories-ComponentInstance">Component Instance</A></LI>
+</UL>
+    <LI><A href="#How-touseiPOJOfactories-Howtodeclareinstancesinsidemetadatafiles">How-to declare instances inside metadata files</A></LI>
+    <LI><A href="#How-touseiPOJOfactories-Creating%252CdisposingandreconfiguringinstanceswiththeAPI">Creating, disposing and reconfiguring instances with the API</A></LI>
+<UL>
+    <LI><A href="#How-touseiPOJOfactories-Creatinginstances">Creating instances</A></LI>
+    <LI><A href="#How-touseiPOJOfactories-Disposingcreatedinstance">Disposing created instance</A></LI>
+    <LI><A href="#How-touseiPOJOfactories-Reconfiguringinstance">Reconfiguring instance</A></LI>
+    <LI><A href="#How-touseiPOJOfactories-Accessingservicesexposedbycreatedinstances">Accessing services exposed by created instances</A></LI>
+</UL>
+    <LI><A href="#How-touseiPOJOfactories-HowtousetheManagedServiceFactorytocreate%252Cdisposedandreconfigureinstances">How to use the ManagedServiceFactory to create, disposed and reconfigure instances</A></LI>
+</UL></DIV></DIV>
+
+<H2><A name="How-touseiPOJOfactories-PreliminaryConcepts"></A>Preliminary Concepts</H2>
+<H3><A name="How-touseiPOJOfactories-ComponentType"></A>Component Type</H3>
+<P>A component type is a kind of instance template. If we compare component concepts with object oriented programming, component types are classes and component instances are objects. A component type is declared inside a metadata file (generally named 'metadata.xml'). The next snippet shows you a component type declaration: </P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml"> 
+<SPAN class="code-tag">&lt;component className=<SPAN class="code-quote">&quot;...&quot;</SPAN> name=<SPAN class="code-quote">&quot;MyFactory&quot;</SPAN>&gt;</SPAN>
+    ...
+    <SPAN class="code-tag"><SPAN class="code-comment">&lt;!--component type configuration --&gt;</SPAN></SPAN>
+    ...
+<SPAN class="code-tag">&lt;/component&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+<P>A component type declaration begins generally by '&lt;component&gt;' and is composed by:</P>
+<UL>
+	<LI>An implementation class ('className', mandatory). The 'className' attribute indicates the qualified name of the class implementing the component.</LI>
+	<LI>A name ('name')</LI>
+	<LI>Handler configuration (see handler guide)</LI>
+</UL>
+
+
+<P>The 'name' attribute contains the factory name. If not specified, the 'className' attribute is used as the factory name. This factory name is used to refer to the factory (and consequently to the component type). <BR>
+A factory can be public or private. A public factory allows creating instances dynamically and from other bundles. A private factory can only be used to create instances by declaring them in the same metadata.xml file that defines the instances' component type (i.e. in the same bundle). By default, factories are public. To set the factory to private add the 'public=&quot;false&quot;'' attribute in the '&lt;component&gt;' element, such as: </P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml"> 
+<SPAN class="code-tag">&lt;component className=<SPAN class="code-quote">&quot;...&quot;</SPAN> name=<SPAN class="code-quote">&quot;MyPrivateFactory&quot;</SPAN> public=<SPAN class="code-quote">&quot;false&quot;</SPAN>&gt;</SPAN>
+    ...
+    <SPAN class="code-tag"><SPAN class="code-comment">&lt;!--component type configuration --&gt;</SPAN></SPAN>
+    ...
+<SPAN class="code-tag">&lt;/component&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+<P>Public factories offer different ways to create instances:</P>
+<UL>
+	<LI>Instances can be declared in iPOJO descriptor in any bundle (i.e. from any metadata.xml file)</LI>
+	<LI>Instances can be created dynamically by using the API. Two APIs are provided the iPOJO Factory API and the OSGi Configuration Admin API</LI>
+</UL>
+
+
+<P>Indeed, iPOJO will publish two services to access the factory through the API:</P>
+<UL>
+	<LI>org.apache.felix.ipojo.Factory : iPOJO Factory Interface</LI>
+	<LI>org.osgi.service.cm.ManagedServiceFactory : Config Admin Interface</LI>
+</UL>
+
+
+<P>The factory name will be used as the <TT>service.pid</TT> property for those services. The <TT>service.pid</TT> is unique and persists between framework restarts. The service.pid of the factory equals the factory name. This allows identifying factories exposed in the service registry.<BR>
+Factories are either valid or invalid. You can't create instances until a factory becomes valid. A factory is invalid if required handlers are missing. This issue occurs only if the component type uses external handlers.</P>
+
+<H3><A name="How-touseiPOJOfactories-ComponentInstance"></A>Component Instance</H3>
+<P>A component instance is an instance of a component type. For example, if a component type declares 'providing' and 'requiring' services, then the component instances will actually expose and require those services. Several instances can be created from one factory, but all these instances will be managed as different entities, and so are independent. A component instance is characterized by:</P>
+<UL>
+	<LI>a component type (the factory name)</LI>
+	<LI>an instance name (used to identify the instance, is unique)</LI>
+	<LI>a configuration : a set of &lt;key, value&gt; couple</LI>
+</UL>
+
+
+<P>A factory keeps a reference to each created instance. If the factory stops, goes away, or becomes invalid, all created instances are stopped and are destroyed.<BR>
+To create an instance, the creation request (describing the instance to create) must refer to the factory (by using the factory name), and provide the instance configuration. This configuration can specify the instance name ('instance.name' property). Be aware that this name must be unique. If not specified, iPOJO will generate a unique name.<BR>
+A factory can refuse the creation if the configuration is not acceptable or if the factory is invalid. An unacceptable configuration is a not suitable configuration in regard to component type. Reasons for unacceptable configuration are: </P>
+<UL>
+	<LI>The instance name is not set or not unique</LI>
+	<LI>A property required by the component type is missing inside the configuration</LI>
+	<LI>A pushed property has a wrong type</LI>
+</UL>
+
+
+<H2><A name="How-touseiPOJOfactories-Howtodeclareinstancesinsidemetadatafiles"></A>How-to declare instances inside metadata files</H2>
+<P>The main way to create instances is to declare those instances inside the iPOJO descriptor file (i.e. 'metadata.xml'). Those declarations can use either public factories from any bundle, or private factories from the same bundle. Private factories are generally used to guaranty singleton instance as instances can only be created inside the same bundle. <BR>
+When a instance declaration targets an external public factory, it will wait until the factory becomes available. So, the instance will be created only when the factory appears and is valid. If the factory disappears after the instance creation, the instance is disposed and will be recreated as soon as the factory comes back.<BR>
+The next snippet shows how to declare an instance in the metadata:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;instance component=<SPAN class="code-quote">&quot;component factory name&quot;</SPAN> name = <SPAN class="code-quote">&quot;instance name&quot;</SPAN> &gt;</SPAN>
+   <SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;a property name&quot;</SPAN> value=<SPAN class="code-quote">&quot;a string form of the value&quot;</SPAN>/&gt;</SPAN>
+   <SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;another prop name&quot;</SPAN> value=<SPAN class="code-quote">&quot;the string form value &quot;</SPAN>/&gt;</SPAN>
+<SPAN class="code-tag">&lt;/instance&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>An instance declaration must contain the 'component' attribute. This attribute specifies the factory name (i.e. the component type). It can use either the factory name or the class name. The 'name' attribute allows setting the instance name. If not set, iPOJO will generate a unique name for you. Then, instances can declare properties. Those property are mostly key-value pair.  The key refer to a property name from the component type declaration such as in:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;component className=<SPAN class="code-quote">&quot;...&quot;</SPAN> name=<SPAN class="code-quote">&quot;my-factory&quot;</SPAN>&gt;</SPAN>
+    <SPAN class="code-tag">&lt;properties&gt;</SPAN>
+        <SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;foo&quot;</SPAN> field=<SPAN class="code-quote">&quot;m_foo&quot;</SPAN>/&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/properties&gt;</SPAN>
+<SPAN class="code-tag">&lt;/component&gt;</SPAN>
+<SPAN class="code-tag">&lt;instance component=<SPAN class="code-quote">&quot;my-factory &quot;</SPAN>&gt;</SPAN>
+   <SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;foo&quot;</SPAN> value=<SPAN class="code-quote">&quot;bla bla bla&quot;</SPAN>/&gt;</SPAN>
+<SPAN class="code-tag">&lt;/instance&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>The string-form of the property value will be use to create the real object at runtime. If an unacceptable configuration is set, the instance is not created, and an error message appears to the console (and in the Log Service if present).<BR>
+Instance declaration properties can be more complex than only 'key-value'. It can contains structure like list, map, dictionary and arrays such as in:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;instance component=<SPAN class="code-quote">&quot;a.factory&quot;</SPAN> name=<SPAN class="code-quote">&quot;complex-props&quot;</SPAN>&gt;</SPAN>
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!--Creates a string array--&gt;</SPAN></SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;array&quot;</SPAN> type=<SPAN class="code-quote">&quot;array&quot;</SPAN>&gt;</SPAN> 
+		<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;a&quot;</SPAN>/&gt;</SPAN>
+		<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;b&quot;</SPAN>/&gt;</SPAN>
+	<SPAN class="code-tag">&lt;/property&gt;</SPAN>
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!--Creates a list containing string--&gt;</SPAN></SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;list&quot;</SPAN> type=<SPAN class="code-quote">&quot;list&quot;</SPAN>&gt;</SPAN> 
+		<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;a&quot;</SPAN>/&gt;</SPAN>
+		<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;b&quot;</SPAN>/&gt;</SPAN>
+	<SPAN class="code-tag">&lt;/property&gt;</SPAN>
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!--Creates a dictionary containing string--&gt;</SPAN></SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;dict&quot;</SPAN> type=<SPAN class="code-quote">&quot;dictionary&quot;</SPAN>&gt;</SPAN>
+		<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;a&quot;</SPAN> value=<SPAN class="code-quote">&quot;a&quot;</SPAN>/&gt;</SPAN>
+		<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;b&quot;</SPAN> value=<SPAN class="code-quote">&quot;b&quot;</SPAN>/&gt;</SPAN>
+	<SPAN class="code-tag">&lt;/property&gt;</SPAN>
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!--Creates a map containing string--&gt;</SPAN></SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;map&quot;</SPAN> type=<SPAN class="code-quote">&quot;map&quot;</SPAN>&gt;</SPAN> 
+		<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;a&quot;</SPAN> value=<SPAN class="code-quote">&quot;a&quot;</SPAN>/&gt;</SPAN>
+		<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;b&quot;</SPAN> value=<SPAN class="code-quote">&quot;b&quot;</SPAN>/&gt;</SPAN>
+	<SPAN class="code-tag">&lt;/property&gt;</SPAN>
+<SPAN class="code-tag"><SPAN class="code-comment">&lt;!--A complex type can contains any other complex objects:--&gt;</SPAN></SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;complex-array&quot;</SPAN> type=<SPAN class="code-quote">&quot;array&quot;</SPAN>&gt;</SPAN>
+		<SPAN class="code-tag">&lt;property type=<SPAN class="code-quote">&quot;list&quot;</SPAN>&gt;</SPAN>
+			<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;a&quot;</SPAN>/&gt;</SPAN>
+			<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;b&quot;</SPAN>/&gt;</SPAN>
+		<SPAN class="code-tag">&lt;/property&gt;</SPAN>
+		<SPAN class="code-tag">&lt;property type=<SPAN class="code-quote">&quot;list&quot;</SPAN>&gt;</SPAN>
+			<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;c&quot;</SPAN>/&gt;</SPAN>
+			<SPAN class="code-tag">&lt;property value=<SPAN class="code-quote">&quot;d&quot;</SPAN>/&gt;</SPAN>
+		<SPAN class="code-tag">&lt;/property&gt;</SPAN>
+	<SPAN class="code-tag">&lt;/property&gt;</SPAN>
+	<SPAN class="code-tag"><SPAN class="code-comment">&lt;!--Empty structures will create empty objects--&gt;</SPAN></SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;empty-array&quot;</SPAN> type=<SPAN class="code-quote">&quot;array&quot;</SPAN>/&gt;</SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;empty-list&quot;</SPAN> type=<SPAN class="code-quote">&quot;list&quot;</SPAN>/&gt;</SPAN>
+	<SPAN class="code-tag">&lt;property name=<SPAN class="code-quote">&quot;empty-map&quot;</SPAN> type=<SPAN class="code-quote">&quot;map&quot;</SPAN>/&gt;</SPAN>
+<SPAN class="code-tag">&lt;/instance&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<DIV class="panelMacro"><TABLE class="infoMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="https://cwiki.apache.org/confluence/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>Instance name and factory name</B><BR>The <TT>instance.name</TT> and <TT>factory.name</TT> property should not be set directly. iPOJO will manage those properties. The <TT>instance.name</TT> is simply created from the <TT>instance.name</TT> attribute of the instance declaration or from the <TT>factory-name</TT>-X where X is an integer.</TD></TR></TABLE></DIV>
+
+<H2><A name="How-touseiPOJOfactories-Creating%2CdisposingandreconfiguringinstanceswiththeAPI"></A>Creating, disposing and reconfiguring instances with the API</H2>
+<P>A public factory is accessible through an exposed service (<A href="http://felix.apache.org/ipojo/api/1.2.0/org/apache/felix/ipojo/Factory.html" class="external-link" rel="nofollow">org.apache.felix.ipojo.Factory </A>). This service is accessible as any other OSGi service, and could be an iPOJO dependency using a LDAP filter or the 'from' attribute such as in:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;component classname=<SPAN class="code-quote">&quot;...&quot;</SPAN>&gt;</SPAN>
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- These two requirement descriptions are equivalent --&gt;</SPAN></SPAN>
+	<SPAN class="code-tag">&lt;requires field=<SPAN class="code-quote">&quot;a_field&quot;</SPAN> filter=<SPAN class="code-quote">&quot;(factory.name=factory-name)&quot;</SPAN>/&gt;</SPAN>
+	<SPAN class="code-tag">&lt;requires field=<SPAN class="code-quote">&quot;another_field&quot;</SPAN> from=<SPAN class="code-quote">&quot;another-factory&quot;</SPAN>/&gt;</SPAN>
+<SPAN class="code-tag">&lt;/component&gt;</SPAN>
+</PRE>
+</DIV></DIV> 
+<H3><A name="How-touseiPOJOfactories-Creatinginstances"></A>Creating instances</H3>
+<P>Once you have a reference on the factory you can create instance with the 'createComponentInstance' method.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ComponentInstance createComponentInstance(java.util.Dictionary configuration)
+                                          <SPAN class="code-keyword">throws</SPAN> UnacceptableConfiguration,
+                                                 MissingHandlerException,
+                                                 ConfigurationException
+</PRE>
+</DIV></DIV>
+<P>This method returns a reference on the created instance. As you see, the method receives a dictionary containing the instance configuration. This configuration contains key-value pairs. However, values are either object (of the adequate type) of String used to create objects. This configuration can be 'null' if no properties have to be pushed.</P>
+
+<DIV class="panelMacro"><TABLE class="infoMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="https://cwiki.apache.org/confluence/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>Instance Name</B><BR>The 'instance.name' property can be used to specify the instance name.</TD></TR></TABLE></DIV>
+
+<P>Instances are automatically started when created. However, the instance can be invalid, if at least one handler is not valid). <BR>
+The instance creation process can fail. Three exceptions can be thrown during the creation:</P>
+<UL>
+	<LI>UnacceptableConfiguration means that mandatory properties are missing in the instance configuration</LI>
+	<LI>MissingHandlerException means that the factory is not valid (i.e. an external handler is missing)</LI>
+	<LI>ConfigurationException means that the instance configuration has failed. The cause can be either an issue in the component type description or an invalid property type.</LI>
+</UL>
+
+
+
+<P>If an error occurs, a comprehensive message is reported in order to solve the issue.<BR>
+The next snippet shows an example of instance creation:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+  	<SPAN class="code-comment">// Assume we get a Factory in the fact field
+</SPAN>        Properties props = <SPAN class="code-keyword">new</SPAN> Properties();
+        props.put(<SPAN class="code-quote">&quot;instance.name&quot;</SPAN>,<SPAN class="code-quote">&quot;instance-name&quot;</SPAN>);
+        props.put(<SPAN class="code-quote">&quot;foo&quot;</SPAN>, <SPAN class="code-quote">&quot;blablabla&quot;</SPAN>);
+        <SPAN class="code-keyword">try</SPAN> {
+            instance = fact.createComponentInstance(props);
+        } <SPAN class="code-keyword">catch</SPAN>(Exception e) {
+           fail(<SPAN class="code-quote">&quot;Cannot create the instance : &quot;</SPAN> + e.getMessage());
+        }
+</PRE>
+</DIV></DIV>
+
+<H3><A name="How-touseiPOJOfactories-Disposingcreatedinstance"></A>Disposing created instance</H3>
+<P>You can only disposed instances that you created. To dispose an instance, just call the 'dispose' method on the ComponentInstance object (returned by the createComponentInstance method).</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+instance.dispose();
+</PRE>
+</DIV></DIV>
+
+<H3><A name="How-touseiPOJOfactories-Reconfiguringinstance"></A>Reconfiguring instance</H3>
+<P>To reconfigure an instance, call the 'reconfigure' method on the ComponentInstance object. This method receives the new set of properties. Be aware that the 'instance.name' property cannot be changed.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+Properties props2 = <SPAN class="code-keyword">new</SPAN> Properties();
+props2.put(<SPAN class="code-quote">&quot;foo&quot;</SPAN>, <SPAN class="code-quote">&quot;abc&quot;</SPAN>);
+instance.reconfigure(props2);
+</PRE>
+</DIV></DIV>
+
+<H3><A name="How-touseiPOJOfactories-Accessingservicesexposedbycreatedinstances"></A>Accessing services exposed by created instances</H3>
+<P>You can obviously access services exposed by an instance that you create. <BR>
+To do this just use the OSGi API and the bundle context in order to query service references in the service registry such as in</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+    ComponentInstance instance = ...
+    <SPAN class="code-comment">// ... 
+</SPAN>    <SPAN class="code-keyword">try</SPAN> {
+        ServiceReference[] refs = 
+              context.getServiceReferences(YourServiceInterface.class.getName(), 
+              <SPAN class="code-quote">&quot;(instance.name=&quot;</SPAN> + instance.getInstanceName() +<SPAN class="code-quote">&quot;)&quot;</SPAN>);
+        <SPAN class="code-keyword">if</SPAN> (refs != <SPAN class="code-keyword">null</SPAN>) {
+            Foo your_object = (Foo) context.getService(refs[0]);
+        }
+    } <SPAN class="code-keyword">catch</SPAN> (InvalidSyntaxException e) {
+        <SPAN class="code-comment">// Should not happen
+</SPAN>    }
+</PRE>
+</DIV></DIV>
+
+<P>The LDAP filter allows selecting the service provided by your instance. Be care that this service can be not accessible if the instance is not valid. Once you get the service reference, you can ask the service registry to get the service object (i.e. the object contained in your instance). </P>
+
+<P>If your instance does not provide services, you can access to the instance by following principles illustrated in the next snippet:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+    <SPAN class="code-keyword">if</SPAN> (instance.getState() == ComponentInstance.VALID) {
+       ImplementationClass object = 
+          (ImplementationClass) ((InstanceManager) instance).getPojoObject();
+    } <SPAN class="code-keyword">else</SPAN> {
+       <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Cannot get an implementation object from an invalid instance&quot;</SPAN>);
+    }
+</PRE>
+</DIV></DIV>
+<P>Take care to check the instance state before accessing the object. Indeed, the behavior of an invalid instance is not guaranty. The 'getPojoObject' method will return an already created implementation (pojo) object or create a new one (if none already created).</P>
+
+
+<H2><A name="How-touseiPOJOfactories-HowtousetheManagedServiceFactorytocreate%2Cdisposedandreconfigureinstances"></A>How to use the ManagedServiceFactory to create, disposed and reconfigure instances</H2>
+<P>The principle of the ManagedServiceFactory is the same as the iPOJO Factory Service. So, you can create, dispose and reconfigure instances with the Configuration Admin. For further information, read the OSGi R4.x Compendium - Configuration Admin chapter.<BR>
+Be aware that the <TT>updated</TT> method is used both for instance creation (if the given configuration is new) and to reconfigure an existing instance. The <TT>deleted</TT> method is used to dispose instances.
+<BR class="atl-forced-newline">
+<BR class="atl-forced-newline"></P>
+
+ </DIV>
+        <IMG src="http://felix.apache.org/ipojo/site/footer.png" class="footer">
+</DIV>
+
+<SCRIPT type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</SCRIPT>
+<SCRIPT type="text/javascript">
+try{
+var pageTracker = _gat._getTracker("UA-1518442-4");
+pageTracker._trackPageview();
+} catch(err) {}
+</SCRIPT>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by clement.escoffier on 2009-12-27 09:07:27.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

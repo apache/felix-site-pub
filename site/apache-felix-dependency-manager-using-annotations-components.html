@@ -1,0 +1,472 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Dependency Manager - Using Annotations - Components</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-AnnotationsWritingComponents"></A>Annotations - Writing Components</H1>
+
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-ComponentTypes"></A>Component Types</H2>
+
+<P>Before diving into all annotations, we must first introduce the  different types of components DependencyManager is supporting. In  Dependency Manager, you may use the following types of components,  depending on what you need:</P>
+
+
+<UL>
+	<LI><B>Component</B>: Components are the main building blocks for OSGi applications. They can publish themselves as a service, and/or they can have dependencies. These dependencies will influence their life cycle as component will only be activated when all required dependencies are available.</LI>
+</UL>
+
+
+<UL>
+	<LI><B>Aspect Service</B>: A service that provides a non-functional aspect on top of an existing service. In aspect oriented programming, an aspect, or interceptor can sit between a client and another target service used by the client. An Aspect Service first tracks a target service and is created once the target service is detected. Then the Aspect Service is provided, but with a higher  ranking, and the client is transparently updated with the aspect. Aspects can be chained and may apply to the same target service (and in this case, the ranking of the Aspect service is used to chain aspects in  the proper order).</LI>
+</UL>
+
+
+<UL>
+	<LI><B>Adapter Service</B>: A Service that adapts another existing service into a new one. Like with aspects, sometimes you want to create adapters for certain services, which add certain behavior that results in the publication of (in this case) a different service. Adapters can dynamically be added and removed and allow you to keep your basic services implementations clean and simple, adding extra features on top of them in a modular way.</LI>
+</UL>
+
+
+<P>Now we have introduced the different types of components, here is the list of annotations, allowing to declare DependencyManager service components:</P>
+
+<UL>
+	<LI><B>@Component:</B> for declaring a Component that eventually publishes a singleton OSGi service as long as its dependencies are resolved.</LI>
+	<LI><B>@AspectService</B>: provides a non-functional aspect on top of an existing service.</LI>
+	<LI><B>@AdapterService</B>: creates an OSGi service that adapts another existing service into a new interface.</LI>
+	<LI><B>@BundleAdapterService</B>: creates an OSGi service a service on top of a given bundle.</LI>
+	<LI><B>@ResourceAdapterService</B>: creates an OSGi service on top of a specific Resource.</LI>
+	<LI><B>@FactoryConfigurationAdapterService</B>: creates an OSGi service from ConfigAdmin, using a factoryPid, and a ManagedServiceFactory.</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-@Component"></A>@Component</H2>
+
+<P>This annotation annotates an implementation class that optionally publishes an OSGi service, and optionally has some dependencies, with a managed lifecycle. The annotation has the following attributes:</P>
+
+<UL>
+	<LI><B>provides</B>: By default, the component is registered into the OSGi registry under all directly implemented interfaces. If no interfaces are implemented, then the component is not registered, but it still has a managed lifecycle, and may have some dependencies. If you need to  explicitly define the list of interfaces (or classes) under which the  component must be registered in the OSGi registry, then use the <EM>provides</EM> attribute. You can also set this property to an empty array of classes  if you don't want at all your component to be exposed in the OSGi  registry (even if it implements some interfaces).</LI>
+	<LI><B>properties</B>: enumerates the list of properties that are part of the Service exposed by the component in the OSGi Registry. Each property is defined using the @Property annotation, which represents a  key/value pair. When a value is actually an array of strings, then the <EM>values</EM> attribute of the @Property annotation can be used. This attribute  is not the only way to specify OSGi Service properties (see Setting Service properties in the lifecycle section).</LI>
+	<LI><B>factoryMethod</B>: may match a static method name from the annotated class which can be used to instantiate the component instance. Normally, DependencyManager instantiates the component using its class name, and with the default constructor of the class, but there are some cases where it is required to take control of  how the component is created. For instance, this method may be used to create the component as a dynamic proxy ...</LI>
+	<LI><B>factorySet</B>: The component factory ID. By default, a component is automatically instantiated as a singleton when the bundle is started, and when all required dependencies are satisfied. But when a component must be created, configured, or disposed dynamically, and when multiple instances of the same component are needed, a factorySet should  be used. When you use this attribute, a java.util.Set&lt;Dictionary&gt;  object is registered into the OSGi regitry, with a specific <B><EM>dm.factory.name</EM></B> property matching the ID you specify in the attribute. This Set&lt;Dictionary&gt; will act as a Factory API, and another component may define a dependency on this Set and add some configuration dictionaries in  it, in order to fire some component instantiation/activation. There is one component instantiated per added dictionary, which is passed to component instances via a configurable callback method (using the <B><EM>factoryConfigure</EM></B> attribute). All public properties will be propagated  along with eventual published service. A public property is a property  which does not start with a dot (&quot;.&quot;). Properties starting with a dot are considered private to the component, and won't be propagated to published service. This model is actually similar to the Declarative Service &quot;Component Factories&quot; concept, except that you don't have a dependency on a specific API, but rather on a basic jdk class  (java.util.Set&lt;Dictionary&gt;). Notice that, unlike in Declarative Service, the component factory is provided once the component bundle is started, even if required dependencies are not satisfied. This is useful when the component want  to dynamically configure its dependency filters. So, to summarize:
+	<UL>
+		<LI>Each time a new Dictionary is added into the Set, then a new instance of the annotated component will be instantiated, and this dictionary is passed to the component callback specified with the factoryConfigure attribute.</LI>
+		<LI>Each time an existing Dictionary is re-added into the Set, then the corresponding component instance is updated, and the updated dictionary is also passed to the callback specified in the factoryConfigure attribute.</LI>
+		<LI>Each time an existing Dictionary is removed from the Set, then the  corresponding component instance will be stopped and destroyed.</LI>
+	</UL>
+	</LI>
+	<LI><B>factoryConfigure</B>: Sets the &quot;configure&quot; method name to be called with the factory configuration. This attribute only makes sense if the factorySet() attribute is used. If specified, then this attribute references a component callback method, which is called for providing the configuration supplied by the factory that instantiated this component. The current Service properties will be also updated with all public properties (which don't start with a dot).</LI>
+</UL>
+
+
+<P>Usage example:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ /**
+   * This component will be activated once the bundle is started and when all required dependencies
+   * are available.
+   */
+ @Component
+&nbsp;class X <SPAN class="code-keyword">implements</SPAN> Z {
+     @ConfigurationDependency(pid=<SPAN class="code-quote">&quot;MyPid&quot;</SPAN>)
+     void configure(Dictionary conf) {
+          <SPAN class="code-comment">// Configure or reconfigure our service.
+</SPAN>     }
+
+     @Start
+     void start() {
+         <SPAN class="code-comment">// Our component is starting and is about to be registered in the OSGi registry as a Z service.
+</SPAN>     }
+
+     <SPAN class="code-keyword">public</SPAN> void doService() {
+         <SPAN class="code-comment">// ...
+</SPAN>     }
+ }
+
+</PRE>
+</DIV></DIV>
+<P>Example using a factorySet, where the X component is instantiated/updated/disposed by another Y component:</P>
+
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+  @Component(factorySet=<SPAN class="code-quote">&quot;MyComponentFactory&quot;</SPAN>, factoryConfigure=<SPAN class="code-quote">&quot;configure&quot;</SPAN>)
+  class X <SPAN class="code-keyword">implements</SPAN> Z {
+      void configure(Dictionary conf) {
+          <SPAN class="code-comment">// Configure or reconfigure our component. The conf is provided by the factory,
+</SPAN>          <SPAN class="code-comment">// and all <SPAN class="code-keyword">public</SPAN> properties (which don't start with a dot) are propagated with the
+</SPAN>          <SPAN class="code-comment">// Service properties eventually specified in the properties annotation attribute.
+</SPAN>      }
+
+      @ServiceDependency
+      void bindOtherService(OtherService other) {
+          <SPAN class="code-comment">// store <SPAN class="code-keyword">this</SPAN> require dependency
+</SPAN>      }
+
+      @Start
+      void start() {
+          <SPAN class="code-comment">// Our component is starting and is about to be registered in the OSGi registry as a Z service.
+</SPAN>      }
+
+      <SPAN class="code-keyword">public</SPAN> void doService() {
+          <SPAN class="code-comment">// ... part of Z <SPAN class="code-keyword">interface</SPAN>
+</SPAN>      }
+  }
+
+  /**
+    * This class will instantiate some X component instances
+    */
+  @Component
+  class Y {
+      @ServiceDependency(filter=<SPAN class="code-quote">&quot;(dm.factory.name=MyComponentFactory)&quot;</SPAN>)
+      Set&lt;Dictionary&gt; _XFactory; <SPAN class="code-comment">// This Set acts as a Factory API <SPAN class="code-keyword">for</SPAN> creating X component instances.
+</SPAN>
+      @Start
+      void start() {
+          <SPAN class="code-comment">// Instantiate a X component instance
+</SPAN>          Dictionary x1 = <SPAN class="code-keyword">new</SPAN> Hashtable() {{ put(<SPAN class="code-quote">&quot;foo&quot;</SPAN>, <SPAN class="code-quote">&quot;bar1&quot;</SPAN>); }};
+          _XFactory.add(x1);
+
+          <SPAN class="code-comment">// Instantiate another X component instance
+</SPAN>          Dictionary x2 = <SPAN class="code-keyword">new</SPAN> Hashtable() {{ put(<SPAN class="code-quote">&quot;foo&quot;</SPAN>, <SPAN class="code-quote">&quot;bar2&quot;</SPAN>); }};
+          _XFactory.add(x2);
+
+          <SPAN class="code-comment">// Update the first X component instance
+</SPAN>          x1.put(<SPAN class="code-quote">&quot;foo&quot;</SPAN>, <SPAN class="code-quote">&quot;bar1_modified&quot;</SPAN>);
+          _XFactory.add(x1);
+
+          <SPAN class="code-comment">// Destroy all components (Notice that invoking _XFactory.clear() also destroys every X instances)
+</SPAN>          _XFactory.remove(x1);
+          _XFactory.remove(x2);
+      }
+  }
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-@AspectService"></A>@AspectService</H2>
+
+<P>Aspects allow you to define an interceptor, or chain of interceptors for a service (to add features like caching or logging, etc ...). The dependency manager intercepts the original service, and allows you to execute some code before invoking the original service ... The aspect will be applied to any service that matches the specified interface and filter and will be registered with the same interface and properties as the original service, plus any extra properties you supply here. It will also inherit all dependencies, and if you declare the original service as a member it will be injected.</P>
+
+<P>Annotation attributes:</P>
+
+<UL>
+	<LI><B>ranking</B>: Sets the ranking of this aspect. Since aspects are chained, the ranking defines the order in which they are chained. Chain ranking is implemented as a service ranking so service lookups automatically retrieve the top of the chain.</LI>
+	<LI><B>service</B>: Sets the service interface to apply the aspect to. By default, the directly implemented interface is used.</LI>
+	<LI><B>filter</B>: Sets the filter condition to use with the service interface this aspect is applying to.</LI>
+	<LI><B>properties</B>: Sets Additional properties to use with the aspect service registration.</LI>
+	<LI><B>field</B>: Sets the field name where to inject the original service. By default, the original service is injected in any attributes in the aspect implementation that are of the same type as the aspect interface.</LI>
+	<LI><B>factoryMethod</B>: Sets the static method used to create the AspectService implementation instance. The default constructor of the annotated class is used. The factoryMethod can be used to provide a specific aspect implements, like a DynamicProxy.</LI>
+</UL>
+
+
+<P>Usage example:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ @AspectService(ranking=10), properties={@Property(name=<SPAN class="code-quote">&quot;param&quot;</SPAN>, value=<SPAN class="code-quote">&quot;value&quot;</SPAN>)})
+ class AspectService <SPAN class="code-keyword">implements</SPAN> InterceptedService {
+     <SPAN class="code-comment">// The service we are intercepting (injected by reflection)
+</SPAN>     <SPAN class="code-keyword">protected</SPAN> InterceptedService intercepted;
+   
+     <SPAN class="code-keyword">public</SPAN> void doWork() {
+        intercepted.doWork();
+     }
+ }
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-@AdapterService"></A>@AdapterService</H2>
+
+<P>Adapters, like with @AspectService, are used to &quot;extend&quot; existing services, and can publish different services based on the existing one. An example would be implementing a management interface for an existing service, etc .... When you annotate an adapter class with the @AdapterService annotation, it will be applied to any service that matches the implemented interface and filter. The adapter will be registered with the specified interface and existing properties from the original service plus any extra properties you supply here. If you declare the original service as a member it will be injected. </P>
+
+<P>Annotation attributes:</P>
+
+<UL>
+	<LI><B>adapteeService</B>: Sets the adaptee service interface this adapter is applying to.</LI>
+	<LI><B>provides</B>: Sets the adapter service interface(s). By default, the directly implemented interface(s) is (are) used.</LI>
+	<LI><B>properties</B>: Sets some additional properties to use with the adapter service registration. By default, the adapter will inherit all adaptee service properties.</LI>
+	<LI><B>adapteeFilter</B>: Sets the filter condition to use with the adapted service interface.</LI>
+	<LI><B>factoryMethod</B>: Sets the static method used to create the adapter service implementation instance. By default, the default constructor of the annotated class is used.</LI>
+</UL>
+
+
+<P>Usage example: Here, the AdapterService is registered into the OSGI registry each time an AdapteeService is found from the registry. The AdapterImpl class adapts the AdapteeService to the AdapterService. The AdapterService will also have a service property (param=value), and will also include eventual service properties found from the AdapteeService:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ @AdapterService(adapteeService = AdapteeService.class, properties={@Property(name=<SPAN class="code-quote">&quot;param&quot;</SPAN>, value=<SPAN class="code-quote">&quot;value&quot;</SPAN>)})
+ class AdapterImpl <SPAN class="code-keyword">implements</SPAN> AdapterService {
+     <SPAN class="code-comment">// The service we are adapting (injected by reflection)
+</SPAN>     <SPAN class="code-keyword">protected</SPAN> AdapteeService adaptee;
+   
+     <SPAN class="code-keyword">public</SPAN> void doWork() {
+        adaptee.mehod1();
+        adaptee.method2();
+     }
+ }
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-@BundleAdapterService"></A>@BundleAdapterService</H2>
+
+<P>Bundle adapters are similar to AdapterService, but instead of adapting a service, they adapt a bundle with a certain set of states (STARTED|INSTALLED|...), and provide a service on top of it.</P>
+
+<P>The bundle adapter will be applied to any bundle that matches the specified bundle state mask and filter conditions, which may match some of the bundle OSGi manifest headers. For each matching bundle an adapter will be created based on the adapter implementation class. The adapter will be registered with the specified interface and with service properties found from the original bundle OSGi manifest headers plus any extra properties you supply here. If you declare the original bundle as a member it will be injected. </P>
+
+<P>Annotation attributes:</P>
+
+<UL>
+	<LI><B>filter</B>: The filter used to match some OSGi manifest headers from a given bundle.</LI>
+	<LI><B>provides</B>: The interface(s) to use when registering adapters. By default, the interface(s) directly implemented by the annotated class is (are) used.</LI>
+	<LI><B>properties</B>: Additional properties to use with the service registration.</LI>
+	<LI><B>stateMask</B>: the bundle state mask to apply. The mask is made up of the flags provided by the org.osgi.framework.Bundle states (UNINSTALLED | INSTALLED | RESOLVED | STARTING | STARTED | ACTIVE).</LI>
+	<LI><B>propagate</B>: Specifies if manifest headers from the bundle should be propagated to the exposed service properties.</LI>
+	<LI><B>factoryMethod</B>: Sets the static method used to create the BundleAdapterService implementation instance.</LI>
+</UL>
+
+
+<P>Usage Examples</P>
+
+<P>In the following example, a &quot;VideoPlayer&quot; Service is registered into the OSGi registry each time an active bundle containing a &quot;Video-Path&quot; manifest header is detected:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ @BundleAdapterService(filter = <SPAN class="code-quote">&quot;(Video-Path=*)&quot;</SPAN>, stateMask = Bundle.ACTIVE, propagate=<SPAN class="code-keyword">true</SPAN>)
+ <SPAN class="code-keyword">public</SPAN> class VideoPlayerImpl <SPAN class="code-keyword">implements</SPAN> VideoPlayer {
+     Bundle bundle; <SPAN class="code-comment">// Injected by reflection
+</SPAN>         
+     void play() {
+         URL mpegFile = bundle.getEntry(bundle.getHeaders().get(<SPAN class="code-quote">&quot;Video-Path&quot;</SPAN>));
+         <SPAN class="code-comment">// play the video provided by the bundle ...
+</SPAN>     }
+       
+     void stop() {}
+ }
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-@ResourceAdapterService"></A>@ResourceAdapterService</H2>
+
+<P>Resource adapters are things that adapt a resource instead of a service, and provide an adapter service on top of this resource. Resources are an abstraction that is introduced by the dependency manager, represented as a URL. They can be implemented to serve resources embedded in bundles, somewhere on a file system or in an http content repository server, or database.</P>
+
+<P>The adapter will be applied to any resource that matches the specified filter condition, which can match some part of the resource URL (with &quot;path&quot;, &quot;protocol&quot;, &quot;port&quot;, or &quot;host&quot; filters). For each matching resource an adapter will be created based on the adapter implementation class. The adapter will be registered with the specified interface and with any extra service properties you supply here. Moreover, the following service properties will be propagated from the resource URL:</P>
+
+<UL>
+	<LI><B>host</B>: this property exposes the host part of the resource URL</LI>
+	<LI><B>path</B>: the resource URL path</LI>
+	<LI><B>protocol</B>: the resource URL protocol</LI>
+	<LI><B>port</B>: the resource URL port</LI>
+</UL>
+
+
+<P>Usage Examples:</P>
+
+<P>Here, the &quot;VideoPlayer&quot; service provides a video service on top of any movie resources, with service properties &quot;host&quot;/&quot;port&quot;/&quot;protocol&quot;/&quot;path&quot; extracted from the resource URL:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">     
+ @ResourceAdapterService(filter = <SPAN class="code-quote">&quot;(&amp;(path=/videos/*.mkv)(host=localhost))&quot;</SPAN>, propagate = <SPAN class="code-keyword">true</SPAN>)
+ <SPAN class="code-keyword">public</SPAN> class VideoPlayerImpl <SPAN class="code-keyword">implements</SPAN> VideoPlayer {
+     <SPAN class="code-comment">// Injected by reflection
+</SPAN>     URL resource;
+         
+     void play() {} <SPAN class="code-comment">// play video referenced by <SPAN class="code-keyword">this</SPAN>.resource     
+</SPAN>     void stop() {} <SPAN class="code-comment">// stop playing the video
+</SPAN>     void transcode() {} <SPAN class="code-comment">// ...
+</SPAN> }
+</PRE>
+</DIV></DIV>     
+
+
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-Components-@FactoryConfigurationAdapterService"></A>@FactoryConfigurationAdapterService</H2>
+
+<P>Annotates a class that acts as a Factory Configuration Adapter Service. For each new Config Admin factory configuration matching the specified factoryPid, an instance of this service will be created. The adapter will be registered with the specified interface, and with the specified adapter service properties. Depending on the propagate parameter, every public factory configuration properties (which don't start with &quot;.&quot;) will be propagated along with the adapter service properties.</P>
+
+<P>Like in @ConfigurationDependency, you can optionally specify the meta types of your configurations for Web Console GUI customization (configuration heading/descriptions/default values/etc ...). </P>
+
+<P>Annotation attributes:</P>
+
+<UL>
+	<LI><B>provides</B>: The interface(s) to use when registering adapters. By default, directly implemented interfaces will be registered in the OSGi registry.</LI>
+	<LI><B>properties</B>: Adapter Service properties. Notice that public factory configuration is also registered in service properties, (only if propagate is true). Public factory configuration properties are those which don't starts with a dot (&quot;.&quot;).</LI>
+	<LI><B>factoryPid</B>: Returns the factory pid whose configurations will instantiate the annotated service class. (By default, the pid is the service class name).</LI>
+	<LI><B>updated</B>: The Update method to invoke (defaulting to &quot;updated&quot;), when a factory configuration is created or updated</LI>
+	<LI><B>propagate</B>: Returns true if the configuration properties must be published along with the service. Any additional service properties specified directly are merged with these.</LI>
+	<LI><B>heading</B>: The label used to display the tab name (or section) where the properties are displayed. Example: &quot;Printer Service&quot;.</LI>
+	<LI><B>description</B>: A human readable description of the PID this annotation is associated with. Example: &quot;Configuration for the PrinterService bundle&quot;.</LI>
+	<LI><B>factoryMethod</B>: Sets the static method used to create the adapter instance.</LI>
+	<LI><B>metadata</B>: an array of  &quot;PropertyMetaData[]&quot; annotations, specifying property types used to expose properties in web console</LI>
+</UL>
+
+
+<P>PropertyMetaData anotation attribute: </P>
+
+<UL>
+	<LI><B>description</B>: Returns the property description. The description may be localized and must describe the semantics of this type and any constraints. Example: &quot;Select the log level for the Printer Service&quot;.</LI>
+	<LI><B>type</B>: Return the property primitive type (java.lang.String.class by default). If must be either one of the following types:
+	<UL>
+		<LI>String.class</LI>
+		<LI>Long.class</LI>
+		<LI>Integer.class</LI>
+		<LI>Character.class</LI>
+		<LI>Byte.class</LI>
+		<LI>Double.class</LI>
+		<LI>Float.class</LI>
+		<LI>Boolean.class</LI>
+	</UL>
+	</LI>
+	<LI><B>defaults</B>: Return a default for this property. The object must be of the appropriate type as defined by the cardinality and getType(). The return type is a list of String objects that can be converted to the appropriate type. The cardinality of the return array must follow the absolute cardinality of this type. E.g. if the cardinality = 0, the array must contain 1 element. If the cardinality is 1, it must contain 0 or 1 elements. If it is -5, it must contain from 0 to max 5 elements. Note that the special case of a 0 cardinality, meaning a single value, does not allow arrays or vectors of 0 elements.</LI>
+	<LI><B>cardinality</B>: Return the cardinality of this property (0 by default). The OSGi environment handles multi valued properties in arrays ([]) or in Vector objects. The return value is defined as follows:
+	<UL>
+		<LI>x = Integer.MIN_VALUE no limit, but use Vector</LI>
+		<LI>x &lt; 0 -x = max occurrences, store in Vector</LI>
+		<LI>x &gt; 0 x = max occurrences, store in array []</LI>
+		<LI>x = Integer.MAX_VALUE no limit, but use array []</LI>
+		<LI>x = 0 1 occurrence required</LI>
+	</UL>
+	</LI>
+	<LI><B>required</B>: Tells if this property is required or not.</LI>
+	<LI><B>optionLabels</B>: Return a list of valid option labels for this property. The purpose of this method is to allow menus with localized labels. It is associated with the <EM>optionValues</EM> attribute. The labels returned here are ordered in the same way as the <EM>optionValues</EM> attribute values.</LI>
+	<LI><B>optionValues</B>: Return a list of option values that this property can take. This list must be in the same sequence as the <EM>optionLabels</EM> attribute.</LI>
+</UL>
+
+
+<P>Usage Examples<BR>
+Here, a &quot;Dictionary&quot; service instance is instantiated for each existing factory configuration instances matching the factory pid &quot;DictionaryServiceFactory&quot;.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+     @FactoryConfigurationAdapterService(factoryPid=<SPAN class="code-quote">&quot;DictionaryServiceFactory&quot;</SPAN>, updated=<SPAN class="code-quote">&quot;updated&quot;</SPAN>)
+     <SPAN class="code-keyword">public</SPAN> class DictionaryImpl <SPAN class="code-keyword">implements</SPAN> DictionaryService
+     {
+         /**
+          * The key of our config admin dictionary language.
+          */
+         <SPAN class="code-keyword">final</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-object">String</SPAN> LANG = <SPAN class="code-quote">&quot;lang&quot;</SPAN>;
+         
+         /**
+          * The key of our config admin dictionary values.
+          */
+         <SPAN class="code-keyword">final</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-object">String</SPAN> WORDS = <SPAN class="code-quote">&quot;words&quot;</SPAN>;
+         
+         /**
+          * We store all configured words in a thread-safe data structure, because ConfigAdmin
+          * may invoke our updated method at any time.
+          */
+         <SPAN class="code-keyword">private</SPAN> CopyOnWriteArrayList&lt;<SPAN class="code-object">String</SPAN>&gt; m_words = <SPAN class="code-keyword">new</SPAN> CopyOnWriteArrayList&lt;<SPAN class="code-object">String</SPAN>&gt;();
+         
+         /**
+          * Our Dictionary language.
+          */
+         <SPAN class="code-keyword">private</SPAN> <SPAN class="code-object">String</SPAN> m_lang;
+     
+         <SPAN class="code-keyword">protected</SPAN> void updated(Dictionary&lt;<SPAN class="code-object">String</SPAN>, ?&gt; config) {
+             m_lang = (<SPAN class="code-object">String</SPAN>) config.get(LANG);
+             m_words.clear();
+             <SPAN class="code-object">String</SPAN>[] words = (<SPAN class="code-object">String</SPAN>[]) config.get(WORDS);
+             <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">String</SPAN> word : words) {
+                 m_words.add(word);
+             }
+         }   
+         ...
+     }
+</PRE>
+</DIV></DIV>     
+
+<P>Here, this is the same example as above, but using meta types:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+     @FactoryConfigurationAdapterService(
+         factoryPid=<SPAN class="code-quote">&quot;DictionaryServiceFactory&quot;</SPAN>, 
+         propagate=<SPAN class="code-keyword">true</SPAN>, 
+         updated=<SPAN class="code-quote">&quot;updated&quot;</SPAN>,
+         heading=<SPAN class="code-quote">&quot;Dictionary Services&quot;</SPAN>,
+         description=<SPAN class="code-quote">&quot;Declare here some Dictionary instances, allowing to instantiates some DictionaryService services <SPAN class="code-keyword">for</SPAN> a given dictionary language&quot;</SPAN>,
+         metadata={
+             @PropertyMetaData(
+                 heading=<SPAN class="code-quote">&quot;Dictionary Language&quot;</SPAN>,
+                 description=<SPAN class="code-quote">&quot;Declare here the language supported by <SPAN class="code-keyword">this</SPAN> dictionary. &quot;</SPAN> +
+                     <SPAN class="code-quote">&quot;This property will be propagated with the Dictionary Service properties.&quot;</SPAN>,
+                 defaults={<SPAN class="code-quote">&quot;en&quot;</SPAN>},
+                 id=DictionaryImpl.LANG,
+                 cardinality=0),
+             @PropertyMetaData(
+                 heading=<SPAN class="code-quote">&quot;Dictionary words&quot;</SPAN>,
+                 description=<SPAN class="code-quote">&quot;Declare here the list of words supported by <SPAN class="code-keyword">this</SPAN> dictionary. This properties starts with a Dot and won't be propagated with Dictionary OSGi service properties.&quot;</SPAN>,
+                 defaults={<SPAN class="code-quote">&quot;hello&quot;</SPAN>, <SPAN class="code-quote">&quot;world&quot;</SPAN>},
+                 id=DictionaryImpl.WORDS,
+                 cardinality=<SPAN class="code-object">Integer</SPAN>.MAX_VALUE)
+         }
+     )  
+     <SPAN class="code-keyword">public</SPAN> class DictionaryImpl <SPAN class="code-keyword">implements</SPAN> DictionaryService
+     {
+         /**
+          * The key of our config admin dictionary language.
+          */
+         <SPAN class="code-keyword">final</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-object">String</SPAN> LANG = <SPAN class="code-quote">&quot;lang&quot;</SPAN>;
+         
+         /**
+          * The key of our config admin dictionary values.
+          */
+         <SPAN class="code-keyword">final</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-object">String</SPAN> WORDS = <SPAN class="code-quote">&quot;words&quot;</SPAN>;
+         
+         /**
+          * We store all configured words in a thread-safe data structure, because ConfigAdmin
+          * may invoke our updated method at any time.
+          */
+         <SPAN class="code-keyword">private</SPAN> CopyOnWriteArrayList&lt;<SPAN class="code-object">String</SPAN>&gt; m_words = <SPAN class="code-keyword">new</SPAN> CopyOnWriteArrayList&lt;<SPAN class="code-object">String</SPAN>&gt;();
+         
+         /**
+          * Our Dictionary language.
+          */
+         <SPAN class="code-keyword">private</SPAN> <SPAN class="code-object">String</SPAN> m_lang;
+     
+         <SPAN class="code-keyword">protected</SPAN> void updated(Dictionary&lt;<SPAN class="code-object">String</SPAN>, ?&gt; config) {
+             m_lang = (<SPAN class="code-object">String</SPAN>) config.get(LANG);
+             m_words.clear();
+             <SPAN class="code-object">String</SPAN>[] words = (<SPAN class="code-object">String</SPAN>[]) config.get(WORDS);
+             <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">String</SPAN> word : words) {
+                 m_words.add(word);
+             }
+         }
+         
+         ...
+     }
+</PRE>
+</DIV></DIV>     
+
+
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by pderop on 2011-02-07 16:37:12.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

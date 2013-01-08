@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Metatype Service</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-metatype-service.html" target="felix_cwiki">/site/apache-felix-metatype-service.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Metatype Service</h1>
+      <h1 id="apache-felix-metatype-service">Apache Felix Metatype Service</h1>
+<p>The OSGi Metatype specification provides a unified way to describe metadata about services and a Java interface to retrieve and manipulate such information. This information can optionally be localized, thus allowing the developer to provide human-readable metadata descriptions in multiple languages. The specification defines a rich dynamic typing system to describe service attributes in a precise way, which makes it possible to dynamically create user interfaces to configure services.</p>
+<p>The simplest way to specify service metatype information is to add one or more XML files in the <code>OSGI-INF/metatype</code> folder.
+For example, the <code>OSGI-INF/metatype/metatype.xml</code> file included in the <a href="/documentation/subprojects/apache-felix-file-install.html">Apache Felix File Install</a> subproject is as follows:</p>
+<div class="codehilite"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;metatype:MetaData</span> <span class="na">xmlns:metatype=</span><span class="s">&quot;http://www.osgi.org/xmlns/metatype/v1.0.0&quot;</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;OCD</span> <span class="na">description=</span><span class="s">&quot;FileInstaller&quot;</span> <span class="na">name=</span><span class="s">&quot;org.apache.felix.fileinstall&quot;</span> <span class="na">id=</span><span class="s">&quot;org.apache.felix.fileinstall&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;AD</span> <span class="na">name=</span><span class="s">&quot;Poll directory&quot;</span>  <span class="na">id=</span><span class="s">&quot;felix.fileinstall.dir&quot;</span> <span class="na">required=</span><span class="s">&quot;true&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;load&quot;</span><span class="nt">/&gt;</span>   
+    <span class="nt">&lt;AD</span> <span class="na">name=</span><span class="s">&quot;Poll interval&quot;</span>  <span class="na">id=</span><span class="s">&quot;felix.fileinstall.poll&quot;</span> <span class="na">required=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;5000&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;AD</span> <span class="na">name=</span><span class="s">&quot;Debug&quot;</span>  <span class="na">id=</span><span class="s">&quot;felix.fileinstall.debug&quot;</span> <span class="na">required=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;-1&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;AD</span> <span class="na">name=</span><span class="s">&quot;Start new bundles?&quot;</span>  <span class="na">id=</span><span class="s">&quot;felix.fileinstall.bundles.new.start&quot;</span> <span class="na">required=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+
+  <span class="nt">&lt;/OCD&gt;</span>
+
+    <span class="nt">&lt;Designate</span> <span class="na">pid=</span><span class="s">&quot;org.apache.felix.fileinstall&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;Object</span> <span class="na">ocdref=</span><span class="s">&quot;org.apache.felix.fileinstall&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/Designate&gt;</span>
+
+<span class="nt">&lt;/metatype:MetaData&gt;</span>
+</pre></div>
+
+
+<p>The main elements of this simple example are:</p>
+<ul>
+<li><em>OCD</em>, Object Class Definition; contains the information about a set of attributes.</li>
+<li><em>AD</em>, Attribute Definition; describes an attribute (name, description, unique id, type, cardinality, default value, ...).</li>
+<li><em>Designate</em>, defines the association between an Object Class Definition and a pid; the pid can be a reference to a factory or a singleton configuration object.</li>
+</ul>
+<p>The following types are supported by the specification:</p>
+<ul>
+<li>String</li>
+<li>Long</li>
+<li>Double</li>
+<li>Float</li>
+<li>Integer</li>
+<li>Byte</li>
+<li>Char</li>
+<li>Boolean</li>
+<li>Short</li>
+</ul>
+<h2 id="localization">Localization</h2>
+<p>As mentioned before, it is possible to localize metatype information. A good example is the <a href="/documentation/subprojects/apache-felix-web-console.html">Apache Felix Web Console</a> subproject, which includes the following metatype information: </p>
+<div class="codehilite"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+
+<span class="nt">&lt;metatype:MetaData</span> <span class="na">xmlns:metatype=</span><span class="s">&quot;http://www.osgi.org/xmlns/metatype/v1.0.0&quot;</span> <span class="na">localization=</span><span class="s">&quot;OSGI-INF/metatype/metatype&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;OCD</span> <span class="na">id=</span><span class="s">&quot;org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</span> <span class="na">name=</span><span class="s">&quot;%manager.name&quot;</span> <span class="na">description=</span><span class="s">&quot;%manager.description&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;AD</span> <span class="na">id=</span><span class="s">&quot;manager.root&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;/system/console&quot;</span> <span class="na">name=</span><span class="s">&quot;%manager.root.name&quot;</span> <span class="na">description=</span><span class="s">&quot;%manager.root.description&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;AD</span> <span class="na">id=</span><span class="s">&quot;default.render&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;bundles&quot;</span> <span class="na">name=</span><span class="s">&quot;%default.render.name&quot;</span> <span class="na">description=</span><span class="s">&quot;%default.render.description&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;AD</span> <span class="na">id=</span><span class="s">&quot;realm&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;OSGi Management Console&quot;</span> <span class="na">name=</span><span class="s">&quot;%realm.name&quot;</span> <span class="na">description=</span><span class="s">&quot;%realm.description&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;AD</span> <span class="na">id=</span><span class="s">&quot;username&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;admin&quot;</span> <span class="na">name=</span><span class="s">&quot;%username.name&quot;</span> <span class="na">description=</span><span class="s">&quot;%username.description&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;AD</span> <span class="na">id=</span><span class="s">&quot;password&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">default=</span><span class="s">&quot;admin&quot;</span> <span class="na">name=</span><span class="s">&quot;%password.name&quot;</span> <span class="na">description=</span><span class="s">&quot;%password.description&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/OCD&gt;</span>
+
+    <span class="nt">&lt;Designate</span> <span class="na">pid=</span><span class="s">&quot;org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;Object</span> <span class="na">ocdref=</span><span class="s">&quot;org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/Designate&gt;</span>
+
+<span class="nt">&lt;/metatype:MetaData&gt;</span>
+</pre></div>
+
+
+<p>The key elements to write a localized metatype definition are</p>
+<ul>
+<li>The <em>localization</em> attribute, that points to the property file that localize this XML.</li>
+<li>The <em>%</em> notation that specifies a localizable string name.</li>
+<li>One or more property files defining localized strings.</li>
+</ul>
+<p>The following example shows the localization property file of the Web Console:</p>
+<div class="codehilite"><pre><span class="n">manager</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">Management</span> <span class="n">Console</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">Configuration</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">Management</span> <span class="n">Console</span><span class="o">.</span>
+
+<span class="n">manager</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">Root</span> <span class="n">URI</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">The</span> <span class="n">root</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="n">OSGi</span> <span class="n">Management</span> <span class="n">Console</span><span class="o">.</span>
+
+<span class="n">realm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">Realm</span>
+<span class="n">realm</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">The</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">HTTP</span> <span class="n">Authentication</span> <span class="n">Realm</span><span class="o">.</span>
+
+<span class="n">username</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">User</span> <span class="n">Name</span>
+<span class="n">username</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">The</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">user</span> <span class="n">allowed</span> <span class="n">to</span> <span class="n">access</span> <span class="n">the</span> <span class="n">OSGi</span> <span class="o">\</span>
+ <span class="n">Management</span> <span class="n">Console</span><span class="o">.</span> <span class="n">To</span> <span class="n">disable</span> <span class="n">authentication</span> <span class="n">clear</span> <span class="n">this</span> <span class="n">value</span><span class="o">.</span>
+
+<span class="n">password</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">Password</span>
+<span class="n">password</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">The</span> <span class="n">password</span> <span class="k">for</span> <span class="n">the</span> <span class="n">user</span> <span class="n">allowed</span> <span class="n">to</span> <span class="n">access</span> <span class="n">the</span> <span class="n">OSGi</span> <span class="o">\</span>
+ <span class="n">Management</span> <span class="n">Console</span><span class="o">.</span>
+
+<span class="n">default</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">Default</span> <span class="n">Page</span>
+<span class="n">default</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">The</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">default</span> <span class="n">configuration</span> <span class="n">page</span> <span class="o">\</span>
+ <span class="n">when</span> <span class="n">invoking</span> <span class="n">the</span> <span class="n">OSGi</span> <span class="n">Management</span> <span class="n">console</span><span class="o">.</span>
+</pre></div>
+
+
+<h2 id="metatype-service-api">Metatype Service API</h2>
+<p>Before using the Metatype Service API, it's worth noting that this specification is not part of the OSGi core specification, so it's not included in the standard Felix distribution. It is therefore necessary to download and install the additional Metatype bundle.</p>
+<p>Accessing the Metatype service is as simple as performing a lookup in the service registry:</p>
+<div class="codehilite"><pre>  <span class="n">ServiceReference</span> <span class="n">metatypeRef</span> <span class="o">=</span> <span class="n">bundleContext</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">(</span><span class="n">MetaTypeService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">());</span>
+  <span class="n">MetaTypeService</span> <span class="n">service</span> <span class="o">=</span> <span class="p">(</span><span class="n">MetaTypeService</span><span class="p">)</span> <span class="n">bundleContext</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="n">metatypeRef</span><span class="p">);</span>
+
+  <span class="n">MetaTypeInformation</span> <span class="n">information</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">getMetaTypeInformation</span><span class="p">(</span><span class="n">myBundle</span><span class="p">);</span>
+</pre></div>
+
+
+<p>After retrieving the <code>MetaTypeInformation</code> object for the required bundle, we have access to all the information contained in the metatype XML definition. In particular, it is possible to access the ObjectClassDefinition (optionally specifying a locale):</p>
+<div class="codehilite"><pre>  <span class="n">ObjectClassDefinition</span> <span class="n">ocd</span> <span class="o">=</span> <span class="n">information</span><span class="o">.</span><span class="n">getObjectClassDefinition</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">locale</span><span class="p">);</span>
+</pre></div>
+
+
+<p>With the <code>ObjectClassDefinition</code>, it is possible to retrieve all the attribute definitions:</p>
+<div class="codehilite"><pre>  <span class="n">AttributeDefinition</span><span class="o">[]</span> <span class="n">attributes</span> <span class="o">=</span> <span class="n">ocd</span><span class="o">.</span><span class="n">getAttributeDefinitions</span><span class="p">(</span><span class="n">ObjectClassDefinition</span><span class="o">.</span><span class="n">ALL</span><span class="p">);</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

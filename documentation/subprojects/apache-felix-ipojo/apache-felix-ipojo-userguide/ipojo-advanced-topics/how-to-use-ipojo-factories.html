@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - How-to use iPOJO factories</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics.html">iPOJO Advanced Topics</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/how-to-use-ipojo-factories.html" target="felix_cwiki">/site/how-to-use-ipojo-factories.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>How-to use iPOJO factories</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# iPOJO Factories Principles
+
+*iPOJO defines a factory for each declared component type. These factories are used to create component instances. This document presents how to declare instances and configure them. The API to create, dispose and reconfigure instances is also explained.*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## Preliminary Concepts
+### Component Type
+A component type is a kind of instance template. If we compare component concepts with object oriented programming, component types are classes and component instances are objects. A component type is declared inside a metadata file (generally named 'metadata.xml'). The next snippet shows you a component type declaration: 
+
+    <component className="..." name="MyFactory">
+        ...
+        <!--component type configuration -->
+        ...
+    </component>
+
+A component type declaration begins generally by '<component>' and is composed by:
+* An implementation class ('className', mandatory). The 'className' attribute indicates the qualified name of the class implementing the component.
+* A name ('name')
+* Handler configuration (see handler guide)
+
+The 'name' attribute contains the factory name. If not specified, the 'className' attribute is used as the factory name. This factory name is used to refer to the factory (and consequently to the component type). 
+A factory can be public or private. A public factory allows creating instances dynamically and from other bundles. A private factory can only be used to create instances by declaring them in the same metadata.xml file that defines the instances' component type (i.e. in the same bundle). By default, factories are public. To set the factory to private add the 'public="false"'' attribute in the '<component>' element, such as: 
+
+    <component className="..." name="MyPrivateFactory" public="false">
+        ...
+        <!--component type configuration -->
+        ...
+    </component>
+
+Public factories offer different ways to create instances:
+* Instances can be declared in iPOJO descriptor in any bundle (i.e. from any metadata.xml file)
+* Instances can be created dynamically by using the API. Two APIs are provided the iPOJO Factory API and the OSGi Configuration Admin API
+
+Indeed, iPOJO will publish two services to access the factory through the API:
+* org.apache.felix.ipojo.Factory : iPOJO Factory Interface
+* org.osgi.service.cm.ManagedServiceFactory : Config Admin Interface
+
+The factory name will be used as the `service.pid` property for those services. The `service.pid` is unique and persists between framework restarts. The service.pid of the factory equals the factory name. This allows identifying factories exposed in the service registry.
+Factories are either valid or invalid. You can't create instances until a factory becomes valid. A factory is invalid if required handlers are missing. This issue occurs only if the component type uses external handlers.
+
+### Component Instance
+A component instance is an instance of a component type. For example, if a component type declares 'providing' and 'requiring' services, then the component instances will actually expose and require those services. Several instances can be created from one factory, but all these instances will be managed as different entities, and so are independent. A component instance is characterized by:
+* a component type (the factory name)
+* an instance name (used to identify the instance, is unique)
+* a configuration : a set of <key, value> couple
+
+A factory keeps a reference to each created instance. If the factory stops, goes away, or becomes invalid, all created instances are stopped and are destroyed.
+To create an instance, the creation request (describing the instance to create) must refer to the factory (by using the factory name), and provide the instance configuration. This configuration can specify the instance name ('instance.name' property). Be aware that this name must be unique. If not specified, iPOJO will generate a unique name.
+A factory can refuse the creation if the configuration is not acceptable or if the factory is invalid. An unacceptable configuration is a not suitable configuration in regard to component type. Reasons for unacceptable configuration are: 
+* The instance name is not set or not unique
+* A property required by the component type is missing inside the configuration
+* A pushed property has a wrong type
+
+## How-to declare instances inside metadata files
+The main way to create instances is to declare those instances inside the iPOJO descriptor file (i.e. 'metadata.xml'). Those declarations can use either public factories from any bundle, or private factories from the same bundle. Private factories are generally used to guaranty singleton instance as instances can only be created inside the same bundle. 
+When a instance declaration targets an external public factory, it will wait until the factory becomes available. So, the instance will be created only when the factory appears and is valid. If the factory disappears after the instance creation, the instance is disposed and will be recreated as soon as the factory comes back.
+The next snippet shows how to declare an instance in the metadata:
+
+    <instance component="component factory name" name = "instance name" >
+       <property name="a property name" value="a string form of the value"/>
+       <property name="another prop name" value="the string form value "/>
+    </instance>
+
+An instance declaration must contain the 'component' attribute. This attribute specifies the factory name (i.e. the component type). It can use either the factory name or the class name. The 'name' attribute allows setting the instance name. If not set, iPOJO will generate a unique name for you. Then, instances can declare properties. Those property are mostly key-value pair.  The key refer to a property name from the component type declaration such as in:
+
+    <component className="..." name="my-factory">
+        <properties>
+            <property name="foo" field="m_foo"/>
+        </properties>
+    </component>
+    <instance component="my-factory ">
+       <property name="foo" value="bla bla bla"/>
+    </instance>
+
+The string-form of the property value will be use to create the real object at runtime. If an unacceptable configuration is set, the instance is not created, and an error message appears to the console (and in the Log Service if present).
+Instance declaration properties can be more complex than only 'key-value'. It can contains structure like list, map, dictionary and arrays such as in:
+
+    <instance component="a.factory" name="complex-props">
+            <!--Creates a string array-->
+        <property name="array" type="array"> 
+            <property value="a"/>
+            <property value="b"/>
+        </property>
+            <!--Creates a list containing string-->
+        <property name="list" type="list"> 
+            <property value="a"/>
+            <property value="b"/>
+        </property>
+            <!--Creates a dictionary containing string-->
+        <property name="dict" type="dictionary">
+            <property name="a" value="a"/>
+            <property name="b" value="b"/>
+        </property>
+            <!--Creates a map containing string-->
+        <property name="map" type="map"> 
+            <property name="a" value="a"/>
+            <property name="b" value="b"/>
+        </property>
+    <!--A complex type can contains any other complex objects:-->
+        <property name="complex-array" type="array">
+            <property type="list">
+                <property value="a"/>
+                <property value="b"/>
+            </property>
+            <property type="list">
+                <property value="c"/>
+                <property value="d"/>
+            </property>
+        </property>
+        <!--Empty structures will create empty objects-->
+        <property name="empty-array" type="array"/>
+        <property name="empty-list" type="list"/>
+        <property name="empty-map" type="map"/>
+    </instance>
+
+<div class="info" markdown="1">
+**Instance name and factory name**
+The `instance.name` and `factory.name` property should not be set directly. iPOJO will manage those properties. The `instance.name` is simply created from the `instance.name` attribute of the instance declaration or from the `factory-name`-X where X is an integer.
+</div>
+
+## Creating, disposing and reconfiguring instances with the API
+A public factory is accessible through an exposed service ([org.apache.felix.ipojo.Factory ](http://felix.apache.org/ipojo/api/1.2.0/org/apache/felix/ipojo/Factory.html)). This service is accessible as any other OSGi service, and could be an iPOJO dependency using a LDAP filter or the 'from' attribute such as in:
+
+    <component classname="...">
+            <!-- These two requirement descriptions are equivalent -->
+        <requires field="a_field" filter="(factory.name=factory-name)"/>
+        <requires field="another_field" from="another-factory"/>
+    </component>
+
+### Creating instances
+Once you have a reference on the factory you can create instance with the 'createComponentInstance' method.
+
+    ComponentInstance createComponentInstance(java.util.Dictionary configuration)
+                                              throws UnacceptableConfiguration,
+                                                     MissingHandlerException,
+                                                     ConfigurationException
+
+This method returns a reference on the created instance. As you see, the method receives a dictionary containing the instance configuration. This configuration contains key-value pairs. However, values are either object (of the adequate type) of String used to create objects. This configuration can be 'null' if no properties have to be pushed.
+
+<div class="info" markdown="1">
+**Instance Name**
+The 'instance.name' property can be used to specify the instance name.
+</div>
+
+Instances are automatically started when created. However, the instance can be invalid, if at least one handler is not valid). 
+The instance creation process can fail. Three exceptions can be thrown during the creation:
+* UnacceptableConfiguration means that mandatory properties are missing in the instance configuration
+* MissingHandlerException means that the factory is not valid (i.e. an external handler is missing)
+* ConfigurationException means that the instance configuration has failed. The cause can be either an issue in the component type description or an invalid property type.
+
+If an error occurs, a comprehensive message is reported in order to solve the issue.
+The next snippet shows an example of instance creation:
+
+        // Assume we get a Factory in the fact field
+            Properties props = new Properties();
+            props.put("instance.name","instance-name");
+            props.put("foo", "blablabla");
+            try {
+                instance = fact.createComponentInstance(props);
+            } catch(Exception e) {
+               fail("Cannot create the instance : " + e.getMessage());
+            }
+
+### Disposing created instance
+You can only disposed instances that you created. To dispose an instance, just call the 'dispose' method on the ComponentInstance object (returned by the createComponentInstance method).
+
+    instance.dispose();
+
+### Reconfiguring instance
+To reconfigure an instance, call the 'reconfigure' method on the ComponentInstance object. This method receives the new set of properties. Be aware that the 'instance.name' property cannot be changed.
+
+    Properties props2 = new Properties();
+    props2.put("foo", "abc");
+    instance.reconfigure(props2);
+
+### Accessing services exposed by created instances
+You can obviously access services exposed by an instance that you create. 
+To do this just use the OSGi API and the bundle context in order to query service references in the service registry such as in
+
+        ComponentInstance instance = ...
+        // ... 
+        try {
+            ServiceReference[] refs = 
+                  context.getServiceReferences(YourServiceInterface.class.getName(), 
+                  "(instance.name=" + instance.getInstanceName() +")");
+            if (refs != null) {
+                Foo your_object = (Foo) context.getService(refs[0]);
+            }
+        } catch (InvalidSyntaxException e) {
+            // Should not happen
+        }
+
+The LDAP filter allows selecting the service provided by your instance. Be care that this service can be not accessible if the instance is not valid. Once you get the service reference, you can ask the service registry to get the service object (i.e. the object contained in your instance). 
+
+If your instance does not provide services, you can access to the instance by following principles illustrated in the next snippet:
+
+        if (instance.getState() == ComponentInstance.VALID) {
+           ImplementationClass object = 
+              (ImplementationClass) ((InstanceManager) instance).getPojoObject();
+        } else {
+           System.out.println("Cannot get an implementation object from an invalid instance");
+        }
+
+Take care to check the instance state before accessing the object. Indeed, the behavior of an invalid instance is not guaranty. The 'getPojoObject' method will return an already created implementation (pojo) object or create a new one (if none already created).
+
+## How to use the ManagedServiceFactory to create, disposed and reconfigure instances
+The principle of the ManagedServiceFactory is the same as the iPOJO Factory Service. So, you can create, dispose and reconfigure instances with the Configuration Admin. For further information, read the OSGi R4.x Compendium - Configuration Admin chapter.
+Be aware that the `updated` method is used both for instance creation (if the given configuration is new) and to reconfigure an existing instance. The `deleted` method is used to dispose instances.
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

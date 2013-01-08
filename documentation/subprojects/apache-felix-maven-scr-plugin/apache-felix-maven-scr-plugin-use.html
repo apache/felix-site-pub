@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Maven SCR Plugin Use</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-maven-scr-plugin.html">Apache Felix Maven SCR Plugin</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-maven-scr-plugin-use.html" target="felix_cwiki">/site/apache-felix-maven-scr-plugin-use.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Maven SCR Plugin Use</h1>
+      <p>Support for automatic generation of the compenent and metadata descriptors is embeded in the <code>org.apache.felix:maven-scr-plugin</code> plugin. To use this plugin, it has to be declared in the project descriptor as a <code>&lt;plugin&gt;</code> element: </p>
+<div class="codehilite"><pre><span class="nt">&lt;project&gt;</span>
+  ...
+  <span class="nt">&lt;build&gt;</span>
+    ...
+    <span class="nt">&lt;plugins&gt;</span>
+      ...
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-scr-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;executions&gt;</span>
+          <span class="nt">&lt;execution&gt;</span>
+            <span class="nt">&lt;id&gt;</span>generate-scr-scrdescriptor<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;goals&gt;</span>
+              <span class="nt">&lt;goal&gt;</span>scr<span class="nt">&lt;/goal&gt;</span>
+            <span class="nt">&lt;/goals&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+        <span class="nt">&lt;/executions&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+      ...
+    <span class="nt">&lt;/plugins&gt;</span>
+    ...
+  <span class="nt">&lt;/build&gt;</span>
+  ...
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>The <code>scr</code> goal is bound to the <code>generate-resources</code> phase and will generate a single descriptor file as well as meta type file for all components found in the project. </p>
+<p>The plugin may be configured with the following properties (Check the version column to make sure you use at least this version for the mentioned feature): 
+| <em>Property</em> | <em>Description</em> | <em>Version</em> | 
+| <code>specVersion</code> | The plugin will generate a descriptor for the Declarative Service version (either 1.0 or 1.1). If no value is specified, the plugin will detect the version and only use 1.1 if features from this version are used. | &gt;= 1.4.0 | 
+| <code>generateAccessors</code> | If this switch is turned on, the bind and unbind methods for unary references are automatically generated by the plugin. By default this is set to <code>true</code>. | | 
+| <code>parseJavadoc</code> | If this switch is turned on, the java source code and its javadoc tags are scanned for the scr tags (see below). The default value is <code>true</code>. | | 
+| <code>processAnnotations</code> | If this switch is turned on, the java code is scanned for the scr annotations (see below). The default value is <code>true</code>. | &gt;= 1.2.0 | 
+| <code>sourceExcludes</code> | Comma separated list of classes to exclude when processing the source. | | 
+| <code>strictMode</code> | The plugin distinguishes between errors and warnings. In strict mode warnings are treated as errors and cause the plugin to fail. The default value is <code>false</code>. | | 
+| <code>properties</code> | A map of predefined properties. These properties are set to each component (if the component does not define the property already). This is a map where the property name is made up by the included element name and the value is the value of the element.| &gt;= 1.2.0 | 
+| <code>finalName</code> | The name of the descriptor file to create. This property defaults to the value of the <code>scr.descriptor.name</code> property if defined. Otherwise the default is <code>serviceComponents.xml</code>. | | 
+| <code>metaTypeName</code> | The name of the descriptor file to create. This property defauls to <code>metatype.xml</code>. | | 
+| <code>outputDirectory</code> | The directory where all files are generated in. This defaults to <code>scr-plugin-generated</code> inside the build output directory. | | 
+The meta type file is generated in the <code>OSGI-INF/metatype/</code> directory and the scr descriptor file in the <code>OSGI-INF</code> directory. 
+<em>Note</em>: The location of the meta type descriptor may not be changed as the OSGi Metatype Service Specification prescribes the location of the descriptors. </p>
+<p>The plugin will look for component definition tags in all Java files found in the source directories of the project. </p>
+<h3 id="using-the-descriptor">Using the descriptor</h3>
+<p>Currently the <code>maven-scr-plugin</code> only creates the component descriptor file. Adding the descriptor to the bundle and setting the <code>Service-Component</code> manifest header accordingly is a different task. However, if you're using the <code>org.apache.felix:maven-bundle-plugin</code> to construct the bundle and its manifest, then the <code>maven-scr-plugin</code> will add the following settings automatically for the <code>org.apache.felix:maven-bundle-plugin</code> (given default <code>maven-scr-plugin</code> configuration), so you don't have to configure this yourself: </p>
+<div class="codehilite"><pre>...
+<span class="nt">&lt;Include-Resource&gt;</span>
+    src/main/resources,
+    target/scr-plugin-generated
+<span class="nt">&lt;/Include-Resource&gt;</span>
+<span class="nt">&lt;Service-Component&gt;</span>
+  OSGI-INF/serviceComponents.xml
+<span class="nt">&lt;/Service-Component&gt;</span>
+...
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

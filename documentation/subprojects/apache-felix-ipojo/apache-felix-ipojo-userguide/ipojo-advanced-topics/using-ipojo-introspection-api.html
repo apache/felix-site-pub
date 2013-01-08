@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Using iPOJO introspection API</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics.html">iPOJO Advanced Topics</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/using-ipojo-introspection-api.html" target="felix_cwiki">/site/using-ipojo-introspection-api.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Using iPOJO introspection API</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# Introspecting instances
+
+*iPOJO provides mechanisms to introspect and reconfigure instances. Those features are available from the instance description. Currently, only the reconfiguration of primitive instances is supported.*
+
+## Getting instance descriptions
+
+There is two way to get the instance description:
+* By using the `architecture` service exposed by an instance providing introspection support.
+* By calling the getInstanceDescription() method on a ComponentInstance object (that you create thanks to a Factory)
+
+{code:java|Getting the instance description from the ComponentInstance object}
+    /**
+     * Returns the instance description.
+     * @return the instance description of the current instance
+     */
+    InstanceDescription getInstanceDescription();
+
+    h2. Introspecting primitive instances
+
+    Once you get the  object, cast it in  (be sure that it is really a primitive instance).
+    Then, you have access to every primitive instance aspects:
+    service dependencies
+    provided services
+    configuration properties
+    get created implementation objects
+
+    {code:java|title=Primitive Instance Description methods}
+        /**
+         * Gets the list of object created by the described instance.
+         * @return the created objects.
+         */
+        public String[] getCreatedObjects() {
+            ...
+        }
+
+        /**
+         * Gets the instance service dependencies.
+         * @return the set of dependency description or an empty array if
+         * no dependencies.
+         */
+        public DependencyDescription[] getDependencies() {
+            ...
+        }
+
+        /**
+         * Gets the instance service dependency matching with the given service specification or id.
+         * @param specification the service specification of the looked specification.
+         * @return the dependency description matching with the given service specification or id.
+         * <code>null</code> is not found.
+         * no dependencies.
+         */
+        public DependencyDescription getDependency(String specification) {
+            ...
+        }
+
+        /**
+         * Gets the instance provided service matching with the given service specification.
+         * @param specification the provided specification of the looked provided service.
+         * @return the provided service description matching with the given service specification.
+         * <code>null</code> is not found.
+         */
+        public ProvidedServiceDescription getProvidedService(String specification) {
+            ...
+        }
+
+        /**
+         * Gets the instance provided service.
+         * @return the set of provided service description or an empty array if
+         * no provided services.
+         */
+        public ProvidedServiceDescription[] getProvidedServices() {
+            ...
+        }
+
+        /**
+         * Gets the instance properties.
+         * @return the set of property descriptions or an empty array if
+         * no properties.
+         */
+        public PropertyDescription[] getProperties() {
+            ...
+        }
+
+## Manipulating dependencies
+
+You can get service dependencies from the `PrimitiveInstanceDescription`. Once you get the dependency (`DependencyDescription` object that you want to manipulate you can call one of those method on it:
+{code:java}
+    public boolean isMultiple() { ... }
+
+    public boolean isOptional() { ... }
+
+    public String getFilter() { ... }
+
+    public String getInterface() { ... }
+
+    public int getState() { ... }
+
+    public String getId() { ... }
+
+    public boolean supportsNullable() { ... }
+
+    public String getDefaultImplementation() { ... }
+
+    public int getPolicy() { ... }
+
+    public String getComparator() { ... }
+
+    public boolean isFrozen() { ... }
+
+    /**
+     * Gets the service reference list.
+     * @return the list of matching service reference,
+     * <code>null</code> if no service reference.
+     */
+    public List getServiceReferences() { ... }
+
+    /**
+     * Gets the service reference if only one service reference is used.
+     * @return the ServiceReference (only if the cardinality could be 1),
+     * or <code>null</code> if no service reference.
+     */
+    public ServiceReference getServiceReference() { ... }
+
+    /**
+     * Gets the used service set.
+     * @return the list [service reference]() containing the used services,
+     * <code>null</code> if no providers are used
+     */
+    public List getUsedServices() { ... }
+
+    /**
+     * Sets the dependency comparator.
+     * The reference set will be sort at the next usage.
+     * @param cmp the comparator
+     */
+    public void setComparator(Comparator cmp) { ... }
+
+    /**
+     * Sets the dependency filter.
+     * @param filter the new LDAP filter
+     */
+    public void setFilter(Filter filter) { ... }
+
+    /**
+     * Sets the dependency cardinality.
+     * @param isAgg if <code>true</code> sets the dependency to aggregate,
+     * if <code>false</code> sets the dependency to scalar.
+     */
+    public void setAggregate(boolean isAgg) { ... }
+
+    /**
+     * Sets the dependency optionality.
+     * @param isOpt if <code>true</code> sets the dependency to optional,
+     * if <code>false</code> sets the dependency to mandatory.
+     */
+    public void setOptional(boolean isOpt) { ... }
+
+    /**
+     * Gets the required service specification name.
+     * @return the required service specification class name.
+     */
+    public String getSpecification() { ... }
+
+    These methods allows getting the dependency state as well as reconfiguring the dependency by setting a new filter... 
+
+    There is a slightly difference between the  methods and the  method. The first ones returns the list of matching provider. The second one returns the list of currently used providers. 
+
+    h2. Manipulating provided services
+    You also can manipulate provided services . 
+    {code:java}
+    /**
+         * Gets the list of provided service specifications.
+         * @return the provided contract name.
+         */
+        public String[] getServiceSpecifications() { ... }
+
+        /**
+         * Gets the list of properties.
+         * A copy of the actual property set is returned.
+         * @return the properties.
+         */
+        public Properties getProperties() { ... }
+
+        /**
+         * Adds and Updates service properties.
+         * Existing properties are updated. 
+         * New ones are added.
+         * @param props the new properties
+         */
+        public void addProperties(Dictionary props) { ... }
+
+        /**
+         * Removes service properties.
+         * @param props the properties to remove
+         */
+        public void removeProperties(Dictionary props) { ...  }
+
+        /**
+         * Gets provided service state.
+         * @return the state of the provided service (UNREGISTERED | REGISTRED).
+         */
+        public int getState() { ... }
+
+        /**
+         * Gets the service reference.
+         * @return the service reference (null if the service is unregistered).
+         */
+        public ServiceReference getServiceReference() { ... }
+
+        /**
+         * Gets the 'main' service object.
+         * @return the 'main' service object or <code>null</code>
+         * if no service object are created.
+         */
+        public Object getService() { ... }
+
+        public Object[] getServices() { ... }
+
+Thanks to these method, you can get service objects, get the registered services, and manipulate service properties.
+H2. Manipulating configuration properties
+The last think that you can do from the `PrimitiveInstanceDescription` is to get configuration properties (`PropertyDescription`). 
+{code:java}
+ /**
+     * Gets the current property name.
+     * @return the property name.
+     */
+    public String getName() { ... }
+
+    /**
+     * Gets the current property type.
+     * @return the property type.
+     */
+    public String getType() { ... }
+
+    /**
+     * Gets the current property value.
+     * @return the default value for the property,
+     * <code>null</code> if the property hasn't a value..
+     */
+    public String getValue() { ... }
+
+    /**
+     * Sets the property value.
+     * This method can only be called on 'living' property
+     * (properties with a {@link Property} object).
+     * @param value the new value.
+     */
+    public void setValue(Object value) { ... }
+
+    With these methods you can get a property object and update its value dynamically. 
+    \\
+    \\
+    {include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

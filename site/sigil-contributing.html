@@ -1,0 +1,82 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Sigil Contributing</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H3><A name="SigilContributing-Status"></A>Status</H3>
+
+<P>Sigil is currently being migrated to Apache Felix from it's original home on <A href="http://sigil.codecauldron.org/" class="external-link" rel="nofollow">http://sigil.codecauldron.org</A>. As part of this migration it has been decided to go for a completely self hosted mode of development - i.e. use Sigil to build Sigil.</P>
+
+<H3><A name="SigilContributing-Issues%3A"></A>Issues:</H3>
+
+<P>Please help development of Sigil by reporting issues and contributing patches <A href="http://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&pid=12310100&component=12312962&resolution=-1&sorter%2Ffield=priority&sorter%2Forder=DESC" class="external-link" rel="nofollow">here</A>.</P>
+
+<H3><A name="SigilContributing-BuildInstructions"></A>Build Instructions</H3>
+
+<P>If you want to try it out or contribute here are the steps to build Sigil in it's current form:</P>
+
+<OL>
+	<LI>Check out or update the Felix trunk (i.e., svn checkout <A href="http://svn.apache.org/repos/asf/felix/trunk" class="external-link" rel="nofollow">http://svn.apache.org/repos/asf/felix/trunk</A> felix)</LI>
+	<LI>cd felix/sigil</LI>
+	<LI>ant clean dist</LI>
+</OL>
+
+
+<P>The ant build will probably take a <EM>long</EM> time on first pass as it needs to download a lot of large eclipse dependencies first time around. But after this first pass the secondary builds should run quickly i.e. seconds not minutes. By way of a brief explanation of what is going on in this build.</P>
+
+<OL>
+	<LI>I've hosted a prebuilt sigil-ivy-plugin at <A href="http://people.apache.org/~dsavage/sigil/" class="external-link" rel="nofollow">http://people.apache.org/~dsavage/sigil/</A></LI>
+	<LI>The ant build downloads ivy, sigil-plugin, bnd and equinox.common.jar and stores them in $felix-svn/sigil/cache/ant/lib</LI>
+	<LI>Ivy caches a set of remote bundles that sigil can't yet index (i.e. no obr index to these resources yet)</LI>
+	<LI>Sigil creates local indexes of ivy cached bundles (just indexes filesystem)</LI>
+	<LI>Sigil builds all projects in $felix-svn/sigil/common and $felix-svn/sigil/eclipse using the meta data from the various sigil.properties files. Import-Package or Require-Bundle dependencies expressed in the sigil.properties file are resolved from either: the local workspace; the local cached repo; or the spring enterprise bundle repository (for which we do have an OBR index).</LI>
+</OL>
+
+
+<H3><A name="SigilContributing-Testing"></A>Testing</H3>
+<P>Currently the Sigil build does not create an eclipse update site, but it will generate the plugins to install in eclipse:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE># ls site/plugins
+bndlib.jar                                      org.apache.felix.sigil.common.junit.jar         org.apache.felix.sigil.eclipse.help.jar         org.apache.felix.sigil.eclipse.ui.jar
+com.springsource.org.apache.commons.lang.jar    org.apache.felix.sigil.common.obr.jar           org.apache.felix.sigil.eclipse.obr.jar          org.apache.felix.sigil.eclipse.utils.jar
+org.apache.felix.sigil.common.core.jar          org.apache.felix.sigil.eclipse.core.jar         org.apache.felix.sigil.eclipse.search.jar
+</PRE>
+</DIV></DIV>
+
+<P>You can copy these bundles to your dropins directory of your Eclipse install to get Eclipse to manually install these bundles from the file system.</P>
+
+<P>Please let us know if you have any problems, questions, or want to help out via the Felix <A href="mailto://dev@felix.apache.org/" class="external-link" rel="nofollow">dev</A> email list.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by dsavage@apache.org on 2009-08-12 04:13:40.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

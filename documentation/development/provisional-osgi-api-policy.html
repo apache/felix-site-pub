@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Provisional OSGi API Policy</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/development.html">Development</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/provisional-osgi-api-policy.html" target="felix_cwiki">/site/provisional-osgi-api-policy.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Provisional OSGi API Policy</h1>
+      <h1 id="provisional-osgi-api-policy">Provisional OSGi API policy</h1>
+<h2 id="overview">Overview</h2>
+<p>The OSGi Alliance exposes provisional API through draft specification releases. Additionally, some Felix contributors work for OSGi Alliance member companies and have access to provisional OSGi API. Often, Felix subprojects want to experiment with and/or implement provisional OSGi API. In some cases, Felix subprojects may actually be the reference implementation for the specification in question. This creates potentially confusing or questionable situations.</p>
+<p>For example, if a Felix subproject is released with provisional OSGi API, downstream users may not be aware that the contained API is not final OSGi API. They may mistakenly confer "official" status on it, since it is contained in an "official" Apache release. Further, the ability to implement OSGi specifications is based on creating compliant implementations. Since it is not really possible to be compliant with a provisional specification, the status of such implementations is sort of a gray area.</p>
+<p>To deal with these situations, this document describes the policy for handling provisional OSGi API in Felix subprojects.</p>
+<h2 id="policy-summary">Policy summary</h2>
+<p>To make the policy as simple and consistent as possible, Felix subprojects must not contain nor depend on provisional OSGi API. Provisional OSGi API refers to anything in the <code>org.osgi.*</code> package namespace that is not part of a final released specification.</p>
+<h2 id="policy-in-practice">Policy in practice</h2>
+<p>Since subprojects will still want to implement and experiment with provisional OSGi specifications, this must still be possible. The following steps should be taken when working on or with provisional OSGi specifications:</p>
+<ol>
+<li>Any provisional OSGi API must be recreated in the <code>org.apache.felix.*</code> package name space; this effectively makes it provisional Felix API.</li>
+<li>All Felix provisional API must be marked as deprecated.</li>
+<li>All Felix provisional API exported from bundles should be exported with a mandatory attribute of <code>status="provisional"</code>.</li>
+</ol>
+<p>When working with new specifications, this will likely result in parallel package structures between the provisional OSGi and Felix APIs. When working with existing specifications, it may be necessary to create extensions to existing OSGi interfaces in the Felix package namespace.</p>
+<h2 id="policy-rationale">Policy rationale</h2>
+<p>The first goal of this policy is to completely avoid using provisional OSGi API given the potential confusion and questions by doing so. The second goal is to make the existence of any Felix provisional API completely obvious to downstream users and make it difficult for them to use it unknowingly. This latter goal gives us the ability to still "release early and often", but without being required to maintain backward compatibility on provisional APIs.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

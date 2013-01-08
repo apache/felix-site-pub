@@ -1,0 +1,91 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Web Console Logging</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="WebConsoleLogging-WebConsoleLogging"></A>Web Console Logging</H1>
+
+<P>The Web Console does not provide its own mechanism for logging. Rather the Servlet Container logging mechanism is used by calling the <TT>GenericServlet.log</TT> methods for logging. It is expected by the OSGi Http Service implementation implements these <TT>log</TT> methods writing to the OSGi Log Service.</P>
+
+<P>The drawback of using servlet container logging is that we have no control over the logging levels used and applied to log messages. To at least allow some level of log message filtering the Web Console can be configured with a logging level using the <TT>loglevel</TT> property of the <EM>Apache Felix OSGi Management Console</EM> (<TT>org.apache.felix.webconsole.internal.servlet.OsgiManager</TT>).</P>
+
+<P>The <TT>AbstractWebConsolePlugin</TT> class provides two addition <TT>log</TT> methods taking a <TT>level</TT> parameter which allow plugins to filter certain log messages:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <TT>log(int level, String message)</TT> </TD>
+<TD class="confluenceTd"> Calls <TT>GenericaServlet.log(String)</TT> if the configured log level is less than or equal to the <TT>level</TT> parameter. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>log(int level, String message, Throwable t)</TT> </TD>
+<TD class="confluenceTd"> Calls <TT>GenericaServlet.log(String, Throwable)</TT> if the configured log level is less than or equal to the <TT>level</TT> parameter. </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P><B>Note 1:</B> The <TT>level</TT> parameter is just used for filtering calls to the <TT>GenericeServlet.log</TT> methods and cannot define the actual log level used by the servlet container.</P>
+
+<P><B>Note 2:</B> Direct calls to one of the <TT>GenericServlet.log</TT> or <TT>ServletContext.log</TT> methods are not intercepted and are not filtered by the log level configured for the Web Console.</P>
+
+<P>The <TT>level</TT> parameter and the <TT>loglevel</TT> configuration property can be set to any of the constant values defined by the OSGi <TT>LogService</TT> class:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> 1 </TD>
+<TD class="confluenceTd"> LOG_ERROR </TD>
+<TD class="confluenceTd"> This log entry indicates the bundle or service may not be functional. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> 2 </TD>
+<TD class="confluenceTd"> LOG_WARNING </TD>
+<TD class="confluenceTd"> This log entry indicates a bundle or service is still functioning but may experience problems in the future because of the warning condition. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> 3 </TD>
+<TD class="confluenceTd"> LOG_INFO </TD>
+<TD class="confluenceTd"> This log entry may be the result of any change in the bundle or service and does not indicate a problem. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> 4 </TD>
+<TD class="confluenceTd"> LOG_DEBUG </TD>
+<TD class="confluenceTd"> This log entry is used for problem determination and may be irrelevant to anyone but the bundle developer. </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on 2010-03-15 09:19:52.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

@@ -1,0 +1,115 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix OSGi FAQ</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixOSGiFAQ-ApacheFelixOSGiFrequentlyAskedQuestions"></A>Apache Felix OSGi Frequently Asked Questions</H1>
+
+<STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1247646067738 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1247646067738 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1247646067738 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1247646067738">
+<UL>
+    <LI><A href="#ApacheFelixOSGiFAQ-ApacheFelixOSGiFrequentlyAskedQuestions">Apache Felix OSGi Frequently Asked Questions</A></LI>
+<UL>
+    <LI><A href="#ApacheFelixOSGiFAQ-IfIusebundlesfromFelix%252CwillmyapplicationbetiedtotheFelixframework%253F">If I use bundles from Felix, will my application be tied to the Felix framework?</A></LI>
+    <LI><A href="#ApacheFelixOSGiFAQ-WhenIupdatemybundle%252Cwhyaremybundle%2527soldclassesstillbeingused%253F">When I update my bundle, why are my bundle's old classes still being used?</A></LI>
+    <LI><A href="#ApacheFelixOSGiFAQ-Shouldaserviceprovider%252FconsumerbundlebepackagedwithitsserviceAPIpackages%253F">Should a service provider/consumer bundle be packaged with its service API packages?</A></LI>
+    <LI><A href="#ApacheFelixOSGiFAQ-Shouldabundleimportitsownexportedpackages%253F">Should a bundle import its own exported packages?</A></LI>
+    <LI><A href="#ApacheFelixOSGiFAQ-Whyismybundlenotabletoseeannotationsatruntime%253F">Why is my bundle not able to see annotations at run time?</A></LI>
+</UL>
+</UL></DIV>
+
+<P><A name="ApacheFelixOSGiFAQ-felixdependencies"></A></P>
+<H2><A name="ApacheFelixOSGiFAQ-IfIusebundlesfromFelix%2CwillmyapplicationbetiedtotheFelixframework%3F"></A>If I use bundles from Felix, will my application be tied to the Felix framework?</H2>
+
+<P>No. The Felix community is very serious about creating technology that is &quot;pure&quot; OSGi. This means that we will always strive to make sure our subprojects work on all OSGi framework implementations. The Felix framework provides very few &quot;containerisms&quot;, so there are generally no &quot;special&quot; Felix features available on which subprojects may depend. Even though it is common to use the name &quot;Felix&quot; to refer to the Felix framework, in reality the framework is just one subproject in the Apache Felix project. All subprojects are intended to be used either together or separately.</P>
+
+<P>Note that not all subprojects are tested on all available OSGi framework implementations, but it is the goal for them to run on them. Any difficulties in doing so should be filed as bugs in <A href="http://issues.apache.org/jira/browse/FELIX" class="external-link" rel="nofollow">JIRA</A>. Additionally, due to specification ambiguity, it is possible the Felix framework may exhibit different behavior than other implementations, but this is normal; if in doubt, file a bug. In the future, it is also possible some subprojects may require Felix, but they will explicitly state this fact.</P>
+
+<P><A name="ApacheFelixOSGiFAQ-bundlenotupdated"></A></P>
+<H2><A name="ApacheFelixOSGiFAQ-WhenIupdatemybundle%2Cwhyaremybundle%27soldclassesstillbeingused%3F"></A>When I update my bundle, why are my bundle's old classes still being used?</H2>
+
+<P>Updating a bundle does not necessarily cause the new classes to be used immediately, it depends on two factors:</P>
+
+<OL>
+	<LI>If the classes are from a private package or an exported package.</LI>
+	<LI>If the classes are from an exported package, whether or not they are being used by another bundle.</LI>
+</OL>
+
+
+<P>Regarding (1), if the classes come from a private package (i.e., it is <EM><B>not</B></EM> exported), then the new classes will become available immediately. However, if they are from an exported package, then their visibility depends on whether any other bundles are using the exported packages.</P>
+
+<P>If no other bundles are using the exported packages, then the new classes will become available immediately since the old version of the classes are no longer needed. On the other hand, if any other bundles are using the exported packages, then the new classes will <EM><B>not</B></EM> become available immediately since the old version is still required by any dependent bundles. In this case, the new classes will not be made available until <TT>PackageAdmin.refreshPackages()</TT> is called (this can be invoked in the Felix shell using the <TT>refresh</TT> command). </P>
+
+<P>There is one partial exception to this latter case, it occurs when the exporting bundle does <EM><B>not</B></EM> also import its own exported packages (see &quot;<A href="#ApacheFelixOSGiFAQ-importandexport">Should a bundle import its own exported packages?</A>&quot; below for more information on this topic). In this case, the new classes become immediately accessible to the updated exporting bundle, but not to the dependent bundles; the dependent bundles continue to see the old version of the classes. This situation generally requires <TT>PackageAdmin.refreshPackages()</TT> to be invoked to bring the bundles back to a useful state.</P>
+
+<P>This is the normal update process as defined by the OSGi specification. Updating a bundle is a two-step process, where older versions of exported packages are kept around until explicitly refreshed. This is done to reduce disruption when performing several updates.</P>
+
+<H2><A name="ApacheFelixOSGiFAQ-Shouldaserviceprovider%2FconsumerbundlebepackagedwithitsserviceAPIpackages%3F"></A>Should a service provider/consumer bundle be packaged with its service API packages?</H2>
+
+<P>There is no easy answer to this question and it largely depends on the specific usage scenario. The OSGi specification had originally suggested that it was good practice to embed service API packages in the service provider bundle. In this case in OSGi R4, the service provider should both <A href="#ApacheFelixOSGiFAQ-importandexport">export and import</A> the service API packages, which was the default for previous versions of the OSGi specification.</P>
+
+<P>The OSGi specification never had an explicit stance on whether or not a consumer bundle should embed its dependent service API packages; although, it would not appear to be a best practice. Logically, there is some sense to this approach, since it potentially allows the consumer bundle to gracefully handle broken service dependencies. Of course, this depends on whether there is anything the bundle can do in the face of broken dependencies. If service API packages are embedded in the consumer bundle, then it should <A href="#ApacheFelixOSGiFAQ-importandexport">export and import</A> the packages. An alternative approach in this case is to dynamically import the service API (or even use optional imports if the dependency should only be considered once).</P>
+
+<P>The main advantages of embedding service API packages in bundles are that the dependencies can always be resolved and it does not require installing a lot of other bundles to resolve the dependencies. There are disadvantages, however. One disadvantage is resource consumption caused by potential code duplication. Probably a more serious disadvantage is that it makes it harder to dynamically swap out providers.</P>
+
+<P>For example, assume a provider bundle is used to export service API packages and all consumers are wired to that bundle. If the provider bundle is updated or uninstalled and then refreshed, then all consumer bundles will be stopped and refreshed as well. Even without a refresh, such a configuration would potentially inhibit garbage collection of the class loader of the service provider, since consumers would be using it for the API package.</P>
+
+<P>This situation would be different if the service API were package in a separate bundle. In this situation, all consumer bundles would be wired to the API bundle, not to the provider bundle. Thus, if the provider were updated or uninstalled and then refreshed, the consumer bundles would only be minimally impacted (i.e., they would either switch to the new version of the provider or to a different provider).</P>
+
+<P><A name="ApacheFelixOSGiFAQ-importandexport"></A></P>
+<H2><A name="ApacheFelixOSGiFAQ-Shouldabundleimportitsownexportedpackages%3F"></A>Should a bundle import its own exported packages?</H2>
+
+<P>In OSGi R3 this was always the case, since Export-Package implied Import-Package. It was a good idea then and is generally a good idea now.</P>
+
+<P>The whole point is substitutability of providers.</P>
+
+<P>If you import the packages you export, then the framework is free to choose a different provider of those packages for your bundle at resolve time, which means that your exports may go unused. However, this is a good thing, because the framework tries to minimize the number of active versions of a given package. The reason why this is a good thing is because it allows for higher levels of bundle interoperability. The more versions of a given package that are in use at any given time can lead to conflicts when trying to resolve bundle package dependencies and this also leads to partitioning of the service registry, since bundles can only see a single version of a given service package.</P>
+
+<P>If your bundle only exports its packages, then it is forcing the framework to wire itself to its own version, which will result in more active versions of the given package and thus less interoperability.</P>
+
+<P>The main time you want to export only, is if your bundle is purely a library bundle, then its packages will only be used if they are needed. Another case might be if you have tightly coupled bundles sharing implementation packages. However, if your bundle will be started and especially if the exported packages define service interfaces or are referenced from service interfaces, then you will generally want to export and import them.</P>
+
+<H2><A name="ApacheFelixOSGiFAQ-Whyismybundlenotabletoseeannotationsatruntime%3F"></A>Why is my bundle not able to see annotations at run time?</H2>
+
+<P>This is typically a class loading issue. At runtime the JVM will only return annotations that are visible to the current class loader, so if your bundle doesn't import the appropriate package(s) then you won't see them.</P>
+
+<P>This is not a bug, as such, it is simply how OSGi class loading works - your bundle cannot see classes that its hasn't imported (or acquired via <TT>Require-Bundle</TT>). It is also part of the design of annotations, since annotated classes are supposed to continue to load and resolve even if their annotation types aren't available on the class path. This lets you annotate a class with EJB3 annotations, for example, but also use it in a non-EJB container where you won't then see the EJB3 annotations.</P>
+
+<P>Try importing the annotation package inside your bundle to resolve the visibility issue.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2008-10-29 13:21:54.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

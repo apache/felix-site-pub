@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Providing Resources</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/providing-resources.html" target="felix_cwiki">/site/providing-resources.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Providing Resources</h1>
+      <h1 id="providing-resources">Providing Resources</h1>
+<p>Extending the Apache Felix Web Console with new functionality is as easy as registering a <code>javax.servlet.Servlet</code> with at least the <code>felix.webconsole.label</code> service registration property set (see above). Providing resources is a bit more complex and requires more work on behalf of the plugin.</p>
+<p>Out of the box the Apache Felix Web Console plugin servces resources through the OSGi <code>HttpContext</code> used to register the web console with OSGi <code>HttpService</code>. This is done by registering resources with the <code>HttpService</code> below the <code>/res</code> alias. This mechanism though does not lend itself for easy extensibility. Therefore another mechanism has been chosen, which relies on similar mechanisms.</p>
+<p>A web console plugin may implement a <code>getResource</code> method which is looked up using reflection. This method is called by the <code>AbstractWebConsole.doGet</code> to check whether the request is actually for a resource.</p>
+<p>The method has the following signature:</p>
+<div class="codehilite"><pre><span class="n">modifier</span> <span class="n">URL</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Where the <em>modifier</em> may be <code>public</code>, <code>protected</code>, or <code>private</code> (if the method is declared in the class of the resource provider). It is suggested to use the <code>private</code> modifier if the method is declared in the resource provider class or the <code>protected</code> modifier if the method is declared in a base class of the resource provider.</p>
+<p>This method is called with the path info of the request (<code>HttpServletRequest.getPathInfo()</code>) and expects and URL to the resource to be sent to the client. If the path cannot be resolved to a resource the <code>getResource</code> method is expected to return <code>null</code> thus causing regular processing of rendering the page.</p>
+<p>If the <code>getResource</code> method returns an accessible non-<code>null</code> URL, the request is serviced by sending back the contents of the given URL. Simple caching support is included which handles the <code>If-Modified-Since</code> header and sets the <code>Last-Modified</code> header from the resource URL.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

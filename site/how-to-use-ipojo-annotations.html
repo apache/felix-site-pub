@@ -1,0 +1,698 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - How to use iPOJO Annotations</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">
+ @import url(http://felix.apache.org/ipojo/site/superfish.css); 
+</STYLE>
+
+<STYLE type="text/css">
+ @import url(http://felix.apache.org/ipojo/site/style.css); 
+</STYLE>
+
+<P>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shCore.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushCSharp.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushPhp.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushJScript.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushVb.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushSql.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushXml.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushShell.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushDelphi.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushPython.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushJava.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/jquery-1.js"></SCRIPT>
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/hoverIntent.js"></SCRIPT>
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/superfish.js"></SCRIPT> 
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/supersubs.js"></SCRIPT> 
+
+<SCRIPT type="text/javascript"> 
+ 
+    $(document).ready(function(){ 
+        $("ul.sf-menu").supersubs({ 
+            minWidth:    14,   // minimum width of sub-menus in em units 
+            maxWidth:    30,   // maximum width of sub-menus in em units 
+            extraWidth:  1     // extra width can ensure lines don't sometimes turn over 
+                               // due to slight rounding differences and font-family 
+        }).superfish();  // call supersubs first, then superfish, so that subs are 
+                         // not display:none when measuring. Call before initialising 
+                         // containing tabs for same reason. 
+    }); 
+ 
+</SCRIPT>
+<DIV class="main">
+<DIV class="page-header">
+<IMG src="http://felix.apache.org/ipojo/site/header.png" class="header">
+<A href="http://ipojo.org/"><IMG src="http://felix.apache.org/ipojo/site/ipojo.png" width="225" class="header-logo"></A>
+<UL class="sf-menu sf-js-enabled sf-shadow" id="ipojo-menu">
+<LI class="current">
+<!-- Menu Overview -->
+<A href="" class="sf-with-ul">Overview<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+	<LI>
+	<A href="apache-felix-ipojo.html" title="Apache Felix iPOJO">Home</A>							
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-why-choose-ipojo.html" title="apache-felix-ipojo-why-choose-ipojo">Why choose iPOJO</A>
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-successstories.html" title="apache-felix-ipojo-successstories">Success stories</A>
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-feature-overview.html" title="Apache Felix iPOJO Feature Overview">Features</A>
+	</LI>
+</UL>
+</LI>	
+
+<LI class="">			
+<!-- Menu download -->
+<LI>
+<A href="download.html" title="Download">Download </A>
+</LI>
+
+<LI class="">					
+<!-- Menu Documentation -->
+<A href="" class="sf-with-ul">Documentation<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+    <!-- sub- menu : getting started -->
+    <LI class="">
+    <A href="" class="sf-with-ul">Getting Started<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+    <UL>
+     <LI><A href="ipojo-in-10-minutes.html" title="iPOJO in 10 minutes">iPOJO in 10 minutes</A></LI>
+     <LI><A href="" title="How to use iPOJO Annotations">Using Annotations</A></LI>
+     <LI><A href="ipojo-hello-word-maven-based-tutorial.html" title="iPOJO Hello Word (Maven-Based) tutorial">Maven tutorial</A></LI>
+     <LI><A href="ipojo-advanced-tutorial.html" title="iPOJO Advanced Tutorial">Advanced tutorial</A></LI>
+     <LI><A href="apache-felix-ipojo-dosgi.html" title="apache-felix-ipojo-dosgi">Using Distributed OSGi</A></LI>
+     <LI><A href="ipojo-composition-tutorial.html" title="iPOJO Composition Tutorial">Application Composition</A></LI>
+    </UL>
+    </LI> <!-- end of getting started -->
+    <!-- sub menu : Describing Components -->
+     <LI class="">
+        <A href="http://felix.apache.org/site/describing-components.html" class="sf-with-ul">Describing components<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+        <UL>
+        <LI><A href="service-requirement-handler.html" title="Service Requirement Handler">Requiring a service</A></LI>
+        <LI><A href="providing-osgi-services.html" title="Providing OSGi services">Providing a service</A></LI>
+        <LI><A href="lifecycle-callback-handler.html" title="Lifecycle Callback Handler">Lifecycle management</A></LI>
+        <LI><A href="configuration-handler.html" title="Configuration Handler">Configuration</A></LI>
+        <LI><A href="architecture-handler.html" title="Architecture Handler">Introspection</A></LI>
+        <LI><A href="controller-lifecycle-handler.html" title="Controller Lifecycle Handler">Impacting the lifecycle</A></LI>
+        <LI><A href="event-admin-handlers.html" title="Event Admin Handlers">Asynchronous communication</A></LI>
+        <LI><A href="ipojo-jmx-handler.html" title="iPOJO JMX Handler">JMX management</A></LI>
+        <LI><A href="extender-pattern-handler.html" title="Extender Pattern Handler">Extender pattern</A></LI>
+        <LI><A href="white-board-pattern-handler.html" title="White Board Pattern Handler">Whiteboard pattern</A></LI>
+        <LI><A href="temporal-service-dependency.html" title="Temporal Service Dependency">Temporal dependencies</A></LI>
+        </UL>
+     </LI> <!-- End of describing components -->
+    <!-- sub- menu : User Guide -->
+    <LI class="">
+    <A href="" class="sf-with-ul">User Guide<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+        <UL>
+        <LI><A href="combining-ipojo-and-configuration-admin.html" title="Combining iPOJO and Configuration Admin">iPOJO and config admin</A></LI>
+        <LI><A href="how-to-use-ipojo-factories.html" title="How-to use iPOJO factories">Factories and Instances</A></LI>
+        <LI><A href="using-xml-schemas.html" title="Using XML Schemas">XML Schemas</A></LI>
+        <LI><A href="apache-felix-ipojo-api.html" title="apache-felix-ipojo-api">API</A></LI>
+        <LI><A href="apache-felix-ipojo-testing-components.html" title="apache-felix-ipojo-testing-components">Testing components</A></LI>
+        <LI><A href="apache-felix-ipojo-eclipse-integration.html" title="apache-felix-ipojo-eclipse-integration">Eclipse Integration</A></LI>
+        <LI><A href="ipojo-faq.html" title="iPOJO FAQ">FAQ</A></LI>
+        <LI><A href="ipojo-reference-card.html" title="iPOJO-Reference-Card">Reference Card</A></LI>
+        </UL>
+    </LI> <!-- end of user guide -->
+    <!-- sub- menu : Dev Guide -->
+    <LI> 
+    <A href="" class="sf-with-ul">Advanced Topics<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+       <UL>
+        <LI><A href="http://felix.apache.org/ipojo/api/1.6.0" class="external-link" rel="nofollow">Javadoc</A></LI>
+        <LI><A href="how-to-write-your-own-handler.html" title="How to write your own handler">Handler development</A></LI>
+        <LI><A href="how-to-use-ipojo-manipulation-metadata.html" title="How to use iPOJO Manipulation Metadata">Manipulation Metadata </A></LI>
+        <LI><A href="dive-into-the-ipojo-manipulation-depths.html" title="Dive into the iPOJO Manipulation depths">Dive into the iPOJO Manipulation depths</A></LI>
+       </UL>
+    </LI> <!-- End of Dev guide -->
+</UL> 
+</LI> <!-- End of doc -->
+<!-- Menu 4 : Tools -->
+<LI class="">
+<A href="" class="sf-with-ul">Tools<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+   <LI><A href="ipojo-ant-task.html" title="iPOJO Ant Task">Ant Task</A></LI>
+   <LI><A href="ipojo-eclipse-plug-in.html" title="iPOJO Eclipse Plug-in">Eclipse Plugin</A></LI>
+   <LI><A href="ipojo-maven-plug-in.html" title="iPOJO Maven Plug-in">Maven Plugin</A></LI>
+   <LI><A href="ipojo-arch-command.html" title="iPOJO-Arch-Command"><TT>arch</TT> shell command</A></LI>
+   <LI><A href="apache-felix-ipojo-online-manipulator.html" title="apache-felix-ipojo-online-manipulator">Online Manipulator</A></LI>
+   <LI><A href="ipojo-webconsole-plugin.html" title="iPOJO Webconsole Plugin">Webconsole plugin</A></LI>
+   <LI><A href="apache-felix-ipojo-junit4osgi.html" title="apache-felix-ipojo-junit4osgi">Junit4OSGi</A></LI>
+</UL>   
+</LI><!-- End of tools -->	
+<!-- Menu 5 : Support -->
+<LI>
+<A href="ipojo-support.html" title="ipojo-support">Support </A>
+</LI>
+<!-- End of the menu 5 -->			
+<!-- Menu 6 : Misc -->
+<LI class="">
+<A href="" class="sf-with-ul">Misc<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+   <LI><A href="apache-felix-ipojo-supportedvms.html" title="apache-felix-ipojo-supportedVMs">Supported JVMs</A></LI>
+   <LI><A href="apache-felix-ipojo-supportedosgi.html" title="apache-felix-ipojo-supportedOSGi">Supported OSGi Implementations</A></LI>
+   <LI><A href="http://ipojo-dark-side.blogspot.com/" class="external-link" rel="nofollow">iPOJO's Dark Side Blog</A></LI>
+   <LI><A href="article-presentations.html" title="Article & Presentations">Article &amp; Presentations</A></LI>
+   <LI><A href="http://www.apache.org/">ASF</A></LI>
+   <LI><A href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</A></LI>
+   <LI><A href="http://www.apache.org/foundation/thanks.html">Sponsors</A></LI>
+</UL>
+</LI><!-- End of misc -->
+</UL> <!-- End of the menu -->
+</DIV> <!-- Page header -->
+</P>
+
+<DIV class="content">
+
+<H1><A name="HowtouseiPOJOAnnotations-HowtouseiPOJOannotations"></A>How to use iPOJO annotations</H1>
+
+<P><EM>You can use annotations to define your component types. This page presents supported annotations.</EM></P>
+
+<DIV class="toc"><DIV>
+<UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-GettingiPOJOAnnotations%253A">Getting iPOJO Annotations:</A></LI>
+<UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-InEclipse">In Eclipse</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-InMaven">In Maven</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-InAnt">In Ant</A></LI>
+</UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-Anexampleofusage">An example of usage</A></LI>
+<UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-HelloServiceProvider">Hello Service Provider</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-HelloServiceConsumer">Hello Service Consumer</A></LI>
+</UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-DefinedAnnotations">Defined Annotations</A></LI>
+<UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Component">@Component</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Provides">@Provides</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Requires">@Requires</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@ServiceProperty">@ServiceProperty</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@ServiceController">@ServiceController</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Property">@Property</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Updated">@Updated</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Bind">@Bind</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Unbind">@Unbind</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Modified">@Modified</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Validate">@Validate</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Invalidate">@Invalidate</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@PostRegistration">@PostRegistration</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@PostUnregistration">@PostUnregistration</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-@Instantiate">@Instantiate</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-TemporalDependencies%2528externalhandler%2529">Temporal Dependencies (external handler)</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-ExposinginstancesasaJMXMBean%2528externalhandler%2529">Exposing instances as a JMX MBean (external handler)</A></LI>
+</UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-AdvancedtopicsandFAQ">Advanced topics and FAQ</A></LI>
+<UL>
+    <LI><A href="#HowtouseiPOJOAnnotations-Metadatafileandannotationmerge">Metadata file and annotation merge</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-Instancecreation">Instance creation</A></LI>
+    <LI><A href="#HowtouseiPOJOAnnotations-UsingCustomAnnotations">Using Custom Annotations</A></LI>
+</UL>
+</UL></DIV></DIV>
+
+<H2><A name="HowtouseiPOJOAnnotations-GettingiPOJOAnnotations%3A"></A>Getting iPOJO Annotations:</H2>
+
+<P>iPOJO Annotations are defines inside the org.apache.felix.ipojo.annotations project. You can download the Jar file of this project from the <A href="download.html" title="Download">download</A> page. Sources are available on the <A href="http://felix.apache.org/site/sourcecode.html" class="external-link" rel="nofollow">Felix trunk</A>.<BR>
+Once added to your class path / build path / dependencies, you can use the annotations as normal annotations. These annotations are automatically processed by the iPOJO manipulator.</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-InEclipse"></A>In Eclipse</H3>
+
+<P>Add the org.apache.felix.ipojo.annotations jar file in your build path. Do not forget to use a Java compiler accepting annotations (1.5 or higher).</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-InMaven"></A>In Maven</H3>
+
+<P>Add the following dependency:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;dependency&gt;</SPAN>
+      <SPAN class="code-tag">&lt;groupId&gt;</SPAN>org.apache.felix<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+      <SPAN class="code-tag">&lt;artifactId&gt;</SPAN>org.apache.felix.ipojo.annotations<SPAN class="code-tag">&lt;/artifactId&gt;</SPAN>
+      <SPAN class="code-tag">&lt;version&gt;</SPAN>1.8.0<SPAN class="code-tag">&lt;/version&gt;</SPAN>
+<SPAN class="code-tag">&lt;/dependency&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+<P>Moreover, you need to set that the source code and the target code are Java 1.5 code. To achieve this, just add the following plugin in your plugins section:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;plugin&gt;</SPAN>
+        <SPAN class="code-tag">&lt;groupId&gt;</SPAN>org.apache.maven.plugins<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+	<SPAN class="code-tag">&lt;artifactId&gt;</SPAN>maven-compiler-plugin<SPAN class="code-tag">&lt;/artifactId&gt;</SPAN>
+	<SPAN class="code-tag">&lt;configuration&gt;</SPAN>
+	  <SPAN class="code-tag">&lt;source&gt;</SPAN>1.5<SPAN class="code-tag">&lt;/source&gt;</SPAN>
+	  <SPAN class="code-tag">&lt;target&gt;</SPAN>1.5<SPAN class="code-tag">&lt;/target&gt;</SPAN>
+	<SPAN class="code-tag">&lt;/configuration&gt;</SPAN>
+<SPAN class="code-tag">&lt;/plugin&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H3><A name="HowtouseiPOJOAnnotations-InAnt"></A>In Ant</H3>
+
+<P>Just add the org.apache.felix.ipojo.annotations jar file  in your class path.</P>
+
+<H2><A name="HowtouseiPOJOAnnotations-Anexampleofusage"></A>An example of usage</H2>
+
+<P>To illustrate annotations usage, let taking the tutorial example. In this tutorial, there are two components:</P>
+<UL>
+	<LI>The first one provides the hello service</LI>
+	<LI>The second one uses the provided hello service<BR>
+You can download the archive containing the examples and a preconfigured version of Felix <A href="http://people.apache.org/~clement/ipojo/tutorials/annotations/annotation-tutorial.zip" class="external-link" rel="nofollow">here</A>.</LI>
+</UL>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-HelloServiceProvider"></A>Hello Service Provider</H3>
+
+<P>The provider uses two annotations. The &quot;component&quot; annotation is mandatory and defines that the class defines a component type. Then the &quot;provides&quot; annotation just declare that the defined component type provides a service.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> ipojo.example.hello.impl;
+
+<SPAN class="code-keyword">import</SPAN> ipojo.example.hello.Hello;
+
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.annotations.Component;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.annotations.Provides;
+
+/**
+  * Component implementing the Hello service.
+ **/
+@Component
+@Provides
+<SPAN class="code-keyword">public</SPAN> class HelloImpl <SPAN class="code-keyword">implements</SPAN> Hello {
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> sayHello(<SPAN class="code-object">String</SPAN> name) { 
+     <SPAN class="code-keyword">return</SPAN> <SPAN class="code-quote">&quot;hello &quot;</SPAN> + name; 
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H3><A name="HowtouseiPOJOAnnotations-HelloServiceConsumer"></A>Hello Service Consumer</H3>
+
+<P>The Hello Service Consumer use more annotations. First it used the component annotation. To defines its &quot;immediate&quot; behavior, it add the 'immediate' attribute.<BR>
+Then, it uses the requires annotation to define a service dependency. Finally, it uses the validate and invalidate annotations to define lifecycle callbacks.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> ipojo.example.hello.client;
+
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.annotations.Component;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.annotations.Invalidate;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.annotations.Requires;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.annotations.Validate;
+
+<SPAN class="code-keyword">import</SPAN> ipojo.example.hello.Hello;
+
+@Component(name=<SPAN class="code-quote">&quot;AnnotedHelloClient&quot;</SPAN>, immediate=<SPAN class="code-keyword">true</SPAN>)
+<SPAN class="code-keyword">public</SPAN> class HelloClient <SPAN class="code-keyword">implements</SPAN> <SPAN class="code-object">Runnable</SPAN> {
+
+@Requires
+<SPAN class="code-keyword">private</SPAN> Hello[] m_hello; <SPAN class="code-comment">// Service Dependency
+</SPAN>
+<SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-object">int</SPAN> DELAY=10000;
+<SPAN class="code-keyword">private</SPAN> <SPAN class="code-object">boolean</SPAN> end;
+
+ <SPAN class="code-keyword">public</SPAN> void run() {
+    <SPAN class="code-keyword">while</SPAN> (!end) {
+               <SPAN class="code-keyword">try</SPAN> {
+		invoke();
+                <SPAN class="code-object">Thread</SPAN>.sleep(DELAY);
+              } <SPAN class="code-keyword">catch</SPAN> (InterruptedException ie) { }
+              /* will recheck end */
+     }
+}
+
+<SPAN class="code-keyword">public</SPAN> void invoke() {
+	<SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">int</SPAN> i = 0; i &lt; m_hello.length; i++) { 
+          <SPAN class="code-object">System</SPAN>.out.println(m_hello[i].
+             sayHello(<SPAN class="code-quote">&quot;Clement&quot;</SPAN>)); 
+        }
+}
+
+ @Validate
+ <SPAN class="code-keyword">public</SPAN> void starting() {    
+    <SPAN class="code-object">Thread</SPAN> T = <SPAN class="code-keyword">new</SPAN> <SPAN class="code-object">Thread</SPAN>(<SPAN class="code-keyword">this</SPAN>);     
+    end = <SPAN class="code-keyword">false</SPAN>;     
+    T.start(); 
+ }
+
+ @Invalidate
+ <SPAN class="code-keyword">public</SPAN> void stopping() {    
+     end = <SPAN class="code-keyword">true</SPAN>; 
+ }
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="HowtouseiPOJOAnnotations-DefinedAnnotations"></A>Defined Annotations</H2>
+
+<P>This section lists defined annotations and how to use them.</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-@Component"></A>@Component</H3>
+
+<P><B>Goal:</B> Defines a component type<BR>
+<B>Target:</B> The component implementation class<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>name : defines the component type name (optional, default = the class name)</LI>
+	<LI>immediate: defines the component type as immediate (optional, default = &quot;false&quot;)</LI>
+	<LI>architecture: enable the architecture exposition (optional, default = &quot;false&quot;)</LI>
+	<LI>propagation: enable configuration property propagation (on provided services) (optional, default = &quot;false&quot;)</LI>
+	<LI>managedservice : set the Managed Service PID. (optional, default = no PID (i.e. the managed service will not be exposed)).</LI>
+	<LI>factoryMethod : set the factory-method. The specified method must be a static method and  return a pojo object.(optional,  default = iPOJO uses the 'regular' constructor).</LI>
+	<LI>publicFactory : set if the component type is public. (optional, default = true).</LI>
+</UL>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@Provides"></A>@Provides</H3>
+
+<P><B>Goal:</B> Defines that the component type provide services<BR>
+<B>Target:</B> The component implementation class<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>specifications: defines the provided interface (optional, default = all implemented interfaces)</LI>
+	<LI>strategy : the service object creation strategy. Possible values : SINGLETON, SERVICE, METHOD, INSTANCE or the strategy class name. With SINGLETON there is only one POJO per component instance, SERVICE means OSGi Service factory,  METHOD delegates the creation to the factory-method of the component, INSTANCE creates one service object per requiring instance. For other strategies, specify the qualified name of the CreationStrategy class. (optional, default =  SINGLETON)</LI>
+	<LI>properties : array containing <TT>@StaticServiceProperties</TT> defining service properties not attached to fields.</LI>
+</UL>
+
+
+
+<DIV class="box">
+	<DIV class="box-blue-header">
+	<DIV class="box-blue-title">
+		<IMG src="http://people.apache.org/~clement/ipojo/site/information.gif"> <B>OSGi Service Factory</B>
+	</DIV>
+	</DIV>
+	<DIV class="box-blue-content">
+The <TT>SERVICE</TT> strategy refers to the OSGi service factory. So, one service object per asking bundle will be created.
+	</DIV>
+	<DIV class="box-blue-footer"></DIV>
+</DIV>
+
+
+
+
+<DIV class="box">
+	<DIV class="box-blue-header">
+	<DIV class="box-blue-title">
+		<IMG src="http://people.apache.org/~clement/ipojo/site/information.gif"> <B>Changes between the 1.0.0 and the 1.2.0</B>
+	</DIV>
+	</DIV>
+	<DIV class="box-blue-content">
+The <TT>factory</TT> attribute became <TT>strategy</TT>. A third policy is now available (<TT>instance</TT>) allowing to create one service object per asking instance. Moreover, it is also possible to indicates the <TT>CreationStrategy</TT> class name. 
+	</DIV>
+	<DIV class="box-blue-footer"></DIV>
+</DIV>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@Requires"></A>@Requires</H3>
+
+<P><B>Goal:</B> Defines a service dependency<BR>
+<B>Target:</B> Field<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>Filter: defines the LDAP filter (optional)</LI>
+	<LI>Optional: defines if the dependency is optional (optional, default = &quot;false&quot;)</LI>
+	<LI>Id: defines the dependency Id (useful to identify bind &amp; unbind methods) (optional, default = field name) (if a dependency with the same id is already created (by a @bind or @unbind annotation), it merges the dependencies).</LI>
+	<LI>Nullable: enable or disable the Null Object injection when the dependency is optional and no providers are available (optional, default = &quot;true&quot;)</LI>
+	<LI>Defaultimplementation: set the Default-Implmentation (optional, by default iPOJO uses a Null object)</LI>
+	<LI>Policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = &quot;dynamic&quot;)</LI>
+	<LI>Comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</LI>
+	<LI>From : defines the specific provider to use</LI>
+	<LI>Specification : the required service specification. This attribute is required for Collection field. (optional, default = annotated field type).</LI>
+	<LI>Proxy : enables / disables the proxy injection (enabled by default)</LI>
+</UL>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@ServiceProperty"></A>@ServiceProperty</H3>
+
+<P><B>Goal:</B> Defines a service property<BR>
+<B>Target:</B> Field<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>name: property name (optional, default=field name</LI>
+	<LI>value: property value (optional, default=no value)</LI>
+	<LI>mandatory : is the property mandatory? (optional, default=false)</LI>
+</UL>
+
+
+
+<DIV class="box">
+	<DIV class="box-blue-header">
+	<DIV class="box-blue-title">
+		<IMG src="http://people.apache.org/~clement/ipojo/site/information.gif"> <B>Mandatory property</B>
+	</DIV>
+	</DIV>
+	<DIV class="box-blue-content">
+A mandatory property must receive a value either from the component type description (<TT>value</TT> attribute, or the instance configuration.
+	</DIV>
+	<DIV class="box-blue-footer"></DIV>
+</DIV>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@ServiceController"></A>@ServiceController</H3>
+
+<P><B>Goal:</B> Control the service exposition<BR>
+<B>Target:</B> Field (Boolean)<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>value : the default value. If set to false, it disables the initial exposition</LI>
+	<LI>specification : set the target of the controller, must be an exposed service interface. By default, the controller targets all services.</LI>
+</UL>
+
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@Property"></A>@Property</H3>
+
+<P><B>Goal:</B> Defines a property<BR>
+<B>Target:</B> Field or Method<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>name: property name (optional, default=field name computed by removing &quot;set&quot; from the method name (for instance setFoo(String ff) will get the Foo name))</LI>
+	<LI>value: property value (optional, default=no value)</LI>
+	<LI>mandatory : is the property mandatory? (optional, default=false)</LI>
+</UL>
+
+
+
+<DIV class="box">
+	<DIV class="box-blue-header">
+	<DIV class="box-blue-title">
+		<IMG src="http://people.apache.org/~clement/ipojo/site/information.gif"> <B>Field and Method</B>
+	</DIV>
+	</DIV>
+	<DIV class="box-blue-content">
+If another property with the same name is defined the method or the field is added to the existing property.
+	</DIV>
+	<DIV class="box-blue-footer"></DIV>
+</DIV>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@Updated"></A>@Updated</H3>
+<P><B>Goal:</B> Defines method called when a reconfiguration is completed.<BR>
+<B>Target:</B> a method (receiving a dictionary in argument)</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-@Bind"></A>@Bind</H3>
+
+<P><B>Goal:</B> Defines a bind method<BR>
+<B>Target:</B> Method<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>Id: Dependency Id, if the id is already defines in a &quot;@requires &quot; or &quot;@unbind&quot; annotation, it adds this method as a bind method of the already created dependency. (optional, default= no id, compute an id if the method name begin by &quot;bind&quot; (for instance &quot;bindFoo&quot; will have the &quot;Foo&quot; id))</LI>
+	<LI>Specification : required dependency (optional)</LI>
+	<LI>Aggregate : is the dependency an aggregate dependency (optional, default= &quot;false&quot;)</LI>
+	<LI>Optional: is the dependency an optional dependency (optional, default= &quot;false&quot;)</LI>
+	<LI>Filter: dependency LDAP filter (optional)</LI>
+	<LI>Policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = &quot;dynamic&quot;)</LI>
+	<LI>Comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</LI>
+	<LI>From : defines the specific provider to use</LI>
+</UL>
+
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@Unbind"></A>@Unbind</H3>
+
+<P><B>Goal:</B> Defines an unbind method<BR>
+<B>Target:</B> Method<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>Id: Dependency Id, if the id is already defines in a &quot;@requires&quot; or &quot;@bind&quot; annotation, it adds this method as an unbind method of the already created dependency. (optional, default= no id, compute an id if the method name begin by &quot;unbind&quot; (for instance &quot;unbindFoo&quot; will have the &quot;Foo&quot; id))</LI>
+	<LI>Specification : required dependency (optional)</LI>
+	<LI>Aggregate : is the dependency an aggregate dependency (optional, default= &quot;false&quot;)</LI>
+	<LI>Optional: is the dependency an optional dependency (optional, default= &quot;false&quot;)</LI>
+	<LI>Filter: dependency LDAP filter (optional)</LI>
+	<LI>Policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = &quot;dynamic&quot;)</LI>
+	<LI>Comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</LI>
+	<LI>From : defines the specific provider to use</LI>
+</UL>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@Modified"></A>@Modified</H3>
+
+<P><B>Goal:</B> Defines an <TT>modified</TT> method, called when a bound service is udpated.<BR>
+<B>Target:</B> Method<BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>Id: Dependency Id, if the id is already defines in a &quot;@requires&quot; or &quot;@bind&quot; annotation, it adds this method as an unbind method of the already created dependency. (optional, default= no id, compute an id if the method name begin by &quot;unbind&quot; (for instance &quot;unbindFoo&quot; will have the &quot;Foo&quot; id))</LI>
+	<LI>Specification : required dependency (optional)</LI>
+	<LI>Aggregate : is the dependency an aggregate dependency (optional, default= &quot;false&quot;)</LI>
+	<LI>Optional: is the dependency an optional dependency (optional, default= &quot;false&quot;)</LI>
+	<LI>Filter: dependency LDAP filter (optional)</LI>
+	<LI>Policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = &quot;dynamic&quot;)</LI>
+	<LI>Comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</LI>
+	<LI>From : defines the specific provider to use</LI>
+</UL>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-@Validate"></A>@Validate</H3>
+
+<P><B>Goal:</B> defines a validate lifecycle callback<BR>
+<B>Target:</B> method</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-@Invalidate"></A>@Invalidate</H3>
+
+<P><B>Goal:</B> defines a validate lifecycle callback<BR>
+<B>Target:</B> method</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-@PostRegistration"></A>@PostRegistration</H3>
+
+<P><B>Goal:</B> defines a callback invoked after service registration. The callback must have the following signature : <TT>public void name(ServiceReference ref)</TT><BR>
+<B>Target:</B> method</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-@PostUnregistration"></A>@PostUnregistration</H3>
+
+<P><B>Goal:</B> defines a callback invoked after service unregistration. The callback must have the following signature : <TT>public void name(ServiceReference ref)</TT><BR>
+<B>Target:</B> method</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-@Instantiate"></A>@Instantiate</H3>
+
+<P><B>Goal:</B> declare a simple instance (this is equivalent to <TT>&lt;instance component=&quot;...&quot;&gt;&lt;/instance&gt;</TT><BR>
+<B>Target:</B> class<BR>
+<B>Attribute:</B></P>
+<UL>
+	<LI>name: the instance name (optional)</LI>
+</UL>
+
+
+<H3><A name="HowtouseiPOJOAnnotations-TemporalDependencies%28externalhandler%29"></A>Temporal Dependencies (external handler)</H3>
+
+<P>The temporal dependency handler is an external handler. However, it can be used with an annotation defined in the iPOJO annotations jar file. <BR>
+The annotation is org.apache.felix.ipojo.handler.temporal.Requires and targets a field. <BR>
+<B>Attributes:</B></P>
+<UL>
+	<LI>filter : specify the dependency filter</LI>
+	<LI>timeout : specify the dependency timeout (optional)</LI>
+	<LI>onTimeout : specify the onTimeout action (null, nullable, empty-array, default-implementation (specify the class name in this case) (optional).</LI>
+	<LI>specification : the required service specification. This attribute is required for Collection field. (optional, default = annotated field type).</LI>
+	<LI>proxy :  Inject a proxy instead of the real object. This allows passing this reference to collaborators. (Default = false)</LI>
+</UL>
+
+
+
+
+<H3><A name="HowtouseiPOJOAnnotations-ExposinginstancesasaJMXMBean%28externalhandler%29"></A>Exposing instances as a JMX MBean (external handler)</H3>
+
+<P>The JMX Handler allows exposing an instance as a JMX MBean. To configure the JMX handler directly from your code, three annotations are provided. They are in the <TT>org.apache.felix.ipojo.handlers.jmx</TT> package</P>
+
+<P>The <TT>@org.apache.felix.ipojo.handlers.jmx.Config</TT> (<TT>@Config</TT> if the package it correctly imported) annotation is a type annotation (so placed on the <TT>class</TT> element. This annotation indicates that the instance will be exposed as an MBean. This annotation supports:</P>
+<UL>
+	<LI>usesMOSGi: set to <TT>true</TT> to use MOSGi. Otherwise, the MBean will be exposed in the MBean Platform Server (default: <TT>false</TT>).</LI>
+	<LI>objectname: set the MBean objectname. The objectname must follow JMX specification. (default: <TT>package-name:factory-name:instance-name</TT>)</LI>
+	<LI>domain: set the MBean domain. (default: <TT>package-name</TT>)</LI>
+	<LI>name: set the MBean name. (default: <TT>instance-name</TT>).</LI>
+</UL>
+
+
+<P>The <TT>@org.apache.felix.ipojo.handlers.jmx.Property</TT> (<TT>@Property</TT>) annotation is a field annotation indicating that the field is exposed in the MBean. The supported attributes are:</P>
+<UL>
+	<LI>name: set the property name</LI>
+	<LI>rights: set the access permission. Possible values are <TT>r</TT> (read only) and <TT>w</TT> (read and write). By default, properties are in read-only mode.</LI>
+	<LI>notification: enables notification on this property. By default notifications are disabled.</LI>
+</UL>
+
+
+<P>The <TT>@org.apache.felix.ipojo.handlers.jmx.Method</TT> (<TT>@Method</TT>) annotation is a method annotation indicating that the method is exposed in the MBean. Only one attribute can be customized:</P>
+<UL>
+	<LI>description: set the method description.</LI>
+</UL>
+
+
+
+<H2><A name="HowtouseiPOJOAnnotations-AdvancedtopicsandFAQ"></A>Advanced topics and FAQ</H2>
+
+<H3><A name="HowtouseiPOJOAnnotations-Metadatafileandannotationmerge"></A>Metadata file and annotation merge</H3>
+
+<P>It is possible to defines component type both in the metadata file (in XML) and by using annotation. However, if a component type defined by using annotations has the same name than a type define in the XML file, the XML descriptor override the annotation defined type. However, a warning message is launched during the manipulation.</P>
+
+<H3><A name="HowtouseiPOJOAnnotations-Instancecreation"></A>Instance creation</H3>
+
+<P>The @Instantiate annotation allows creating an instance, but this declaration is limited:</P>
+<UL>
+	<LI>it does not support configuration</LI>
+	<LI>it does not allow naming</LI>
+	<LI>the instance is created in the global scope (so no composition)</LI>
+</UL>
+
+
+<P>To define instances, you should use the XML descriptor. Instance can refer to annotated types by referring to their names.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;instance component=<SPAN class="code-quote">&quot;ipojo.example.hello.impl.HelloImpl&quot;</SPAN>/&gt;</SPAN>
+<SPAN class="code-tag">&lt;instance component=<SPAN class="code-quote">&quot;AnnotedHelloClient&quot;</SPAN>/&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H3><A name="HowtouseiPOJOAnnotations-UsingCustomAnnotations"></A>Using Custom Annotations</H3>
+
+<P>External handlers can provides their own annotations. Using these annotations just requires to add them to your build path. To external handlers annotations, please refer to the external handler documentation.
+<BR class="atl-forced-newline">
+<BR class="atl-forced-newline"></P>
+
+ </DIV>
+        <IMG src="http://felix.apache.org/ipojo/site/footer.png" class="footer">
+</DIV>
+
+<SCRIPT type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</SCRIPT>
+<SCRIPT type="text/javascript">
+try{
+var pageTracker = _gat._getTracker("UA-1518442-4");
+pageTracker._trackPageview();
+} catch(err) {}
+</SCRIPT>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by clement.escoffier on 2011-02-11 13:52:51.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

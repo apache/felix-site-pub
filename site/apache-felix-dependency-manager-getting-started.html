@@ -1,0 +1,254 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Dependency Manager - Getting Started</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H2><A name="ApacheFelixDependencyManager-GettingStarted-GettingStarted"></A>Getting Started</H2>
+
+<P>When developing an OSGi bundle that has dependencies and possibly registers services, there are two classes in particular we need to implement:</P>
+<OL>
+	<LI>The bundle activator which controls the life-cycle of the bundle.</LI>
+	<LI>The actual component implementation, which can be a POJO.</LI>
+</OL>
+
+
+<P>When using the dependency manager, your bundle activator is a subclass of <TT>DependencyActivatorBase</TT>. It needs to implement two life cycle methods: <TT>init</TT> and <TT>destroy</TT>. Both methods take two arguments: <TT>BundleContext</TT> and <TT>DependencyManager</TT>. The latter is your interface to the declarative API you can use to define your components and dependencies.</P>
+
+<P>The following paragraphs will show various examples that explain how to do this. Subsequently, some more advanced scenarios will be covered that involve listening to dependency and component state changes and interacting with the OSGi framework from within your component implementation.</P>
+
+<H3><A name="ApacheFelixDependencyManager-GettingStarted-Registeringaservice"></A>Registering a service</H3>
+
+<P>The first example is about registering a service. We extend <TT>DependencyActivatorBase</TT> and in the init method we use the reference to the <TT>DependencyManager</TT> to create and add a component. For this component we subsequently set its service interface and implementation. In this case the interface is the <TT>Store</TT> interface, the second parameter, null, allows you to provide properties along with the service registration. For the implementation, we only mention the <TT>Class</TT> of the implementation, which means the dependency manager will lazily instantiate it. In this case, there is not much point in doing that because the component has no dependencies, but if it had, the instantiation would only happen when those dependencies were resolved.</P>
+
+<P>Notice that the dependency manager API uses method chaining to create a more or less &quot;fluent&quot; API that, with proper indentation, is very easy to read.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">extends</SPAN> DependencyActivatorBase {
+    <SPAN class="code-keyword">public</SPAN> void init(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {
+        manager.add(createComponent()
+            .setInterface(Store.class.getName(), <SPAN class="code-keyword">null</SPAN>)
+            .setImplementation(MemoryStore.class)
+        );
+    }
+    
+    <SPAN class="code-keyword">public</SPAN> void destroy(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {}
+}
+</PRE>
+</DIV></DIV>
+
+<P>This is the service interface. Nothing special here.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> Store {
+    <SPAN class="code-keyword">public</SPAN> void put(<SPAN class="code-object">String</SPAN> key, <SPAN class="code-object">Object</SPAN> value);
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">Object</SPAN> get(<SPAN class="code-object">String</SPAN> key);
+}
+</PRE>
+</DIV></DIV>
+
+<P>And finally the implementation. Again, this is just a POJO, there is no reference here to any OSGi or dependency manager specific class or annotation.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class MemoryStore <SPAN class="code-keyword">implements</SPAN> Store {
+    <SPAN class="code-keyword">private</SPAN> Map m_map = <SPAN class="code-keyword">new</SPAN> HashMap();
+
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">Object</SPAN> get(<SPAN class="code-object">String</SPAN> key) {
+        <SPAN class="code-keyword">return</SPAN> m_map.get(key);
+    }
+
+    <SPAN class="code-keyword">public</SPAN> void put(<SPAN class="code-object">String</SPAN> key, <SPAN class="code-object">Object</SPAN> value) {
+        m_map.put(key, value);
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H3><A name="ApacheFelixDependencyManager-GettingStarted-Dependingonaservice"></A>Depending on a service</H3>
+
+<P>Our second example is that of a component that depends on two other services: our <TT>Store</TT> from the previous example and the standard OSGi <TT>LogService</TT>. Looking at the code, there is a small but important difference between the two: <TT>Store</TT> is a required dependency and <TT>LogService</TT> is not. This means that our component really needs a store to work, but if there is no logging available, it can work without. Also note that this component has no <TT>setInterface</TT> method, which simply means it is not itself a service. This is perfectly fine.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">extends</SPAN> DependencyActivatorBase {
+    <SPAN class="code-keyword">public</SPAN> void init(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {
+        manager.add(createComponent()
+            .setImplementation(DataGenerator.class)
+            .add(createServiceDependency()
+                .setService(Store.class)
+                .setRequired(<SPAN class="code-keyword">true</SPAN>)
+            )
+            .add(createServiceDependency()
+                .setService(LogService.class)
+                .setRequired(<SPAN class="code-keyword">false</SPAN>)
+            )
+        );
+    }
+    
+    <SPAN class="code-keyword">public</SPAN> void destroy(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {}
+}
+</PRE>
+</DIV></DIV>
+
+<P>Now let's look at our POJO. There are a couple of interesting things to explain. First of all, our dependencies are declared as fields, and they don't even have setters (or getters). When the dependency manager instantiates our class, it will (through reflection) inject the dependencies so they are just available for our class to use. That is also the reason these fields are declared as volatile: to make sure they are visible to all threads traversing our instance.</P>
+
+<P>One final note, since we defined our <TT>LogService</TT> dependency as optional, it might not be available when we invoke it. Still, the code does not contain any checks to avoid a null pointer exception. It does not need to, since the dependency manager makes sure to inject a null object when the real service is not available. The null object can be invoked and will do nothing. For a lot of cases that is good enough, but for those cases where it is not, our next example introduces callbacks that notify you of changes.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class DataGenerator {
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">volatile</SPAN> Store m_store;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">volatile</SPAN> LogService m_log;
+    
+    <SPAN class="code-keyword">public</SPAN> void generate() {
+        <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">int</SPAN> i = 0; i &lt; 10; i++) {
+            m_store.put(<SPAN class="code-quote">&quot;#&quot;</SPAN> + i, <SPAN class="code-quote">&quot;value_&quot;</SPAN> + i);
+        }
+        m_log.log(LogService.LOG_INFO, <SPAN class="code-quote">&quot;Data generated.&quot;</SPAN>);
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H3><A name="ApacheFelixDependencyManager-GettingStarted-Trackingserviceswithcallbacks"></A>Tracking services with callbacks</H3>
+
+<P>Sometimes, simply injecting services does not give you enough control over a dependency because you might want to track more than one, or you might want to execute some code on changes. For all those cases, callbacks are your friends. Since one of our goals is to not introduce any kind of API in our POJO, callbacks are declared by specifying their method names instead of through some interface. In this case, we have a dependency on <TT>Translator</TT> services, and we define <TT>added</TT> and <TT>removed</TT> as callbacks.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">extends</SPAN> DependencyActivatorBase {
+    <SPAN class="code-keyword">public</SPAN> void init(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {
+        manager.add(createComponent()
+            .setImplementation(DocumentTranslator.class)
+            .add(createServiceDependency()
+                .setService(Translator.class)
+                .setRequired(<SPAN class="code-keyword">false</SPAN>)
+                .setCallbacks(<SPAN class="code-quote">&quot;added&quot;</SPAN>, <SPAN class="code-quote">&quot;removed&quot;</SPAN>)
+            )
+        );
+    }
+    
+    <SPAN class="code-keyword">public</SPAN> void destroy(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {}
+}
+</PRE>
+</DIV></DIV>
+
+<P>This is the actual <TT>Translator</TT> service, which, for the purpose of this example, is not that important.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> Translator {
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">boolean</SPAN> canTranslate(<SPAN class="code-object">String</SPAN> from, <SPAN class="code-object">String</SPAN> to);
+    <SPAN class="code-keyword">public</SPAN> Document translate(Document document, <SPAN class="code-object">String</SPAN> from, <SPAN class="code-object">String</SPAN> to);
+}
+</PRE>
+</DIV></DIV>
+
+<P>Finally, here's our implementation. It declares the callback methods with one parameter: the <TT>Translator</TT> service. Actually, the dependency manager will look for several different signatures (all explained in more detail in the reference section).</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class DocumentTranslator {
+    <SPAN class="code-keyword">private</SPAN> List&lt;Translator&gt; m_translators = <SPAN class="code-keyword">new</SPAN> ArrayList&lt;Translator&gt;();
+    
+    <SPAN class="code-keyword">public</SPAN> void added(Translator translator) {
+        m_translators.add(translator);
+    }
+    
+    <SPAN class="code-keyword">public</SPAN> void removed(Translator translator) {
+        m_translators.remove(translator);
+    }
+    
+    <SPAN class="code-keyword">public</SPAN> Document translate(Document document, <SPAN class="code-object">String</SPAN> from, <SPAN class="code-object">String</SPAN> to) {
+        <SPAN class="code-keyword">for</SPAN> (Translator translator : m_translators) {
+            <SPAN class="code-keyword">if</SPAN> (translator.canTranslate(from, to)) {
+                <SPAN class="code-keyword">return</SPAN> translator.translate(document, from, to);
+            }
+        }
+        <SPAN class="code-keyword">return</SPAN> <SPAN class="code-keyword">null</SPAN>;
+    }
+}
+</PRE>
+</DIV></DIV>
+
+
+<H3><A name="ApacheFelixDependencyManager-GettingStarted-Dependingonaconfiguration"></A>Depending on a configuration</H3>
+
+<P>Not all dependencies are on services. There are several other types of dependencies that are supported, one of them is the configuration dependency. In fact, only <B>required</B> configuration dependencies are supported, because optional ones can just be achieved by registering as a <TT>ManagedService</TT> yourself. When defining the dependency, you must define the persistent ID of the service. The component will not become active until the configuration you depend on is available <B>and</B> is valid. The latter can be checked by your implementation as we will see below.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">extends</SPAN> DependencyActivatorBase {
+    <SPAN class="code-keyword">public</SPAN> void init(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {
+        manager.add(createComponent()
+            .setImplementation(Task.class)
+            .add(createConfigurationDependency()
+                .setPid(<SPAN class="code-quote">&quot;config.pid&quot;</SPAN>)
+            )
+        );
+    }
+    
+    <SPAN class="code-keyword">public</SPAN> void destroy(BundleContext context, DependencyManager manager) <SPAN class="code-keyword">throws</SPAN> Exception {}
+}
+</PRE>
+</DIV></DIV>
+
+<P>Here's our code that implements <TT>ManagedService</TT> and has an <TT>updated</TT> method. This method checks if the provided configuration is valid and throw a <TT>ConfigurationException</TT> if it is not. As long as this method does not accept the configuration, the corresponding component will not be activated.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Task <SPAN class="code-keyword">implements</SPAN> ManagedService {
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-object">String</SPAN> m_interval;
+
+    <SPAN class="code-keyword">public</SPAN> void execute() {
+        <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Scheduling task with interval &quot;</SPAN> + m_interval);
+    }
+
+    <SPAN class="code-keyword">public</SPAN> void updated(Dictionary properties) <SPAN class="code-keyword">throws</SPAN> ConfigurationException {
+        <SPAN class="code-keyword">if</SPAN> (properties != <SPAN class="code-keyword">null</SPAN>) {
+            m_interval = (<SPAN class="code-object">String</SPAN>) properties.get(<SPAN class="code-quote">&quot;interval&quot;</SPAN>);
+            <SPAN class="code-keyword">if</SPAN> (m_interval == <SPAN class="code-keyword">null</SPAN>) {
+                <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;interval&quot;</SPAN>, <SPAN class="code-quote">&quot;must be specified&quot;</SPAN>);
+            }
+        }
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H3><A name="ApacheFelixDependencyManager-GettingStarted-..."></A>...</H3>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by marrs on 2010-09-08 16:51:11.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

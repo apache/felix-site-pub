@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Temporal Service Dependency</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components.html">Describing components</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/temporal-service-dependency.html" target="felix_cwiki">/site/temporal-service-dependency.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Temporal Service Dependency</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# The temporal dependency handler
+
+*Regular service dependencies participate to the instance lifecycle. Moreover, the injected service object is either available or not available. A temporal dependency handler is a little different and provides a different resolution pattern. Indeed, the temporal dependency does not invalidate the instance. Moreover, if not available, the temporal dependency waits (and so blocks the current thread) for a provider. Of course, the maximum waiting time can be specified. If a timeout occurs, the handler throws a Runtime Exception.*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## Using the handler
+
+First of all, you need to configure the component type to use the handler such as:
+
+    <iPOJO xmlns:temporal="org.apache.felix.ipojo.handler.temporal">
+    <component
+        className="org.apache.felix.ipojo.example.Temporal">
+
+        <!-- Temporal dependency configuration -->
+        <temporal:requires field="mytemporal"/>
+
+        <provides/>
+
+    </component>
+    </iPOJO>
+
+Notice that, this handler is an external handler. So, it uses the "org.apache.felix.ipojo.handler.temporal" namespace.
+Once described, you can implement your component. The specified field will be mapped to the temporal dependency. As for regular field injection, aggregation, targeted service specification (i.e. interface) is discovered automatically. Filter, comparator and binding policy are also supported. However, the optional attribute is not supported. In fact, this attribute is meaningless in the case of a temporal dependency.
+Using the field in your code will try to find a matching service provider. If a provider is available, the field receives the service object immediately. Else, the thread is stopped and waits for a provider. The default wait time is 3s (you can also specify this time). If no provider is available after this time, the thread throws a RuntimeException. If a provider becomes available during this time, the field receives immediately the value and the execution can continue.
+
+You can also use annotations:
+
+    @Component
+    public class Temporal {
+
+        @Temporal // was org.apache.felix.ipojo.handler.temporal.Requires before the 1.7.0
+        private FooService mytemporal;
+
+    }
+
+## Configuration
+
+The handler has only one mandatory attributes:
+* Field: the implementation field supporting the dependency (not needed with annotations)
+
+The handler supports on specific optional attributes:
+* Timeout: the maximum time waited in order to find a provider (default: 3s). For an infinite timeout, the timeout value is either "infinite" or "-1".
+* OnTimeout: specifies the action to do when the timeout occurs. Four actions are supported: null, nullable, empty-array, default-implementation. By default, no action is specified, and an exception occurs when the timeout is reached.
+
+The attributes from "regular" dependencies are also supported (like filter).
+OnTimeout actions
+
+When a timeout occurs, you can specify what the handler must do. By default, it throws a runtime exception. However, four others actions can be set in the 'onTimeout' attribute.
+* The null action (onTimeout="null") will return "null" instead of the service object.
+* The "nullable" action (onTimeout="nullable") will return a "Nullable" object instead of the service object. This object is a fake but can be used a regular service object. However, invoking actions on this object will do nothing. In the case of aggregate dependency, an array containing a "nullable" object is returned.
+* The empty action is only supported for aggregate dependency (the field must be an array). In this case, an empty-array is returned. (In the 1.2.0 version, the `empty-array` attribute became `empty`)
+* The default-implementation action is a little different. Instead of specifying the action, you need to specify the default-implementation (the qualified class name) that you want to use. For example onTimeout="o.a.f.i.MyDefaultLogServiceImpl". In this case, the handler will inject an instance of this object instead of a real service object. On aggregate dependency, an array with one default-implementation object is returned.
+
+    <iPOJO xmlns:temporal="org.apache.felix.ipojo.handler.temporal">
+    <component
+        className="org.apache.felix.ipojo.example.Temporal">
+
+        <!-- Temporal dependency configuration -->
+        <temporal:requires field="fs" timeout="300" ontimeout="nullable"/>
+
+        <provides/>
+
+    </component>
+    </iPOJO>
+
+This is equivalent to:
+
+    @Component
+    public class Temporal {
+
+        @Temporal(timeout=300, ontimeout="nullable")
+        private FooService mytemporal;
+
+    }
+
+## Collection injection
+Temporal dependencies can also be injected inside Collection. To achieve this, the 'specification' attribute must indicates the looked specification, and the field must be a Collection.
+
+    <iPOJO xmlns:temporal="org.apache.felix.ipojo.handler.temporal">
+    <component
+        className="org.apache.felix.ipojo.example.Temporal">
+
+        <!-- Temporal dependency configuration -->
+        <temporal:requires field="mycollection" specification="my.service.specification"/>
+
+        <provides/>
+
+    </component>
+    </iPOJO>
+
+This is equivalent to:
+
+    @Component
+    public class Temporal {
+
+        @Temporal(specification="my.service.specification")
+        private List<FooService> mycollection;
+
+    }
+
+## Proxy injection
+Temporal dependencies can also be injected as proxies. So it is possible to give the temporal dependency to helper object.
+On 'scalar' dependencies, the service lookup is executed during an operation invocation. Timeout policies are also executed is the lookup failed.
+On aggregate dependencies (necessary Collection), the service lookup is executed when the iterator(), and toArray(...) methods are invoked. Timeout policies 
+are also executed if the lookup failed. Proxies are enabled by default since the 1.7.0 version.
+
+To set a temporal dependency as a proxy, just add the `proxy` attribute as follows:
+
+    <iPOJO xmlns:temporal="org.apache.felix.ipojo.handler.temporal">
+    <component
+        className="org.apache.felix.ipojo.example.Temporal">
+
+        <!-- Temporal dependencies configuration -->
+        <temporal:requires proxy="true" field="fs"/>
+        <temporal:requires proxy="true" field="mycollection" specification="my.service.specification"/>
+
+        <provides/>
+
+    </component>
+    </iPOJO>
+
+By default, proxies are *enabled*. Setting proxy to `false` disables them.
+
+## Download 
+
+The handler is available on the [download](/documentation/subprojects/apache-felix-ipojo/download.html) page.
+Sources are available on the Felix trunk at the following location: [http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/temporal](http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/temporal).
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

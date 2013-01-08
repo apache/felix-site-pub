@@ -1,0 +1,139 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Framework Configuration Properties</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixFrameworkConfigurationProperties-ApacheFelixFrameworkConfigurationProperties"></A>Apache Felix Framework Configuration Properties</H1>
+
+<UL>
+	<LI><A href="#ApacheFelixFrameworkConfigurationProperties-overview">Overview</A></LI>
+	<LI><A href="#ApacheFelixFrameworkConfigurationProperties-framework">Framework configuration properties</A></LI>
+	<LI><A href="#ApacheFelixFrameworkConfigurationProperties-launcher">Launcher configuration properties</A></LI>
+	<LI><A href="#ApacheFelixFrameworkConfigurationProperties-migrating">Mirgrating from earlier versions</A></LI>
+	<LI><A href="#ApacheFelixFrameworkConfigurationProperties-feedback">Feedback</A></LI>
+</UL>
+
+
+<P><A name="ApacheFelixFrameworkConfigurationProperties-overview"></A></P>
+
+<H2><A name="ApacheFelixFrameworkConfigurationProperties-Overview"></A>Overview</H2>
+
+<P>This document describes the various configuration properties related to the Apache Felix Framework. Technically, there are framework properties and launcher properties. If you are using the Felix Framework JAR file (i.e., <TT>org.apache.felix.framework-x.y.x.jar</TT>), then you can only use framework properties. On the other hand, if you are using the Felix Main launcher JAR (i.e., <TT>felix.jar</TT> or <TT>org.apache.felix.main-x.y.z.jar</TT>), then you can use both framework and launcher properties. This document will describe both sets of properties.</P>
+
+<P>Note that the framework does not use system properties to find its configuration properties, it only consults the map passed into its constructor. In contrast to bundles, which use <TT>BundleContext.getProperty()</TT>, which exposes both configuration and system properties at execution time. In the case of overlap, the configuration properties override system properties. As a convenience, if you are using the Felix launcher, it will copy all configuration properties it finds in the system properties to the configuration map passed into the framework constructor, which allows you to set configuration properties on the command line. This feature is <B>not</B> available if you are just using the Felix framework JAR file.</P>
+
+<P><A name="ApacheFelixFrameworkConfigurationProperties-framework"></A></P>
+
+<H2><A name="ApacheFelixFrameworkConfigurationProperties-Frameworkconfigurationproperties"></A>Framework configuration properties</H2>
+
+<P>The following configuration properties are for the framework (properties starting with &quot;<TT>felix</TT>&quot; are specific to Felix, while those starting with &quot;<TT>org.osgi</TT>&quot; are standard OSGi properties):</P>
+
+<UL>
+	<LI><TT>org.osgi.framework.executionenvironment</TT> &#45; Sets the OSGi execution environment for the framework. The framework tries to set this to a reasonable default value. If you specify a value, it overrides the framework default. Refer to the OSGi specification for appropriate execution environment values.</LI>
+	<LI><TT>org.osgi.framework.storage</TT> &#45; Sets the directory to use as the bundle cache; by default the bundle cache directory is <TT>felix-cache</TT> in the current working directory. The value should be a valid directory name. The directory name can be either absolute or relative. Relative directory names are relative to the current working directory. The specified directory will be created if it does not exist.</LI>
+	<LI><TT>felix.cache.rootdir</TT> &#45; Sets the root directory used to calculate the bundle cache directory for relative directory names. If <TT>org.osgi.framework.storage</TT> is set to a relative name, by default it is relative to the current working directory. If this property is set, then it will be calculated as being relative to the specified root directory.</LI>
+	<LI><TT>org.osgi.framework.storage.clean</TT> &#45; Determines whether the bundle cache is flushed. The value can either be &quot;<TT>none</TT>&quot; or &quot;<TT>onFirstInit</TT>&quot;, where &quot;<TT>none</TT>&quot; does not flush the bundle cache and &quot;<TT>onFirstInit</TT>&quot; flushes the bundle cache when the framework instance is first initialized. The default value is &quot;<TT>none</TT>&quot;.</LI>
+	<LI><TT>felix.cache.filelimit</TT> &#45; The integer value of this string sets an upper limit on how many files the cache will open. The default value is zero, which means there is no limit. (Since 4.0)</LI>
+	<LI><TT>felix.cache.locking</TT> &#45; Enables or disables bundle cache locking, which is used to prevent concurrent access to the bundle cache. This is enabled by default, but on older/smaller JVMs file channel locking is not available; set this property to <TT>false</TT> to disable it.</LI>
+	<LI><TT>felix.cache.bufsize</TT> &#45; Sets the buffer size to be used by the cache; the default value is 4096. The integer value of this string provides control over the size of the internal buffer of the disk cache for performance reasons.</LI>
+	<LI><TT>org.osgi.framework.system.packages</TT> &#45; Specifies a comma-delimited list of packages that should be exported via the System Bundle from the framework class loader. The framework will set this to a reasonable default. If the value is specified, it replaces any default value.</LI>
+	<LI><TT>org.osgi.framework.system.packages.extra</TT> &#45; Specifies a comma-delimited list of packages that should be exported via the System Bundle from the framework class loader in addition to the packages in <TT>org.osgi.framework.system.packages</TT>. The default value is empty. If a value is specified, it is appended to the list of default or specified packages in <TT>org.osgi.framework.system.packages</TT>.</LI>
+	<LI><TT>org.osgi.framework.bootdelegation</TT> &#45; Specifies a comma-delimited list of packages that should be made implicitly available to all bundles from the parent class loader. It is recommended not to use this property since it breaks modularity. The default value is empty.</LI>
+	<LI><TT>org.osgi.framework.bundle.parent</TT> &#45; Specifies which class loader is used for boot delegation. Possible values are: <TT>boot</TT> for the boot class loader, <TT>app</TT> for the application class loader, <TT>ext</TT> for the extension class loader, and <TT>framework</TT> for the framework's class loader. The default is <TT>boot</TT>.</LI>
+	<LI><TT>felix.bootdelegation.implicit</TT> &#45; Specifies whether the framework should try to guess when to implicitly boot delegate to ease integration with external code. The default value is <TT>true</TT>.</LI>
+	<LI><TT>felix.systembundle.activators</TT> &#45; A <TT>List</TT> of <TT>BundleActivator</TT> instances that are started/stopped when the System Bundle is started/stopped. The specified instances will receive the System Bundle's <TT>BundleContext</TT> when invoked. (This property cannot be set in the configuration file since it requires instances; it can only be passed into Felix' constructor directly.)</LI>
+	<LI><TT>felix.log.logger</TT> &#45; An instance of <TT>Logger</TT> that the framework uses as its default logger. (This property cannot be set in the configuration file since it requires an instance; it can only be passed into Felix' constructor directly.)</LI>
+	<LI><TT>felix.log.level</TT> &#45; An integer value indicating the degree of logging reported by the framework; the higher the value the more logging is reported. If zero ('0') is specified, then logging is turned off completely. The log levels match those specified in the OSGi Log Service (i.e., 1 = error, 2 = warning, 3 = information, and 4 = debug). The default value is 1.</LI>
+	<LI><TT>org.osgi.framework.startlevel.beginning</TT> &#45; The initial start level of the framework once it starts execution; the default value is 1.</LI>
+	<LI><TT>felix.startlevel.bundle</TT> &#45; The default start level for newly installed bundles; the default value is 1.</LI>
+	<LI><TT>felix.service.urlhandlers</TT> &#45; Flag to indicate whether to activate the URL Handlers service for the framework instance; the default value is <TT>true</TT>. Activating the URL Handlers service will result in the <TT>URL.setURLStreamHandlerFactory()</TT> and <TT>URLConnection.setContentHandlerFactory()</TT> being called.</LI>
+</UL>
+
+
+<P><A name="ApacheFelixFrameworkConfigurationProperties-launcher"></A></P>
+
+<H2><A name="ApacheFelixFrameworkConfigurationProperties-Launcherconfigurationproperties"></A>Launcher configuration properties</H2>
+
+<P>The following configuration properties are for the launcher:</P>
+
+<UL>
+	<LI><TT>felix.auto.deploy.dir</TT> &#45; Specifies the auto-deploy directory from which bundles are automatically deployed at framework startup. The default is the <TT>bundle/</TT> directory of the current directory.</LI>
+	<LI><TT>felix.auto.deploy.action</TT> &#45; Specifies a comma-delimited list of actions to be performed on bundle JAR files found in the auto-deploy directory. The possible actions are <TT>install</TT>, <TT>update</TT>, <TT>start</TT>, and <TT>uninstall</TT>. An undefined or blank value is equivalent to disabling auto-deploy processing; there is no default value, so this value must be defined to enable it.</LI>
+	<LI><TT>felix.auto.install.&lt;n&gt;</TT> &#45; Space-delimited list of bundle URLs to automatically install when Felix is started, where <TT>&lt;n&gt;</TT> is the start level into which the bundle will be installed (e.g., <TT>felix.auto.install.2</TT>).</LI>
+	<LI><TT>felix.auto.start.&lt;n&gt;</TT> &#45; Space-delimited list of bundle URLs to automatically install and start when Felix is started, where <TT>&lt;n&gt;</TT> is the start level into which the bundle will be installed (e.g., <TT>felix.auto.start.2</TT>).</LI>
+	<LI><TT>felix.shutdown.hook</TT> &#45; Specifies whether the launcher should install a shutdown hook to cleanly shutdown the framework on process exit. The default value is <TT>true</TT>.</LI>
+</UL>
+
+
+<P><A name="ApacheFelixFrameworkConfigurationProperties-migrating"></A></P>
+
+<H2><A name="ApacheFelixFrameworkConfigurationProperties-MigratingfromEarlierVersions"></A>Migrating from Earlier Versions</H2>
+
+<P>Apache Felix Framework <TT>2.0.0</TT> introduced significant configuration property changes. This section describes the differences from older versions of the framework.</P>
+
+<UL>
+	<LI><B>Removed</B>
+	<UL>
+		<LI><TT>felix.embedded.execution</TT> &#45; No longer needed, since the framework now never calls <TT>System.exit()</TT>; the creator of the framework is now always responsible for exiting the VM.</LI>
+		<LI><TT>felix.strict.osgi</TT> &#45; No longer needed, since all non-specification features have been removed.</LI>
+		<LI><TT>felix.cache.dir</TT> &#45; No longer needed, since Felix no longer uses bundle cache profiles for saving sets of bundles.</LI>
+		<LI><TT>felix.cache.profile</TT> &#45; No longer needed, since the framework no longer uses bundle cache profiles for saving sets of bundles.</LI>
+		<LI><TT>felix.fragment.validation</TT> &#45; No longer needed, since the framework supports fragments.</LI>
+	</UL>
+	</LI>
+	<LI><B>Renamed</B>
+	<UL>
+		<LI><TT>felix.cache.profiledir</TT> &#45; The equivalent of this property is now named <TT>org.osgi.framework.storage</TT>.</LI>
+		<LI><TT>felix.startlevel.framework</TT> &#45; The equivalent of this property is now named <TT>org.osgi.framework.startlevel.beginning</TT>.</LI>
+	</UL>
+	</LI>
+	<LI><B>Introduced</B>
+	<UL>
+		<LI><TT>org.osgi.framework.system.packages.extra</TT> &#45; New property, as described above, added to align with standard framework API.</LI>
+		<LI><TT>org.osgi.framework.storage.clean</TT> &#45; New property, as described above, added to align with standard framework API.</LI>
+		<LI><TT>felix.cache.rootdir</TT> &#45; Introduced as a result of removing bundle profiles to help resolve relative bundle cache directories.</LI>
+	</UL>
+	</LI>
+</UL>
+
+
+<P>For the most part, these changes are minor and previous behavior achieved from older configuration properties is either easily attained with the new properties or no longer necessary.</P>
+
+<P><A name="ApacheFelixFrameworkConfigurationProperties-feedback"></A></P>
+
+<H2><A name="ApacheFelixFrameworkConfigurationProperties-Feedback"></A>Feedback</H2>
+
+<P>Subscribe to the Felix users mailing list by sending a message to <A href="mailto:users-subscribe@felix.apache.org" class="external-link" rel="nofollow">users-subscribe@felix.apache.org</A>; after subscribing, email questions or feedback to <A href="mailto:users@felix.apache.org" class="external-link" rel="nofollow">users@felix.apache.org</A>.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on Mon Sep 19 12:35:44 EDT 2011
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

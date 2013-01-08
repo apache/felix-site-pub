@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Maven SCR Plugin</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-maven-scr-plugin.html" target="felix_cwiki">/site/apache-felix-maven-scr-plugin.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Maven SCR Plugin</h1>
+      <p>The Apache Felix Maven SCR Plugin is a great tool to ease the development of OSGi components and services. Components and services are defined through annotations and the plugin creates the necessary descriptors for the OSGi Declarative Services, Config Admin and Metatype services. Starting with version 1.4.0 of the plugin, OSGi Declarative Services versions 1.0 and 1.1 are supported.</p>
+<p>Make sure to see the <a href="">FAQ</a> for known problems.</p>
+<h2 id="introduction">Introduction</h2>
+<p>In OSGi based systems functionality is mainly provided through services. Unlike traditional systems but comparable to Spring, a service is not reqiured to implement a framework defined interface. Instead services implement one or more interfaces, which stipulate the type of service provided. It is the lifetime of the bundle, which defines the lifetime of the service: A service object may be instantiated when the bundle is started and will automatically be removed when the bundle is stopped (and the service has not already been unregistered).</p>
+<p>Usually, the functionality of a bundle - be it the packages exported or be it the services provided - is made available to the rest of the system, when the bundle is started. To give the bundle a change to take action, a bundle may declare a <code>BundleActivator</code> class in the <code>Bundle-Activato</code> manifest header of the bundle. When the bundle is started, the <code>start(BundleContext)</code> method is called, while the <code>stop(BundleContext)</code> method is called when the bundle is stopped. These methods are one place to instantiate and register services with the service registry.</p>
+<p>The drawback of this method of service registration is that the services have to acquire other services whose functionality is used themselves and also have to observe the presence as services may come and go at any time. Though this observation is rather easy as basically a <code>ServiceListener</code> is to be implemented which listens for service registration and unregistration events, this is somewhat tedious and repeating for each service using other services.</p>
+<p>To overcome this situation, the OSGi Service Platform Compendium Specification provides the <em>Declarative Services Specification</em>. This specification enables the declaration of services in configuration files, which are read by the <em>Declarative Services Runtime</em> to observe dependencies and activate (register) and deactivate (unregister) services depending on whether requirements can be met. Additionally, the dependencies may be supplied through declared methods. The specification calls a class declared this way a component. A component may or may not be a service registered with the service registry.</p>
+<p>Components are declared using XML configuration files contained in the respective bundle and listed in the <code>Service-Component</code> bundle manifest header. These configuration files may be handwritten and registered. To support automatic generation of the component descriptors, the Maven SCR Plugin helps in the generation of these files by means of JavaDoc tags embedded in the Java source code of the components.</p>
+<p>Related to declarative services is configuration support. To support configuration of services and components, OSGi provides the Configuration Admin Service Specification. This specification defines a service, which is the center of providing configuration to services and components. As such the Configuration Admin Service cares for storing configuration and deliver the configuration automatically or on-demand to clients. Configuration objects are identified by so-called Persistent Identifiers (PID) and are bound to bundles when used. For services implementing the special <code>ManagedService</code> or <code>ManagedServiceFactory</code> interfaces the PID has to be provided in the service properties as a property with the name <code>service.pid</code>. For Declarative Services, the name of the component is used as the PID to retrieve the configuration from the Configuration Admin Service.</p>
+<p>The Configuration Admin Service not only allows components to get or retrieve configuration, it also provides the entry point for Management Agents to retrieve and update configuration data. To help building Management Agents the OSGi Metatype Service Specification defines a descripton model which may be used to describe data used by components and services. The configuration properties and meta type description for a given PID together are used to build the user interface to configure the service and/or component.</p>
+<p>To summarize:
+1. <em>Declarative Services</em> provides a means to define components (and services) through one or more XML files. Each component may get default configuration from its own definition.
+1. The <em>Configuration Admin Service</em> provides functionality to provide configuration to components and services as well as to support management tools to update (and create) configuration data.
+1. The <em>Metatype Service</em> provides a description suitable for management tools to manage configurations provided by the Configuration Admin Service. The descriptions of the data is provided in one or more XML files and associated languag binding files.</p>
+<h2 id="where-to-go-from-here">Where to go from here</h2>
+<ul>
+<li>[})</li>
+<li>[})</li>
+<li>[})</li>
+<li>[})</li>
+<li>[})</li>
+</ul>
+<h2 id="differences-between-javadoc-tags-and-annotations">Differences between JavaDoc tags and annotations</h2>
+<p>In general both mechanisms provide the same functionality. There are some subtle difference which are listed in this section:
+<em> While the <code>metatype</code> flag is turned on by default for the JavaDoc tags, the default for the annotations is to generate no metadata. The reason for this is, that it turned out that services with metadata are less often used.
+</em> The JavaDoc support adds properties and references from super classes if the source is in the same module to a component even if the super class does not have the <code>@scr.component</code> tag. With the annotations the super class is required to have the <code>Component</code> annotation.
+* Property values are handled differently. While the JavaDoc version has an auto detection of types together with an explicit type parameter, the annotations version has several attributes. Each type has its own attribute (like <code>shortValue</code>, <code>intValue</code> and so on). This is because of a limitation in the Java annotations which only allow typed parameters.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,150 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - MOSGi Managed OSGi framework</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<P>MOSGi enables the remote management of OSGi-compatible service gateways, using JMX. The framework is a reference architecture for end-to-end gateway management. It provides the following features:</P>
+<UL>
+	<LI>relies on JMX management infrastructure (IP-based 	management),</LI>
+	<LI>provides two JMX agents: the standard Java 1.5 agent and a 	specific Java 1.4 lightweight embedded agent (MX4J agent deviation),</LI>
+	<LI>provides a way to deploy various probes on remote gateways,</LI>
+	<LI>provides a management console,</LI>
+	<LI>the graphical part of a probe (management console part) can 	be dynamically plugged in the management console and is dynamically 	downloaded.</LI>
+</UL>
+
+
+<H1><A name="MOSGiManagedOSGiframework-VeryfastQuickStartGuide"></A>Very fast QuickStart Guide</H1>
+
+<P>Go into $FELIX_HOME/trunk/mosgi.doc and read Readme.txt.</P>
+
+<H1><A name="MOSGiManagedOSGiframework-Generalarchitecture"></A>General architecture</H1>
+
+<P>The overall architecture is presented in the following picture :</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="mosgi-managed-osgi-framework.data/MOSGiArchitecture.png" style="border: 0px solid black"></SPAN></P>
+
+<H1><A name="MOSGiManagedOSGiframework-Howitworks"></A>How it works</H1>
+
+<P>Managed OSGi gateways can install JMX probes from various repositories. A JMX probe is a standard OSGi bundle that registers an <A href="#MOSGiManagedOSGiframework-MBean">MBean</A> component in the managed gateway's JMX agent.</P>
+
+<P>The management console (running in a standard OSGi framework) is connected to each gateway through the JMX remoting protocol. When it connects for the first time to a managed gateway, it asks for probes that are installed (i.e. all MBeans registered in the TabUI JMX domain). Then, for each MBean found, the management console asks for its graphical representation through a call to our standard API (component getUI() call). This call redirects to a bundle in the GUI probe repository that is installed by the management console. So the management console discovers at run-time the user interface it should use to<BR>
+supervise a specific remote gateway.</P>
+
+<P>Here is a description of different bundles that should be installed on both parts of the infrastructure (managed OSGi gateway and Management console).</P>
+
+<P>A managed OSGi gateway must host the following bundles :</P>
+<UL>
+	<LI>JMX-MX4J Agent Service: provides a JMX agent. Either through a wrapper to jdk1.5 standard agent or through using a specific lightweight inner agent1 (originate from mx4j project). This agent service also declares a standard MBeanServer service interface..</LI>
+</UL>
+
+
+<UL>
+	<LI>JMX rmiregistry: wraps RMI registry life cycle. It's used by the JMX remoting infrastructure to register</LI>
+</UL>
+
+
+<UL>
+	<LI>JMX RMI connector: wraps a standard JMX remoting RMI connector</LI>
+</UL>
+
+
+<UL>
+	<LI>Remote Logger: notifies log informations</LI>
+</UL>
+
+
+<P>A JMX Console is an OSGi framework also (for simplicity) which should host two bundles :</P>
+<UL>
+	<LI>JMX Console: the graphical framework that will host graphical 	plugins</LI>
+	<LI>jmxconsole common tabs: tabs that are common to all gateways. 	For the moment it only concerns a tab that shows remote notification 	(it works whith remote logger)</LI>
+</UL>
+
+
+<H1><A name="MOSGiManagedOSGiframework-OSGi%2FJMXMBeanregistration"></A>OSGi/JMX MBean registration</H1>
+
+<P>MOSGi installs JMX-MX4J agent at the gateways level. Any one can register an MBean to the JMX agent. The registration can be made in two ways. The direct code and the white board pattern.</P>
+<UL>
+	<LI>In the direct code, one can register an MBean to the agent through the standard service interface : <B>javax.management.MBeanServer</B></LI>
+</UL>
+
+
+<P>Example:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+org.osgi.framework.ServiceReference sr = context.getServiceReference(javax.management.MBeanServer.class.getName());
+javax.management.MBeanServer mbs=(javax.management.MBeanServer)context.getService(sr);
+mbs.registerMBean(<SPAN class="code-keyword">new</SPAN> MBeanImpl(), <SPAN class="code-keyword">new</SPAN> ObjectName(<SPAN class="code-quote">&quot;Foo:FooName&quot;</SPAN>);
+</PRE>
+</DIV></DIV>
+<P>Exemple of such code is uses in <B>mosgi.managedelements.bundlesprobes</B> code in felix repository</P>
+<UL>
+	<LI>In the whiteboard pattern, one can register an MBean through registering its interface to the framework as a service. If the interface name ends with MBean or if the interface is <B>javax.management.DynamicMBean</B>, the agent will automatically register the implementation as a standard MBean. The objectName of the MBean can either be defined at registration time with the <B>org.apache.felix.mosgi.jmx.agent.Constants.OBJECTNAME</B> property name or automatically build through introspection.</LI>
+</UL>
+
+
+<P>Example:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+java.util.Properties prop=<SPAN class="code-keyword">new</SPAN> java.util.Properties();
+prop.add( org.apache.felix.mosgi.jmx.agent.Constants.OBJECTNAME, <SPAN class="code-quote">&quot;Foo:FooName&quot;</SPAN>);
+context.registerService(test.FooMBean.class.getName(), <SPAN class="code-keyword">new</SPAN> test.Foo(), prop);
+</PRE>
+</DIV></DIV>
+
+<H1><A name="MOSGiManagedOSGiframework-ManagementConsole"></A>Management Console</H1>
+
+<P>The management console is a ad-hoc jmx compatible console. Its aim is not to be a concurrent to general purpose consoles like MX4J or JConsole but provides an ad-hoc user interface depending on the managed gateway. The console is based on a plugin framework. Each time the consol connects to a gateway it gets the list of available MBean. Then for each registered MBean it asks for specific local bundles for managing it. Each graphical bundle is integrated as a graphical tab in the management console.</P>
+
+
+
+<P>In the next screenshot, the gateway user has deployed 4 probes on the remote gateway : Remote Obr, Remote Bundle List, GNU/Linux and OSGi Plateform.<SPAN class="image-wrap" style=""><IMG src="mosgi-managed-osgi-framework.data/jmxconsoleGUI.png" style="border: 0px solid black"></SPAN></P>
+
+<P>In order to get these tabs, the gateway manager deploys the 4 probe bundles on the remote gateway and GUI tabs are automatically made available to the remote console. These bundles are :</P>
+<UL>
+	<LI>ObrProbe : a probe that enables interaction with obr for 	bundle deployment</LI>
+	<LI>BundleProbe : a probe that enables the bundle life-cycle 	management</LI>
+	<LI>GNU-Linux : a probe that gets status from running host 	operating system</LI>
+	<LI>OSGi Platform : a probe that gets information from current 	running gateway</LI>
+</UL>
+
+
+<P>These plugin are developed as simple examples and are available in felix repository. A <A href="probeguide.html" title="ProbeGuide">ProbeGuide</A> that  describes plugin integration is available. Plugin are dynamically removed and reinstalled each time you change your selected gateway.</P>
+
+<P><A name="MOSGiManagedOSGiframework-MBean"></A></P>
+
+<H3><A name="MOSGiManagedOSGiframework-MBeanDefinition"></A>MBean Definition</H3>
+
+<P>An MBean is a Management Component for the JMX framework. It is made of an MBean interface and an implementation of it. The MBean interface is used to make remote management with the implementation.&nbsp;</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2006-11-20 01:54:44.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

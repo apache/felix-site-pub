@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Tutorial Example 2</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-tutorial-example-2.html" target="felix_cwiki">/site/apache-felix-tutorial-example-2.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Tutorial Example 2</h1>
+      <h2 id="example-2-dictionary-service-bundle">Example 2 - Dictionary Service Bundle</h2>
+<p>This example creates a bundle that implements an OSGi service. Implementing an OSGi service is a two-step process, first we must define the interface of the service and then we must define an implementation of the service interface. In this particular example, we will create a dictionary service that we can use to check if a word exists, which indicates if the word is spelled correctly or not. First, we will start by defining a simple dictionary service interface in a file called <code>DictionaryService.java</code>:</p>
+<div class="codehilite"><pre><span class="o">/*</span>
+ <span class="o">*</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">tutorial</span><span class="o">.</span>
+<span class="o">**/</span>
+
+<span class="nb">package</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">service</span><span class="p">;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">A</span> <span class="n">simple</span> <span class="n">service</span> <span class="n">interface</span> <span class="n">that</span> <span class="n">defines</span> <span class="n">a</span> <span class="n">dictionary</span> <span class="n">service</span><span class="o">.</span>
+ <span class="o">*</span> <span class="n">A</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">simply</span> <span class="n">verifies</span> <span class="n">the</span> <span class="n">existence</span> <span class="n">of</span> <span class="n">a</span> <span class="n">word</span><span class="o">.</span>
+<span class="o">**/</span>
+<span class="n">public</span> <span class="n">interface</span> <span class="n">DictionaryService</span>
+<span class="p">{</span>
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Check</span> <span class="k">for</span> <span class="n">the</span> <span class="n">existence</span> <span class="n">of</span> <span class="n">a</span> <span class="n">word</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">word</span> <span class="n">the</span> <span class="n">word</span> <span class="n">to</span> <span class="n">be</span> <span class="n">checked</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@return</span> <span class="n">true</span> <span class="k">if</span> <span class="n">the</span> <span class="n">word</span> <span class="n">is</span> <span class="n">in</span> <span class="n">the</span> <span class="n">dictionary</span><span class="p">,</span>
+     <span class="o">*</span>         <span class="n">false</span> <span class="n">otherwise</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">boolean</span> <span class="n">checkWord</span><span class="p">(</span><span class="n">String</span> <span class="n">word</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The service interface is quite simple, with only one method that needs to be implemented. Notice that we put the service interface in the package <code>tutorial.example2.service</code>, instead of just putting it in <code>tutorial.example2</code>. We did this because we need to share the interface definition with other bundles, therefore it is better to separate service interfaces that need to be shared from code that does not need to be shared. Such an approach ensures a strong separation between interface and implementation.</p>
+<p>In the following source code, the bundle uses its bundle context to register the dictionary service. We implement the dictionary service as an inner class of the bundle activator class, but we could have also put it in a separate file. The source code for our bundle is as follows in a file called <code>Activator.java</code>:</p>
+<div class="codehilite"><pre><span class="o">/*</span>
+ <span class="o">*</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">tutorial</span><span class="o">.</span>
+<span class="o">**/</span>
+
+<span class="nb">package</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Hashtable</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceListener</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceEvent</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">DictionaryService</span><span class="p">;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">This</span> <span class="n">class</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">simple</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">bundle</span>
+ <span class="o">*</span> <span class="n">context</span> <span class="n">to</span> <span class="n">register</span> <span class="n">an</span> <span class="n">English</span> <span class="n">language</span> <span class="n">dictionary</span> <span class="n">service</span>
+ <span class="o">*</span> <span class="n">with</span> <span class="n">the</span> <span class="n">OSGi</span> <span class="n">framework</span><span class="o">.</span> <span class="n">The</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">interface</span> <span class="n">is</span>
+ <span class="o">*</span> <span class="nb">defined</span> <span class="n">in</span> <span class="n">a</span> <span class="n">separate</span> <span class="n">class</span> <span class="n">file</span> <span class="ow">and</span> <span class="n">is</span> <span class="n">implemented</span> <span class="n">by</span> <span class="n">an</span>
+ <span class="o">*</span> <span class="n">inner</span> <span class="n">class</span><span class="o">.</span>
+<span class="o">**/</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
+<span class="p">{</span>
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">start</span><span class="p">()</span><span class="o">.</span> <span class="n">Registers</span> <span class="n">an</span>
+     <span class="o">*</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">a</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">using</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span><span class="p">;</span>
+     <span class="o">*</span> <span class="n">attaches</span> <span class="n">properties</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span> <span class="n">that</span> <span class="n">can</span> <span class="n">be</span> <span class="n">queried</span>
+     <span class="o">*</span> <span class="n">when</span> <span class="n">performing</span> <span class="n">a</span> <span class="n">service</span> <span class="n">look</span><span class="o">-</span><span class="n">up</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">props</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;Language&quot;</span><span class="p">,</span> <span class="s">&quot;English&quot;</span><span class="p">);</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
+            <span class="n">DictionaryService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="k">new</span> <span class="n">DictionaryImpl</span><span class="p">(),</span> <span class="n">props</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span><span class="o">.</span> <span class="n">Does</span> <span class="n">nothing</span> <span class="n">since</span>
+     <span class="o">*</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">will</span> <span class="n">automatically</span> <span class="n">unregister</span> <span class="n">any</span> <span class="n">registered</span> <span class="n">services</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="sr">//</span> <span class="n">NOTE:</span> <span class="n">The</span> <span class="n">service</span> <span class="n">is</span> <span class="n">automatically</span> <span class="n">unregistered</span><span class="o">.</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">A</span> <span class="n">private</span> <span class="n">inner</span> <span class="n">class</span> <span class="n">that</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">dictionary</span> <span class="n">service</span><span class="p">;</span>
+     <span class="o">*</span> <span class="n">see</span> <span class="n">DictionaryService</span> <span class="k">for</span> <span class="n">details</span> <span class="n">of</span> <span class="n">the</span> <span class="n">service</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">private</span> <span class="n">static</span> <span class="n">class</span> <span class="n">DictionaryImpl</span> <span class="n">implements</span> <span class="n">DictionaryService</span>
+    <span class="p">{</span>
+        <span class="sr">//</span> <span class="n">The</span> <span class="n">set</span> <span class="n">of</span> <span class="n">words</span> <span class="n">contained</span> <span class="n">in</span> <span class="n">the</span> <span class="n">dictionary</span><span class="o">.</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">m_dictionary</span> <span class="o">=</span>
+            <span class="p">{</span> <span class="s">&quot;welcome&quot;</span><span class="p">,</span> <span class="s">&quot;to&quot;</span><span class="p">,</span> <span class="s">&quot;the&quot;</span><span class="p">,</span> <span class="s">&quot;osgi&quot;</span><span class="p">,</span> <span class="s">&quot;tutorial&quot;</span> <span class="p">};</span>
+
+        <span class="o">/**</span>
+         <span class="o">*</span> <span class="n">Implements</span> <span class="n">DictionaryService</span><span class="o">.</span><span class="n">checkWord</span><span class="p">()</span><span class="o">.</span> <span class="n">Determines</span>
+         <span class="o">*</span> <span class="k">if</span> <span class="n">the</span> <span class="n">passed</span> <span class="n">in</span> <span class="n">word</span> <span class="n">is</span> <span class="n">contained</span> <span class="n">in</span> <span class="n">the</span> <span class="n">dictionary</span><span class="o">.</span>
+         <span class="o">*</span> <span class="nv">@param</span> <span class="n">word</span> <span class="n">the</span> <span class="n">word</span> <span class="n">to</span> <span class="n">be</span> <span class="n">checked</span><span class="o">.</span>
+         <span class="o">*</span> <span class="nv">@return</span> <span class="n">true</span> <span class="k">if</span> <span class="n">the</span> <span class="n">word</span> <span class="n">is</span> <span class="n">in</span> <span class="n">the</span> <span class="n">dictionary</span><span class="p">,</span>
+         <span class="o">*</span>         <span class="n">false</span> <span class="n">otherwise</span><span class="o">.</span>
+        <span class="o">**/</span>
+        <span class="n">public</span> <span class="n">boolean</span> <span class="n">checkWord</span><span class="p">(</span><span class="n">String</span> <span class="n">word</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">toLowerCase</span><span class="p">();</span>
+
+            <span class="sr">//</span> <span class="n">This</span> <span class="n">is</span> <span class="n">very</span> <span class="n">inefficient</span>
+            <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_dictionary</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">m_dictionary</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+                <span class="p">{</span>
+                    <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Note that we do not need to unregister the service in the <code>stop()</code> method, because the OSGi framework will automatically do so for us. The dictionary service that we have implemented is very simple; its dictionary is a static array of only five words, so this solution is not optimal and is only intended for educational purposes. We must create a <code>manifest.mf</code> file that contains the meta-data for our bundle; the manifest file contains the following:</p>
+<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">English</span> <span class="n">dictionary</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Description:</span> <span class="n">A</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">registers</span> <span class="n">an</span> <span class="n">English</span> <span class="n">dictionary</span> <span class="n">service</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Vendor:</span> <span class="n">Apache</span> <span class="n">Felix</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Version:</span> <span class="mf">1.0.0</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator:</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">Activator</span>
+<span class="n">Export</span><span class="o">-</span><span class="n">Package:</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">service</span>
+<span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span>
+</pre></div>
+
+
+<p>We specify which class is used to activate our bundle via the <code>Bundle-Activator</code> attribute and also specify that our bundle exports a shared package using the <code>Export-Package</code> attribute. The <code>Export-Package</code> attribute makes it possible for other bundles to import our dictionary service interface. The <code>Import-Package</code> attribute informs the framework of the bundle's dependencies on external packages; all bundles with an activator must import <code>org.osgi.framework</code> since it contains the core OSGi class definitions. Any packages dependencies will be verified and resolved by the OSGi framework. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
+<p>To compile our source code, we need the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) in our class path. We compile the source file using a command like:</p>
+<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*.</span><span class="n">java</span>
+</pre></div>
+
+
+<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory; this subdirectory is <code>tutorial\example2</code>, named after the package we specified in the source file. For the above command to work, the <code>c:\classes</code> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</p>
+<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">example2</span><span class="o">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="o">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="n">tutorial</span><span class="o">\</span><span class="n">example2</span>
+</pre></div>
+
+
+<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example2</code> directory inside of the c:\classes directory. Once the JAR file is created, we are ready to install and start the bundle.</p>
+<p>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>. After running Felix, we should make sure that the bundle from Example 1 is active. We can use the Felix <code>lb</code> shell command to get a list of all bundles, their state, and their bundle identifier number. If the Example 1 bundle is not active, we should start the bundle using the <code>start</code> command and the bundle's identifier number that is displayed by the <code>lb</code> command. Now we can install and start our dictionary service bundle. Assuming that we created our bundle in the directory c:\tutorial, we can install and start it in Felix' shell using the following command:</p>
+<div class="codehilite"><pre><span class="n">start</span> <span class="n">file:</span><span class="sr">/c:/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">example2</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands. To stop the bundle, use the Felix <code>stop</code> shell command. If the bundle from Example 1 is still active, then we should see it print out the details of the service event it receives when our new bundle registers its dictionary service. Using the Felix shell <code>lb</code> command to get the bundle identifier number for our dictionary service bundle and we can stop and restart it at will using the <code>stop</code> and <code>start</code> commands, respectively. Each time we start and stop our dictionary service bundle, we should see the details of the associated service event printed from the bundle from Example 1. In Example 3, we will create a client for our dictionary service. To exit Felix, we use the <code>shutdown</code> command.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

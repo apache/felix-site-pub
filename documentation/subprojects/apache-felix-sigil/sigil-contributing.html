@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Sigil Contributing</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-sigil.html">Apache Felix Sigil</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/sigil-contributing.html" target="felix_cwiki">/site/sigil-contributing.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Sigil Contributing</h1>
+      <h3 id="status">Status</h3>
+<p>Sigil is currently being migrated to Apache Felix from it's original home on http://sigil.codecauldron.org. As part of this migration it has been decided to go for a completely self hosted mode of development - i.e. use Sigil to build Sigil.</p>
+<h3 id="issues">Issues:</h3>
+<p>Please help development of Sigil by reporting issues and contributing patches <a href="http://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&amp;&amp;pid=12310100&amp;component=12312962&amp;resolution=-1&amp;sorter/field=priority&amp;sorter/order=DESC">here</a>.</p>
+<h3 id="build-instructions">Build Instructions</h3>
+<p>If you want to try it out or contribute here are the steps to build Sigil in it's current form:</p>
+<ol>
+<li>Check out or update the Felix trunk (i.e., svn checkout http://svn.apache.org/repos/asf/felix/trunk felix)</li>
+<li>cd felix/sigil</li>
+<li>ant clean dist </li>
+</ol>
+<p>The ant build will probably take a <em>long</em> time on first pass as it needs to download a lot of large eclipse dependencies first time around. But after this first pass the secondary builds should run quickly i.e. seconds not minutes. By way of a brief explanation of what is going on in this build.</p>
+<ol>
+<li>I've hosted a prebuilt sigil-ivy-plugin at http://people.apache.org/~dsavage/sigil/</li>
+<li>The ant build downloads ivy, sigil-plugin, bnd and equinox.common.jar and stores them in $felix-svn/sigil/cache/ant/lib</li>
+<li>Ivy caches a set of remote bundles that sigil can't yet index (i.e. no obr index to these resources yet)</li>
+<li>Sigil creates local indexes of ivy cached bundles (just indexes filesystem)</li>
+<li>Sigil builds all projects in $felix-svn/sigil/common and $felix-svn/sigil/eclipse using the meta data from the various sigil.properties files. Import-Package or Require-Bundle dependencies expressed in the sigil.properties file are resolved from either: the local workspace; the local cached repo; or the spring enterprise bundle repository (for which we do have an OBR index).</li>
+</ol>
+<h3 id="testing">Testing</h3>
+<p>Currently the Sigil build does not create an eclipse update site, but it will generate the plugins to install in eclipse:</p>
+<div class="codehilite"><pre><span class="c1"># ls site/plugins</span>
+<span class="n">bndlib</span><span class="o">.</span><span class="n">jar</span>                                      <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">junit</span><span class="o">.</span><span class="n">jar</span>         <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">help</span><span class="o">.</span><span class="n">jar</span>         <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">jar</span>
+<span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">jar</span>    <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">obr</span><span class="o">.</span><span class="n">jar</span>           <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">obr</span><span class="o">.</span><span class="n">jar</span>          <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">jar</span>
+<span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">jar</span>          <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">jar</span>         <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sigil</span><span class="o">.</span><span class="n">eclipse</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>You can copy these bundles to your dropins directory of your Eclipse install to get Eclipse to manually install these bundles from the file system.</p>
+<p>Please let us know if you have any problems, questions, or want to help out via the Felix <a href="">dev</a> email list.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

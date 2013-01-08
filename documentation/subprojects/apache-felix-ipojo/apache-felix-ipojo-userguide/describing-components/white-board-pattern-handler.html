@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - White Board Pattern Handler</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components.html">Describing components</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/white-board-pattern-handler.html" target="felix_cwiki">/site/white-board-pattern-handler.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>White Board Pattern Handler</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+#  The white board pattern handler
+The objective of this handler is to simplify the development of white-board architecture. This architecture-style is based is very close to the extender architecture style but relies on services instead of bundles.
+
+{div:class=toc}
+[TOC]
+{div}
+
+<div class="info" markdown="1">
+**Change in the 1.2.0**
+The 1.2.0 uses the namespace `org.apache.felix.ipojo.whiteboard` instead of `org.apache.felix.ipojo.white-board-pattern`
+</div>
+
+<div class="info" markdown="1">
+** Change in the 1.7.0**
+The 1.7.0 has introduced a new annotations allowing to declare several whiteboard patterns in the same class. The ``@Whiteboards}} annotation is not available in previous version.
+</div>
+
+## The whiteboard pattern
+A whiteboard is based on two different roles:
+* A consumer looking to special services or a services published with a special mark
+* Looked services
+
+More information on this pattern is available in this [document](http://www.osgi.org/wiki/uploads/Links/whiteboard.pdf)
+Implementing a white board pattern could be complex as the extender needs to track these services dynamically. Indeed looked services can be highly dynamic; they can arrive, leave or be modified at runtime. Several services specified in the OSGi specification use white board pattern such as the Device Access Manager.
+
+## Using the handler
+First of all, you need to configure the component type to use the handler such as:
+
+    <ipojo xmlns:wbp="org.apache.felix.ipojo.whiteboard">
+         <component 
+              className="org.apache.felix.ipojo.test.FooWhiteBoardPattern"
+          >
+            <wbp:wbp 
+              filter="(my.property=1)" 
+                  onArrival="onArrival" 
+                  onDeparture="onDeparture" 
+                  onModification="onModification"
+             />
+
+          </component>
+
+Notice that, this handler is an external handler. So, it uses the "org.apache.felix.ipojo.whiteboard" namespace.
+Once described, you can implement your component. The methods specified methods will be called when a matching services arrives or leaves or are modified. The modification callback is optional. A matching service is detected by confronting the service reference against the specified filter.
+The filter can target specific service interface (with the objectclass property) or property values.
+In the previous example, these methods could be: 
+
+    public class FooWhiteBoardPattern {
+        List list = new ArrayList();
+        int modifications = 0;    
+        public synchronized void onArrival(ServiceReference ref) {
+            list.add(ref);
+        }    
+        public synchronized void onDeparture(ServiceReference ref) {
+            list.remove(ref);
+        }    
+        public synchronized void onModification(ServiceReference ref) {
+            // ...
+        } 
+
+All methods received the arriving, leaving or modified service reference.
+
+You can also use annotation to declare the same component:
+
+    @Component
+    @Wbp(
+      filter="my.property=1", 
+      onArrival="onArrival" 
+      onDeparture="onDeparture" 
+      onModification="onModification")
+    public class FooWhiteBoardPattern {
+        List list = new ArrayList();
+
+        public synchronized void onArrival(ServiceReference ref) {
+            list.add(ref);
+        }    
+        public synchronized void onDeparture(ServiceReference ref) {
+            list.remove(ref);
+        }    
+        public synchronized void onModification(ServiceReference ref) {
+           //...
+        }
+
+## Configuration
+The handler has only three mandatory attributes:
+* Filter: filter use to discover matching filter.
+* onArrival: declaring the method to invoke when a matching service arrives
+* onDeparture: declaring the method to invoke when a matching service leaves
+
+The onModification attribute is optional. This method is called when an injected service reference is modified but stills valid against the filter.
+<div class="note" markdown="1">
+**Notifications**
+The implementation will be notified of arrivals, modifications and departures, despite the instance is invalid. Indeed, the implementation must release all objects created from another bundle as soon it leaves.
+</div>
+## Configuring the handler with annotations
+
+It is possible to configure the handler with a simple annotation available in the annotation pack ('annotation' project in the iPOJO trunk). Here is an example of usage:
+{code:java}
+import org.apache.felix.ipojo.annotations.Component;
+import org.osgi.framework.ServiceReference;
+
+@Component
+@org.apache.felix.ipojo.whiteboard.Wbp(filter="(foo=true)", 
+        onArrival="onArrival", 
+        onDeparture="onDeparture",
+        onModification="onModification")
+public class WhiteBoardExemple {
+
+    public void onArrival(ServiceReference ref) {
+        // do something
+    }
+
+    public void onDeparture(ServiceReference ref) {
+        // do something
+    }
+
+    public void onModification(ServiceReference ref) {
+        // do something
+    }
+
+}
+
+    The  attribute is optional.The  attribute allows setting the service filter.
+
+    In the 1.7.0, a new annotation was introduced to support the declaration of several whiteboard patterns in the same component:
+
+@Component
+@Whiteboards(whiteboards={
+     @Wbp(filter="(foo=true)", 
+        onArrival="onArrival", 
+        onDeparture="onDeparture",
+        onModification="onModification"),
+     @Wbp(filter="(bar=true)", 
+        onArrival="onArrival2", 
+        onDeparture="onDeparture2")}
+)
+public class WhiteBoardExemple {
+
+    // ...
+
+}
+
+## Download
+The handler is available on the [download](/documentation/subprojects/apache-felix-ipojo/download.html) page.
+Sources are available on the Felix trunk at the following location: [http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/whiteboard](http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/whiteboard).
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

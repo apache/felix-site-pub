@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Virtual Bundles</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/miscellaneous.html">miscellaneous</a>&nbsp;&raquo&nbsp;<a href="/miscellaneous/sandbox.html">Sandbox</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/virtual-bundles.html" target="felix_cwiki">/site/virtual-bundles.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Virtual Bundles</h1>
+      <h1 id="overview">Overview</h1>
+<p>The OSGi framework supports deploying and managing bundles, which are reusable units of code and resources. Although the OSGi specification does not explicitly require bundles to be packaged as JAR files, it does require that bundles look like JAR files (i.e., they have a manifest and named byte entries). For the most part, this abstraction as worked well and has allowed framework implementations to support other archive formats and even install-by-reference semantics (to some degree). However, there are limitations limitations as to what can be achieved by this approach.</p>
+<p>The “JAR abstraction” employed by the OSGi specification for bundles requires that the framework is always in control of all aspects of class loading (e.g., searching for bytes, defining classes from bytes, etc.). While this makes sense since the framework must enforce consistency, it limits the framework to scenarios where a bundle can be modeled as a JAR file. Overall, this limitation might not seem so onerous, but the result is that every new requirement that comes along at the bundle level results in modifications (and bloating) of the core framework specification.</p>
+<p>To avoid bloat and added conceptual complexity, this proposal introduces the primitive concept of a virtual bundle to the OSGi framework. A virtual bundle can quite succinctly be described as a bundle whose content is not managed by the framework. More specifically, the idea is to weaken the “JAR abstraction” where the framework expects to have access to byte entries in an archive and instead allow another entity to manage entry access and more importantly bundle class loading. The ultimate goal is to reduce the need to modify the framework to support niche requirements by enabling their support in upper layers.</p>
+<h1 id="use-cases">Use cases</h1>
+<p>Some potential use cases for virtual bundles:</p>
+<ul>
+<li>Composite bundles – virtual bundles could wrap a composite bundle concept (i.e., a bundle composed of other bundles).</li>
+<li>Byte code weaving – virtual bundles could enable byte code weaving by allowing an external entity to manage the class loading for on-the-fly weaving.</li>
+<li>Module system integration – foreign module systems could wrap their modules as virtual bundles for OSGi interoperability.</li>
+<li>Marshaling – temporary marshaling bundles could be modeled as virtual bundles, providing better control over class loader monitoring for garbage collection purposes.</li>
+<li>Install by reference – an install-by-reference mechanism could be modeled on top of the framework as a virtual bundle.</li>
+<li>Exotic use cases – for example, supporting bundles whose class path refers to external content.</li>
+</ul>
+<p>This is not a complete list of use cases, but provides some potential examples.</p>
+<h1 id="terminology">Terminology</h1>
+<p>The following terms are used in this document:</p>
+<ul>
+<li>bundle – a normal, framework-managed bundle.</li>
+<li>virtual bundle – a bundle with content managed by a third party.</li>
+<li>third party – typically this will likely refer to another bundle, but not necessarily since a virtual bundle could be installed externally using the standard launching and embedding API.</li>
+<li>virtual module – third-party managed bundle content (naming explained further below).</li>
+<li>content – in the context of normal bundles, this generally is referring to a bundle's bytes, but for a virtual module it refers to bytes and classes.</li>
+<li>manager – the third-party responsible for providing access to virtual module content; mostly likely managers will be an installed bundle following some form of extender-like pattern.</li>
+<li>management object – the object injected by the manager into the framework to manage the virtual bundle's content (this is an implementation of <code>VirtualModule</code> as will be described shortly).</li>
+<li>manager-owned class loader – this term is used to indicate that the associated class loader comes from a third party.</li>
+</ul>
+<h1 id="technical-approach">Technical approach</h1>
+<p>To support a virtual bundle concept, we need to introduce a few new interfaces to manage access to the virtual bundle's content and to provide it access to its own wiring state. This section discusses these interfaces as well as other technical issues.</p>
+<h2 id="proposed-api">Proposed API</h2>
+<p>This proposal defines the following new interfaces and/or augmentations to existing interfaces to support adding a virtual bundle concept to the framework.</p>
+<p>NOTE 1: The package name used for this prototype is <code>org.apache.felix.framework.ext</code> to avoid an IP issues regarding the development of the prototype in the open at Apache Felix. If we want to change it to the <code>org.osgi.framework</code> namespace, we need some way of making timely updates of the proposed packages available to the public.</p>
+<p>NOTE 2: All names in this document (e.g., interfaces, methods, etc.) are subject to change and were merely chosen for the purposes of making progress on the prototype.</p>
+<h2 id="virtualmodule"><code>VirtualModule</code></h2>
+<p>The <code>VirtualModule</code> interface abstracts access to the virtual bundle's content and is the management object handling content access. The name might seem confusing, but results from how framework implementations must handle bundles. Normally in the OSGi framework, a bundle is not necessarily associated with a single bundle archive; instead, it may have multiple archives associated with it at run time depending on whether it has been updated or not. In the Felix framework implementation, we call these things modules and this naming was chosen for that reason:</p>
+<div class="codehilite"><pre>    <span class="n">public</span> <span class="n">interface</span> <span class="n">VirtualModule</span> <span class="p">{</span>
+        <span class="n">void</span> <span class="n">resolve</span><span class="p">(</span><span class="n">Wire</span> <span class="n">bootWire</span><span class="p">,</span> <span class="n">List</span><span class="sr">&lt;Wire&gt;</span> <span class="n">wires</span><span class="p">)</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
+
+        <span class="n">Class</span> <span class="n">loadClass</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ClassNotFoundException</span><span class="p">;</span>
+        <span class="n">URL</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
+        <span class="n">Enumeration</span> <span class="n">getResources</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
+
+        <span class="n">URL</span> <span class="n">getEntry</span><span class="p">(</span><span class="n">String</span> <span class="n">entry</span><span class="p">);</span>
+        <span class="n">Enumeration</span><span class="sr">&lt;String&gt;</span> <span class="n">getEntryPaths</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">);</span>
+        <span class="n">Enumeration</span><span class="sr">&lt;URL&gt;</span> <span class="n">findEntries</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">,</span> <span class="n">String</span> <span class="n">filePattern</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">recurse</span><span class="p">);</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>The <code>VirtualModule</code> interface is implemented by a manager wishing to provide a virtual bundle. The core of the interface provides access to the content (i.e., both classes and entries). Third-party management of class access is the main differentiator between a normal bundle and a virtual bundle; this means the manager owns the class loader associated with the <code>VirtualModule</code>.</p>
+<p>Most of the methods on this interface are self explanatory; however, the <code>resolve()</code> method is not. The <code>resolve()</code> method provides the virtual module its wiring context in the form of <code>Wire</code> objects. This allows the manager-owned class loader to implement proper OSGi class delegation. The <code>bootWire</code> parameter is a special wire that performs boot delegation, while the wires parameter performs normal delegation for imported packages and required bundles. The <code>resolve()</code> method is technically a setter method and is called by the framework when resolving the virtual module to inject its wires; however, the method may throw an exception if it cannot resolve at that time.</p>
+<p>NOTE 1: Technically, we could merge <code>bootWire</code> into <code>wires</code> or we could eliminate wires and just have a single <code>delegateWire</code> that wraps the actual wires.</p>
+<p>For clarity, the class- and resource-related methods take into account wiring delegation; the entry-related methods do not. This is similar for normal bundles.</p>
+<p>NOTE 2: We could potentially use a <code>dispose()</code> method that is called when the framework is really done with the virtual module (i.e., when it is refreshed).</p>
+<h2 id="wire"><code>Wire</code></h2>
+<p>The <code>Wire</code> interface provides a delegation mechanism to the manager of virtual module class loaders:</p>
+<div class="codehilite"><pre>    <span class="n">public</span> <span class="n">interface</span> <span class="n">Wire</span> <span class="p">{</span>
+        <span class="n">Class</span> <span class="n">loadClass</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ClassNotFoundException</span><span class="p">;</span>
+        <span class="n">URL</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ResourceNotFoundException</span><span class="p">;</span>
+        <span class="n">Enumeration</span> <span class="n">getResources</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ResourceNotFoundException</span><span class="p">;</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>The methods are reasonable self explanatory, since they perform the actions normally associated with the methods of the same name on a class loader. However, their behavior is defined to help managers support proper OSGi class and resource delegation. The result of each method and its meaning are:</p>
+<ul>
+<li>If the method returns a result, then this result should be returned by the manager-owned class loader (with the possible exception of <code>getResources()</code>) and delegation should stop.</li>
+<li>If the method returns null, then the manager-owned class loader should continue its search.</li>
+<li>If the method throws an exception, then the manager-owned class loader should stop its search and throw an exception.</li>
+</ul>
+<p>Injection of wires into a virtual module does not compel the manager-owned class loader to obey proper OSGi delegation patterns. It is recommended to do so to ensure consistency, but the third-party provider has the flexibility to deviate as it sees fit, but it must live with the consequences.</p>
+<h2 id="felixbundlecontext"><code>FelixBundleContext</code></h2>
+<p>The framework needs to provide explicit support for installing virtual bundles and currently this happens via two new methods on the <code>BundleContext</code> interface. For the prototype, these methods are added to a specialization of <code>BundleContext</code>:</p>
+<div class="codehilite"><pre>    <span class="n">public</span> <span class="n">interface</span> <span class="n">FelixBundleContext</span> <span class="n">extends</span> <span class="n">BundleContext</span> <span class="p">{</span>
+        <span class="n">VirtualModuleContext</span> <span class="n">installBundle</span><span class="p">(</span><span class="n">String</span> <span class="n">location</span><span class="p">,</span> <span class="n">Map</span> <span class="n">headers</span><span class="p">,</span> <span class="n">VirtualModule</span> <span class="n">vm</span><span class="p">)</span>
+            <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
+        <span class="n">VirtualModuleContext</span> <span class="n">reinstallBundle</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">VirtualModule</span> <span class="n">vm</span><span class="p">)</span>
+            <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>The <code>installBundle()</code> method is how a manager installs a virtual bundle for the first time. The <code>location</code> parameter is the normal bundle location string, the <code>headers</code> parameter is the virtual bundle's manifest, and the <code>vm</code> parameter is the virtual bundle's <code>VirtualModule</code> implementation. The <code>reinstallBundle()</code> method is used by a manager to reinstall or reattach a <code>VirtualModule</code> implementation to a previously installed virtual bundle, such as on framework restart.</p>
+<p>NOTE 1: Technically, it would be possible to avoid passing in the <code>VirtualModule</code> instance to <code>installBundle()</code> and force the manager to always attach <code>VirtualModule</code> implementations using <code>reinstallBundle()</code>, but this approach at least makes the first install atomic.</p>
+<p>NOTE 2: Perhaps <code>reinstallBundle()</code> should be on the <code>Bundle</code> interface.</p>
+<h2 id="virtualmodulecontext"><code>VirtualModuleContext</code></h2>
+<p>When a manager installs or reinstalls a virtual bundle, it receives a <code>VirtualModuleContext</code>:</p>
+<div class="codehilite"><pre>    <span class="n">public</span> <span class="n">interface</span> <span class="n">VirtualModuleContext</span> <span class="p">{</span>
+        <span class="n">Bundle</span> <span class="n">getBundle</span><span class="p">();</span>
+        <span class="n">File</span> <span class="n">getDataFile</span><span class="p">();</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>The sole purpose of a <code>VirtualModuleContext</code> is to provide the manager with access to the virtual bundle's private data area. The <code>VirtualModuleContext</code> is valid even when the virtual bundle is not <code>ACTIVE</code>, but becomes invalid once the virtual bundle is <code>UNINSTALLED</code>.</p>
+<p>NOTE: This could be implemented as a super interface of <code>BundleContext</code>.</p>
+<h2 id="virtual-bundle-lifecycle">Virtual bundle lifecycle</h2>
+<p>In an effort to minimize the impact to the framework, the lifecycle handling for virtual bundles has been kept purposely simplistic. There was a conscious decision to avoid making the framework responsible for reifying the relationship between a virtual bundle and its manager; instead, this is solely the manager's responsibility. This does have some have some potential ramifications on issues like ordering, which will be discussed shortly along with other lifecycle-related issues.</p>
+<h2 id="persistence-of-virtual-bundles">Persistence of virtual bundles</h2>
+<p>When a virtual bundle is installed, it is installed persistently; however, this has a different meaning than for normal bundles. A virtual bundle is recorded persistently in the bundle cache and its specified headers are cached for it; this means the headers cannot change after installation unless updated, like a normal bundle. The managed object (i.e., the <code>VirtualModule</code> instance) associated with a virtual bundle is not persisted. This means on subsequent framework restarts, the framework is able to reconstitute a virtual bundle and maintains its private data area, but the reconstituted virtual bundle is merely an empty shell. It is the managers responsibility to reinstall the virtual bundle's associated <code>VirtualModule</code>.</p>
+<h2 id="managervirtual-bundle-ordering">Manager/virtual bundle ordering</h2>
+<p>In many cases it will be important for the manager to start before anyone attempts to use a virtual bundle. If so, the manager should be placed in a lower start level than its virtual bundles. Although not optimal, this is acceptable since virtual bundles are quite low level and are effectively extending the framework. This may not be necessary in all cases and could potentially be alleviated to some degree if the framework were proactive during the reinstall phase of a virtual bundle (e.g., it could immediately try to restart persistently started bundles after a reinstall).</p>
+<p>NOTE: This is also related to the “active dependencies” topic of RFC-154; if the framework managed some active dependencies then this could be resolved that way, but that opens another whole can of worms.</p>
+<h2 id="refreshing-a-virtual-bundle">Refreshing a virtual bundle</h2>
+<p>When a normal bundle is refreshed, the framework throws away the class loader associated with the bundle and will ultimately create a new one when needed. For virtual bundles, the first part is the similar, but the second is not since the framework has no way to create the needed <code>VirtualModule</code> instance. Thus, when a virtual bundle is refreshed, the framework throws away the associated <code>VirtualModule</code> instance and sets the associated state of the virtual bundle to <code>INSTALLED</code>. It is the manager's responsibility to detect this situation and reinstall the needed <code>VirtualModule</code> instance.</p>
+<p>NOTE: Technically, I think it may be possible to achieve this somewhat atomically with a synchronous bundle listener.</p>
+<p>Refreshing a virtual bundle does not necessarily have a direct impact on the manager. In other words, the virtual bundle does not necessarily have an implicit dependency on its manager.</p>
+<h2 id="refreshing-a-manager">Refreshing a manager</h2>
+<p>The framework must maintain dependencies from a manager to its installed virtual bundles so when a manager is refreshed, then all of its virtual bundles will be refreshed too. If the class implementing the <code>VirtualModule</code> instance comes from a bundle other than the manager, then the framework should associate an implicit dependency between this other bundle and the virtual module too so it is refreshed when this other bundle is refreshed, in addition to the manager.</p>
+<p>NOTE: It is not necessarily clear that we need to directly support this last case.</p>
+<h2 id="effective-time-of-a-virtual-module">Effective time of a virtual module</h2>
+<p>The effective time of a virtual module instance is related to the lifecycle of the virtual bundle itself and the virtual bundle's manager. It seems obvious that a virtual module instance should be valid (i.e., used by the framework) while the virtual bundle state is <code>RESOLVED</code>, <code>STARTING</code>, <code>ACTIVE</code>, <code>STOPPING</code>, and <code>UNINSTALLED</code> (until refreshed); this mimics normal bundle behavior. With respect to the manager's lifecycle, the prototype currently assumes the virtual module is valid during these same lifecycle states in the manager. In other words, the manager does not need to be active after the fact for the virtual bundles to continue to function, it just needs to be active to install them initially.</p>
+<p>NOTE: The alternative is to treat this as some sort of “active dependency” where if the manager is stopped, its associated virtual bundles are refreshed immediately.</p>
+<h1 id="open-issues">Open issues</h1>
+<p>This section documents open and/or unaddressed issues.</p>
+<h2 id="installation-interception">Installation interception</h2>
+<p>Some form of bundle installation interception is necessary to integrate cleanly with existing management agents that use <code>BundleContext.installBundle()</code> to deploy bundles. One possibility is to introduce a new service interface used by the framework, such as:</p>
+<div class="codehilite"><pre>    <span class="n">public</span> <span class="n">interface</span> <span class="n">InstallHook</span> <span class="p">{</span>
+        <span class="n">boolean</span> <span class="n">installBundle</span><span class="p">(</span><span class="n">String</span> <span class="n">location</span><span class="p">);</span>
+        <span class="n">boolean</span> <span class="n">installBundle</span><span class="p">(</span><span class="n">String</span> <span class="n">location</span><span class="p">,</span> <span class="n">InputStream</span> <span class="n">is</span><span class="p">);</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>Managers could register such a service which would be used by the framework during bundle installation to call out to the managers to given them an opportunity to process the bundle installation instead of using the default handling. This is somewhat analogous to resource processors in the Deployment Admin specification.</p>
+<h2 id="updating-a-virtual-bundle">Updating a virtual bundle</h2>
+<p>No issues are foreseen in the normal update scenario (i.e., updating a bundle to a completely new version of a bundle whether it is virtual or not). It should be possible to update a virtual bundle to a new virtual module (and headers), as well as updating a normal bundle to a virtual bundle or vice versa. This will likely require adding another <code>update()</code> method to <code>Bundle</code> that accepts the appropriate parameters (e.g., <code>Bundle.update(Map headers, VirtualModule vm)</code>).</p>
+<p>A more complicated case is related to ordering, which is how to deal with bundles that were installed before the manager was present and/or activated. In this case, a normal update is not completely sufficient since the manager really wants to update the bundle to a virtual bundle, but keep its existing content. Technically, this is possible with the current API by using the entry-related <code>Bundle</code> methods to reconstruct the installed bundle, then performing an update on it to convert it to a virtual bundle.</p>
+<h2 id="resource-handling">Resource handling</h2>
+<p>Typically, a framework implementation has to know something about the content of a bundle to create resource URLs. For example, both Felix and Equinox create resource URLs something like this:</p>
+<div class="codehilite"><pre>    <span class="n">bundle:</span><span class="sr">//&lt;framework-id&gt;&lt;bundle-id&gt;</span><span class="p">:</span><span class="sr">&lt;classpath-idx&gt;/path/</span><span class="n">to</span><span class="o">/</span><span class="n">resource</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+
+<p>This sort of approach is necessary since the specification requires that resource URLs can be used as the context to create other resource URLs. Unfortunately, this breaks the module's encapsulation of its content (i.e., the framework must be aware that there is a bundle class path concept).</p>
+<p>Currently, a manager must manager register a URL stream handler to provide a protocol to access its virtual modules' content as resources if it cannot be handled via an existing protocol. The downside of this approach is that, for now, a manager has to be active to provide a stream handler service, which means resource access will stop working if the manager is stopped.</p>
+<p>A potential solution to this is to inject the virtual module with a resource URL factory which allows the manager to inject its own “opaque” index integer into the framework's normal resource URL.</p>
+<h2 id="dynamic-imports">Dynamic imports</h2>
+<p>It is possible to add support for dynamic imports through the injection of a special type of wire in the <code>VirtualModule.resolve()</code> method. Like the boot wire, this dynamic wire would be special and would be searched by the manager-owned class loader after its own content and would potentially result in a dynamic import.</p>
+<h2 id="fragments">Fragments</h2>
+<p>It may technically be possible to support fragments. Currently, a virtual module is injected with wires that provide access to classes and resources. Conceptually, we could handle fragments by injecting the virtual module with a set of fragment bundles from which it could load entries. The only trick is that the injected bundles could not be a normal bundle since a normal bundle can have multiple bundle revisions associated with it; the injected fragment bundle would need to be a wrapper around a specific revision. Other approach it to create a new wire-like interface for fragment access which could be injected into the virtual module.</p>
+<h2 id="security">Security</h2>
+<p>One possible approach to deal with security is to inject the virtual module with a protection domain for it to use when defining classes. For virtual modules using predefined classes, then it won't be possible to assign additional permissions to those classes.</p>
+<h2 id="lazy-activation">Lazy activation</h2>
+<p>Too support lazy activation across normal bundles and virtual bundles, API would need to be defined for them to participate in this process. Mostly likely, the virtual module would need to be injected with some object for keep track of which classes are being created and which bundles need to be activated.</p>
+<h1 id="considered-alternatives">Considered alternatives</h1>
+<p>TBD</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

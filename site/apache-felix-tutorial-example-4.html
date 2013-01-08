@@ -1,0 +1,284 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Tutorial Example 4</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H2><A name="ApacheFelixTutorialExample4-Example4RobustDictionaryClientBundle"></A>Example 4 - Robust Dictionary Client Bundle</H2>
+
+<P>In Example 3, we create a simple client bundle for our dictionary service. The problem with that client was that it did not monitor the dynamic availability of the dictionary service, thus an error would occur if the dictionary service disappeared while the client was using it. In this example we create a client for the dictionary service that monitors the dynamic availability of the dictionary service. The result is a more robust client.</P>
+
+<P>The functionality of the new dictionary client is essentially the same as the old client, it reads words from standard input and checks for their existence in the dictionary service. Our bundle uses its bundle context to register itself as a service event listener; monitoring service events allows the bundle to monitor the dynamic availability of the dictionary service. Our client uses the first dictionary service it finds. The source code for our bundle is as follows in a file called <TT>Activator.java</TT>:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+/*
+ * Apache Felix OSGi tutorial.
+**/
+
+<SPAN class="code-keyword">package</SPAN> tutorial.example4;
+
+<SPAN class="code-keyword">import</SPAN> java.io.BufferedReader;
+<SPAN class="code-keyword">import</SPAN> java.io.InputStreamReader;
+<SPAN class="code-keyword">import</SPAN> java.io.IOException;
+
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.BundleActivator;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.BundleContext;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.InvalidSyntaxException;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.ServiceReference;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.ServiceListener;
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.ServiceEvent;
+
+<SPAN class="code-keyword">import</SPAN> tutorial.example2.service.DictionaryService;
+
+/**
+ * This class <SPAN class="code-keyword">implements</SPAN> a bundle that uses a dictionary
+ * service to check <SPAN class="code-keyword">for</SPAN> the proper spelling of a word by
+ * checking <SPAN class="code-keyword">for</SPAN> its existence in the dictionary. This bundle
+ * is more complex than the bundle in Example 3 because it
+ * monitors the dynamic availability of the dictionary
+ * services. In other words, <SPAN class="code-keyword">if</SPAN> the service it is using
+ * departs, then it stops using it gracefully, or <SPAN class="code-keyword">if</SPAN> it needs
+ * a service and one arrives, then it starts using it
+ * automatically. As before, the bundle uses the first service
+ * that it finds and uses the calling thread of the
+ * start() method to read words from standard input.
+ * You can stop checking words by entering an empty line, but
+ * to start checking words again you must stop and then restart
+ * the bundle.
+**/
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator, ServiceListener
+{
+    <SPAN class="code-comment">// Bundle's context.
+</SPAN>    <SPAN class="code-keyword">private</SPAN> BundleContext m_context = <SPAN class="code-keyword">null</SPAN>;
+    <SPAN class="code-comment">// The service reference being used.
+</SPAN>    <SPAN class="code-keyword">private</SPAN> ServiceReference m_ref = <SPAN class="code-keyword">null</SPAN>;
+    <SPAN class="code-comment">// The service object being used.
+</SPAN>    <SPAN class="code-keyword">private</SPAN> DictionaryService m_dictionary = <SPAN class="code-keyword">null</SPAN>;
+
+    /**
+     * Implements BundleActivator.start(). Adds itself
+     * as a listener <SPAN class="code-keyword">for</SPAN> service events, then queries <SPAN class="code-keyword">for</SPAN> 
+     * available dictionary services. If any dictionaries are
+     * found it gets a reference to the first one available and
+     * then starts its <SPAN class="code-quote">&quot;word checking loop&quot;</SPAN>. If no dictionaries
+     * are found, then it just goes directly into its &quot;word checking
+     * loop&quot;, but it will not be able to check any words until a
+     * dictionary service arrives; any arriving dictionary service
+     * will be automatically used by the client <SPAN class="code-keyword">if</SPAN> a dictionary is
+     * not already in use. Once it has dictionary, it reads words
+     * from standard input and checks <SPAN class="code-keyword">for</SPAN> their existence in the
+     * dictionary that it is using.
+     * (NOTE: It is very bad practice to use the calling thread
+     * to perform a lengthy process like <SPAN class="code-keyword">this</SPAN>; <SPAN class="code-keyword">this</SPAN> is only done
+     * <SPAN class="code-keyword">for</SPAN> the purpose of the tutorial.)
+     * @param context the framework context <SPAN class="code-keyword">for</SPAN> the bundle.
+    **/
+    <SPAN class="code-keyword">public</SPAN> void start(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception
+    {
+        m_context = context;
+
+        <SPAN class="code-comment">// We synchronize <SPAN class="code-keyword">while</SPAN> registering the service listener and
+</SPAN>        <SPAN class="code-comment">// performing our initial dictionary service lookup since we
+</SPAN>        <SPAN class="code-comment">// don't want to receive service events when looking up the
+</SPAN>        <SPAN class="code-comment">// dictionary service, <SPAN class="code-keyword">if</SPAN> one exists.
+</SPAN>        <SPAN class="code-keyword">synchronized</SPAN> (<SPAN class="code-keyword">this</SPAN>)
+        {
+            <SPAN class="code-comment">// Listen <SPAN class="code-keyword">for</SPAN> events pertaining to dictionary services.
+</SPAN>            m_context.addServiceListener(<SPAN class="code-keyword">this</SPAN>,
+                <SPAN class="code-quote">&quot;(&amp;(objectClass=&quot;</SPAN> + DictionaryService.class.getName() + <SPAN class="code-quote">&quot;)&quot;</SPAN> +
+                <SPAN class="code-quote">&quot;(Language=*))&quot;</SPAN>);
+
+            <SPAN class="code-comment">// Query <SPAN class="code-keyword">for</SPAN> any service references matching any language.
+</SPAN>            ServiceReference[] refs = m_context.getServiceReferences(
+                DictionaryService.class.getName(), <SPAN class="code-quote">&quot;(Language=*)&quot;</SPAN>);
+
+            <SPAN class="code-comment">// If we found any dictionary services, then just get
+</SPAN>            <SPAN class="code-comment">// a reference to the first one so we can use it.
+</SPAN>            <SPAN class="code-keyword">if</SPAN> (refs != <SPAN class="code-keyword">null</SPAN>)
+            {
+                m_ref = refs[0];
+                m_dictionary = (DictionaryService) m_context.getService(m_ref);
+            }
+        }
+
+        <SPAN class="code-keyword">try</SPAN>
+        {
+            <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Enter a blank line to exit.&quot;</SPAN>);
+            <SPAN class="code-object">String</SPAN> word = &quot;&quot;;
+            BufferedReader in = <SPAN class="code-keyword">new</SPAN> BufferedReader(<SPAN class="code-keyword">new</SPAN> InputStreamReader(<SPAN class="code-object">System</SPAN>.in));
+
+            <SPAN class="code-comment">// Loop endlessly.
+</SPAN>            <SPAN class="code-keyword">while</SPAN> (<SPAN class="code-keyword">true</SPAN>)
+            {
+                <SPAN class="code-comment">// Ask the user to enter a word.
+</SPAN>                <SPAN class="code-object">System</SPAN>.out.print(<SPAN class="code-quote">&quot;Enter word: &quot;</SPAN>);
+                word = in.readLine();
+
+                <SPAN class="code-comment">// If the user entered a blank line, then
+</SPAN>                <SPAN class="code-comment">// exit the loop.
+</SPAN>                <SPAN class="code-keyword">if</SPAN> (word.length() == 0)
+                {
+                    <SPAN class="code-keyword">break</SPAN>;
+                }
+                <SPAN class="code-comment">// If there is no dictionary, then say so.
+</SPAN>                <SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN> (m_dictionary == <SPAN class="code-keyword">null</SPAN>)
+                {
+                    <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;No dictionary available.&quot;</SPAN>);
+                }
+                <SPAN class="code-comment">// Otherwise print whether the word is correct or not.
+</SPAN>                <SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN> (m_dictionary.checkWord(word))
+                {
+                    <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Correct.&quot;</SPAN>);
+                }
+                <SPAN class="code-keyword">else</SPAN>
+                {
+                    <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Incorrect.&quot;</SPAN>);
+                }
+            }
+        } <SPAN class="code-keyword">catch</SPAN> (Exception ex) { }
+    }
+
+    /**
+     * Implements BundleActivator.stop(). Does nothing since
+     * the framework will automatically unget any used services.
+     * @param context the framework context <SPAN class="code-keyword">for</SPAN> the bundle.
+    **/
+    <SPAN class="code-keyword">public</SPAN> void stop(BundleContext context)
+    {
+        <SPAN class="code-comment">// NOTE: The service is automatically released.
+</SPAN>    }
+
+    /**
+     * Implements ServiceListener.serviceChanged(). Checks
+     * to see <SPAN class="code-keyword">if</SPAN> the service we are using is leaving or tries to get
+     * a service <SPAN class="code-keyword">if</SPAN> we need one.
+     * @param event the fired service event.
+    **/
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">synchronized</SPAN> void serviceChanged(ServiceEvent event)
+    {
+        <SPAN class="code-object">String</SPAN>[] objectClass =
+            (<SPAN class="code-object">String</SPAN>[]) event.getServiceReference().getProperty(<SPAN class="code-quote">&quot;objectClass&quot;</SPAN>);
+
+        <SPAN class="code-comment">// If a dictionary service was registered, see <SPAN class="code-keyword">if</SPAN> we
+</SPAN>        <SPAN class="code-comment">// need one. If so, get a reference to it.
+</SPAN>        <SPAN class="code-keyword">if</SPAN> (event.getType() == ServiceEvent.REGISTERED)
+        {
+            <SPAN class="code-keyword">if</SPAN> (m_ref == <SPAN class="code-keyword">null</SPAN>)
+            {
+                <SPAN class="code-comment">// Get a reference to the service object.
+</SPAN>                m_ref = event.getServiceReference();
+                m_dictionary = (DictionaryService) m_context.getService(m_ref);
+            }
+        }
+        <SPAN class="code-comment">// If a dictionary service was unregistered, see <SPAN class="code-keyword">if</SPAN> it
+</SPAN>        <SPAN class="code-comment">// was the one we were using. If so, unget the service
+</SPAN>        <SPAN class="code-comment">// and <SPAN class="code-keyword">try</SPAN> to query to get another one.
+</SPAN>        <SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN> (event.getType() == ServiceEvent.UNREGISTERING)
+        {
+            <SPAN class="code-keyword">if</SPAN> (event.getServiceReference() == m_ref)
+            {
+                <SPAN class="code-comment">// Unget service object and <SPAN class="code-keyword">null</SPAN> references.
+</SPAN>                m_context.ungetService(m_ref);
+                m_ref = <SPAN class="code-keyword">null</SPAN>;
+                m_dictionary = <SPAN class="code-keyword">null</SPAN>;
+
+                <SPAN class="code-comment">// Query to see <SPAN class="code-keyword">if</SPAN> we can get another service.
+</SPAN>                ServiceReference[] refs = <SPAN class="code-keyword">null</SPAN>;
+                <SPAN class="code-keyword">try</SPAN>
+                {
+                    refs = m_context.getServiceReferences(
+                        DictionaryService.class.getName(), <SPAN class="code-quote">&quot;(Language=*)&quot;</SPAN>);
+                }
+                <SPAN class="code-keyword">catch</SPAN> (InvalidSyntaxException ex)
+                {
+                    <SPAN class="code-comment">// This will never happen.
+</SPAN>                }
+                <SPAN class="code-keyword">if</SPAN> (refs != <SPAN class="code-keyword">null</SPAN>)
+                {
+                    <SPAN class="code-comment">// Get a reference to the first service object.
+</SPAN>                    m_ref = refs[0];
+                    m_dictionary = (DictionaryService) m_context.getService(m_ref);
+                }
+            }
+        }
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<P>The client listens for service events indicating the arrival or departure of dictionary services. If a new dictionary service arrives, the bundle will start using that service if and only if it currently does not have a dictionary service. If an existing dictionary service disappears, the bundle will check to see if the disappearing service is the one it is using; if it is it stops using it and tries to query for another dictionary service, otherwise it ignores the event.</P>
+
+<P>Like normal, we must create a <TT>manifest.mf</TT> file that contains the meta-data for our bundle:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>Bundle-Name: Dynamic dictionary client
+Bundle-Description: A bundle that uses the dictionary service whenever it becomes available
+Bundle-Vendor: Apache Felix
+Bundle-Version: 1.0.0
+Bundle-Activator: tutorial.example4.Activator
+Import-Package: org.osgi.framework,
+ tutorial.example2.service
+</PRE>
+</DIV></DIV>
+
+<P>We specify the class to activate our bundle via the <TT>Bundle-Activator</TT> attribute and also specify that our bundle imports the core OSGi framework package and the dictionary service interface package using the <TT>Import-Package</TT> attribute. The OSGi framework will automatically handle the details of resolving import packages. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</P>
+
+<P>To compile our source code, we need to have the <TT>felix.jar</TT> file (found in Felix' <TT>bin</TT> directory) and the <TT>example2.jar</TT> file in our class path. We compile the source file using a command like:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>javac -d c:\classes *.java
+</PRE>
+</DIV></DIV>
+
+<P>This command compiles all source files and outputs the generated classes into a subdirectory of the <TT>c:\classes</TT> directory; this subdirectory is <TT>tutorial\example4</TT>, named after the package we specified in the source file. For the above command to work, the <TT>c:\classes</TT> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>jar cfm example4.jar manifest.mf -C c:\classes tutorial\example4
+</PRE>
+</DIV></DIV>
+
+<P>This command creates a JAR file using the manifest file we created and includes all of the classes in the <TT>tutorial\example4</TT> directory inside of the <TT>c:\classes</TT> directory. Once the JAR file is created, we are ready to install and start the bundle.</P>
+
+<P>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <TT>tutorial</TT>. After running Felix, we should check that all tutorial bundles are stopped, except for the English dictionary service bundle from Example 2. We can use the Felix <TT>lb</TT> shell command to get a list of all bundles, their state, and their bundle identifier number. If the Example 2 bundle is not active, we should start the bundle using the <TT>start</TT> command along with the bundle's identifier number displayed by the <TT>lb</TT> command and stop any other unneeded tutorial bundles using the stop command. (Note: Felix uses some bundles to provide its command shell, so do not stop these bundles.) Now we can install and start our dictionary client bundle. Assuming that we created our bundle in the directory <TT>c:\tutorial</TT>, we can install and start it in Felix' shell using the following command:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>start file:/c:/tutorial/example4.jar
+</PRE>
+</DIV></DIV>
+
+<P>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <TT>install</TT> and <TT>start</TT> shell commands. When we start the bundle, it will use the shell thread to prompt us for words. Enter one word at a time to check the words and enter a blank line to stop checking words. To restart the bundle, we must use the Felix shell <TT>lb</TT> command to get the bundle identifier number for the bundle and first use the <TT>stop</TT> command to stop the bundle, then the <TT>start</TT> command to restart it. To test the dictionary service, enter any of the words in the dictionary (e.g., &quot;welcome&quot;, &quot;to&quot;, &quot;the&quot;, &quot;OSGi&quot;, &quot;tutorial&quot;) or any word not in the dictionary.</P>
+
+<P>Since this client monitors the dynamic availability of the dictionary service, it is robust in the face of sudden departures of the the dictionary service. Further, when a dictionary service arrives, it automatically gets the service if it needs it and continues to function. These capabilities are a little difficult to demonstrate since we are using a simple single-threaded approach, but in a multi-threaded or GUI-oriented application this robustness is very useful.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2011-03-17 10:47:02.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

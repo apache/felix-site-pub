@@ -1,0 +1,375 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - apache-felix-ipojo-junit4osgi-tutorial</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi.html">apache-felix-ipojo-junit4osgi</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-ipojo-junit4osgi-tutorial.html" target="felix_cwiki">/site/apache-felix-ipojo-junit4osgi-tutorial.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>apache-felix-ipojo-junit4osgi-tutorial</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# junit4osgi quick start
+
+*This page describes how using the junit4osgi framework. With the archive tutorial, a pre-configured version of Felix (with the test framework already installed) is also provided.*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## Getting JUnit4OSGi
+
+The JUnit4OSGi framework is available from the [Felix downloads](http://felix.apache.org/site/downloads.cgi). Source code is also available in the iPOJO sub-project ([sources|Download]). The JUnit4OSGi framework and the different launchers are built when you compile Felix.
+
+##  How to run test?
+Firs of all to execute test you must deploy in your OSGi container:
+1. Your tests
+1. The junit4osgi runtime (executing tests)
+1. A runner launching tests
+
+Several runner are available:
+* You can use the JUnit4OSGi immediate-runner, which run tests contained in all the test-bundles. The results are displayed in the framework console output.
+* The JUnit4OSGi Felix Command (available only for the Apache Felix OSGi framework), allows you to run tests contained in a specific bundle. Test results are also displayed in the framework console output. The syntax of the command is very simple :
+** To run tests contained in the bundle with the given id :`{noformat}junit <bundle id>{noformat`}
+** To run tests contained in all the test-bundles installed in the framework :`junit all`
+* The JUnit4OSGi Swing GUI lets you select the test cases and test suites to execute and shows you graphically the result of the tests. You can double-click on a test case result to show its details.
+
+!http://felix.apache.org/site/apache-felix-ipojo-junit4osgi.data/screenshot-junit4ogsi-swing-runner.PNG!
+
+## TestCase, TestSuite 
+A test case is an environment (made of conditions and variables) under which a tester will check that a requirement is satisfied. For JUnit, test cases are classes that define several test methods ; each test method tests an aspect of the targeted requirement. Test cases are often collected into test suites. A test suite aggregates several test cases (and even other test suites), including the notion of test hierarchy. Tests can be organized according to the different requirements they try to validate. The skeleton of a JUnit `TestCase` and `TestSuite` is shown just above :
+
+    /**
+     * The skeleton of a JUnit test case
+     */
+    public class MyTestCase extends junit.framework.TestCase {
+        ...
+
+     public void setUp() {
+        // Performs actions BEFORE running any test case.
+     }
+
+     public void testSomething() throws AnyException {
+        // A test method
+        ...
+        assertTrue(myTest);
+        assertEquals(myValue, expectedValue);
+        ...
+     }
+
+     public void testAnotherThing() {
+        // Another test method
+        ...
+     }
+
+     public void tearDown() {
+        // Performs actions AFTER running all test cases.
+     }
+    }
+
+    /**
+     * The skeleton of a JUnit test suite
+     */
+    public class MyTestSuite extends junit.framework.TestSuite {
+     /**
+     * The skeleton of a JUnit test suite
+     */
+     public static Test suite() {
+        TestSuite suite = new TestSuite("The name of the test suite");
+        suite.addTestSuite(MyTestCase.class);
+        suite.addTestSuite(AnotherTestCase.class);
+        ...
+        return suite;
+     }
+    }
+
+First, tests methods are declared in the test case. Their name must begin with "test", so JUnit will execute them on demand. The test are expressed in terms of JUnit assertions ; the `assert*()` methods causes JUnit test failure if the given assertion is false. The setUp() and tearDown() methods perform specific actions before and after test cases are run. Then, the test suite collect various test cases. It must implement the `suite()` method that returns the global (and organized) test suite to JUnit.
+
+##  OSGiTestCase and OSGiTestSuite 
+An OSGi test case, is a test case that runs in an OSGi context. `OSGiTestCase` is the class that all the OSGi test cases you write must extend. This class is a kind of bridge between the JUnit TestCase class and the OSGi environment. The only thing the `OSGiTestCase` class adds is the access to the bundle context of the bundle containing tests, and some utility methods, giving an easy access to other bundles and services registered in the OSGi framework.
+
+The structure of an `OSGiTestCase` is exactly the same as a classic JUnit `TestCase` :
+
+     /**
+      * The structure of an OSGiTestCase
+      */
+     public class MyOSGiTestCase extends OSGiTestCase {
+        public void setUp() {...}
+        public void testSomething() { 
+            // You can access here the bundle context through 
+            // the 'getContext()' method 
+            getContext().getServiceReference(...); 
+
+            ...
+        }
+     public void testAnotherThing() {...}
+     ...
+     public void tearDown() {...}
+     }
+
+By extension, OSGi test suites are collections of OSGi test cases. But you can also add classic JUnit test cases inside your `OSGiTestSuite`. The skeleton of an OSGiTestSuite is globally the same as a TestSuite, except the fact that a reference to the bundle context is passed :
+
+    public class MyOSGiTestSuite {
+     /**
+      * This method returns the suite of tests to run.
+     */
+     public static Test suite(BundleContext bc) {
+        OSGiTestSuite suite = new OSGiTestSuite("My OSGi test suite", bc);
+        suite.addTestSuite(MyFirstTest.class);
+        suite.addTestSuite(MySecondTest.class);
+        ...
+        // Here, we add a sub test suite in this test suite.
+        suite.addTest(AnotherTestSuite.suite(bc));
+        ...
+        return suite;
+     }
+    }
+
+##  How to declare test suites 
+This section explains how to declare your test suites in order to expose them to the JUnit4OSGi bundle.
+
+The written OSGi test suites must be declared by the bundle containing them. To do so, you define add the Test-Suite property in your bundle's header. The following snippets show you how to configure your bundle generation tool to add this property in the header. You can even declare test cases in it. The Junit4OSGi bundle will detect such an header in installed bundle (using the extender pattern) and execute contained tests on demand.
+
+With the maven-bundle-plugin, add the following lines in your project's pom :
+
+    <plugin>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>maven-bundle-plugin</artifactId>
+      ...
+      <extensions>true</extensions>
+      <configuration>
+      <instructions>
+         ...
+          <!-- Declare here the test cases and test suites of your bundle -->
+          <Test-Suite>
+           a.package.MyFirstTestSuite,
+           yet.another.package.MySingleTestCase
+           ...
+          </Test-Suite>
+      </instructions>
+      </configuration>
+    </plugin>
+
+With the aQute Bnd Ant task, add the following lines in your project bnd file:
+
+    Test-Suite: a.package.MyFirstTestSuite, yet.another.package.MySingleTestCase, ...
+
+## Quick examples
+The following examples show you how to perform unitary tests on your OSGi platform. The first example recovers the example given in the JUnit Cookbook, "bundlizes" it so tests can be run in an OSGi environment. None of the JUnit4OSGi specific features is used, but it shows how to adapt classic JUnit tests. The second example is more OSGi-oriented, and shows how a unitary test can access to the framework via its bundle context.
+
+These examples can be downloaded [here](http://people.apache.org/~clement/ipojo/tutorials/junit4osgi/junit4osgi-tutorial.zip).
+
+### Bundles to deploy to use junit4osgi
+
+If you don't use the archive, you can deploy the junit4osgi framework manually. Here is the list of the bundles to deploy and start:
+* org.apache.felix.ipojo-1.6.0.jar: iPOJO Core bundle
+* org.apache.felix.ipojo.handler.extender-1.6.0.jar: iPOJO Extender pattern handler
+* org.apache.felix.ipojo.junit4osgi-1.1.0-SNAPSHOT.jar: the JUnit4OSGi framework
+* org.apache.felix.ipojo.junit4osgi.felix-command-1.1.0-SNAPSHOT.jar: the command line junit4osgi runner
+
+###  The remixed JUnit example 
+This example is a simple conversion of a classic JUnit example derived from the JUnit Cookbook. The test case and the test suite are shown to remind you JUnit principles.
+
+    package junit.example;
+    import junit.framework.TestCase;
+    import junit.money.Money;
+
+    public class SimpleTestCase extends TestCase {
+        private Money f12CHF;
+        private Money f14CHF;
+        public void setUp() {
+            f12CHF= new Money(12, "CHF");
+            f14CHF= new Money(14, "CHF");
+        }
+        public void testEquals() {
+            assertTrue(!f12CHF.equals(null));
+            assertEquals(f12CHF, f12CHF);
+            assertEquals(f12CHF, new Money(12, "CHF"));
+            assertTrue(!f12CHF.equals(f14CHF));
+        }
+        public void testSimpleAdd() {
+            Money expected= new Money(26, "CHF");
+            Money result= f12CHF.add(f14CHF);
+            assertTrue(expected.equals(result));
+        }
+    }
+
+    package junit.example;
+    import junit.framework.Test;
+    import junit.framework.TestSuite;
+    public class SimpleTestSuite {
+        public static Test suite() {
+            TestSuite suite = new TestSuite("Money Simple Test Suite");
+            suite.addTestSuite(SimpleTestCase.class);
+            return suite;
+        }
+    }
+
+The following bnd file declares the test suite in the target bundle's header :
+
+    Private-Package: junit.money, junit.example
+    Test-Suite: junit.example.SimpleTestSuite
+
+Once built, the bundle must be deployed in the provided Felix framework, and tests can be performed using the `'junit'` command :
+
+        -> ps
+        START LEVEL 1
+        ID State Level Name
+        ...
+        [ 12] [Active ] [ 1] Junit-Example (0)
+        ...
+        -> junit 12
+        Executing [Money Simple Test Suite]
+        ..
+        Time: 0
+        OK (2 tests)
+    ->
+
+As you can see above, all tests have been correctly executed !
+
+##  An OSGi-based JUnit example 
+This example shows you how to interact with the OSGi framework within your tests. The test bundle provide a service (HelloService) and tests its work normally. To get the service reference of the HelloService, it uses the bundle context field of the OSGiTestCase class (named `'context'`) and interacts with it like any other OSGi bundle does.
+
+    package junit.example;
+
+    import junit.service.hello.HelloService;
+
+    import org.apache.felix.ipojo.junit4osgi.OSGiTestCase;
+    import org.osgi.framework.ServiceReference;
+
+    public class SimpleTestCase extends OSGiTestCase {
+
+        public void testHelloAvailability() {
+            ServiceReference ref = getServiceReference(HelloService.class.getName());
+            assertNotNull("Assert Availability", ref);
+        }
+
+        public void testHelloAvailability2() {
+            ServiceReference ref = getServiceReference(HelloService.class.getName(), null);
+            assertNotNull("Assert Availability", ref);
+        }
+
+        public void testHelloMessage() {
+            ServiceReference ref = getServiceReference(HelloService.class.getName());
+            assertNotNull("Assert Availability", ref);
+            HelloService hs = (HelloService) getContext().getService(ref);
+            String message = hs.getHelloMessage();
+            assertNotNull("Check the message existence", message);
+            assertEquals("Check the message", "hello", message);
+            // Don't need to unget references, they are unget by junit4osgi
+        }
+
+        public void testHelloMessage2() {
+            assertTrue("Check availability of the service", 
+                isServiceAvailable(HelloService.class.getName()));
+            HelloService hs = (HelloService) getServiceObject(HelloService.class.getName(), null);
+            String message = hs.getHelloMessage();
+            assertNotNull("Check the message existence", message);
+            assertEquals("Check the message", "hello", message);
+        }
+    }
+
+The performed tests give out the following results :
+
+    -> ps
+    START LEVEL 1
+    ID State Level Name
+    ...
+    [ 17] [Active ] [ 1] Junit-OSGi-Example (0)
+    ...
+    -> services 17
+    Junit-OSGi-Example (17) provides:
+    ---------------------------------
+    objectClass = junit.service.hello.HelloService
+    service.id = 36
+    -> junit 17
+    Executing [Hello Service Test Suite]
+    ..
+    Time: 0,015
+    OK (4 tests)
+    ->
+
+## Simple right?
+
+So now you know everything required to run test inside OSGi. You can start developing your own test. To help you a little bit, junit4osgi provides [utilities methods](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-methods.html) greatly reducing the amount of code to write in your tests. Moreover, if you're a Maven user, the [maven-junit4osgi-plugin|apache-felix-ipojo-junit4osgi-maven] is made for you. It just runs your test directly during the maven build process.
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

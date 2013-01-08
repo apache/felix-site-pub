@@ -1,0 +1,360 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Sigil Ivy Quickstart</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<DIV>
+<UL>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-Overview">Overview</A></LI>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-SharedConfiguration">Shared Configuration</A></LI>
+<UL>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-ivysettings.properties">ivysettings.properties</A></LI>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-ivysettings.xml">ivysettings.xml</A></LI>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-sigilrepos.properties">sigil-repos.properties</A></LI>
+</UL>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-ProjectConfiguration">Project Configuration</A></LI>
+<UL>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-build.xml">build.xml</A></LI>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-ivy.xml">ivy.xml</A></LI>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-sigil.properties">sigil.properties</A></LI>
+</UL>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-ProjectBuild">Project Build</A></LI>
+    <LI><A href="#ApacheFelixSigilIvyQuickstart-NextSteps">Next Steps</A></LI>
+</UL></DIV>
+
+<H2><A name="ApacheFelixSigilIvyQuickstart-Overview"></A>Overview</H2>
+
+<P>The sigil-ivy-plugin integrates Sigil with <A href="http://ant.apache.org/ivy/" class="external-link" rel="nofollow">Apache Ivy</A>. If you are not familiar with Ivy, you should visit their <A href="http://ant.apache.org/ivy/history/latest-milestone/tutorial.html" class="external-link" rel="nofollow">tutorial</A>.</P>
+
+<P>Sigil provides a custom Ivy resolver, which allows Ivy to resolve dependencies specified as OSGi Package-Imports, rather than as specific jar artifacts. This avoids the duplication and possible error of having to specify build dependencies separately from OSGi runtime dependencies.</P>
+
+<P>The plugin works by intercepting the ivy.xml parser and dynamically replacing any dependencies with the results of resolving the OSGi Package-Imports specified in sigil.properties. Sigil can resolve dependencies using a local directory of OSGi bundles, or using an <A href="http://www.osgi.org/Repository/" class="external-link" rel="nofollow">OBR repository</A>.</P>
+
+<P>The plugin also provides an Ant task to generate (multiple) OSGi bundles from each sigil.properties file using <A href="http://www.aqute.biz/Code/Bnd" class="external-link" rel="nofollow">Bnd</A>. sigil.properties is similar to .bnd instruction files, but it supports multiple bundles.</P>
+
+<P>This Quick Start is based on the Ivy <A href="http://ant.apache.org/ivy/history/latest-milestone/tutorial/dependence.html" class="external-link" rel="nofollow">project dependencies</A> tutorial, modified to use Sigil. The modified example is in <TT>example/dependence</TT> in the Sigil download.</P>
+
+<H2><A name="ApacheFelixSigilIvyQuickstart-SharedConfiguration"></A>Shared Configuration</H2>
+
+<H3><A name="ApacheFelixSigilIvyQuickstart-ivysettings.properties"></A>ivysettings.properties</H3>
+
+<P>You will need to change ivy.jar to point to the location of your Ivy jar. If you don't have Ivy, you can download it from <A href="http://ant.apache.org/ivy/download.cgi" class="external-link" rel="nofollow">http://ant.apache.org/ivy/download.cgi</A>.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+repository.dir=${ivy.settings.dir}/repository
+sigil-ivy-plugin.jar=${ivy.settings.dir}/../../../lib/sigil-ivy-plugin.jar
+ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
+</PRE>
+</DIV></DIV>
+
+
+<H3><A name="ApacheFelixSigilIvyQuickstart-ivysettings.xml"></A>ivysettings.xml</H3>
+
+<P>The lines containing &quot;sigil&quot; need to be added to your ivysettings.xml:</P>
+
+<UL>
+	<LI><B>classpath</B> - this references the location of the sigil-ivy-plugin.jar</LI>
+	<LI><B>typedef</B> - this defines the sigil-parser and sigil-resolver</LI>
+	<LI><B>parsers</B> - the sigil-parser must be the last parser in the parsers section</LI>
+	<LI><B>resolvers</B> - the sigil-resolver requires a config attribute to specify the repository configuration file</LI>
+	<LI><B>modules</B> - the modules entry ensures that the sigil-resolver is used to resolve the injected dependencies</LI>
+</UL>
+
+
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;ivysettings&gt;</SPAN>
+    <SPAN class="code-tag">&lt;properties file=<SPAN class="code-quote">&quot;${ivy.settings.dir}/ivysettings.properties&quot;</SPAN>/&gt;</SPAN>
+    <SPAN class="code-tag">&lt;settings defaultResolver=<SPAN class="code-quote">&quot;projects&quot;</SPAN>/&gt;</SPAN>
+    <SPAN class="code-tag">&lt;caches defaultCacheDir=<SPAN class="code-quote">&quot;${ivy.settings.dir}/ivy-cache&quot;</SPAN> /&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;classpath file=<SPAN class="code-quote">&quot;${sigil-ivy-plugin.jar}&quot;</SPAN> /&gt;</SPAN>
+    <SPAN class="code-tag">&lt;typedef name=<SPAN class="code-quote">&quot;sigil-parser&quot;</SPAN> classname=<SPAN class="code-quote">&quot;org.cauldron.bld.ivy.SigilParser&quot;</SPAN> /&gt;</SPAN>
+    <SPAN class="code-tag">&lt;typedef name=<SPAN class="code-quote">&quot;sigil-resolver&quot;</SPAN> classname=<SPAN class="code-quote">&quot;org.cauldron.bld.ivy.SigilResolver&quot;</SPAN> /&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;parsers&gt;</SPAN>
+        <SPAN class="code-tag">&lt;sigil-parser/&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/parsers&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;resolvers&gt;</SPAN>
+        <SPAN class="code-tag">&lt;sigil-resolver name=<SPAN class="code-quote">&quot;sigil&quot;</SPAN> config=<SPAN class="code-quote">&quot;${ivy.settings.dir}/sigil-repos.properties&quot;</SPAN> /&gt;</SPAN>
+        <SPAN class="code-tag">&lt;filesystem name=<SPAN class="code-quote">&quot;projects&quot;</SPAN>&gt;</SPAN>
+            <SPAN class="code-tag">&lt;artifact pattern=<SPAN class="code-quote">&quot;${repository.dir}/[artifact]-[revision].[ext]&quot;</SPAN> /&gt;</SPAN>
+            <SPAN class="code-tag">&lt;ivy pattern=<SPAN class="code-quote">&quot;${repository.dir}/[module]-[revision].xml&quot;</SPAN> /&gt;</SPAN>
+        <SPAN class="code-tag">&lt;/filesystem&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/resolvers&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;modules&gt;</SPAN>
+        <SPAN class="code-tag">&lt;module organisation=<SPAN class="code-quote">&quot;sigil&quot;</SPAN> name=<SPAN class="code-quote">&quot;*&quot;</SPAN> resolver=<SPAN class="code-quote">&quot;sigil&quot;</SPAN>/&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/modules&gt;</SPAN>
+<SPAN class="code-tag">&lt;/ivysettings&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+
+<H3><A name="ApacheFelixSigilIvyQuickstart-sigilrepos.properties"></A>sigil-repos.properties</H3>
+
+<P>This file contains the definition of the Sigil repositories. It is referenced via the config attribute on the sigil-resolver in ivysettings.xml.</P>
+
+<P>The repositories defined are:</P>
+
+<UL>
+	<LI><B>system</B> - resolves internal Java packages, such as <TT>javax.swing</TT> and optionally packages from bundle 0 of an OSGi framework provider</LI>
+	<LI><B>project</B> - resolves against exports in sigil.properties of other projects. This allows Ivy to automatically determine the correct build order.</LI>
+	<LI><B>spring</B> - this resolves against an OBR index for the SpringSource Enterprise Repository.</LI>
+</UL>
+
+
+<P>It's also possible to define a <B>filesystem</B> repository based on a local directory containing bundles.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+# repository config
+
+-repositories:  system, project, spring
+
+system;provider:        system
+system;level:           -1
+
+project;provider:       project
+project;level:  0
+project;pattern:        ../*/[sigilproject]
+
+spring;provider:        obr
+spring;level:           2
+spring;url:             http:<SPAN class="code-comment">//sigil.codecauldron.org/spring-repository.obr
+</SPAN>spring;index:           ../settings/spring-repository.obr
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixSigilIvyQuickstart-ProjectConfiguration"></A>Project Configuration</H2>
+
+
+<H3><A name="ApacheFelixSigilIvyQuickstart-build.xml"></A>build.xml</H3>
+
+<P>The sigil-ivy-plugin provides an Ant task to build bundles using Bnd. It requires bndlib.jar, which is on the manifest Class-Path, so you don't need to explicitly add bndlib.jar to the classpath, as long as it is present in the same directory as sigil-ivy-plugin.jar.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+&lt;taskdef name=<SPAN class="code-quote">&quot;sigil.bundle&quot;</SPAN>
+    classname=<SPAN class="code-quote">&quot;org.cauldron.bld.ant.BundleTask&quot;</SPAN>
+    classpath=<SPAN class="code-quote">&quot;${sigil-ivy-plugin.jar}&quot;</SPAN>/&gt;
+
+<SPAN class="code-tag">&lt;target name=<SPAN class="code-quote">&quot;jar&quot;</SPAN> depends=<SPAN class="code-quote">&quot;compile&quot;</SPAN>&gt;</SPAN>
+    &lt;sigil.bundle destpattern=<SPAN class="code-quote">&quot;${build.dir}/[id].[ext]&quot;</SPAN>
+                 classpathref=<SPAN class="code-quote">&quot;run.path.id&quot;</SPAN> /&gt;
+<SPAN class="code-tag">&lt;/target&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+
+<H3><A name="ApacheFelixSigilIvyQuickstart-ivy.xml"></A>ivy.xml</H3>
+
+<P>The ivy.xml for the dependee project is unchanged (but, by default, Sigil ignores any dependences it contains).</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;ivy-module version=<SPAN class="code-quote">&quot;1.0&quot;</SPAN>&gt;</SPAN>
+    <SPAN class="code-tag">&lt;info organisation=<SPAN class="code-quote">&quot;org.apache&quot;</SPAN> module=<SPAN class="code-quote">&quot;dependee&quot;</SPAN>/&gt;</SPAN>
+    <SPAN class="code-tag">&lt;dependencies&gt;</SPAN>
+        <SPAN class="code-tag">&lt;dependency org=<SPAN class="code-quote">&quot;commons-lang&quot;</SPAN> name=<SPAN class="code-quote">&quot;commons-lang&quot;</SPAN> rev=<SPAN class="code-quote">&quot;2.0&quot;</SPAN>/&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/dependencies&gt;</SPAN>
+<SPAN class="code-tag">&lt;/ivy-module&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+
+<H3><A name="ApacheFelixSigilIvyQuickstart-sigil.properties"></A>sigil.properties</H3>
+
+<P>Placing a sigil.properties file next to an ivy.xml file, causes the sigil-parser to dynamically replace the dependencies contained in ivy.xml with dependencies determined from the -imports property in sigil.properties.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+# dependee sigil.properties
+
+version: 1.0.0
+
+-bundles: dependee
+
+-exports: standalone
+
+-imports: \
+  org.apache.commons.lang;version=<SPAN class="code-quote">&quot;[2.0.0,2.4.0)&quot;</SPAN>, \
+
+-resources: \
+  version.properties
+</PRE>
+</DIV></DIV>
+
+
+<H2><A name="ApacheFelixSigilIvyQuickstart-ProjectBuild"></A>Project Build</H2>
+
+<DIV class="code panel" style="background-color: #FFFFCE;border-width: 1px;"><DIV class="codeContent panelContent" style="background-color: #FFFFCE;">
+<PRE class="code-java">
+$ cd dependee
+$ ant jar
+Buildfile: build.xml
+
+init:
+
+resolve:
+[ivy:retrieve] :: Ivy 2.0.0-rc2 - 20081028224207 :: http:<SPAN class="code-comment">//ant.apache.org/ivy/ ::
+</SPAN>:: loading settings :: file = /Volumes/Users/derek/sigil-0.7.0/example/dependence/settings/ivysettings.xml
+[ivy:retrieve] Sigil: augmenting module=dependee ant.project.name=dependee
+[ivy:retrieve] Sigil: loading Project Repository: /Volumes/Users/derek/sigil-0.7.0/example/dependence/*/sigil.properties
+[ivy:retrieve] :: resolving dependencies :: org.apache#dependee;working@rodney
+[ivy:retrieve]  confs: [<SPAN class="code-keyword">default</SPAN>]
+[ivy:retrieve] Sigil: augmenting module=com.springsource.org.apache.commons.lang ant.project.name=dependee
+[ivy:retrieve]  found sigil#com.springsource.org.apache.commons.lang;2.1.0 in sigil
+[ivy:retrieve] downloading http:<SPAN class="code-comment">//repository.springsource.com/ivy/bundles/external/org.apache.commons/
+</SPAN>    com.springsource.org.apache.commons.lang/2.1.0/com.springsource.org.apache.commons.lang-2.1.0.jar ...
+[ivy:retrieve]  [SUCCESSFUL ] sigil#com.springsource.org.apache.commons.lang;2.1.0!com.springsource.org.apache.commons.lang.jar (2619ms)
+[ivy:retrieve] :: resolution report :: resolve 232ms :: artifacts dl 2620ms
+        ---------------------------------------------------------------------
+        |                  |            modules            ||   artifacts   |
+        |       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+        ---------------------------------------------------------------------
+        |      <SPAN class="code-keyword">default</SPAN>     |   1   |   1   |   1   |   0   ||   1   |   1   |
+        ---------------------------------------------------------------------
+[ivy:retrieve] :: retrieving :: org.apache#dependee
+[ivy:retrieve]  confs: [<SPAN class="code-keyword">default</SPAN>]
+[ivy:retrieve]  1 artifacts copied, 0 already retrieved (204kB/11ms)
+
+compile:
+    [mkdir] Created dir: /Volumes/Users/derek/sigil-0.7.0/example/dependence/dependee/build/classes
+    [javac] Compiling 1 source file to /Volumes/Users/derek/sigil-0.7.0/example/dependence/dependee/build/classes
+
+jar:
+[propertyfile] Creating <SPAN class="code-keyword">new</SPAN> property file: /Volumes/Users/derek/sigil-0.7.0/example/dependence/dependee/build/classes/version.properties
+[sigil.bundle] creating bundle: dependee
+[sigil.bundle] dependee: 0 errors, 0 warnings
+
+BUILD SUCCESSFUL
+Total time: 6 seconds
+</PRE>
+</DIV></DIV>
+
+<P>Notice how </P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+-imports: \
+  org.apache.commons.lang;version=<SPAN class="code-quote">&quot;[2.0.0,2.4.0)&quot;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>in sigil.properties is resolved to com.springsource.org.apache.commons.lang-2.1.0.jar, using the OBR resolver.</P>
+
+<P>The dependencies in ivy.xml are ignored by default, you can retain them by setting the keepDependencies attribute on the sigil-parser.</P>
+
+<P>Now let's pretend that we've added some code which requires the following imports in sigil.properties:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+-imports: \
+  org.apache.commons.lang;version=<SPAN class="code-quote">&quot;[2.0.0,2.4.0)&quot;</SPAN>, \
+  javax.servlet;version=<SPAN class="code-quote">&quot;(2.4,3.0]&quot;</SPAN>, \
+  org.apache.log4j;version=<SPAN class="code-quote">&quot;[1.2.14,1.3)&quot;</SPAN>, \
+  org.apache.commons.logging
+</PRE>
+</DIV></DIV>
+
+<DIV class="code panel" style="background-color: #FFFFCE;border-width: 1px;"><DIV class="codeContent panelContent" style="background-color: #FFFFCE;">
+<PRE class="code-java">
+$ ant jar
+Buildfile: build.xml
+
+init:
+
+resolve:
+[ivy:retrieve] :: Ivy 2.0.0-rc2 - 20081028224207 :: http:<SPAN class="code-comment">//ant.apache.org/ivy/ ::
+</SPAN>:: loading settings :: file = /Volumes/Users/derek/sigil-0.7.0/example/dependence/settings/ivysettings.xml
+[ivy:retrieve] Sigil: augmenting module=dependee ant.project.name=dependee
+[ivy:retrieve] Sigil: loading Project Repository: /Volumes/Users/derek/sigil-0.7.0/example/dependence/*/sigil.properties
+[ivy:retrieve] :: resolving dependencies :: org.apache#dependee;working@rodney
+[ivy:retrieve]  confs: [<SPAN class="code-keyword">default</SPAN>]
+[ivy:retrieve] Sigil: augmenting module=com.springsource.org.apache.commons.logging ant.project.name=dependee
+[ivy:retrieve]  found sigil#com.springsource.org.apache.commons.logging;1.1.1 in sigil
+[ivy:retrieve] Sigil: augmenting module=com.springsource.org.apache.log4j ant.project.name=dependee
+[ivy:retrieve]  found sigil#com.springsource.org.apache.log4j;1.2.15 in sigil
+[ivy:retrieve]  found sigil#com.springsource.org.apache.commons.lang;2.1.0 in sigil
+[ivy:retrieve] Sigil: augmenting module=com.springsource.javax.servlet ant.project.name=dependee
+[ivy:retrieve]  found sigil#com.springsource.javax.servlet;2.5.0 in sigil
+[ivy:retrieve] downloading http:<SPAN class="code-comment">//repository.springsource.com/ivy/bundles/external/org.apache.commons/
+</SPAN>    com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar ...
+[ivy:retrieve]  [SUCCESSFUL ] sigil#com.springsource.org.apache.commons.logging;1.1.1!com.springsource.org.apache.commons.logging.jar (3180ms)
+[ivy:retrieve] downloading http:<SPAN class="code-comment">//repository.springsource.com/ivy/bundles/external/org.apache.log4j/
+</SPAN>    com.springsource.org.apache.log4j/1.2.15/com.springsource.org.apache.log4j-1.2.15.jar ...
+[ivy:retrieve]  [SUCCESSFUL ] sigil#com.springsource.org.apache.log4j;1.2.15!com.springsource.org.apache.log4j.jar (5680ms)
+[ivy:retrieve] downloading http:<SPAN class="code-comment">//repository.springsource.com/ivy/bundles/external/javax.servlet/
+</SPAN>    com.springsource.javax.servlet/2.5.0/com.springsource.javax.servlet-2.5.0.jar ...
+[ivy:retrieve]  [SUCCESSFUL ] sigil#com.springsource.javax.servlet;2.5.0!com.springsource.javax.servlet.jar (1856ms)
+[ivy:retrieve] :: resolution report :: resolve 562ms :: artifacts dl 10733ms
+        ---------------------------------------------------------------------
+        |                  |            modules            ||   artifacts   |
+        |       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+        ---------------------------------------------------------------------
+        |      <SPAN class="code-keyword">default</SPAN>     |   4   |   3   |   3   |   0   ||   4   |   3   |
+        ---------------------------------------------------------------------
+[ivy:retrieve] :: retrieving :: org.apache#dependee
+[ivy:retrieve]  confs: [<SPAN class="code-keyword">default</SPAN>]
+[ivy:retrieve]  3 artifacts copied, 1 already retrieved (534kB/50ms)
+
+compile:
+
+jar:
+[propertyfile] Updating property file: /Volumes/Users/derek/sigil-0.7.0/example/dependence/dependee/build/classes/version.properties
+[sigil.bundle] creating bundle: dependee
+[sigil.bundle] BND: Importing packages that are never refered to by any class on the Bundle-Classpath[Jar:dot]: 
+    [javax.servlet, org.apache.commons.logging, org.apache.log4j]
+[sigil.bundle] dependee: 0 errors, 1 warning
+
+BUILD SUCCESSFUL
+Total time: 16 seconds
+</PRE>
+</DIV></DIV>
+
+<P>Notice that the additional dependencies have been resolved against the OBR repository. The warning from Bnd, is because those additional imports are not actually used.</P>
+
+<H2><A name="ApacheFelixSigilIvyQuickstart-NextSteps"></A>Next Steps</H2>
+
+<P>This Quick Start has shown how easily Sigil can integrate with existing Ivy builds. You should now examine the other examples, which give more details of the Sigil configuration and show some real-world examples.</P>
+
+
+
+
+
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by dsavage@apache.org on 2009-07-13 13:41:35.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

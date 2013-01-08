@@ -1,0 +1,263 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Event Admin</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixEventAdmin-ApacheFelixEventAdmin"></A>Apache Felix Event Admin</H1>
+
+<P>The Event Admin Service Specification, part of the OSGi Compendium specification, defines a general inter-bundle communication mechanism. The communication conforms to the popular publish/subscribe paradigm and can be performed in a synchronous or asysnchronous manner.</P>
+
+<P>The main components in a publish/subscribe communication are:</P>
+
+<UL>
+	<LI><B>Event Publisher</B> - sends events or messages related to a specific <B>topic</B></LI>
+	<LI><B>Event Handler</B> (or <B>Subscriber</B>) - expresses interest in one or more topics and receives all the messages belonging to such topics.</LI>
+</UL>
+
+
+<P>Events are composed of two attributes:</P>
+
+<UL>
+	<LI>a <B>topic</B> defining the nature of the event; topic names are usually arranged in a hierarchical namespace, where slashes are used to separate the levels (i.e. &quot;org/osgi/framework/FrameworkEvent/STARTED&quot;) and</LI>
+	<LI>a set of <B>properties</B> describing the event.</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixEventAdmin-CreatinganEventPublisher"></A>Creating an Event Publisher</H2>
+
+<P>An event publisher is a simple Java class that creates events and sends them using the <TT>EventAdmin</TT> service interface, for example:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+    <SPAN class="code-keyword">public</SPAN> void reportGenerated(Report report, BundleContext context)
+    {
+        ServiceReference ref = context.getServiceReference(EventAdmin.class.getName());
+        <SPAN class="code-keyword">if</SPAN> (ref != <SPAN class="code-keyword">null</SPAN>)
+        {
+            EventAdmin eventAdmin = (EventAdmin) context.getService(ref);
+            
+            Dictionary properties = <SPAN class="code-keyword">new</SPAN> Hashtable();
+            properties.put(<SPAN class="code-quote">&quot;title&quot;</SPAN>, report.getTitle());
+            properties.put(<SPAN class="code-quote">&quot;path&quot;</SPAN> , report.getAbsolutePath());
+            properties.put(<SPAN class="code-quote">&quot;time&quot;</SPAN>, <SPAN class="code-object">System</SPAN>.currentTimeMillis());
+            
+            Event reportGeneratedEvent = <SPAN class="code-keyword">new</SPAN> Event(<SPAN class="code-quote">&quot;com/acme/reportgenerator/GENERATED&quot;</SPAN>, properties);
+            
+            eventAdmin.sendEvent(reportGeneratedEvent);
+        }
+    }
+</PRE>
+</DIV></DIV>
+
+<P>The <TT>EventAdmin.sendEvent()</TT> method sends the <TT>Event</TT> object synchronously. To send it asynchronously, use the <TT>EventAdmin.postEvent()</TT> method, such as:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+            <SPAN class="code-comment">//..		
+</SPAN>            Event reportGeneratedEvent = <SPAN class="code-keyword">new</SPAN> Event(<SPAN class="code-quote">&quot;com/acme/reportgenerator/GENERATED&quot;</SPAN>, properties);
+            eventAdmin.postEvent(reportGeneratedEvent);
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixEventAdmin-CreatinganEventHandler"></A>Creating an Event Handler</H2>
+
+<P>Creating an event handler is as simple as implementing the <TT>EventHandler</TT> interface:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class ReportEventHandler <SPAN class="code-keyword">implements</SPAN> EventHandler
+{
+    <SPAN class="code-keyword">public</SPAN> void handleEvent(Event event)
+    {
+        <SPAN class="code-object">String</SPAN> reportTitle = (<SPAN class="code-object">String</SPAN>) event.getProperty(<SPAN class="code-quote">&quot;title&quot;</SPAN>);
+        <SPAN class="code-object">String</SPAN> reportPath = (<SPAN class="code-object">String</SPAN>) event.getProperty(<SPAN class="code-quote">&quot;path&quot;</SPAN>);
+        
+        sendReportByEmail(reportTitle, reportPath);
+    }
+    
+    <SPAN class="code-comment">//..</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixEventAdmin-RegisteringanEventHandler"></A>Registering an Event Handler</H2>
+
+<P>To receive event notifications, the event handler must be registered as a OSGi service under the object class <TT>org.osgi.service.event.EventHandler</TT>. When registering the service, a <TT>String[]</TT> property named <TT><B>EVENT_TOPIC</B></TT> must be specified; this property describes the list of topics in which the event handler is interested. For example:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+        <SPAN class="code-object">String</SPAN>[] topics = <SPAN class="code-keyword">new</SPAN> <SPAN class="code-object">String</SPAN>[] {
+            <SPAN class="code-quote">&quot;com/acme/reportgenerator/GENERATED&quot;</SPAN>
+        };
+        
+        Dictionary props = <SPAN class="code-keyword">new</SPAN> Hashtable();
+        props.put(EventConstants.EVENT_TOPIC, topics);
+        bundleContext.registerService(EventHandler.class.getName(), <SPAN class="code-keyword">new</SPAN> ReportEventHandler() , props);
+</PRE>
+</DIV></DIV>
+
+<P>It is possible to use '*' as a wildcard in the final character of the EVENT_TOPIC, like in this example:</P>
+
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+        <SPAN class="code-object">String</SPAN>[] topics = <SPAN class="code-keyword">new</SPAN> <SPAN class="code-object">String</SPAN>[] {
+            <SPAN class="code-quote">&quot;com/acme/reportgenerator/*&quot;</SPAN>
+        };
+        
+        Dictionary props = <SPAN class="code-keyword">new</SPAN> Hashtable();
+        props.put(EventConstants.EVENT_TOPIC, topics);
+        bundleContext.registerService(EventHandler.class.getName(), <SPAN class="code-keyword">new</SPAN> ReportEventHandler() , props);
+</PRE>
+</DIV></DIV>
+
+<P>Finally, it is possible to specify an additional <TT>EVENT_FILTER</TT> property to filter event notifications; the filter expression follows, the normal LDAP syntax:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+        <SPAN class="code-object">String</SPAN>[] topics = <SPAN class="code-keyword">new</SPAN> <SPAN class="code-object">String</SPAN>[] {
+            <SPAN class="code-quote">&quot;com/acme/reportgenerator/GENERATED&quot;</SPAN>
+        };
+        
+        Dictionary props = <SPAN class="code-keyword">new</SPAN> Hashtable();
+        props.put(EventConstants.EVENT_TOPIC, topics);
+        props.put(EventConstants.EVENT_FILTER, <SPAN class="code-quote">&quot;(title=samplereport)&quot;</SPAN>);
+        bundleContext.registerService(EventHandler.class.getName(), <SPAN class="code-keyword">new</SPAN> ReportEventHandler() , props);
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixEventAdmin-OSGiEvents"></A>OSGi Events</H2>
+
+<P>Every OSGi framework sends (asynchronously) a number of events that can be captured by any bundle.</P>
+
+<H3><A name="ApacheFelixEventAdmin-FrameworkEvents"></A>Framework Events</H3>
+
+<UL>
+	<LI>org/osgi/framework/BundleEvent/STARTED</LI>
+	<LI>org/osgi/framework/BundleEvent/ERROR</LI>
+	<LI>org/osgi/framework/BundleEvent/PACKAGES_REFRESHED</LI>
+	<LI>org/osgi/framework/BundleEvent/STARTLEVEL_CHANGED</LI>
+	<LI>org/osgi/framework/BundleEvent/WARNING</LI>
+	<LI>org/osgi/framework/BundleEvent/INFO</LI>
+</UL>
+
+
+<H3><A name="ApacheFelixEventAdmin-BundleEvents"></A>Bundle Events</H3>
+
+<UL>
+	<LI>org/osgi/framework/BundleEvent/INSTALLED</LI>
+	<LI>org/osgi/framework/BundleEvent/STARTED</LI>
+	<LI>org/osgi/framework/BundleEvent/STOPPED</LI>
+	<LI>org/osgi/framework/BundleEvent/UPDATED</LI>
+	<LI>org/osgi/framework/BundleEvent/UNINSTALLED</LI>
+	<LI>org/osgi/framework/BundleEvent/RESOLVED</LI>
+	<LI>org/osgi/framework/BundleEvent/UNRESOLVED</LI>
+</UL>
+
+
+<P>The followig properties are always present in a bundle event object:</P>
+
+<UL>
+	<LI><B>bundle.id</B></LI>
+	<LI><B>bundle.symbolicName</B></LI>
+</UL>
+
+
+<H3><A name="ApacheFelixEventAdmin-ServiceEvents"></A>Service Events</H3>
+
+<UL>
+	<LI>org/osgi/framework/ServiceEvent/REGISTERED</LI>
+	<LI>org/osgi/framework/ServiceEvent/MODIFIED</LI>
+	<LI>org/osgi/framework/ServiceEvent/UNREGISTERING</LI>
+</UL>
+
+
+<P>The following properties are always present in a service event object:</P>
+
+<UL>
+	<LI><B>service</B></LI>
+	<LI><B>service.id</B></LI>
+	<LI><B>service.pid</B></LI>
+</UL>
+
+
+<P>Each of the aforementioned events actually contains a wider set of properties. Check the OSGi Compendium specification, section 113.6, for a complete list.</P>
+
+<H2><A name="ApacheFelixEventAdmin-Configuration"></A>Configuration</H2>
+
+<P>The Apache Felix Event Admin implementation is trying the deliver the events as fast as possible. Events sent from different threads are sent in parallel. Events from the same thread are sent in the order they are received (this is according to the spec).<BR>
+A timeout can be configured which is used for event handlers. If an event handler takes longer than the configured timeout to process an event, it is blacklisted. Once a handler is in a blacklist, it doesn't get sent any events anymore.<BR>
+The Felix Event Admin can be configured either through framework properties or through the configuration admin. This is a list of configuration properties:</P>
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh">Function</TH>
+<TH class="confluenceTh">Property Name</TH>
+<TH class="confluenceTh">Type and Default</TH>
+<TH class="confluenceTh">Description</TH>
+</TR>
+<TR>
+<TD class="confluenceTd">Cache Size</TD>
+<TD class="confluenceTd">org.apache.felix.eventadmin.CacheSize</TD>
+<TD class="confluenceTd">Integer, 30</TD>
+<TD class="confluenceTd">The size of various internal caches. The default value is 30. Increase in case of a large number (more then 100) of services. A value less then 10 triggers the default value.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd">Thread Pool Size</TD>
+<TD class="confluenceTd">org.apache.felix.eventadmin.ThreadPoolSize</TD>
+<TD class="confluenceTd">Integer, 10</TD>
+<TD class="confluenceTd">The size of the thread pool. The default value is 10. Increase in case of a large amount of synchronous events where the event handler services in turn send new synchronous events in the event dispatching thread or a lot of timeouts are to be expected. A value of less then 2 triggers the default value. A value of 2 effectively disables thread pooling.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd">Timeout</TD>
+<TD class="confluenceTd">org.apache.felix.eventadmin.Timeout</TD>
+<TD class="confluenceTd">Integer, 5000</TD>
+<TD class="confluenceTd">The black-listing timeout in milliseconds. The default value is 5000. Increase or decrease at own discretion. A value of less then 100 turns timeouts off. Any other value is the time in milliseconds granted to each event handler before it gets blacklisted.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd">Require Topic</TD>
+<TD class="confluenceTd">org.apache.felix.eventadmin.RequireTopic</TD>
+<TD class="confluenceTd">Boolean, true</TD>
+<TD class="confluenceTd">Are event handlers required to be registered with a topic? This is enabled by default. The specification says that event handlers must register with a list of topics they are interested in. Disabling this setting will enable that handlers without a topic are receiving all events (i.e., they are treated the same as with a topic=*).</TD>
+</TR>
+<TR>
+<TD class="confluenceTd">Ignore Timeouts</TD>
+<TD class="confluenceTd">org.apache.felix.eventadmin.IgnoreTimeout</TD>
+<TD class="confluenceTd">String, empty</TD>
+<TD class="confluenceTd">Configure event handlers to be called without a timeout. If a timeout is configured by default all event handlers are called using the timeout. For performance optimization it is possible to configure event handlers where the timeout handling is not used - this reduces the thread usage from the thread pools as the timout handling requires an additional thread to call the event handler. However, the application should work without this configuration property. It is a pure optimization! The value is a list of strings. If a string ends with a dot, all handlers in exactly this package are ignored. If the string ends with a star, all handlers in this package and all subpackages are ignored. If the string neither ends with a dot nor with a start, this is assumed to define an exact class name.</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by cziegeler@apache.org on 2010-02-23 16:45:37.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

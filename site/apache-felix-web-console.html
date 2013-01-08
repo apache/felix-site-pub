@@ -1,0 +1,294 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Web Console</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<P><A name="ApacheFelixWebConsole-top"></A></P>
+
+<H1><A name="ApacheFelixWebConsole-ApacheFelixWebConsole"></A>Apache Felix Web Console</H1>
+
+<DIV><A href="#ApacheFelixWebConsole-Requirements">Requirements</A> | <A href="#ApacheFelixWebConsole-Variants">Variants</A> | <A href="#ApacheFelixWebConsole-Installation">Installation</A> | <A href="#ApacheFelixWebConsole-Configuration">Configuration</A> | <A href="#ApacheFelixWebConsole-Security">Security</A> | <A href="#ApacheFelixWebConsole-BrowserCompliance">Browser Compliance</A> | <A href="#ApacheFelixWebConsole-ExtendingtheWebConsole">Extending the Web Console</A> | <A href="#ApacheFelixWebConsole-RESTfulAPI">RESTful API</A> | <A href="#ApacheFelixWebConsole-Issues">Issues</A> | <A href="#ApacheFelixWebConsole-Screenshots">Screenshots</A></DIV>
+
+<P>The Apache Felix Web Console is a simple tool to inspect and manage OSGi framework instances using your favourite Web Browser.</P>
+
+
+<H2><A name="ApacheFelixWebConsole-Requirements"></A>Requirements</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>The Web Console only has a single required dependency on the framework: A running implementation of the OSGi Http Service Specification. The reason for this is, that the Web Console is implemented as a servlet (actually just a gateway servlet dispatching to Web Console plugins) which is registered with the Http Service. If your framework does not yet have a Http Service installed, you might select from a variety of such implementations. The following is just an incomplete list:</P>
+
+<UL>
+	<LI>Apache Felix HTTP Service. This is a very basic implementation of the OSGi Http Service based on Jetty 6.1.7. The Apache Felix HTTP Service has not been released yet, so you would have to build it yourself.</LI>
+	<LI>PAX Web Service. The PAX Web Service is the basis for a whole range of additions from the <A href="http://www.ops4j.org/" class="external-link" rel="nofollow">OPS4J</A> project. The PAX Web Service is also based on Jetty 6 and may be dowloaded from the <A href="http://wiki.ops4j.org/confluence/display/ops4j/Pax%20Web" class="external-link" rel="nofollow">OPS4J PAX Web</A> page.</LI>
+	<LI>Equinox HTTP Service implementation. You can get more information on the Equinox implementation from the <A href="http://www.eclipse.org/equinox/server/" class="external-link" rel="nofollow">Server-Side Equinox</A> page.</LI>
+</UL>
+
+
+
+<P>Apart from that Web Console has the following dependencies, which do not need to be satisfied. In this case the respective functionality is just missing.</P>
+
+<UL>
+	<LI>OSGi Log Service &ndash; The Log Service is used for logging. If the service is not available the Web Console prints logging to the standard output</LI>
+	<LI>OSGi Configuration Admin Service and OSGi Metatype Service &ndash; The Configuration Admin and Metatype services are used to support simple form based configuration administration</LI>
+	<LI>Apache Felix Declarative Services &ndash; If your framework uses the Apache Felix Declarative Services implementation, you can use to the Web Console to inspect the declared components available from the various bundles and managed by the Service Component Runtime.</LI>
+</UL>
+
+
+
+<P>Note, that the Apache Felix Declarative Services implementation is the only Apache Felix dependency contained in the Web Console. If you do not use the Apache Felix Declarative Services implementation, you just cannot inspect the declared components (because there is no official public API for this). Otherwise the Web Console perfectly operates without any problems.</P>
+
+
+
+<H2><A name="ApacheFelixWebConsole-Variants"></A>Variants</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>The Web Console Bundle is available in two variants: A <EM>full</EM> variant and a <EM>bare</EM> variant. The <EM>full</EM> variant embeds three Java libraries which are not embedded in the <EM>bare</EM> variant. The <EM>bare</EM> variant expects the packages provided by those libraries to be exported from bundles installed in the framework.</P>
+
+<P>The three libraries are :</P>
+
+<UL>
+	<LI>Apache Commons IO</LI>
+	<LI>Apache Commons FileUpload</LI>
+	<LI>JSON</LI>
+</UL>
+
+
+<P>Version 2.0.6 is the first release providing a <EM>bare</EM> variant. In this release both variants have the same symbolic name but a different file name: <TT>org.apache.felix.webconsole-2.0.6.jar</TT> for the <EM>full</EM> variant and <TT>org.apache.felix.webconsole-2.0.6-bare.jar</TT> for the <EM>bare</EM> variant. This is <A href="https://issues.apache.org/jira/browse/FELIX-2086" class="external-link" rel="nofollow">considered a bug</A> and will be fixed in the next release as follows:</P>
+
+<UL>
+	<LI><EM>Full</EM> variant symbolic name: <TT>org.apache.felix.webconsole</TT></LI>
+	<LI><EM>Bare</EM> variant symbolic name: <TT>org.apache.felix.webconsole.bare</TT></LI>
+</UL>
+
+
+
+<H2><A name="ApacheFelixWebConsole-Installation"></A>Installation</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>To install just use your favourite current means of installing new bundles in to the OSGi framework. For example using the Apache Felix shell console you might do:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&gt; install http://mirror.switch.ch/mirror/apache/dist/felix/org.apache.felix.webconsole-2.0.6.jar
+bundle x
+&gt; start x
+</PRE>
+</DIV></DIV>
+
+<P>where <EM>x</EM> is the bundle number printed by the Shell Console indicating the Bundle ID of the Web Console bundle.</P>
+
+
+<H2><A name="ApacheFelixWebConsole-Configuration"></A>Configuration</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>The configuration of the Web Console consists of two parts: One part is the configuration of the Http Service defining at which host address (host and port number) the servlet container is accessible. This configuration is technically outside of the scope of the Web Console configuration. See below for more information and how this is influenced.</P>
+
+<P>The second part of the Web Console configuration is the configuration of the console itself. The Web Console is configured using the OSGi Configuration Admin Service in that the Web Console registered a <TT>ManagedService</TT> with Service PID <TT>org.apache.felix.webconsole.internal.servlet.OsgiManager</TT> (of course you may well use the Web Console to edit the configuration of the Web Console itself).</P>
+
+<P>The Web Console supports the following settings with their corresponding default values:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Property </TH>
+<TH class="confluenceTh"> Default Value </TH>
+<TH class="confluenceTh"> Description </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>manager.root</TT> </TD>
+<TD class="confluenceTd"> <TT>/system/console</TT> </TD>
+<TD class="confluenceTd"> The root path to the OSGi Management Console. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>default.render</TT> </TD>
+<TD class="confluenceTd"> <TT>bundles</TT> </TD>
+<TD class="confluenceTd"> The name of the default configuration page  when invoking the OSGi Management console. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>realm</TT> </TD>
+<TD class="confluenceTd"> <TT>OSGi Management Console</TT> </TD>
+<TD class="confluenceTd"> The name of the HTTP Authentication Realm. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>username</TT> </TD>
+<TD class="confluenceTd"> <TT>admin</TT> </TD>
+<TD class="confluenceTd"> The name of the user allowed to access the OSGi Management Console. To disable authentication clear this value. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>password</TT> </TD>
+<TD class="confluenceTd"> <TT>admin</TT> </TD>
+<TD class="confluenceTd"> The password for the user allowed to access the OSGi Management Console. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>plugins</TT> </TD>
+<TD class="confluenceTd"> all plugins enabled </TD>
+<TD class="confluenceTd"> The labels of the plugins enabled and displayed. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>loglevel</TT> </TD>
+<TD class="confluenceTd"> <TT>2</TT> </TD>
+<TD class="confluenceTd"> Log level filter for the <TT>AbstractWebConsole</TT> log methods. This is an integer value matching the levels defined by the OSGi Log Service. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>locale</TT> </TD>
+<TD class="confluenceTd"> &ndash; </TD>
+<TD class="confluenceTd"> If set, this locale forces the localization to use this locale instead of the one requested by the web browser. </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P>The default values apply if the respective property is missing from the configuration or if no configuration is provided at all.</P>
+
+
+<H4><A name="ApacheFelixWebConsole-FrameworkProperties"></A>Framework Properties</H4>
+
+<P>Some of the configuration properties supported through the OSGi Configuration Admin service can also be set globally and statically as framework properties. Such framework properties will also be considered actual default values for missing properties in Configuration Admin configuration as well as for the Metatype descriptor.</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Framework Property </TH>
+<TH class="confluenceTh"> Configuration Admin Property </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.webconsole.manager.root</TT> </TD>
+<TD class="confluenceTd"> <TT>manager.root</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.webconsole.realm</TT> </TD>
+<TD class="confluenceTd"> <TT>realm</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.webconsole.username</TT> </TD>
+<TD class="confluenceTd"> <TT>username</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.webconsole.password</TT> </TD>
+<TD class="confluenceTd"> <TT>password</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.webconsole.loglevel</TT> </TD>
+<TD class="confluenceTd"> <TT>loglevel</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.webconsole.locale</TT> </TD>
+<TD class="confluenceTd"> <TT>locale</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P>Please note that setting any of these properties as framework property makes them visible to all bundles deployed. This is particularly to be considered in case of the <TT>felix.webconsole.password</TT> property (as for authentication, the use of a <A href="web-console-security-provider.html" title="Web Console Security Provider">Web Console Security Provider</A> is suggested anyway).</P>
+
+<H4><A name="ApacheFelixWebConsole-ConfigurationoftheOSGiHttpService"></A>Configuration of the OSGi Http Service</H4>
+
+<P>As said above, the configuration of the OSGi Http Service used by the Web Console to register itself is outside of the scope of the Web Console. Lets just say, the OSGi Http Service specification defines a system propety &ndash; <TT>org.osgi.service.http.port</TT> &ndash; which may be set to define the port at which the Http Service should listen for HTTP requests. The respective Http Service implementation may define additional properties to define the actual interface on which to listen or to define a servlet context path.</P>
+
+<P>By default it is probably safe to assume, that having set the <TT>org.osgi.service.http.port</TT> to a defined value, the Http Service implementation will listen on all interfaces for requests at the set port number and that no servlet context path actually exists. For example, given the <TT>org.osgi.service.http.port</TT> property is set to <EM>8888</EM> the Web Console in the local system can be reached at : <TT><A href="http://localhost:8888/system/console" class="external-link" rel="nofollow">http://localhost:8888/system/console</A></TT>, where the <TT>/system/console</TT> path is configured using the <TT>manager.root</TT> configuration property (see the Configuration section).</P>
+
+<P>If you happen to deploy an OSGi framework instance inside a traditional web application and thus the Http Service implementation is actually a bridge into the existing servlet container (see for example <A href="http://www.eclipse.org/equinox/server/http_in_container.php" class="external-link" rel="nofollow">Equinox in a Servlet Container</A> or the Apache Sling Launchpad Web application), the host, port and context path are defined by your servlet container and web application deployment. For example, if the servlet container listens on host <TT>sample.org</TT> at port <TT>8888</TT> and the web application with your OSGi container is available in the <TT>/osgi</TT> context, the Web Console would be accessible at <TT><A href="http://sample.org:8888/osgi/system/console" class="external-link" rel="nofollow">http://sample.org:8888/osgi/system/console</A></TT>.</P>
+
+
+<H2><A name="ApacheFelixWebConsole-Security"></A>Security</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>The Web Console only has very basic security at the moment supporting only HTTP Basic authentication. This security is enabled by default and may be disabled by simply clearing the <TT>username</TT> property.</P>
+
+<P>To enhance the security of the Web Console you strongly encouraged to change at least the <TT>password</TT> for the admin user.</P>
+
+<P>As of Web Console 3.1.0 this simple user setup can be extended by providing <A href="web-console-security-provider.html" title="Web Console Security Provider">Web Console Security Provider</A>. See that page for more information.</P>
+
+
+<H2><A name="ApacheFelixWebConsole-BrowserCompliance"></A>Browser Compliance</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>The goal of the Web Console is to support as big a range of Web Browsers as possible. As it stands now, Firefox (versions 2 and 3), Opera and Internet Explorer (versions 6 and 7) seem to be capable of using the Web Console. Should you encounter any problems with your particular browser, please report an issue for the <EM>Web Console</EM> in our issue tracking system (<A href="https://issues.apache.org/jira/browse/Felix" class="external-link" rel="nofollow">JIRA</A>).</P>
+
+<P>Beginning with Release 1.2.8 the Web Console is using JQuery to enhance the user experience. This should also help in keeping browser support on the broadest possible basis.</P>
+
+
+<H2><A name="ApacheFelixWebConsole-ExtendingtheWebConsole"></A>Extending the Web Console</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>The Web Console can be extended by registering an OSGi service for the interface <TT>javax.servlet.Servlet</TT> with the service property <TT>felix.webconsole.label</TT> set to the label (last segment in the URL) of the page. The respective service is called a Web Console Plugin or a plugin for short.</P>
+
+<P>Please for to the <A href="extending-the-apache-felix-web-console.html" title="Extending the Apache Felix Web Console">Extending the Apache Felix Web Console</A> for full documentation on extending the Apache Felix Web Console.</P>
+
+
+<H2><A name="ApacheFelixWebConsole-RESTfulAPI"></A>RESTful API</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>While the Web Console does not have a full featured and documented REST-ful API, most plugins try to follow REST approaches. For example the Bundles plugin is able to send information on all bundles or a single directly addressed bundle.</P>
+
+<P>An attempt is made to document the current state of REST-like APIs at <A href="web-console-restful-api.html" title="Web Console RESTful API">Web Console RESTful API</A></P>
+
+
+<H2><A name="ApacheFelixWebConsole-Issues"></A>Issues</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<P>Should you have any questions using the Web Console, please send a note to one of our <A href="mailinglists.html" title="mailinglists">Mailing Lists</A>.</P>
+
+<P>Please report any issues with the Web Console in our issue tracking system (<A href="https://issues.apache.org/jira/browse/Felix" class="external-link" rel="nofollow">JIRA</A>) and be sure to report for the <EM>Web Console</EM> component. See our <A href="issue-tracking.html" title="Issue Tracking">Issue Tracking</A> page for more details.</P>
+
+
+<H2><A name="ApacheFelixWebConsole-Screenshots"></A>Screenshots</H2>
+<P><A href="#ApacheFelixWebConsole-top">Top</A></P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <SPAN class="image-wrap" style=""><A class="confluence-thumbnail-link 1274x826" href="apache-felix-web-console.data/console-bundles.png"><IMG src="apache-felix-web-console.data/console-bundles.png.jpeg" title="Bundle List" style="border: 0px solid black"></A></SPAN> </TD>
+<TD class="confluenceTd"> <SPAN class="image-wrap" style=""><A class="confluence-thumbnail-link 1274x826" href="apache-felix-web-console.data/console-bundles-details.png"><IMG src="apache-felix-web-console.data/console-bundles-details.png.jpeg" title="Bundle Details" style="border: 0px solid black"></A></SPAN> </TD>
+<TD class="confluenceTd"> <SPAN class="image-wrap" style=""><A class="confluence-thumbnail-link 1274x826" href="apache-felix-web-console.data/console-components.png"><IMG src="apache-felix-web-console.data/console-components.png.jpeg" title="Declarative Services Components (requires Apache Felix SCR)" style="border: 0px solid black"></A></SPAN> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Bundle List </TD>
+<TD class="confluenceTd"> Bundle Details </TD>
+<TD class="confluenceTd"> Declarative Services Components (requires Apache Felix SCR) </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <SPAN class="image-wrap" style=""><A class="confluence-thumbnail-link 1274x826" href="apache-felix-web-console.data/console-config.png"><IMG src="apache-felix-web-console.data/console-config.png.jpeg" title="Configuration Admin" style="border: 0px solid black"></A></SPAN> </TD>
+<TD class="confluenceTd"> <SPAN class="image-wrap" style=""><A class="confluence-thumbnail-link 1468x1136" href="apache-felix-web-console.data/console-status.png"><IMG src="apache-felix-web-console.data/console-status.png.jpeg" title="System Status: Bundles, Configuration, Services, Properties, ..." style="border: 0px solid black"></A></SPAN> </TD>
+<TD class="confluenceTd"> <SPAN class="image-wrap" style=""><A class="confluence-thumbnail-link 1274x826" href="apache-felix-web-console.data/console-system-info.png"><IMG src="apache-felix-web-console.data/console-system-info.png.jpeg" title="System Information" style="border: 0px solid black"></A></SPAN> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Configuration Admin </TD>
+<TD class="confluenceTd"> System Status </TD>
+<TD class="confluenceTd"> System Information </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on 2011-12-19 04:19:52.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

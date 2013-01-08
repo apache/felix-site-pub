@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Framework FAQ</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-framework-faq.html" target="felix_cwiki">/site/apache-felix-framework-faq.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Framework FAQ</h1>
+      <h1 id="apache-felix-framework-frequently-asked-questions">Apache Felix Framework Frequently Asked Questions</h1>
+<div class="toc">
+<ul>
+<li><a href="#apache-felix-framework-frequently-asked-questions">Apache Felix Framework Frequently Asked Questions</a><ul>
+<li><a href="#is-the-felix-framework-compliant-with-the-osgi-specification">Is the Felix framework compliant with the OSGi specification?</a></li>
+<li><a href="#if-i-use-bundles-from-felix-will-my-application-be-tied-to-the-felix-framework">If I use bundles from Felix, will my application be tied to the Felix framework?</a></li>
+<li><a href="#when-i-update-my-bundle-why-are-my-bundles-old-classes-still-being-used">When I update my bundle, why are my bundle's old classes still being used?</a></li>
+<li><a href="#why-do-i-get-an-unknown-protocol-http-exception-when-i-run-felix-on-a-non-sun-jre">Why do I get an "Unknown protocol: http" exception when I run Felix on a non-Sun JRE?</a></li>
+<li><a href="#what-is-the-daemon-status-of-framework-created-threads">What is the daemon status of framework created threads?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="is-the-felix-framework-compliant-with-the-osgi-specification">Is the Felix framework compliant with the OSGi specification?</h2>
+<p>Refer to the <a href="/documentation/subprojects/apache-felix-framework/apache-felix-framework-osgi-r4-2-ct-results.html">Apache Felix Framework OSGi R4.2 CT Results</a> document.</p>
+<h2 id="if-i-use-bundles-from-felix-will-my-application-be-tied-to-the-felix-framework">If I use bundles from Felix, will my application be tied to the Felix framework?</h2>
+<p>See the answer in the <a href="">OSGi FAQ</a>.</p>
+<h2 id="when-i-update-my-bundle-why-are-my-bundles-old-classes-still-being-used">When I update my bundle, why are my bundle's old classes still being used?</h2>
+<p>See the answer in the <a href="">OSGi FAQ</a>.</p>
+<h2 id="why-do-i-get-an-unknown-protocol-http-exception-when-i-run-felix-on-a-non-sun-jre">Why do I get an "Unknown protocol: http" exception when I run Felix on a non-Sun JRE?</h2>
+<p>Felix installs the URL Handlers service by default. If you do not want this service you can disable it, by setting the <code>felix.service.urlhandlers</code> property to <code>false</code> in the <code>config.properties</code> file. It is not recommended to disable this, but the main reason for doing so it because the URL Handlers implementation invokes methods to set the singleton factories for URL stream and content handler factories. Assuming that you want to use URL Handlers service, you must configure it if you aren't running on the standard Sun JRE.</p>
+<p>The URL Handlers service extends the standard Java URL stream and content handler mechanism to work in an OSGi environment. The way that built-in URL protocol and content handlers are discovered is by probing packages for the appropriate classes to handle the protocol/content. For example, the default package for Sun protocol handlers is:</p>
+<div class="codehilite"><pre><span class="n">sun</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">www</span><span class="o">.</span><span class="n">protocol</span>
+</pre></div>
+
+
+<p>If someone tries to create a URL for the "http" protocol, then the class to handle the protocol will be:</p>
+<div class="codehilite"><pre><span class="n">sun</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">www</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">Handler</span>
+</pre></div>
+
+
+<p>A similar process is followed for content handlers, whose default package is:</p>
+<div class="codehilite"><pre><span class="n">sun</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">www</span><span class="o">.</span><span class="n">content</span>
+</pre></div>
+
+
+<p>If you are running on a VM that is different than Sun's, then you must determine what are the default packages used for its protocol and content handlers. Once you know this information, then you can configure Felix to use those packages instead of the default one. You can configure Felix by setting the following system properties:</p>
+<div class="codehilite"><pre><span class="n">java</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">pkgs</span>
+</pre></div>
+
+
+<p>and</p>
+<div class="codehilite"><pre><span class="n">java</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">pkgs</span>
+</pre></div>
+
+
+<p>The value of these properties is a list of "|" delimited package names to be searched for protocol and content handlers, respectively. See the Java documentation for <a href="http://java.sun.com/javase/6/docs/api/java/net/URL.html#URL(java.lang.String,%20java.lang.String,%20int,%20java.lang.String)">stream</a> and [content|http://java.sun.com/javase/6/docs/api/java/net/URLConnection.html#getContent()] handlers for more information.</p>
+<p>There are two ways to set these system properties. The first way is using the standard <code>-D&lt;property&gt;=&lt;value&gt;</code> syntax when executing <code>java</code> or if you are using Felix' standard <code>Main.java</code> launcher, you can put the system properties into the <code>conf/system.properties</code> file so that they get set automatically each time you execute Felix.</p>
+<h2 id="what-is-the-daemon-status-of-framework-created-threads">What is the daemon status of framework created threads?</h2>
+<p>The framework creates a few threads for handling specific tasks, such as event delivery or handling start level change requests. All framework threads are explicitly started as daemon threads except the event dispatcher thread. The logic behind this is that the event dispatcher thread should exit when it is done delivering events. However, if an application is hosting an instance of the framework, it is possible to make the event dispatcher thread a daemon by starting your framework instance from a daemon thread, in which case the event dispatcher thread will inherit this setting.</p>
+<p>For bundle developers, it is probably best to explicitly define any created threads as daemon or non-daemon to avoid any ambiguity.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

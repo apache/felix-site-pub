@@ -1,0 +1,200 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Application Demonstration</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixApplicationDemonstration-ApacheFelixApplicationDemonstration"></A>Apache Felix Application Demonstration</H1>
+
+<P><EM>(This document is a work in progress.)</EM></P>
+
+<P>Apache Felix provides a foundation for creating modular and dynamically extensible applications. This page presents an example application to demonstrate the various approaches to consider when creating a OSGi/Felix-based application. It is recommended that you have a look at the more <A href="getting-started.html" title="Getting Started">basic examples</A> such as <A href="apache-felix-framework-usage-documentation.html" title="Apache Felix Framework Usage Documentation">Apache Felix Framework Usage Documentation</A> before you start with this one.</P>
+
+<P>In order to follow this example you need three things:</P>
+
+<OL>
+	<LI>A <A href="http://subversion.apache.org/" class="external-link" rel="nofollow">Subversion</A> client to check out the source code,</LI>
+	<LI>The IDE of your choice to view the source code, and</LI>
+	<LI><A href="http://maven.apache.org/" class="external-link" rel="nofollow">Maven</A> to build the source code.</LI>
+</OL>
+
+
+<P>The source code of the examples is available in the Felix SVN repository at <A href="http://svn.apache.org/repos/asf/felix/trunk/examples" class="external-link" rel="nofollow">http://svn.apache.org/repos/asf/felix/trunk/examples</A>. If you feel more familiar with git, you can use the git mirror at: <A href="git://git.apache.org/felix.git" class="external-link" rel="nofollow">git://git.apache.org/felix.git</A> or browse the source code at github: <A href="https://github.com/apache/felix" class="external-link" rel="nofollow">https://github.com/apache/felix</A></P>
+
+<H2><A name="ApacheFelixApplicationDemonstration-PotentialApproaches"></A>Potential Approaches</H2>
+
+<P>When creating an OSGi-based application there are two main orthogonal issues to consider:</P>
+
+<OL>
+	<LI>Service model vs. extender model</LI>
+	<LI>Bundled application vs. hosted framework</LI>
+</OL>
+
+
+<P>The first issue is actually a general issue when creating OSGi-based applications. There are two general approaches that can be used when creating an extensible OSGi application. The service model approach uses the OSGi service concept and the service registry as the extensibility mechanism. The extender model approach uses the OSGi installed bundle set as the extensibility mechanism. Both approaches have their advantages and disadvantages and they can be used independently or together.</P>
+
+<P>The second issue is related to whether your application is run completely on top of the OSGi framework as a set of bundles or whether your application hosts an embedded OSGi framework instance. Creating applications completely as a set of bundles is the preferred approach since it allows the application to run on any OSGi framework, but this it not always possible. In such cases where it is not possible or desired, then you may host a framework instance inside your application, which will likely tie your application to that framework implementation (although less so with the framework launching API introduced in the OSGi R4.2 specification).</P>
+
+<P>The remainder of this document will present variations of an example application that demonstrates these different approaches.</P>
+
+<H2><A name="ApacheFelixApplicationDemonstration-ExampleApplicationOverview"></A>Example Application Overview</H2>
+
+<P>The example application is a very simple paint program that effectively functions identically whether using services/extensions or running embedded/hosted. The application, called the host, defines a <TT>SimpleShape</TT> service/extension that it uses to draw shapes. Different implementations of the <TT>SimpleShape</TT> can be created to allow the application to draw different shapes. Each shape service/extension has name and icon properties that the application uses for manipulating the services/extensions. Available shapes are displayed in the application's tool bar. To draw a shape, click on its button in the tool bar and then click in the drawing canvas. Shapes can be dragged, but not resized. When new shape services/extensions appear they are automatically added to the tool bar and they are automatically removed when the shape services/extensions disappear. Closing the application window causes the framework and the JVM to shut down. The following is a screen shot of the application.</P>
+
+<P><SPAN class="image-wrap" style="display: block; text-align: center"><IMG src="apache-felix-application-demonstration.data/example-application.png" style="border: 0px solid black"></SPAN></P>
+
+<H2><A name="ApacheFelixApplicationDemonstration-Gettingthesourcecode"></A>Getting the source code</H2>
+
+<P>Currently, the example application is only available in our source control repositories. We have created two applications, one for the service-based and one for the extender-based approach. Both examples can be run as a bundled application on top of any OSGi implementation or by hosting an embedded framework. Assuming you are using svn to get the source code, you can find the source at the following locations:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>http://svn.apache.org/repos/asf/felix/trunk/examples/servicebased.host
+http://svn.apache.org/repos/asf/felix/trunk/examples/servicebased.circle
+http://svn.apache.org/repos/asf/felix/trunk/examples/servicebased.square
+http://svn.apache.org/repos/asf/felix/trunk/examples/servicebased.triangle
+
+http://svn.apache.org/repos/asf/felix/trunk/examples/extenderbased.host
+http://svn.apache.org/repos/asf/felix/trunk/examples/extenderbased.circle
+http://svn.apache.org/repos/asf/felix/trunk/examples/extenderbased.square
+http://svn.apache.org/repos/asf/felix/trunk/examples/extenderbased.triangle
+</PRE>
+</DIV></DIV>
+
+<P>Check out each project using an appropriate SVN command, such as:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>svn co http://svn.apache.org/repos/asf/felix/trunk/examples/servicebased.host
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixApplicationDemonstration-Buildingandrunningtheexamples"></A>Building and running the examples</H2>
+
+<P>Once you have checked out the projects you can go into each sub-directory and build it using Maven; this assumes you have Maven properly installed. To build, simply perform the following in each project directory:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>mvn clean install
+</PRE>
+</DIV></DIV>
+
+<P>After you have built the projects, start the Felix framework and install/start the resulting bundle in the <TT>target/</TT> directory of each sub-project for either the service-based or extender-based example.</P>
+
+<P>To start the examples using an embedded framework, copy the JAR files you just build to a folder in your file system. Then execute the host.jar, passing it the names of all services/extensions as parameters; for example:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>java -jar servicebased.host-1.0.0.jar file:/servicebased.circle-1.0.0.jar file:/servicebased.square-1.0.0.jar file:/servicebased.triangle-1.0.0.jar
+</PRE>
+</DIV></DIV>
+
+<P>If you are using an IDE like Eclipse, you can run an embedded framework using a custom run configuration. In Eclipse click <EM>Run</EM> -&gt; <EM>Run Configurations...</EM> and create a new <EM>Java Application</EM> run configuration. Select the host project you want to start (servicebased.host or extenderbased.host) and chose the <TT>Application</TT> class as <EM>Main class</EM> from the org.apache.felix.example.servicebased/extenderbased.host.launch package. Switch to the <EM>Arguments</EM> tab and fill in the following <EM>Program arguments</EM> (assuming you want to run the extender-based example):</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>file:../extenderbased.circle/target/extenderbased.circle-1.0.0.jar file:../extenderbased.square/target/extenderbased.square-1.0.0.jar file:../extenderbased.triangle/target/extenderbased.triangle-1.0.0.jar
+</PRE>
+</DIV></DIV>
+
+<P>For more details on running an application with an embedded framework scroll down to the bottom of the page.</P>
+
+<H2><A name="ApacheFelixApplicationDemonstration-ServiceBasedApplication"></A>Service-Based Application</H2>
+
+<P>The service-based application uses the OSGi service concept and the service registry as the extensibility mechanism. Therefore the host bundle contains a service interface located at <TT>org.apache.felix.example.servicebased.host.service.SimpleShape</TT>. The SimpleShape service has two properties: a name and an icon. Besides that it defines one operation: <TT>draw(Graphics2D g2, Point p)</TT>.</P>
+
+<H3><A name="ApacheFelixApplicationDemonstration-Definingshapesasservices"></A>Defining shapes as services</H3>
+
+<P>Bundles that want to contribute a shape service have to implement the <TT>SimpleShape</TT> interface. Take a look at the circle bundle for example. The circle bundle only contains one class, the <TT>Activator</TT>. A <TT><A href="http://www.osgi.org/javadoc/r4v43/org/osgi/framework/BundleActivator.html" class="external-link" rel="nofollow">BundleActivator</A></TT> is responsible for starting up a bundle. Therefore it gets passed in a <TT><A href="http://www.osgi.org/javadoc/r4v43/org/osgi/framework/BundleContext.html" class="external-link" rel="nofollow">BundleContext</A></TT>, that can be used to perform registration of services within the framework. The <TT>Activator</TT> also contains an inner class that implements the <TT>SimpleShape</TT> interface and therefore represents the <TT>SimpleShape</TT> implementation of a circle. The <TT>start(BundleContext context</TT> method is used to register the circle implementation as a service:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>Dictionary&lt;String, Object&gt; dict = new Hashtable&lt;String, Object&gt;();
+dict.put(SimpleShape.NAME_PROPERTY, &quot;Circle&quot;);
+dict.put(SimpleShape.ICON_PROPERTY, new ImageIcon(this.getClass().getResource(&quot;circle.png&quot;)));
+m_context.registerService(SimpleShape.class.getName(), new Circle(), dict);
+</PRE>
+</DIV></DIV>
+
+<P>First a <TT><A href="http://docs.oracle.com/javase/6/docs/api/java/util/Dictionary.html" class="external-link" rel="nofollow">Dictionary</A></TT> is created to hold the service's properties. The two service properties are added to the dictionary. The icon of the circle service is located under src/main/resources/org/apache/example/servicebased/circle/circle.png. It gets loaded as an <TT><A href="http://docs.oracle.com/javase/6/docs/api/javax/swing/ImageIcon.html" class="external-link" rel="nofollow">ImageIcon</A></TT> and added as icon property. The service then gets registered in the service registry by passing the name of the service interface, a service object and the service's properties.</P>
+
+<H3><A name="ApacheFelixApplicationDemonstration-Detectingshapeservices"></A>Detecting shape services</H3>
+
+<P>The host's <TT>Activator</TT> creates a <TT>DrawingFrame</TT> for displaying the different shapes. It then delegates adding and removing of <TT>SimpleShape</TT> services to a <TT><A href="http://www.osgi.org/javadoc/r4v43/org/osgi/util/tracker/ServiceTracker.html" class="external-link" rel="nofollow">ServiceTracker</A></TT> implementation. The <TT>ShapeTracker</TT> gets notified, when a new <TT>SimpleShape</TT> service is added to, modified or removed from the service registry.</P>
+
+<H2><A name="ApacheFelixApplicationDemonstration-ExtenderBasedApplication"></A>Extender-Based Application</H2>
+
+<P>In contrast to the service-based example, the extender-based example uses bundles as it's primary extensibility mechanism. The host bundle contains a <TT>SimpleShape</TT> interface that is much like the one from the service based example. It also contains a <TT>draw(Graphics2D g2, Point p)</TT> method and defines a set of properties. This time the properties are not used as properties for registering a service, but for defining bundle header properties in the bundle's <TT>MANIFEST.MF</TT> file.</P>
+
+<H3><A name="ApacheFelixApplicationDemonstration-Definingshapesasextensions"></A>Defining shapes as extensions</H3>
+
+<P>Bundles that want to contribute a <TT>SimpleShape</TT> extension have to implement the <TT>SimpleShape</TT> interface. Have a look at the extender-based circle implementation, for example. It only contains one class, <TT>Circle</TT>, that implements <TT>SimpleShape</TT>. Note, that in contrast to the service-based example there is no need to define a <TT><A href="http://www.osgi.org/javadoc/r4v43/org/osgi/framework/BundleActivator.html" class="external-link" rel="nofollow">BundleActivator</A></TT>. This is because, there is no need to register a service within the framework. Information about the provided shape implementation is located in the bundle headers instead. Have a look at the circle's <TT>MANIFEST.MF</TT> file:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>Manifest-Version: 1.0
+Private-Package: org.apache.felix.example.extenderbased.circle
+Tool: Bnd-0.0.238
+Bundle-Name: Apache Felix Circle Extension
+Created-By: Apache Maven Bundle Plugin
+Bundle-Vendor: The Apache Software Foundation
+Build-Jdk: 1.7.0_01
+Bundle-Version: 1.0.0
+Extension-Class: org.apache.felix.example.extenderbased.circle.Circle
+Bnd-LastModified: 1331062969798
+Extension-Icon: org/apache/felix/example/extenderbased/circle/circle.p
+ ng
+Bundle-ManifestVersion: 2
+Bundle-Description: A simple extension for drawing circles.
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-DocURL: http://www.apache.org/
+Bundle-SymbolicName: org.apache.felix.example.extenderbased.circle
+Import-Package: org.apache.felix.example.extenderbased.host.extension
+Extension-Name: Circle
+</PRE>
+</DIV></DIV>
+
+<P>As you can see, the three bundle properties, defined in the <TT>SimpleShape</TT> interface are set as bundle headers.</P>
+
+<P>Note: The manifest file is generated by the Maven build, so you will only find it in the compiled jar. If you are interested in automatically creating manifest files for your bundles, have a look at the configuration of the <A href="http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html" class="external-link" rel="nofollow">org.apache.felix.maven-bundle-plugin</A> in the pom.xml.</P>
+
+<H3><A name="ApacheFelixApplicationDemonstration-Detectingshapebundles"></A>Detecting shape bundles</H3>
+
+<P>Like the <TT><A href="http://www.osgi.org/javadoc/r4v43/org/osgi/util/tracker/ServiceTracker.html" class="external-link" rel="nofollow">ServiceTracker</A></TT> for tracking services, there is a <TT><A href="http://www.osgi.org/javadoc/r4v42/org/osgi/util/tracker/BundleTracker.html" class="external-link" rel="nofollow">BundleTracker</A></TT> for tracking bundles. A <TT>BundleTracker</TT> get's notified, when the state of tracked bundles change. Have a look at <TT>org.apache.felix.example.extenderbased.host.ShapeBundleTracker</TT>. The constructor defines that only active bundles should be tracked. The <TT>addingBundle(Bundle bundle, BundleEvent event)</TT> method gets called by the framework, when a bundle enters the activated state. The tracker then checks if the bundle's headers contain the extension name property and, if so, adds the icon to the application.</P>
+
+<H2><A name="ApacheFelixApplicationDemonstration-EmbeddingtheFramework"></A>Embedding the Framework</H2>
+
+<P>The OSGi R4.2 specification defines APIs to allow an application to host it's own embedded framework instance. Therefore an implementation of the <TT><A href="http://www.osgi.org/javadoc/r4v42/org/osgi/framework/launch/FrameworkFactory.html" class="external-link" rel="nofollow">FrameworkFactory</A></TT> interface has to be used. OSGi implementers specify their <TT>FrameworkFactory</TT> implementation in the <TT>META-INF/services/org.osgi.framework.launch.FrameworkFactory</TT> file. Prior to Java 6, one had to parse the class name in that file by oneself. Luckily Java 6 has the <TT><A href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html" class="external-link" rel="nofollow">ServiceLoader&lt;S&gt;</A></TT> class, that lets you easily instantiate a <TT>FrameworkFactoy</TT>. Have a look at the contents of the <TT>org.apache.felix.example.extenderbased.host.launch</TT> package in the extender-based host bundle (the implementation is the same for the service-based example).</P>
+
+<P>The <TT>Application</TT> class is responsible for creating the framework and installing and starting the bundles. It uses a <TT>ConfigUtil</TT> for creating the framework configuration that is needed to create a framework using the <TT>FrameworkFactory</TT>. The <TT>ConfigUtil</TT> also creates a temporary cache directory for the framework. If the creation of the framework is successful, <TT>installAndStartBundles(String... bundleLocations)</TT> will be called to start the actual application. Therefore the <TT>Activator</TT> of the host bundle is instantiated. Note, that the host bundle can not register itself within the framework it just created. Only the extension bundles will be registered within the framework.</P>
+
+<P>As you can see no Felix-specific code is involved in any of the examples. That's one of the advantages of OSGi specification. Bundles that run on Felix will run on every other implementation of the same OSGi release.</P>
+
+<H2><A name="ApacheFelixApplicationDemonstration-Feedback"></A>Feedback</H2>
+
+<P>Subscribe to the Felix users mailing list by sending a message to <A href="mailto:users-subscribe@felix.apache.org" class="external-link" rel="nofollow">users-subscribe@felix.apache.org</A>; after subscribing, email questions or feedback to <A href="mailto:users@felix.apache.org" class="external-link" rel="nofollow">users@felix.apache.org</A>.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on Thu May 31 14:33:59 EDT 2012
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

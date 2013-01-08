@@ -1,0 +1,387 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - apache-felix-ipojo-api</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-ipojo-api.html" target="felix_cwiki">/site/apache-felix-ipojo-api.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>apache-felix-ipojo-api</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# iPOJO API
+
+*The iPOJO API provides a third way to describe iPOJO components and instances. With the API, you can dynamically create new components types and create instances from them. Your component types are described with a Java API. To use the API, deploy and start the iPOJO-API bundle and the iPOJO core bundle.*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## A simple example
+
+Let's imagine a simple component providing a service Foo. The following code is the implementation class of our component:
+{code:java}
+package org.example.service.impl;
+
+import org.example.service.Foo;
+
+public class FooImpl implements Foo {
+
+    public void doSomething() {
+        // Do something...
+    }
+
+}
+
+    To create the component type and an instance of the component type just create a class, get the bundle context (either from a Bundle-Activator, or from an iPOJO component), and write the following code:
+    {code:java}
+    new PrimitiveComponentType()
+        .setBundleContext(context)
+        .setClassName(FooImpl.class.getName())
+        .addService(new Service()) // Provide the Foo service
+        .createInstance(); // Create the instance
+
+So, now let's imagine another component using this service. The following code is the implementation class of this component type:
+{code:java}
+package org.example.service.impl;
+
+import org.example.service.Foo;
+
+public class MyComponentImpl {
+    private Foo myFoo;
+
+    public void start() {
+        myFoo.doSomething();
+    }
+
+}
+
+    It is a regular iPOJO component expecting to get a Foo service in the  field. It also has a method executed when the instance is valid using the Foo service. To describe this component, just write the following lines:
+    {code:java}
+    new PrimitiveComponentType()
+        .setBundleContext(context)
+        .setClassName(MyComponentImpl.class.getName())
+        .addDependency(new Dependency().setField("myFoo"))
+        .setValidateMethod("start")
+        .createInstance();
+
+## Deploying the API
+Before being able to create component types at runtime, you need to deploy 3 bundles:
+* iPOJO (core)
+* iPOJO Composite
+* iPOJO API
+
+You can deploy all these bundles in one step thanks to OBR:
+
+    obr start "Apache Felix iPOJO API"
+
+## Primitive Component Type basics
+
+When you create a new Primitive component type (so, using a Java class as implementation), you must set the bundle context and the class name. Everything else is optional. 
+
+Note about inner classes: iPOJO is based on a bytecode manipulation. The API embeds the manipulator. So, when you initialize the component type, the specified class name is manipulated (if not already manipulated). So, as this force using a customized classloader, inner classes cannot be manipulated. So, inner class injection is not supported with the API.
+
+## Immediate Component, Validate and Invalidate Method
+To set the component type as immediate, just call the `setImmediate(immediate)` method on the primitive component type object. 
+To set validate and invalidate methods, just call the `setValidate(method)` and `setInvalidate(method)`. Specify the method name that you want to call in argument. 
+
+## Declaring services
+To declare that a component provides a service, add a new service to your primitive component type.
+The Service object can be configured. By default, it exposed every implemented interface (regular iPOJO behavior). So, you can:
+ * Add service property
+ * Set the creation strategy
+ * Set the exposed service specifications
+
+{code:java}
+new PrimitiveComponentType()
+    .setBundleContext(context)
+    .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
+    .addService(new Service()
+        .addProperty(new ServiceProperty()
+            .setField("myServiceProperty")
+            .setName("sample.myProperty"))
+        .setCreationStrategy(Service.INSTANCE_STRATEGY))
+    .createInstance();
+
+    h2. Service Dependencies
+    To declare a service dependency, create and add a Dependency object. The dependency object offers all the iPOJO service dependency features. You can set the injected field and/or bind/unbind methods. Here is an example:
+    {code:java}
+    new PrimitiveComponentType()
+        .setBundleContext(context)
+        .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
+        .addDependency(
+            new Dependency().setField("myFoo")
+           .setOptional(true)
+           .setDefaultImplementation("org.sample.FooDefaultImplementation")
+           )
+        .createInstance();
+
+## Properties
+Thanks to the `addProperty` method, you can create component properties. Here is some example of properties:
+{code:java}
+new PrimitiveComponentType()
+    .setBundleContext(context)
+    .setClassName(MyComponentImpl.class.getName())
+    .addProperty(new Property()
+        .setField("myProperty")
+        .setValue("default-value")
+        )
+    .addProperty(new Property()
+        .setMethod("setMethod")
+        .setName("prop")
+    )
+    .createInstance();
+
+    h2. Temporal Dependencies
+    Temporal dependencies are also supported: 
+    {code:java}
+    new PrimitiveComponentType()
+            .setBundleContext(context)
+            .setClassName(MyComponentImpl.class.getName())
+            .addDependency(
+                 new TemporalDependency().setField("myFoo")
+                .setOnTimeoutPolicy(TemporalDependency.NULLABLE)
+                .setTimeout(3000)
+                .setProxy(true)
+                )
+            .createInstance();
+
+## Instance creation
+The API allows you to create instances from the component type you described. Three differents methods.
+The `createInstance()` method just creates an instance. The `createInstance(String name)` method allows to set the instance name. Finally, the `createInstance(Dictionary configuration)` allows setting the instance configuration. All those methods returns the ComponentInstance object allowing to manage the instance (stop, start, dispose). 
+
+## Managed Service and Propagation
+You can enable/disable the property propagation thanks to the `setPropagation` method on the PrimitiveComponentType object. 
+You can also set the the managed service PID with the `setManagedServicePID` method. This method should be only use to give a default value of for singleton component. In all other case, the managed service pid has to be provided inside the instance configuration.
+
+## Managing iPOJO Factory
+Beyond the PrimitiveComponentType, an iPOJO factory is hidden. You can configure this factory to be public or private with the `setPublic` method. You can also set the name of the factory with the `setName` method. 
+
+Then, you can access to the Factory object by calling the `getFactory` method.
+
+## Access to the introspection API
+The API provides bridge to get access to the iPOJO introspection API. The introspection API allows reconfiguring at runtime an instance (properties, service dependencies...). From Service and Dependency, Property and ServiceProperty objects, call the `getXXXDescription` method. You must give the instance that you want to introspect in argument. If the lookup success, you get an object allowing reconfiguring the service, dependency or property. 
+
+## Singleton Component Type
+If you are sure to create only one instance of your component type, you can use the singleton component type class. This is a kind of primitive component type, but when you start it (with the `create` method), it will automatically create an instance.
+{code:java}
+ PrimitiveComponentType type = new SingletonComponentType()
+            .setBundleContext(context)
+            .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
+            .addDependency(new Dependency().setField("myFoo"))
+            .setValidateMethod("start");
+
+        ((SingletonComponentType) type)
+            .setObject(new MyComponentImpl(5)) // Inject a pojo object
+            .create();// Create an instance
+
+    The type created with the singleton component type are set to  by default. Instead of calling the  method, you have to call one of the  methods to start the type and create the instance.
+
+    You can also set the contained POJO object by using the  method. The given object MUST be compatible with the component implementation class.
+
+    h2. Using external handlers
+    iPOJO is extensible... So, it makes sense that the API is also extensible. So component type provides a method allowing to add external handler configuration:
+    {code:java}
+    return new PrimitiveComponentType()
+            .setBundleContext(context)
+            .setClassName(HostImpl.class.getName())
+            .addHandler(new Whiteboard()
+                .onArrival("arrival")
+                .onDeparture("departure")
+                .setFilter("(foo=foo)")
+             );
+
+The `addHandler` method allows you to add any handler description. A handler description is an object of a class implementing `org.apache.felix.ipojo.api.HandlerConfiguration`. Handler provider willing to support the API have to provide this class. For example, the example above uses `Whiteboard` that is the Whiteboard pattern handler description. This class is very simple, and is shown below:
+{code:java}
+public class Whiteboard implements HandlerConfiguration {
+
+    public static final String NAME = "wbp";
+
+    public static final String NAMESPACE = "org.apache.felix.ipojo.whiteboard";
+
+    private String arrival;
+
+    private String departure;
+
+    private String modification;
+
+    private String filter;
+
+    public Whiteboard onArrival(String method) {
+        arrival = method;
+        return this;
+    }
+
+    public Whiteboard onDeparture(String method) {
+        departure = method;
+        return this;
+    }
+
+    public Whiteboard onModification(String method) {
+        modification = method;
+        return this;
+    }
+
+    public Whiteboard setFilter(String fil) {
+        filter = fil;
+        return this;
+    }
+
+    public Element getElement() {
+        ensureValidity();
+        // Create the root element.
+        Element element = new Element(NAME, NAMESPACE);
+        // Mandatory attributes
+        element.addAttribute(new Attribute("onArrival", arrival));
+        element.addAttribute(new Attribute("onDeparture", departure));
+        element.addAttribute(new Attribute("filter", filter));
+
+        // Optional attribute
+        if (modification != null) {
+            element.addAttribute(new Attribute("onModification", modification));
+        }        
+
+        return element;
+    }
+
+    private void ensureValidity() {
+        if (arrival == null) {
+            throw new IllegalStateException("The whiteboard pattern configuration must have a onArrival method");
+        }
+        if (departure == null) {
+            throw new IllegalStateException("The whiteboard pattern configuration must have a onDeparture method");
+        }
+        if (filter == null) {
+            throw new IllegalStateException("The whiteboard pattern configuration must have a filter");
+        }
+
+    }
+
+    The only required method is  returning the Element-Attribute structure representing the handler configuration (this uses the internal iPOJO data format). If the metadata cannot be generated, the class throws IllegalStateExceptions.
+
+    h2. Creating composition with the API
+    The API also allows you to create iPOJO compositions in a pretty simple way. So you can create compositions:
+    * containing internal instances
+    * importing services
+    * instantiating sub-services
+    * exporting services
+    * providing services (by delegation)
+
+    Here are some examples:
+    {code:java|title=Contained instances}
+     PrimitiveComponentType prov = createAProvider(); // Create a primitive type
+     PrimitiveComponentType cons = createAConsumer(); // Create another primitive type
+
+           CompositeComponentType type = new CompositeComponentType()
+               .setBundleContext(context)
+               .setComponentTypeName("comp1")
+               .addInstance(new Instance(prov.getFactory().getName())) // Create an instance in the composite
+               .addInstance(new Instance(cons.getFactory().getName())); 
+
+           ComponentInstance ci = type.createInstance();
+
+{code:java|title=Importing services}
+ CompositeComponentType type = new CompositeComponentType()
+           .setBundleContext(context)
+           .setComponentTypeName("comp3")
+           .addSubService(new InstantiatedService() // Importation
+              .setSpecification(Foo.class.getName())
+              .setOptional(true));
+
+    {code:java|title=Instantiated sub-services}
+      CompositeComponentType type = new CompositeComponentType()
+               .setBundleContext(context)
+               .setComponentTypeName("comp2")
+               .addSubService(new InstantiatedService()  // Instantiated service
+                  .setSpecification(Foo.class.getName()))
+               .addInstance(new Instance(cons.getFactory().getName()));
+
+{code:java|title=Exported Services}
+CompositeComponentType type = new CompositeComponentType()
+           .setBundleContext(context)
+           .setComponentTypeName("compExport")
+           .addSubService(new InstantiatedService().setSpecification(Foo.class.getName()))
+           .addService(new ExportedService()
+                .setSpecification(Foo.class.getName())); // Exports a service
+
+    \\
+    {include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

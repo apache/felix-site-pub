@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - iPOJO Eclipse Plug-in</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools.html">apache-felix-ipojo-tools</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/ipojo-eclipse-plug-in.html" target="felix_cwiki">/site/ipojo-eclipse-plug-in.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>iPOJO Eclipse Plug-in</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# iPOJO Eclipse Plug-in
+
+<div class="info" markdown="1">
+**Update**
+The iPOJO Eclipse plugin is now hosted and supported in the [iPOJO Toolbox project](http://ipojo-toolbox.wiki.sourceforge.net/iPOJO-Eclipse-plugin). 
+</div>
+
+----
+
+*iPOJO is based on a byte code manipulation. So, it requires a different packaging process as "normal" bundle. This plug-in allow to build an "iPOJO bundle" directly from Eclipse. Moreover, by collaborating with BND (see [http://www.aqute.biz/Code/Bnd](http://www.aqute.biz/Code/Bnd)), it simplifies the creation of bundles.*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## Installation
+
+The plug-in requires Eclipse 3.3 (Europa) or higher. The plug-in can be installed from the following update site : [http://clement.plop-plop.net/update/](http://clement.plop-plop.net/update/)
+
+## Usage
+
+Once installed, create a Java project to use the plug-in.
+
+!1-java-project.png!
+
+The new java project wizard appears. Enter the project name without spaces. Configure the Java project as you want.
+
+!2-new-java-project.png!
+
+Then, right click on the new project, go inside the iPOJO sub-menu and click on "create both files". This action will create two file in your java project. The $project_name.bnd file configure BND and contains the declaration of imported, private and exported packages. The second file (metadata.xml) contains the iPOJO bundle configuration.
+
+!3-create-files.png!
+
+As you create the two file, you should obtain something like :
+
+!4-project-view.png!
+
+Imagine that you implement a simple component displaying each message pushed inside the OSGi™ Log Service. The following code snippet shows one possible implementation of this component :
+
+    package org.apache.felix.ipojo.example.logcons;
+
+    import java.text.DateFormat;
+    import java.util.Date;
+
+    import org.osgi.service.log.LogEntry;
+    import org.osgi.service.log.LogListener;
+    import org.osgi.service.log.LogReaderService;
+    import org.osgi.service.log.LogService;
+
+    public class LogCons implements LogListener{
+
+        private LogReaderService reader;
+
+        public void start() {
+            reader.addLogListener(this);
+        }
+
+        public void stop() {
+            reader.removeLogListener(this);
+        }
+
+        public void logged(LogEntry entry) {
+            Date date = new Date(entry.getTime());
+            String message = "";
+            switch(entry.getLevel()) {
+            case LogService.LOG_DEBUG: message = "[DEBUG] " + 
+               DateFormat.getInstance().format(date) + " - " +
+               entry.getMessage(); break;
+            case LogService.LOG_ERROR: message = "[ERROR] " + 
+               DateFormat.getInstance().format(date) + " - " +
+               entry.getMessage(); break;
+            case LogService.LOG_INFO: message = "[INFO] " + 
+               DateFormat.getInstance().format(date) + " - " + 
+               entry.getMessage(); break;
+            case LogService.LOG_WARNING: message = "[WARNING] " + 
+               DateFormat.getInstance().format(date) + " - " +
+               entry.getMessage(); break;
+            default: message = "[UNKNOWN] " + 
+               DateFormat.getInstance().format(date) + " - " + entry.getMessage(); 
+               break;
+            }
+            System.out.println(message);
+        }
+    }
+
+Once implemented, you need to fill out the BND file with following information:
+
+    Import-Package: *
+    Private-Package: org.apache.felix.ipojo.example.logcons
+
+Then, the metadata.xml file needs to be filled out. We declare the LogCons component type with a simple service requirement on the LogReaderService and two lifecycle callbacks. To finish, we declare an instance of this component type.
+
+    <ipojo>
+    <!-- Declare the component type for LogCons -->
+    <component classname="org.apache.felix.ipojo.example.logcons.LogCons" 
+               name="LogCons">
+        <requires field="reader"/>
+        <callback transition="validate" method="start"/>
+        <callback transition="invalidate" method="stop"/>
+    </component>
+
+    <!-- Create a LogCons instance -->
+    <instance component="LogCons"/>
+    </ipojo>
+
+Once all is complete, we can build the bundle by doing a right-click on the metadata.xml file. Then go to the iPOJO sub-menu and click on Create Bundle.
+
+!5-create-the-bundle.png!
+
+If all is correctly configured, the following message appears, else warnings or errors are displayed in a message box too.
+
+!6-manipulation-done.png!
+
+Your project contains now the build bundle. The bundle has the same name as your project.
+
+!7-final-project.png!
+
+## Plug-in options
+
+### On Java project
+
+!8-project-options.png!
+* Create both files : create both the BND file and the metadata.xml file (replace existing one)
+
+* Create metadata.xml file : create only the metadata.xml file
+
+* Create BND file : create only the BND file
+
+### On metadata.xml file
+
+!9-metadata-options.png!
+* Manipulate bundle: take an already created bundle and manipulate it. This option is use when you don't use BND to create a bundle
+
+* Create bundle: create a bundle "from scratch", first create a bundle with BND and then manipulate it.
+
+## Conclusion
+
+This page has presented the iPOJO Eclipe plug-in. 
+Subscribe to the Felix users mailing list by sending a message to [mailto:users-subscribe@felix.apache.org](); after subscribing, email questions or feedback to [mailto:users@felix.apache.org]
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

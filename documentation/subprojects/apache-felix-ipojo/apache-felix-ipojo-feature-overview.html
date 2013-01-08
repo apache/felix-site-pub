@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix iPOJO Feature Overview</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-ipojo-feature-overview.html" target="felix_cwiki">/site/apache-felix-ipojo-feature-overview.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix iPOJO Feature Overview</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# Apache Felix iPOJO Feature Overview
+
+*This page is an attempt to put all of the features and benefits of iPOJO into a single high-level list so that it is easy to see why you will want to use iPOJO for your applications. This list is not exhaustive, but represents the set of features that are potentially most likely to be needed or are unique.*
+
+## Core Features
+
+* *POJO-based approach* \- Most components can simply be POJOs and need not have iPOJO\- or OSGi-specific API in them.
+* *Simple service provisioning* \- iPOJO manages all aspects of providing an OSGi service.
+** *Service property management*
+**- Can be controlled by configuration properties.
+**- Can be mapped to member fields and        automatically updated by the component instance at run time by just        changing the member field value.
+** *Service life cycle participation* \- The component instance can participate in the       service life cycle by declaring a boolean member field that indicates       when the service is actually valid (normally a service is assumed to be       valid if the component instance's dependencies are satisfied).
+* *Rich service dependency model* \- Automatically manages a full spectrum of      service dependencies.
+** *Optional/mandatory* service dependencies.
+** *Singular/aggregate* service dependencies.
+** *Default service implementations* \- The component can provide default       implementations of dependent services if no providers are available.
+** *Member field or method injection* \- Also supported in combination.
+**- Member field injection does not require        cluttering component code with bind/unbind methods.
+**- Member method injection supports various method        signatures
+**-- method() \- Acts as a simple event-callback mechanism.
+**-- method(<service-interface> svc) \- Receives the service object cast to the         appropriate interface.
+**-- method(ServiceReference ref) \- Receives the OSGi ServiceReference for the service object.
+**-- method(ServiceReference ref, <service-interface> svc) \- Receives the OSGi ServiceReference and the service object cast to the         appropriate interface.
+** *Binding policies* \-       Allow components to control how/when their dependencies are bound.
+**- *Static* \- Static dependencies *cannot* change        without invalidating the component instance, so injected services        typically do not change at run time and service departures typically        result in the component instance being destroyed and potentially        recreated.
+**- *Dynamic* \- Dynamic dependencies *can* change        without invalidating the component instance, so injected services can        change at run time, but *do not* change with respect to service        priority changes (i.e., they do not automatically switch if a higher        priority service appears).
+**- *Dynamic priority* \- Dynamic priority dependencies *can* change without invalidating the component instance and *do* dynamically update based on service priority rankings at run time.
+* *Configuration property management* \- Integrated with OSGi Configuration Admin      service.
+** *Member field/member method injection* \- Also supported in combination.
+** *Service property propagation* \- Configuration properties can be configured to       update service properties if the component instance is providing a       service.
+* *Sophisticated concurrency handling* \- Externalizes concurrency issues so that      component code does not need to worry about services changing while they      are in use (i.e., no locking protocol in component code).
+* *Deferred instance creation* \- POJO instances are not created until they      are actually needed, thus reducing start-up overhead.
+* *Introspection support* \-      Supports introspecting a component instance and the state of its      dependencies.
+** Interactive introspection is supported by an arch command for Felix' shell.
+* *Extensible* \- All      iPOJO features are implemented via a set of `handlers`, which is an      extensibility mechanism open to developers by which they can support      custom functionality (e.g., exporting a provided service remotely, etc.).
+
+## Advanced/Experimental Features
+
+* *Composite model* \-      iPOJO supports a flexible architectural-like model for composing services.
+** *Flexible composites* \- A       composite is an abstract component implementation.
+**- *Sub-services and sub-components* \- Unlike traditional component composition, an        iPOJO composite can be described in terms of services in addition to        sub-components; thus sub-service implementation selection is deferred        until run time.
+**- *Optional/mandatory* sub-services and/or sub-components.
+**- *Singular/aggregate* sub-services and/or sub-components.
+** *Hierarchical* \- A       composite component may contain other composite components.
+**- *Composite scoping* \- A composite acts as a scoping mechanism        where sub-services/sub-components are not visible externally and        external services are not visible internally.
+** *Service dependencies* \- A       composite has the full expressive capabilities of primitive components       when it comes to service dependencies (see above description of service       dependencies in core features).
+**- For a composite, a service dependency        effectively imports an external service into the composite scope from        its parent composite (which may be the OSGi service registry in the root        case).
+** *Composite is just a component* \- Composites can be instantiated and       automatically managed just like a primitive component.
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

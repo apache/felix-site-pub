@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Tutorial Example 7</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-tutorial-example-7.html" target="felix_cwiki">/site/apache-felix-tutorial-example-7.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Tutorial Example 7</h1>
+      <h1 id="example-7-spell-checker-client-bundle">Example 7 - Spell Checker Client Bundle</h1>
+<p>In this example we create a client for the spell checker service we implemented in Example 6. This client monitors the dynamic availability of the spell checker service using the Service Tracker and is very similar in structure to the dictionary client we implemented in Example 5. The functionality of the spell checker client reads passages from standard input and spell checks them using the spell checker service. Our bundle uses its bundle context to create a <code>ServiceTracker</code> object to monitor spell checker services. The source code for our bundle is as follows in a file called <code>Activator.java</code>:</p>
+<div class="codehilite"><pre><span class="o">/*</span>
+ <span class="o">*</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">tutorial</span><span class="o">.</span>
+<span class="o">**/</span>
+
+<span class="nb">package</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example7</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">InputStreamReader</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">IOException</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tracker</span><span class="o">.</span><span class="n">ServiceTracker</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example6</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">SpellChecker</span><span class="p">;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">This</span> <span class="n">class</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">uses</span> <span class="n">a</span> <span class="n">spell</span> <span class="n">checker</span>
+ <span class="o">*</span> <span class="n">service</span> <span class="n">to</span> <span class="n">check</span> <span class="n">the</span> <span class="n">spelling</span> <span class="n">of</span> <span class="n">a</span> <span class="n">passage</span><span class="o">.</span> <span class="n">This</span> <span class="n">bundle</span>
+ <span class="o">*</span> <span class="n">is</span> <span class="n">essentially</span> <span class="n">identical</span> <span class="n">to</span> <span class="n">Example</span> <span class="mi">5</span><span class="p">,</span> <span class="n">in</span> <span class="n">that</span> <span class="n">it</span> <span class="n">uses</span> <span class="n">the</span>
+ <span class="o">*</span> <span class="n">Service</span> <span class="n">Tracker</span> <span class="n">to</span> <span class="n">monitor</span> <span class="n">the</span> <span class="n">dynamic</span> <span class="n">availability</span> <span class="n">of</span> <span class="n">the</span>
+ <span class="o">*</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span><span class="o">.</span> <span class="n">When</span> <span class="n">starting</span> <span class="n">this</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">the</span> <span class="n">thread</span>
+ <span class="o">*</span> <span class="n">calling</span> <span class="n">the</span> <span class="n">start</span><span class="p">()</span> <span class="n">method</span> <span class="n">is</span> <span class="n">used</span> <span class="n">to</span> <span class="nb">read</span> <span class="n">passages</span> <span class="n">from</span>
+ <span class="o">*</span> <span class="n">standard</span> <span class="n">input</span><span class="o">.</span> <span class="n">You</span> <span class="n">can</span> <span class="n">stop</span> <span class="n">spell</span> <span class="n">checking</span> <span class="n">passages</span> <span class="n">by</span>
+ <span class="o">*</span> <span class="n">entering</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">line</span><span class="p">,</span> <span class="n">but</span> <span class="n">to</span> <span class="n">start</span> <span class="n">spell</span> <span class="n">checking</span> <span class="n">again</span>
+ <span class="o">*</span> <span class="n">you</span> <span class="n">must</span> <span class="n">stop</span> <span class="ow">and</span> <span class="k">then</span> <span class="n">restart</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+<span class="o">**/</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
+<span class="p">{</span>
+    <span class="sr">//</span> <span class="n">Bundle</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">context</span><span class="o">.</span>
+    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="sr">//</span> <span class="n">The</span> <span class="n">service</span> <span class="n">tacker</span> <span class="n">object</span><span class="o">.</span>
+    <span class="n">private</span> <span class="n">ServiceTracker</span> <span class="n">m_tracker</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">start</span><span class="p">()</span><span class="o">.</span> <span class="n">Creates</span> <span class="n">a</span> <span class="n">Service</span>
+     <span class="o">*</span> <span class="n">Tracker</span> <span class="n">object</span> <span class="n">to</span> <span class="n">monitor</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">services</span><span class="o">.</span> <span class="n">Enters</span>
+     <span class="o">*</span> <span class="n">a</span> <span class="n">spell</span> <span class="n">check</span> <span class="n">loop</span> <span class="n">where</span> <span class="n">it</span> <span class="n">reads</span> <span class="n">passages</span> <span class="n">from</span> <span class="n">standard</span>
+     <span class="o">*</span> <span class="n">input</span> <span class="ow">and</span> <span class="n">checks</span> <span class="n">their</span> <span class="n">spelling</span> <span class="n">using</span> <span class="n">the</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span><span class="o">.</span>
+     <span class="o">*</span> <span class="p">(</span><span class="n">NOTE:</span> <span class="n">It</span> <span class="n">is</span> <span class="n">very</span> <span class="n">bad</span> <span class="n">practice</span> <span class="n">to</span> <span class="k">use</span> <span class="n">the</span> <span class="n">calling</span> <span class="n">thread</span>
+     <span class="o">*</span> <span class="n">to</span> <span class="n">perform</span> <span class="n">a</span> <span class="n">lengthy</span> <span class="n">process</span> <span class="n">like</span> <span class="n">this</span><span class="p">;</span> <span class="n">this</span> <span class="n">is</span> <span class="n">only</span> <span class="n">done</span>
+     <span class="o">*</span> <span class="k">for</span> <span class="n">the</span> <span class="n">purpose</span> <span class="n">of</span> <span class="n">the</span> <span class="n">tutorial</span><span class="o">.</span><span class="p">)</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
+    <span class="p">{</span>
+        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+
+        <span class="sr">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">service</span> <span class="n">tracker</span> <span class="n">to</span> <span class="n">monitor</span> <span class="n">dictionary</span> <span class="n">services</span><span class="o">.</span>
+        <span class="n">m_tracker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceTracker</span><span class="p">(</span>
+            <span class="n">m_context</span><span class="p">,</span>
+            <span class="n">m_context</span><span class="o">.</span><span class="n">createFilter</span><span class="p">(</span>
+                <span class="s">&quot;(objectClass=&quot;</span> <span class="o">+</span> <span class="n">SpellChecker</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span><span class="p">),</span>
+            <span class="n">null</span><span class="p">);</span>
+        <span class="n">m_tracker</span><span class="o">.</span><span class="nb">open</span><span class="p">();</span>
+
+        <span class="n">try</span>
+        <span class="p">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Enter a blank line to exit.&quot;</span><span class="p">);</span>
+            <span class="n">String</span> <span class="n">passage</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+            <span class="n">BufferedReader</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="p">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="p">(</span><span class="n">System</span><span class="o">.</span><span class="n">in</span><span class="p">));</span>
+
+            <span class="sr">//</span> <span class="n">Loop</span> <span class="n">endlessly</span><span class="o">.</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">true</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="sr">//</span> <span class="n">Ask</span> <span class="n">the</span> <span class="n">user</span> <span class="n">to</span> <span class="n">enter</span> <span class="n">a</span> <span class="n">passage</span><span class="o">.</span>
+                <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="k">print</span><span class="p">(</span><span class="s">&quot;Enter passage: &quot;</span><span class="p">);</span>
+                <span class="n">passage</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="n">readLine</span><span class="p">();</span>
+
+                <span class="sr">//</span> <span class="n">Get</span> <span class="n">the</span> <span class="n">selected</span> <span class="n">dictionary</span> <span class="n">service</span><span class="p">,</span> <span class="k">if</span> <span class="n">available</span><span class="o">.</span>
+                <span class="n">SpellChecker</span> <span class="n">checker</span> <span class="o">=</span> <span class="p">(</span><span class="n">SpellChecker</span><span class="p">)</span> <span class="n">m_tracker</span><span class="o">.</span><span class="n">getService</span><span class="p">();</span>
+
+                <span class="sr">//</span> <span class="n">If</span> <span class="n">the</span> <span class="n">user</span> <span class="n">entered</span> <span class="n">a</span> <span class="n">blank</span> <span class="n">line</span><span class="p">,</span> <span class="k">then</span>
+                <span class="sr">//</span> <span class="nb">exit</span> <span class="n">the</span> <span class="n">loop</span><span class="o">.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">passage</span><span class="o">.</span><span class="nb">length</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">break</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="sr">//</span> <span class="n">If</span> <span class="n">there</span> <span class="n">is</span> <span class="nb">no</span> <span class="n">spell</span> <span class="n">checker</span><span class="p">,</span> <span class="k">then</span> <span class="n">say</span> <span class="n">so</span><span class="o">.</span>
+                <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">checker</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;No spell checker available.&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="sr">//</span> <span class="n">Otherwise</span> <span class="n">check</span> <span class="n">passage</span> <span class="ow">and</span> <span class="k">print</span> <span class="n">misspelled</span> <span class="n">words</span><span class="o">.</span>
+                <span class="k">else</span>
+                <span class="p">{</span>
+                    <span class="n">String</span><span class="o">[]</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">passage</span><span class="p">);</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+                    <span class="p">{</span>
+                        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Passage is correct.&quot;</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span>
+                    <span class="p">{</span>
+                        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Incorrect word(s):&quot;</span><span class="p">);</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">errors</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+                        <span class="p">{</span>
+                            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;    &quot;</span> <span class="o">+</span> <span class="n">errors</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span><span class="o">.</span> <span class="n">Does</span> <span class="n">nothing</span> <span class="n">since</span>
+     <span class="o">*</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">will</span> <span class="n">automatically</span> <span class="n">unget</span> <span class="n">any</span> <span class="n">used</span> <span class="n">services</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The client uses the Service Tracker to listen for spell checker services. Like normal, we must create a <code>manifest.mf</code> file that contains the meta-data for our bundle; the manifest file contains the following:</p>
+<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">Spell</span> <span class="n">checker</span> <span class="n">client</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Description:</span> <span class="n">A</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Vendor:</span> <span class="n">Richard</span> <span class="n">Hall</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Version:</span> <span class="mf">1.0.0</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator:</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example7</span><span class="o">.</span><span class="n">Activator</span>
+<span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="p">,</span>
+ <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tracker</span><span class="p">,</span>
+ <span class="n">tutorial</span><span class="o">.</span><span class="n">example6</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+
+
+<p>We specify which class is used to activate the bundle via the <code>Bundle-Activator</code> attribute and also specify that our bundle imports the OSGi core, OSGi Service Tracker, and spell checker service interface packages with the <code>Import-Package</code> attribute. The OSGi framework will automatically handle the details of resolving import packages. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
+<p>To compile our source code, we need to have the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) and the <code>example6.jar</code> file in our class path. We compile the source file using a command like:</p>
+<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*.</span><span class="n">java</span>
+</pre></div>
+
+
+<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory; this subdirectory is <code>tutorial\example7</code>, named after the package we specified in the source file. For the above command to work, the <code>c:\classes</code> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</p>
+<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">example7</span><span class="o">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="o">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="n">tutorial</span><span class="o">\</span><span class="n">example7</span>
+</pre></div>
+
+
+<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the tutorial\example6 directory inside of the <code>c:\classes</code> directory. Once the JAR file is created, we are ready to install and start the bundle.</p>
+<p>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>. After running Felix, we should stop all tutorial bundles except for the service bundles. Use the <code>lb</code> command to make sure that only the bundles from Example 2, Example 2b, and Example 6 are active; use the <code>start</code> and <code>stop</code> commands as appropriate to start and stop the various tutorial bundles, respectively. (Note: Felix uses some bundles to provide its command shell, so do not stop these bundles.) Now we can install and start our spell checker client bundle. Assuming that we created our bundle in the directory <code>c:\tutorial</code>, we can install and start it in Felix' shell using the following command:</p>
+<div class="codehilite"><pre><span class="n">start</span> <span class="n">file:</span><span class="sr">/c:/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">example7</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands. When we start the bundle, it will use the shell thread to prompt us for passages; a passage is a collection or words separate by spaces, commas, periods, exclamation points, question marks, colons, or semi-colons. Enter a passage and press the enter key to spell check the passage or enter a blank line to stop spell checking passages. To restart the bundle, we must use the Felix shell <code>lb</code> command to get the bundle identifier number for the bundle and first use the <code>stop</code> command to stop the bundle, then the <code>start</code> command to restart it.</p>
+<p>Since this client uses the Service Tracker to monitor the dynamic availability of the spell checker service, it is robust in the scenario where the spell checker service suddenly departs. Further, when a spell checker service arrives, it automatically gets the service if it needs it and continues to function. These capabilities are a little difficult to demonstrate since we are using a simple single-threaded approach, but in a multi-threaded or GUI-oriented application this robustness is very useful. </p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

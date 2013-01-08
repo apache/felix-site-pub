@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - apache-felix-ipojo-testing-components</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-ipojo-testing-components.html" target="felix_cwiki">/site/apache-felix-ipojo-testing-components.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>apache-felix-ipojo-testing-components</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# How to test iPOJO Components
+Testing components is a required step in the application development process. This page explains strategies to test iPOJO-based components and applications.
+
+## Introduction
+Basically, we can distinguish 2 types of tests:
+* Unitary tests
+* Integration tests
+
+Unitary tests are famous and were popularized with the proliferation of frameworks like [Junit](http://junit.org) and [TestNG|http://testng.org/doc/]. These tests check the behavior of classes. More specially, these tests check the method results according to different parameter values. These test are executed outside the execution environment, can use mock object (link) to replace/simulate missing dependencies...
+
+Integration tests focus on the execution of the application inside the execution environment. It checks the global behavior of a service or an application. In the case of iPOJO, those tests are executed on OSGi. Some dependencies can be also replaced by mock services/objects.
+
+## Executing unitary tests on iPOJO components
+Unitary tests allow checking the internal behavior of an iPOJO component. Those tests ignore the injected dependencies and focus only on the business code of the component.
+To test components, you can use Junit. A special constructor setting fields can do the dependency injection. These tests are executed before the bundlelization. 
+
+Let's imagine a maven project (downloadable [here]()).  Unitary tests are placed in the src/test/java folder. You can use mock object as illustrated in the example.  When you launch the `mvn clean install` command, maven compiles your classes and executes the tests.  If the tests are executed successfully, the build process continues and creates the bundle as follows:
+
+    [INFO] Scanning for projects...
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Building Dummy Component
+    [INFO]    task-segment: [clean, install]
+    [INFO] ------------------------------------------------------------------------
+    [INFO] [clean:clean]
+    [INFO] Deleting directory /Users/clement/Documents/workspaces/ipojo-dev/UnitaryTest/target
+    [INFO] [resources:resources]
+    [INFO] Using default encoding to copy filtered resources.
+    [INFO] [compiler:compile]
+    [INFO] Compiling 1 source file to /Users/clement/Documents/
+            workspaces/ipojo-dev/UnitaryTest/target/classes
+    [INFO] [resources:testResources]
+    [INFO] Using default encoding to copy filtered resources.
+    [INFO] [compiler:testCompile]
+    [INFO] Compiling 1 source file to /Users/clement/Documents/
+            workspaces/ipojo-dev/UnitaryTest/target/test-classes
+    [INFO] [surefire:test]
+    [INFO] Surefire report directory: /Users/clement/Documents/
+            workspaces/ipojo-dev/UnitaryTest/target/surefire-reports
+
+    -------------------------------------------------------
+     T E S T S
+    -------------------------------------------------------
+    Running org.apache.felix.ipojo.ut.component.test.MyTestCase
+    Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 sec
+
+    Results :
+
+    Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+    [INFO] [bundle:bundle]
+    [INFO] [ipojo:ipojo-bundle {execution: default}]
+    [INFO] Start bundle manipulation
+    [INFO] Metadata file : /Users/clement/Documents/
+      workspaces/ipojo-dev/UnitaryTest/target/classes/metadata.xml
+    [INFO] Input Bundle File : /Users/clement/Documents/workspaces/
+      ipojo-dev/UnitaryTest/target/org.apache.felix.ipojo.test.dummy.component-1.1.0-SNAPSHOT.jar
+    [INFO] Bundle manipulation - SUCCESS
+    [INFO] [install:install]
+    [INFO] Installing /Users/clement/Documents/workspaces/
+      ipojo-dev/UnitaryTest/target/org.apache.felix.ipojo.test.dummy.component-1.1.0-SNAPSHOT.jar 
+      to /Users/clement/.m2/repository/ipojo/tests/org.apache.felix.ipojo.test.dummy.component/1.1.0-SNAPSHOT
+      /org.apache.felix.ipojo.test.dummy.component-1.1.0-SNAPSHOT.jar
+    [INFO] [bundle:install]
+    [INFO] Parsing file:/Users/clement/.m2/repository/repository.xml
+    [INFO] Installing ipojo/tests/org.apache.felix.ipojo.test.dummy.component/
+        1.1.0-SNAPSHOT/org.apache.felix.ipojo.test.dummy.component-1.1.0-SNAPSHOT.jar
+    [INFO] Writing OBR metadata
+    [INFO] ------------------------------------------------------------------------
+    [INFO] BUILD SUCCESSFUL
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Total time: 6 seconds
+    [INFO] Finished at: Tue Oct 21 14:03:03 CEST 2008
+    [INFO] Final Memory: 11M/25M
+    [INFO] ------------------------------------------------------------------------
+
+## Executing integration tests
+Once every component has its unitary test suite (isn't it?), you can go further and creates integration test. In order to check the behavior of the system, iPOJO provides the junit4osgi framework. This framework allows the executing of Junit test inside OSGi. Refer to the [Junit4OSGi page](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi.html) to know how to use it.
+
+Moreover, OPS4J Pax Exam can also be used to test iPOJO components.
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

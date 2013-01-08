@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Dependency Manager - Getting Started</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-dependency-manager-getting-started.html" target="felix_cwiki">/site/apache-felix-dependency-manager-getting-started.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Dependency Manager - Getting Started</h1>
+      <h2 id="getting-started">Getting Started</h2>
+<p>When developing an OSGi bundle that has dependencies and possibly registers services, there are two classes in particular we need to implement:
+1. The bundle activator which controls the life-cycle of the bundle.
+1. The actual component implementation, which can be a POJO.</p>
+<p>When using the dependency manager, your bundle activator is a subclass of <code>DependencyActivatorBase</code>. It needs to implement two life cycle methods: <code>init</code> and <code>destroy</code>. Both methods take two arguments: <code>BundleContext</code> and <code>DependencyManager</code>. The latter is your interface to the declarative API you can use to define your components and dependencies.</p>
+<p>The following paragraphs will show various examples that explain how to do this. Subsequently, some more advanced scenarios will be covered that involve listening to dependency and component state changes and interacting with the OSGi framework from within your component implementation.</p>
+<h3 id="registering-a-service">Registering a service</h3>
+<p>The first example is about registering a service. We extend <code>DependencyActivatorBase</code> and in the init method we use the reference to the <code>DependencyManager</code> to create and add a component. For this component we subsequently set its service interface and implementation. In this case the interface is the <code>Store</code> interface, the second parameter, null, allows you to provide properties along with the service registration. For the implementation, we only mention the <code>Class</code> of the implementation, which means the dependency manager will lazily instantiate it. In this case, there is not much point in doing that because the component has no dependencies, but if it had, the instantiation would only happen when those dependencies were resolved.</p>
+<p>Notice that the dependency manager API uses method chaining to create a more or less "fluent" API that, with proper indentation, is very easy to read.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">Store</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MemoryStore</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">destroy</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This is the service interface. Nothing special here.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Store</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">put</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">Object</span> <span class="n">value</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">Object</span> <span class="n">get</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>And finally the implementation. Again, this is just a POJO, there is no reference here to any OSGi or dependency manager specific class or annotation.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">MemoryStore</span> <span class="n">implements</span> <span class="n">Store</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
+
+    <span class="n">public</span> <span class="n">Object</span> <span class="n">get</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">m_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">put</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">Object</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">m_map</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="depending-on-a-service">Depending on a service</h3>
+<p>Our second example is that of a component that depends on two other services: our <code>Store</code> from the previous example and the standard OSGi <code>LogService</code>. Looking at the code, there is a small but important difference between the two: <code>Store</code> is a required dependency and <code>LogService</code> is not. This means that our component really needs a store to work, but if there is no logging available, it can work without. Also note that this component has no <code>setInterface</code> method, which simply means it is not itself a service. This is perfectly fine.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DataGenerator</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Store</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">true</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">LogService</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">destroy</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Now let's look at our POJO. There are a couple of interesting things to explain. First of all, our dependencies are declared as fields, and they don't even have setters (or getters). When the dependency manager instantiates our class, it will (through reflection) inject the dependencies so they are just available for our class to use. That is also the reason these fields are declared as volatile: to make sure they are visible to all threads traversing our instance.</p>
+<p>One final note, since we defined our <code>LogService</code> dependency as optional, it might not be available when we invoke it. Still, the code does not contain any checks to avoid a null pointer exception. It does not need to, since the dependency manager makes sure to inject a null object when the real service is not available. The null object can be invoked and will do nothing. For a lot of cases that is good enough, but for those cases where it is not, our next example introduces callbacks that notify you of changes.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">DataGenerator</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">volatile</span> <span class="n">Store</span> <span class="n">m_store</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">generate</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">m_store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;#&quot;</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="s">&quot;value_&quot;</span> <span class="o">+</span> <span class="n">i</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">m_log</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="n">LogService</span><span class="o">.</span><span class="n">LOG_INFO</span><span class="p">,</span> <span class="s">&quot;Data generated.&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="tracking-services-with-callbacks">Tracking services with callbacks</h3>
+<p>Sometimes, simply injecting services does not give you enough control over a dependency because you might want to track more than one, or you might want to execute some code on changes. For all those cases, callbacks are your friends. Since one of our goals is to not introduce any kind of API in our POJO, callbacks are declared by specifying their method names instead of through some interface. In this case, we have a dependency on <code>Translator</code> services, and we define <code>added</code> and <code>removed</code> as callbacks.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DocumentTranslator</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Translator</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">setCallbacks</span><span class="p">(</span><span class="s">&quot;added&quot;</span><span class="p">,</span> <span class="s">&quot;removed&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">destroy</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This is the actual <code>Translator</code> service, which, for the purpose of this example, is not that important.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Translator</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">boolean</span> <span class="n">canTranslate</span><span class="p">(</span><span class="n">String</span> <span class="n">from</span><span class="p">,</span> <span class="n">String</span> <span class="n">to</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">Document</span> <span class="n">translate</span><span class="p">(</span><span class="n">Document</span> <span class="n">document</span><span class="p">,</span> <span class="n">String</span> <span class="n">from</span><span class="p">,</span> <span class="n">String</span> <span class="n">to</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Finally, here's our implementation. It declares the callback methods with one parameter: the <code>Translator</code> service. Actually, the dependency manager will look for several different signatures (all explained in more detail in the reference section).</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">DocumentTranslator</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">List</span><span class="sr">&lt;Translator&gt;</span> <span class="n">m_translators</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="sr">&lt;Translator&gt;</span><span class="p">();</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">added</span><span class="p">(</span><span class="n">Translator</span> <span class="n">translator</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">m_translators</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">translator</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">removed</span><span class="p">(</span><span class="n">Translator</span> <span class="n">translator</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">m_translators</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">translator</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">Document</span> <span class="n">translate</span><span class="p">(</span><span class="n">Document</span> <span class="n">document</span><span class="p">,</span> <span class="n">String</span> <span class="n">from</span><span class="p">,</span> <span class="n">String</span> <span class="n">to</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">Translator</span> <span class="n">translator</span> <span class="p">:</span> <span class="n">m_translators</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">translator</span><span class="o">.</span><span class="n">canTranslate</span><span class="p">(</span><span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="depending-on-a-configuration">Depending on a configuration</h3>
+<p>Not all dependencies are on services. There are several other types of dependencies that are supported, one of them is the configuration dependency. In fact, only <em>required</em> configuration dependencies are supported, because optional ones can just be achieved by registering as a <code>ManagedService</code> yourself. When defining the dependency, you must define the persistent ID of the service. The component will not become active until the configuration you depend on is available <em>and</em> is valid. The latter can be checked by your implementation as we will see below.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">Task</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createConfigurationDependency</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">setPid</span><span class="p">(</span><span class="s">&quot;config.pid&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">destroy</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Here's our code that implements <code>ManagedService</code> and has an <code>updated</code> method. This method checks if the provided configuration is valid and throw a <code>ConfigurationException</code> if it is not. As long as this method does not accept the configuration, the corresponding component will not be activated.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Task</span> <span class="n">implements</span> <span class="n">ManagedService</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">String</span> <span class="n">m_interval</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">execute</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Scheduling task with interval &quot;</span> <span class="o">+</span> <span class="n">m_interval</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">public</span> <span class="n">void</span> <span class="n">updated</span><span class="p">(</span><span class="n">Dictionary</span> <span class="n">properties</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ConfigurationException</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">properties</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">m_interval</span> <span class="o">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;interval&quot;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">m_interval</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">throw</span> <span class="k">new</span> <span class="n">ConfigurationException</span><span class="p">(</span><span class="s">&quot;interval&quot;</span><span class="p">,</span> <span class="s">&quot;must be specified&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="">...</h3>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

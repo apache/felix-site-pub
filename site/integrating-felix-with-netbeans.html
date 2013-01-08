@@ -1,0 +1,167 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Integrating Felix with NetBeans</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="IntegratingFelixwithNetBeans-IntegratingFelixwithNetBeans"></A>Integrating Felix with NetBeans</H1>
+
+<P>This document explains how to launch Felix inside of the NetBeans IDE, which makes it possible to use NetBeans debugging and profiling facilities on bundles. </P>
+
+<H2><A name="IntegratingFelixwithNetBeans-Preliminaries"></A>Preliminaries</H2>
+
+<P>To integrate Felix inside of NetBeans you need Felix and NetBeans and nothing else. </P>
+
+<H3><A name="IntegratingFelixwithNetBeans-InstallingNetBeans"></A>Installing NetBeans</H3>
+
+<P>First, you need to <A href="http://download.netbeans.org/netbeans/6.1/final/" class="external-link" rel="nofollow">download the NetBeans IDE</A>. This tutorial was done using NetBeans 6.1, but it should work on NetBeans 6.0. </P>
+
+<H3><A name="IntegratingFelixwithNetBeans-CreationoftheFelixbinaries"></A>Creation of the Felix binaries</H3>
+
+<P>To integrate Felix with NetBeans, you have two options:</P>
+
+<OL>
+	<LI>Integrate the Felix release as a Java project. This is what we are going to cover in this tutorial.</LI>
+	<LI>Integrateg the Felix release using the Maven plugin. This option is slightly more complex and will be covered in another tutorial.</LI>
+</OL>
+
+
+<H3><A name="IntegratingFelixwithNetBeans-UsingtheFelixreleaseasaJavaProject"></A>Using the Felix release as a Java Project</H3>
+
+<P>Once, NetBeans is installed, you need to <A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">download Felix</A>. Choose the binary Felix release in your preferred archive format. Extract the release into a temporary directory. We will copy the files into our project later. </P>
+
+<H3><A name="IntegratingFelixwithNetBeans-BuildingandusingtheFelixtrunk"></A>Building and using the Felix trunk</H3>
+
+<P>If you want to use the Felix trunk, follow the <A href="http://felix.apache.org/site/building-felix.html" class="external-link" rel="nofollow">instructions</A> on the Felix web site to checkout and build the trunk. The Felix binaries are created in the &quot;<TT>main</TT>&quot; project directory. We will copy these files into our project later.</P>
+
+<H2><A name="IntegratingFelixwithNetBeans-UsingFelixwithNetBeans"></A>Using Felix with NetBeans</H2>
+
+<P>This integration tutorial uses a Java project for the integration. This new project will contain Felix. In the following sections it will be explained how to do this. </P>
+
+<H3><A name="IntegratingFelixwithNetBeans-CreationofaFelixJavaproject"></A>Creation of a Felix Java project</H3>
+
+<P>First launch NetBeans. Then click on &quot;<TT>File-&gt;New-&gt;Project...</TT>&quot; menu entry as shown in Figure 1.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/new-project-menu.png" style="border: 0px solid black"></SPAN></P>
+
+<P>This action will launch the project creation wizard. From the &quot;<TT>Categories</TT>&quot; list choose &quot;<TT>Java</TT>&quot; and from the &quot;<TT>Projects</TT>&quot; list choose &quot;<TT>Java Application</TT>&quot; as shown in Figure 2, then press the &quot;<TT>Next &gt;</TT>&quot; button.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/new-project-type.png" style="border: 0px solid black"></SPAN></P>
+
+<P>Enter the project name (&quot;<TT>Felix</TT>&quot; for example), select your project directory, and uncheck the &quot;<TT>Create Main Class</TT>&quot; check box then press the finished button. See Figure 3.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/new-project-properties.png" style="border: 0px solid black"></SPAN></P>
+
+<H3><A name="IntegratingFelixwithNetBeans-CopyingFelixtothenewlycreatedproject"></A>Copying Felix to the newly created project</H3>
+
+<P>Now, remember where you extracted the Felix release or, if you built from source, where the Felix <TT>main</TT> subproject directory is. Go into the release directory or the <TT>main</TT> subproject directory and copy its entire contents into your project directory. You can do this any way that is easiest for you. On a Linux box you would do something like this from inside the appropriate release or <TT>main</TT> directory:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>cp -r ./* /project-path/
+</PRE>
+</DIV></DIV>
+
+<P>Where &quot;<TT>/project-path/</TT>&quot; is the path to your project directory.</P>
+
+<P>Once you have copied the files, collapse and expand the project. This will make NetBeans refresh the project. If that does not work for you (on NetBeans 6.0 it may not) just close and open it.</P>
+
+<H3><A name="IntegratingFelixwithNetBeans-PreparingtheFelixproject"></A>Preparing the Felix project</H3>
+
+<P>The first thing you will notice is that our new project has a red exclamation point on it. What this means is that when NetBeans parsed the Java files it could not find all the library dependencies, so let's fix that.<BR>
+Right-click on the newly created project and select the properties as shown in Figure 4.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/project-properties-menu.png" style="border: 0px solid black"></SPAN></P>
+
+<P>This will bring up the project properties dialog. Select Libraries as shown in Figure 5.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/project-libraries.png" style="border: 0px solid black"></SPAN></P>
+
+<P>Now we want to press the &quot;<TT>Add JAR/Folder</TT>&quot; button and navigate to your project directory/bin and select the &quot;<TT>felix.jar</TT>&quot; as shown in Figure 6. NOTE: Make sure the &quot;<TT>Use Relative Path</TT>&quot; radio button is selected. Then press the &quot;<TT>Open</TT>&quot; button.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/add-jar-dialog.png" style="border: 0px solid black"></SPAN></P>
+
+<P>Your libraries panel should now look like what is shown in Figure 7. You can now press the &quot;<TT>OK</TT>&quot; button.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/updated-project-libraries.png" style="border: 0px solid black"></SPAN></P>
+
+<P>At this point the red exclamation point should should disappear and now we can run Felix. Right click on the project node and select the &quot;<TT>Run</TT>&quot; menu item as shown in Figure 8.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/project-run-menu.png" style="border: 0px solid black"></SPAN></P>
+
+<P>When you do this the &quot;<TT>Run Project</TT>&quot; dialog will pop-up with a list of all class files with a main method. In our case this will only show the &quot;<TT>org.apache.felix.main.Main</TT>&quot; class so we select that and press the &quot;<TT>OK</TT>&quot; button. The &quot;<TT>Run Project</TT>&quot; dialog is shown in Figure 9.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/run-dialog.png" style="border: 0px solid black"></SPAN></P>
+
+<P>After you press the &quot;<TT>OK</TT>&quot; button in the &quot;<TT>Run Project</TT>&quot; dialog, Felix will be launched and the output window will open with the Felix command line tool running as shown in Figure 10.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/output-window.png" style="border: 0px solid black"></SPAN></P>
+
+<P>At this point you can enter your preferred profile and interact with Felix as if you had launched Felix from a command line shell.</P>
+
+<H3><A name="IntegratingFelixwithNetBeans-RelaunchingFelix"></A>Re-launching Felix</H3>
+
+<P>Now that our project is all set up, you only have to select the Run menu item from the project context menu to re-launch Felix. Or if you prefer, if you set Felix as the main project, then you can use &quot;<TT>Run</TT>&quot; menu on the main menubar. </P>
+
+<H3><A name="IntegratingFelixwithNetBeans-FelixConfiguration"></A>Felix Configuration</H3>
+
+<P>At this point, you may want to make some changes to the way Felix is configured. In NetBeans you will have to open the &quot;<TT>Files</TT>&quot; view. Expand the Felix folder and then the &quot;<TT>conf</TT>&quot; folder as shown in Figure 11. NOTE: When you do this the first time the cache folder will not be there. If you decide to make the configuration changes shown in the next section then it will be created the next time you run Felix.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/conf-folder.png" style="border: 0px solid black"></SPAN></P>
+
+<H3><A name="IntegratingFelixwithNetBeans-ConfiguretheFelixcachelocation"></A>Configure the Felix cache location</H3>
+
+<P>Felix stores profiles and deployed bundles inside a cache. Normally this cache is located at &quot;<TT>$userhome/.felix</TT>&quot;. It is possible to change this location in order to clean it quickly and also to keep your development cache separated from other Felix-based applications you may be running on your computer. You may also want to set a default profile so you don't have to enter it every time you launch Felix. </P>
+
+<P>Open the configuration file, called &quot;<TT>config.properties</TT>&quot;. Then, add a new line with &quot;<TT>felix.cache.dir=cache</TT>&quot; (see Figure 12). And if you want to set a default profile, uncomment the &quot;<TT>felix.cache.profile=foo</TT>&quot; line and change it to what you want (Figure 12). To clean your cache, just delete the cache directory.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/config-properties-file.png" style="border: 0px solid black"></SPAN></P>
+
+<P>The next time you run Felix, the cache directory will be created with in your project. To verify that it did or if you want to clean it use the &quot;<TT>Files</TT>&quot; view to expand the Felix folder; you should now see a cache folder that was not there before. You can refer to Figure 11 which displays the cache directory from a previous execution of Felix. </P>
+
+<H3><A name="IntegratingFelixwithNetBeans-Addautostartedbundles"></A>Add auto-started bundles</H3>
+
+<P>Often you will want Felix to automatically deploy some bundles that you need for your development. You can do this by modifying the &quot;<TT>felix.auto.start.1</TT>&quot; (or 2) property in the &quot;<TT>config.properties</TT>&quot; file. For more information on configuring Felix, refer to Felix' <A href="apache-felix-framework-usage-documentation.html" title="Apache Felix Framework Usage Documentation">usage document</A>.</P>
+
+<P>When editing this property, the bundles can be relative or absolute file paths to the bundles you want to auto load. Also don't forget to put the line continuation marker &quot;\&quot; and the end of each line except the last one. In figure 13 you can see the default configuration that is shipped with Felix.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="integrating-felix-with-netbeans.data/default-config-properties-file.png" style="border: 0px solid black"></SPAN></P>
+
+<H3><A name="IntegratingFelixwithNetBeans-Debuggingbundles"></A>Debugging bundles</H3>
+
+<P>Now that we are able to launch Felix as a Java Application we can use the debugging and profiling features of NetBeans. Future tutorials will go into more detail on how to do this. </P>
+
+<H2><A name="IntegratingFelixwithNetBeans-Conclusion"></A>Conclusion</H2>
+
+<P>This document has presented one way in which you can integrate Felix with NetBeans. For any questions or feedback, subscribe to the Felix users mailing list by sending a message to <A href="mailto:users-subscribe@felix.apache.org" class="external-link" rel="nofollow">users-subscribe@felix.apache.org</A>; after subscribing, email questions or feedback to <A href="mailto:users@felix.apache.org" class="external-link" rel="nofollow">users@felix.apache.org</A>.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2009-05-05 09:02:55.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

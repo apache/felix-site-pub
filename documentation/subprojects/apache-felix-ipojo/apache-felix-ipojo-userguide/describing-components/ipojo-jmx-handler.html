@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - iPOJO JMX Handler</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components.html">Describing components</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/ipojo-jmx-handler.html" target="felix_cwiki">/site/ipojo-jmx-handler.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>iPOJO JMX Handler</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# iPOJO JMX Handler
+
+*This handler provides JMX management of component instance. It could be useful to manage instance remotely. As the handler exposes MBeans, you must have a MBean server running on your platform (as the platform MBean server or the MOSGi MBean Server).*
+
+{div:class=toc}
+[TOC]
+{div}
+
+## Features
+
+The handler allows to:
+* Expose attributes accessible via JMX (with right management).
+* Expose methods to be called through JMX.
+* Get notifications when attributes are modified .
+
+## Prerequisites
+
+To be functional this handler must register on an MBean Server,thus you obviously need it. Several servers are currently supported : the standard platform MBean server (included in the JDK), MOSGi (provided with Felix), ...
+To use MOSGi, you have to deploy at least the following three bundles of MOSGi:
+* org.apache.felix.mosgi.jmx.agent
+* org.apache.felix.mosgi.jmx.registry
+* org.apache.felix.mosgi.jmx.rmiconnector
+
+You can find MOSGi documentation on [http://cwiki.apache.org/FELIX/mosgi-managed-osgi-framework.html](http://cwiki.apache.org/FELIX/mosgi-managed-osgi-framework.html)
+
+## Download
+
+The JMX handler is available in the Felix trunk in the iPOJO project. See the [Download](/documentation/subprojects/apache-felix-ipojo/download.html) page to download and compile these sources.
+
+## How to use it
+
+The handler needs to be added in the metadata.xml, you just add a namespace (e.g., jmx) :
+
+    <ipojo xmlns:jmx="org.apache.felix.ipojo.handlers.jmx">
+        ...
+    </ipojo>
+
+So, you could now expose in JMX properties and methods of your component. They are surrounded by the <jmx:config>
+tag.
+
+    <jmx:config>
+        <jmx:property name="message" field="m_msg" rights="w" notification="true"/>
+        <jmx:method name="doSomethingBad"/>
+        <jmx:method name="doSomethingGood"/>
+    </jmx:config>
+
+<div class="info" markdown="1">
+**Serialization**
+Be careful that the argument and return type of methods must be serializable. In case of several methods have the same name, each of them will be exposed.
+</div>
+
+## JMX Handler options
+
+Here you can find all configuration options of the JMX handler. There are two kinds of manageable elements : properties and methods. First is described the global configuration of the handler. Then elements can be configured, using several attributes, as described below.
+
+## Global handler attributes
+{div:class=borderedTable}
+|Attribute name | Required | Description|
+|--|--|--|
+|objectName|NO|The complete object name of the managed component. The syntax of this attribute must be compliant with the ObjectName syntax, detailed in the JMX specification.
+If neither domain nor name attributes are specified, the default value  is determined by the package, the type and the instance name of the component. This attribute overrides the domain and name attributes.
+*Example:* "my.domain:type=myType,name=myName"|
+|domain|NO|The domain of the managed object (i.e., the left part of the object name). This attribute must be compliant with the domain syntax, as described in the JMX specification.
+*Example:* "my.domain"|
+|name|NO|The name property of the managed object. The value of this attribute must comply with the ObjectName value syntax, as described in the JMX specification.
+|usesMOSGi|NO|Determines if the component must be register on the MOSGi MBean server or not.
+|preRegister 
+postRegister 
+preDeregister
+postDeregister|NO|These attributes allow to specify methods to carry out operations before and after being registered or unregistered from the MBean server.|
+{div}
+
+## Properties attributes
+{div:class=borderedTable}
+|Attribute name|Required|Description|
+|--|--|--|
+|field|YES|The name of the component's field to expose.|
+|name|NO|The name of the property as it will appear in JMX. If unspecified, the default value is the name of the exposed field.|
+|rights|NO|Specify the access permission of the exposed field. The accepted values are : 
+* "r" : read-only access, the default value.
+* "w" : read and write access.|
+|notification|NO|Enable or disable attribute change notification sending for this property. If set to "true", a notification is sent each time the value of the field changes.|
+{div}
+## Methods attributes
+{div:class=borderedTable}
+|Attribute name|Required|Description|
+|--|--|--|
+|name|YES|The name of the method to expose. If multiple methods have the same name, all of them are exposed.|
+|description|NO|The description of the exposed method, as it will appear in JMX.|
+{div}
+
+## Examples
+
+In this part, we will give you a complete example of a component managed with JMX, using the JConsole provided by the SUN JDK.
+
+### Exposing Attributes
+
+In first time we create a simple component named MyComponent. We have add two fields named m*level (int) and m*message (String).
+
+    public class
+    MyComponent ... {
+        // Exposed attributes
+        private String m_message;
+        private int m_level;
+    }
+
+We expose now the attributes in the jmx:config
+tag in the metadata :
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <iPOJO xmlns:jmx="org.apache.felix.ipojo.handlers.jmx">
+        <component className="...MyComponent"
+          architecture="true"
+          immediate="true">
+
+          <provides/>
+          <jmx:config>
+        <!-- Exposed properties -->
+        <jmx:property field="m_level"
+              name="The level"
+              rights="r"/>
+        <jmx:property field="m_message"
+              name="The message"
+              rights="w"/>
+          </jmx:config>
+        </component>
+        <instance
+          component="...MyComponent"/>
+    </iPOJO>
+
+Now, we could get and write the properties in the JConsole :
+!JMXHandler_1.png!
+
+### Exposing Methods
+
+We could now add methods in the initial class :
+
+    /**
+    Do something good
+    */
+    public void doSomethingGood() {
+            ...
+    }
+
+    /**
+    Do something bad
+    */
+    public void doSomethingBad() {
+            ...
+    }
+
+    /**
+    Do nothing
+    */
+    public void doNothing() {
+            ...
+    }
+
+We add corresponding tags in the metadata to expose these methods:
+
+    <!-- Exposed methods -->
+    <jmx:method name="doSomethingGood"
+          description="Do something good."/>
+    <jmx:method name="doSomethingBad"
+          description="Do something bad."/>
+    <jmx:method name="doNothing"
+          description="Do absolutely nothing."/>
+
+Now the three methods are exposed in the operations tab of the JConsole. We can invoked these methods :
+
+!JMXHandler_2.png!
+
+### Attribute Notifications:
+
+You could subscribe to attribute notification by adding the notification attribute in property tag. In our example if we want to be notified when m_level is modified, we change the property line in the metatada like this:
+
+    <jmx:property field="m_level"
+          name="The level"
+          rights="r"
+          notification="true"/>
+
+So now if we change the string through JConsole (or in the VisualVM) or if the POJO is modified in other way, a notification will be sent to every listener. For example, we subscribe in the notification tab, and we get notification when the message changes :
+
+!JMXHandler_3.png!
+
+## Configuring the handler with annotations
+
+It is possible to configure the handler with simple annotations available with iPOJO annotations. Here is an example of usage:
+{code:java}
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.handlers.jmx.Config;
+import org.apache.felix.ipojo.handlers.jmx.Method;
+import org.apache.felix.ipojo.handlers.jmx.Property;
+
+@Component
+@Config(domain="my-domain", usesMOSGi=false)
+public class JMXSimple {
+
+    @Property(name="prop", notification=true, rights="w") // Field published in the MBean
+    String m_foo;
+
+    @Method(description="set the foo prop") // Method published in the MBean
+    public void setFoo(String mes) {
+        System.out.println("Set foo to " + mes);
+        m_foo = mes;
+    }
+
+    @Method(description="get the foo prop") // Method published in the MBean
+    public String getFoo() {
+        return m_foo;
+    }
+}
+
+    The  ( if the package it correctly imported) annotation is a type annotation (so placed on the  element. This annotation indicates that the instance will be exposed as an MBean. This annotation supports:
+    * usesMOSGi: set to  to use MOSGi. Otherwise, the MBean will be exposed in the MBean Platform Server (default: ).
+    * objectname: set the MBean objectname. The objectname must follow JMX specification. (default: )
+    * domain: set the MBean domain. (default: )
+    * name: set the MBean name. (default: ).
+
+    The  () annotation is a field annotation indicating that the field is exposed in the MBean. The supported attributes are:
+    * name: set the property name
+    * rights: set the access permission. Possible values are  (read only) and  (read and write). By default, properties are in read-only mode.
+    * notification: enables notification on this property. By default notifications are disabled.
+
+    The  () annotation is a method annotation indicating that the method is exposed in the MBean. Only one attribute can be customized:
+    * description: set the method description.
+    \\
+    \\
+    {include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

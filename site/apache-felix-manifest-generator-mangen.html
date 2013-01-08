@@ -1,0 +1,790 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Manifest Generator (mangen)</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixManifestGenerator%28mangen%29-%7B%7Bmangen%7D%7DOSGi"></A><TT>mangen</TT> - <A href="http://www.osgi.org/" class="external-link" rel="nofollow">OSGi</A> Bundle Manifest generator</H1>
+
+<H1><A name="ApacheFelixManifestGenerator%28mangen%29-Introduction"></A>Introduction</H1>
+
+<P>The <A href="http://www.osgi.org/" class="external-link" rel="nofollow">OSGi</A> model provides a very powerful and flexible framework for developing Java applications in a modular fashion with a high degree of control over classloading inter-dependencies between modules. Projects such as <A href="http://oscar.objectweb.org/" class="external-link" rel="nofollow">Oscar</A> and <A href="http://incubator.apache.org/felix/" class="external-link" rel="nofollow">Felix</A> have recognised this power and implemented open source implementations of the framework. Adding to this is a growing availability of open source application bundles such as those offered via the <A href="http://oscar-osgi.sourceforge.net/" class="external-link" rel="nofollow">Oscar Bundle Repository</A> (aka OBR).</P>
+
+<P>As an active developer of OSGi based application, <A href="http://www.ascert.com/" class="external-link" rel="nofollow">Ascert's</A> technical staff  grappled with the cumbersome task of manually creating OSGi Bundle Manifests. This task is never particularly interesting and only gets bigger and nastier as applications grow in size and the number of bundles present.  To alleviate this chore the <TT>mangen</TT> tool has been created, with the following goals:</P>
+
+<UL>
+	<LI>Provide automatic scanning of an OSGi bundle JAR to detect references to external classes which require imports and possible export packages</LI>
+	<LI>Support scanning of multiple bundle JARs in a single pass, including any JAR files within a specified directory tree</LI>
+	<LI>Detect the majority of common import and export cases and provide manual override mechanisms to include cases that are not detected</LI>
+	<LI>Provide a simple, extensible, rule based mechansim to allow the required imports and possible exports sets to be refined e.g. removing un-needed packages, automatic resolving to packages in other JARs etc.</LI>
+	<LI>Provide a simple, extensible, reporting mechanism of actions taken</LI>
+	<LI>Automatic updating of each bundle JAR's Manifest, including a means to easily switch between either OSGi R3 or R4 compatible Manifest headers</LI>
+</UL>
+
+
+<P>If you're not a Java developer, or you're not sure what OSGi is yet, then this tool is probably not for you!</P>
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-Licensing"></A>Licensing</H2>
+
+<P>The <TT>mangen</TT> utility was originally created as a copyrighted &copy; work of Ascert LLC, and released as <B>OSI Certified Open Source Software</B> for use under the under the terms of the <A href="http://www.opensource.org/licenses/cpl1.0.php" class="external-link" rel="nofollow">Common Public License</A></P>
+
+<P>To promote wider use and enhancement, Ascert submitted version 1.0.1 of <TT>mangen</TT> to the <A href="http://incubator.apache.org/felix/" class="external-link" rel="nofollow">Apache Felix</A> project, where it will be actively developed and maintained by Felix project team. Availability is now under an <A href="http://www.apache.org/licenses/LICENSE-2.0" class="external-link" rel="nofollow">Apache 2.0 style license</A></P>
+
+<P>Included third-party libraries and contributions are copyrighted &copy; works of their respective owners and are provided under the terms of their specified licenses. </P>
+
+<H1><A name="ApacheFelixManifestGenerator%28mangen%29-Using%7B%7Bmangen%7D%7D"></A>Using <TT>mangen</TT></H1>
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-Basicoperation"></A>Basic operation</H2>
+
+<P>Using mangen is very simple. Unpack the distribution file to an installation directory, change to this directory and type the following command:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>    java -jar lib/mangen.jar &lt;file-list&gt;
+</PRE>
+</DIV></DIV>
+
+<P><EM>Note: on Windows platforms you will need to use a '\' in place of the '/' file  separator</EM></P>
+
+<P>Where:</P>
+
+<UL>
+	<LI><EM>&lt;file-list&gt;</EM> - is either a list of bundle JARs to be processed or a list of directories, or a mix of both. Each directory will be scanned and all JAR files in the directory, or any sub-directories will be included in the bundle JARs processed.</LI>
+</UL>
+
+
+<P>The basic behaviour of <TT>mangen</TT> is to process the set of bundle JARs supplied and scan the classes within each JAR to build up a set of the possible exports and required imports for each JAR. Where inner jars are defined using the OSGi <TT>Bundle-ClassPath</TT> header the classes in these will also be scanned and the possible exports and required imports will be included in the sets generated for their enclosing JAR.</P>
+
+<P>Two phases of process happen after JAR scanning has completed:</P>
+
+<UL>
+	<LI>Rule execution - typically rules will process the sets of imports and exports determined by <TT>mangen</TT> for each JAR, refining them according to the rule types being executed and the specific rule options</LI>
+	<LI>Report production - typically generating narrative reports on the bundles processed and the rules executed.</LI>
+</UL>
+
+
+<P>Use of the word 'typically' is significant in the above descriptions. A basic set of <A href="#ApacheFelixManifestGenerator%2528mangen%2529-MangenRules">rules</A> and <A href="#ApacheFelixManifestGenerator%2528mangen%2529-MangenReports">reports</A> are included with <TT>mangen</TT> to perform various useful tasks. This set is infinitely extensible, however, and <TT>mangen</TT> places no restriction on the types of tasks that rules and reports can perform.</P>
+
+<P>The exact rules and reports to be run are entirely controlled by user configurable properties as described below. If no properties are supplied <TT>mangen</TT> will simply run, process the specified JAR files and exit.</P>
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-Configuring%7B%7Bmangen%7D%7DwithProperties"></A>Configuring <TT>mangen</TT> with Properties</H2>
+
+<P>Properties to control <TT>mangen</TT> behaviour can either be supplied on the command line using the normal <TT>-D</TT> syntax or, for most cases in a <TT>mangen.properties</TT> file. If the same property name is specified in both then the <TT>-D</TT> command line property value will take precedence of the property file value.</P>
+
+<P><A name="ApacheFelixManifestGenerator%28mangen%29-VariableExpansionSyntax"></A><BR>
+For added flexibility a simple variable expansion syntax is provided to allow the value of one Property value to be used within another property. Every property value will be scanned for <TT>${property-name</TT>} markers. Where these are found the marker will be replaced with the value of the associated <TT>property-name</TT>.</P>
+
+<P><EM>Example:</EM></P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen.osgi.level=3
+    ...
+    mangen.rulesets=mangen-rule-R${mangen.osgi.level}- 
+
+</PRE>
+</DIV></DIV>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-mangen.properties"></A>mangen.properties</H3>
+
+<P>The <TT>mangen.properties</TT> Property is used to instruct mangen where to find it's properties file. By default, <TT>mangen</TT> will look for a file named <TT>mangen.properties</TT> in the same directory in which <TT>mangen.jar</TT> was installed (i.e. <TT>lib/mangen.properties</TT>). By including a <TT>-Dmangen.properties</TT> setting on the command line a different properties file can be specified.</P>
+
+<P><EM>Example:</EM></P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>    java -jar lib/mangen.jar -Dmangen.properties=my_mangen.properties my_app.jar
+</PRE>
+</DIV></DIV>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-mangen.osgi.level"></A>mangen.osgi.level</H3>
+
+<P>There are two places in which the <TT>mangen.osgi.level</TT> Property is used:</P>
+
+<UL>
+	<LI>internally within <TT>mangen</TT> to determine the correct format of Manifest headers to be processed and generated.</LI>
+	<LI>as a means to guide which rulesets are executed, using the <A href="#ApacheFelixManifestGenerator%2528mangen%2529-VariableExpansionSyntax">variable-expansion syntax</A></LI>
+</UL>
+
+
+<P>At present, this Property should be set to a value of '3' or '4' (the default if not specified will be '3'); </P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-mangen.rulesets"></A>mangen.rulesets</H3>
+
+<P>Rules are the engine room of <TT>mangen</TT>, providing the basic means for refining the <TT>mangen</TT> detected import and export package sets e.g. removing un-needed or unused exports, supplying package version information, including undetectable package cases such as dynamic classloading.</P>
+
+<P>Rulesets provide a simple means of organising the rules to be executed into groups of rule sets. The rulesets are specified as a list of comma-separated values, each value specifying the ruleset name prefix. The following example shows a ruleset definition for 2 rules:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen.rulesets=mangen-rule-first- , mangen-rule-final-
+    ...
+    mangen-rule-first-0=...
+    mangen-rule-first-1=...
+    mangen-rule-first-2=...
+    ...
+    mangen-rule-final-0=...
+    mangen-rule-final-1=...
+    
+</PRE>
+</DIV></DIV>
+
+<P>As shown in the example, <TT>mangen</TT> will take each ruleset name and look for sequentially numbered properties, starting from 0 and finishing when no property name is found. Each rule found will be executed to completion against the processed set of bundle JARs before the next rule property is processed.</P>
+
+<P>Rulesets can be combined with <A href="#ApacheFelixManifestGenerator%2528mangen%2529-VariableExpansionSyntax">variable-expansion</A> to provide OSGi version dependent rules as shown the following example.</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen.osgi.level=3
+    mangen.rulesets=mangen-rule-R${mangen.osgi.level}-
+    ...
+    mangen-rule-R3-0=...
+    ...
+    mangen-rule-R4-0=...
+
+</PRE>
+</DIV></DIV>
+
+<P>Rules themselves are simply specified as a rule type followed by a space separate list of rule specific options e.g.</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen.R4.syspackages=java\\..*
+    ...
+    mangen-rule-basic-0=Ignore imports(${mangen.R4.syspackages})
+    mangen-rule-basic-1=DontImportOwnExports
+
+</PRE>
+</DIV></DIV>
+
+<P>See the <A href="#ApacheFelixManifestGenerator%2528mangen%2529-MangenRules">Rules</A> section for full details of the currently support rule types.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-mangenreport"></A>mangen-report-</H3>
+
+<P>Reports in <TT>mangen</TT> work in a similar fashion to rules but without the ruleset concept. The set of sequentially numbered <TT>mangen-report-</TT> properties will be scanned to determine which reports should be run e.g.</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen-report-0=RuleReport .*
+    mangen-report-1=BundleReport .*
+
+</PRE>
+</DIV></DIV>
+
+<P>See the <A href="#ApacheFelixManifestGenerator%2528mangen%2529-MangenReports">Reports</A> section for full details of the currently support report types.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-mangen.failonerror"></A>mangen.failonerror</H3>
+
+<P>If set <TT>on</TT> will cause <TT>mangen</TT> to exit with a <TT>System.exit()</TT> error status of 3 if any errors occured. Typical usage is to allow an external build tool, such as Ant, detect that there were errors. Additionally, any error messages will also be sent to <TT>stderr</TT> as well as <TT>stdout</TT> if this property is set.</P>
+
+<P>Default is <TT>on</TT>.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-mangen.failonwarning"></A>mangen.failonwarning</H3>
+
+<P>If set <TT>on</TT> will cause <TT>mangen</TT> to exit with a <TT>System.exit()</TT> error status of 5 if any warnings occured. Typical usage is to allow an external build tool, such as Ant, detect that there were warnings. Additionally, any warning messages will also be sent to <TT>stderr</TT> as well as <TT>stdout</TT> if this property is set.</P>
+
+<P>Default is <TT>off</TT>.</P>
+
+<P><A name="ApacheFelixManifestGenerator%28mangen%29-MangenRules"></A></P>
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-Rules"></A>Rules</H2>
+
+<P>The Rule concept in <TT>mangen</TT> was adopted to avoid hard-coding the types of post-processing steps that a user would be able to perform on the <TT>mangen</TT> generated set of package imports and exports. The rule syntax is as follows:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>    &lt;rule-type&gt; &lt;rule-options&gt;
+</PRE>
+</DIV></DIV>
+
+<P>Where:</P>
+
+<UL>
+	<LI><EM>&lt;rule-type&gt;</EM> - must be the name of a valid existing rule type, details of which can be found in this section.</LI>
+	<LI><EM>&lt;rule-options&gt;</EM> - will be a list of one or more of the standard options and/or rule specific options. The standard options are as follows:
+	<UL>
+		<LI><TT>imports()</TT> - a comma seperated list of package patterns, using the JDK regex format. These will be matched against a bundle's own import packages during rule processing, the specific handling undertaken for each match being dependent on the <EM>&lt;rule-type&gt;</EM>. <EM>Note: each pattern must be separated from the next by a comma (,) and the list must not contain any space characters.</EM></LI>
+		<LI><TT>exports()</TT> - a comma seperated list of package patterns, using the JDK regex format. These will be matched against a bundle's own export packages during rule processing, the specific handling undertaken for each match being dependent on the <EM>&lt;rule-type&gt;</EM>.</LI>
+		<LI><TT>sys-packages()</TT> - a comma seperated list of standard 'system package' patterns, using the JDK regex format. The specific handling undertaken for each match being dependent on the <EM>&lt;rule-type&gt;</EM></LI>
+	</UL>
+	</LI>
+</UL>
+
+
+<P>Rules will can have either &quot;global&quot; scope, in which case every bundle JAR processed will have the rule appplied, or &quot;local&quot; scope meaning that they will only apply to a single bundle JAR. Global rules will be included in the <TT>mangen.properties</TT> file. Local rules are placed within the Manifest for the appropriate bundle in a special <TT>mangen</TT> attributes section e.g. </P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    Bundle-Name: Help Component
+    Bundle-ClassPath: .,help4.jar,oracle_ice.jar,ohj-jewt.jar
+    Metadata-Location: metadata.xml
+
+    Name: com/ascert/openosgi/mangen
+    mangen-rule-0: Ignore imports(com\.adobe\.acrobat.*,webeq\..*,javax\.help,javax\.media)
+
+</PRE>
+</DIV></DIV>
+
+<P><EM>Note: when creating regex patterns a single backslash (<BR class="atl-forced-newline">) is needed to escape literal characters when used in a Manifest, but a double backslash (\\\\) is needed in properties entries. This is because the JDK property scanning strips off one of the pair of double slashes in it's string handling.</EM> </P>
+
+<P>Details are included below showing whether a <EM>&lt;rule-type&gt;</EM> can be used in a global or a local context</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-AttributeStamp"></A>AttributeStamp</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Usable globally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Usable locally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Standard options</B> </TD>
+<TD class="confluenceTd"> <TT>imports</TT>, <TT>exports</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Rule specific options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<P>When processing a bundle JAR <TT>mangen</TT> can only detect the name of a required import package or a possible export package. Within an OSGi environment it's possible to also include qualifying information on a package name, such as versioning information. The AttributeStamp rule allows this information to be &quot;stamped&quot; over a detected package name. </P>
+
+<P>The rule may be supplied locally, in which case it will only apply to instances of a package name match with a specific bundle JAR, or globally in which case it will be applied to all instances of a package name match across all JARs.</P>
+
+<P>The <TT>imports</TT> or <TT>exports</TT> options allow stamping of attributes to either imported or exported packages respectively. The rule will perform a regex package name match against each entry in the list and if the name matches, will augment the matched package name with any additional attributes suppled. The following shows an example of this.</P>
+
+<P><EM>Example:</EM></P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen-rule-1=AttributeStamp imports(org\\.osgi\\.framework;version=&quot;1.2.0&quot;) 
+
+</PRE>
+</DIV></DIV>
+
+<P>If the rule finds a package name pattern match and the package already has additional attributes an error will be thrown if the stamped attributes do not match the existing attributes. This could be the case as a result of either a previous AttributeStamp or Merge rule.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-DontImportOwnExports"></A>DontImportOwnExports</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Usable globally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Usable locally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Standard options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Rule specific options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<P>In many application cases it's not necessary for a bundle JAR to import it' own exports. This rule may be used locally or globally to remove from a bundle's import list any package which it also exports.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-Ignore"></A>Ignore</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Usable globally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Usable locally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Standard options</B> </TD>
+<TD class="confluenceTd"> <TT>imports</TT>, <TT>exports</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Rule specific options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<P>There are several cases where a <TT>mangen</TT> detected possible export or required import may not actually be desired:</P>
+
+<UL>
+	<LI>Standard JDK classes, particularly in an OSGi R3 environment where these packages are resolved without needing import statements</LI>
+	<LI>Packages which <TT>mangen</TT> detects as needing imports but won't actually be used in a running environment. One example of these is third party JARs which include Ant tasks for use in a development environment but which would probably never be instantiated in a running application.</LI>
+</UL>
+
+
+<P>The Ignore rule will remove matching package entries from either the import or export lists, or both, as specified in the options.</P>
+
+<P><EM>Example:</EM></P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen.R4.syspackages=java\\..*
+    mangen-rule-R4-0=Ignore imports(${mangen.R4.syspackages})
+
+</PRE>
+</DIV></DIV>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-Merge"></A>Merge</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Usable globally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Usable locally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Standard options</B> </TD>
+<TD class="confluenceTd"> <TT>imports</TT>, <TT>exports</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Rule specific options</B> </TD>
+<TD class="confluenceTd"> <TT>existing</TT>, <TT>fixed</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<P>In some cases the simplest way to use <TT>mangen</TT> will be to provide a list of known imports and exports and then have <TT>mangen</TT> &quot;merge&quot; any remaining required imports and possible exports into these lists as needed. The Merge rule provides two mechanisms in which these known imports and exports can be supplied:</P>
+
+<UL>
+	<LI>Using <TT>existing</TT> Manifest entries - in which case <TT>mangen</TT> will take any current Import-Package and Export-Package headers and merge them into the detected import and export package sets</LI>
+</UL>
+
+
+<UL>
+	<LI>By specifying a set of <TT>fixed</TT> Manifest entries - allowing a limited set of pre-determined entries to be listed in the special <TT>mangen</TT> attributes of the Manifest which will be merged in.</LI>
+</UL>
+
+
+<P><EM>Example:</EM></P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    Manifest-Version: 1.0
+    Bundle-Name: mybundle
+    Export-Package: my.bundle.package
+
+    Name: com/ascert/openosgi/mangen
+    Import-Package: some.other.package
+
+</PRE>
+</DIV></DIV>
+
+<P>A <TT>Merge existing</TT> rule using the above example would ensure that <TT>my.bundle.package</TT> appeared in the list of packages to export. A <TT>Merge fixed</TT> would ensure that <TT>some.other.package</TT> appeared in the list of packages to import.</P>
+
+<P>It's possible to use both <TT>Merge existing</TT> and <TT>Merge fixed</TT> within a given set of application rules although it's more likely that only one of these would be used to meet a given application build strategy.</P>
+
+<P>The imports and exports options allow constraints on the packages to be merged based on regex package name pattern matches.</P>
+
+<P>One other aspect to note with the Merge option is that it also provides an alternative way to &quot;stamp&quot; OSGi attributes on a <TT>mangen</TT> detected pakcage name, since if the package being merged was already in the set of <TT>mangen</TT> detected packages it's entry will be augmented with any additional attributes supplied from the package entry being merged.</P>
+
+<P><A name="ApacheFelixManifestGenerator%28mangen%29-ProcessBundles"></A></P>
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-ProcessBundles"></A>ProcessBundles</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Usable globally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Usable locally</B> </TD>
+<TD class="confluenceTd"> <TT>no</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Standard options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Rule specific options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<P>By default, <TT>mangen</TT> will not actually process any of the JAR files specified, it will simply create objects to access them. </P>
+
+<P>Being able to skip <TT>mangen</TT> processing of bundle JARs is useful behaviour in a small number of instances, such as the <A href="#ApacheFelixManifestGenerator%2528mangen%2529-ObrReport">ObrReport</A> that will generally be run against existing bundle Manifest headers rather than <TT>mangen</TT> generated sets of imports and exports.</P>
+
+<P>For most cases, however, <TT>mangen</TT> import and export processing will be required and this Rule should be included.</P>
+
+<P><EM>Example:</EM></P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    mangen.rulesets=mangen-rule-initial- , mangen-rule-Ant- , mangen-rule-R${mangen.osgi.level}- , mangen-rule- , mangen-rule-final-
+
+    mangen-rule-initial-0=ProcessBundles
+    ...
+
+</PRE>
+</DIV></DIV>
+
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-ResolveImportsToExports"></A>ResolveImportsToExports</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Usable globally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Usable locally</B> </TD>
+<TD class="confluenceTd"> <TT>no</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Standard options</B> </TD>
+<TD class="confluenceTd"> <TT>sys-packages</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Rule specific options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<P>Some OSGi developers use the framework as a basis for creating packaged applications, in fact it is just this usage which Ascert make of OSGi and Oscar and which motivated the creation of =mangen. In such cases, the simplest and possibly most powerful rule use case is  simply to supply <TT>mangen</TT> with a complete set of application bundles and let it work out the matrix of imports and exports required to resolve every bundle dependency. This is exactly what the ResolveImportsToExports does. </P>
+
+<P>ResolveImportsToExports can only be used globally and will prune down the set of possible exports and required imports to just those required to satisfy every bundle dependency. It will generate <TT>*** WARNING ***</TT> report lines for the following cases:</P>
+
+<UL>
+	<LI>duplicate exports where more than one bundle could be an exporter of the same package which is a necessary import of some other bundle. In these cases, at present, the first possible exporter found will be picked and all others removed and a warning generated</LI>
+	<LI>missing exports i.e. packages required by one or more bundles that are never exported. Erroneous warnings for standard JDK packages can be avoided using the <TT>sys-packages</TT> option.</LI>
+</UL>
+
+
+<P>At present, the known cases where this rule may fail to create a consistent and resolved set of bundle Manifests are:</P>
+
+<UL>
+	<LI>cases of dynamic classloading</LI>
+	<LI>certain third party JARs, such as Xerces, which use the awkaward-to-handle OSGi case of <TT>Thread.getContextClassLoader()</TT> to determine the classloader for dynamic classloading.</LI>
+</UL>
+
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-UpdateBundles"></A>UpdateBundles</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Usable globally</B> </TD>
+<TD class="confluenceTd"> <TT>yes</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Usable locally</B> </TD>
+<TD class="confluenceTd"> <TT>no</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Standard options</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Rule specific options</B> </TD>
+<TD class="confluenceTd"> <TT>overwrite</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<P>By default, <TT>mangen</TT> will only report on the generated list of imports and exports for each bundle processed. The UpdateBundles rule can be used to instruct <TT>mangen</TT> to update each bundle's Manifest wth the set of generated packages. </P>
+
+<P>This rule can only be used globaly. If the <TT>overwrite</TT> option is specified, the bundle JAR will overwritten with a new bundle JAR containing the new Manifest. Without this option, the update will create new JARs of the same name as each existing JAR but with a suffix of <TT>.new.jar</TT>.</P>
+
+<P><A name="ApacheFelixManifestGenerator%28mangen%29-MangenReports"></A></P>
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-Reports"></A>Reports</H2>
+
+<P>Reports are really like a simplified case of rules. At present only a couple of simple reports are included.</P>
+
+<P>All reports at present send their output to <TT>System.out</TT>, which can of course be redirected to a text file if a persistent copy is desired.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-RuleReport"></A>RuleReport</H3>
+
+<P>This report will show any Rule generated output.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-BundleReport"></A>BundleReport</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Report options</B> </TD>
+<TD class="confluenceTd"> <TT>show-differences</TT> <TT>show-local-rules</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P>This report will create a simple overview of the refined set of a bundle's imports and exports, together with a report of any local rules which have been run for the bundle. The following options are supported:</P>
+
+<UL>
+	<LI><TT>show-differences</TT> - will show details of <EM>ADDED</EM> and <EM>REMOVED</EM> packages by comparing the generate set of import and export packages against the existing Import-Package and Export-Package attributes. If this option is omitted a simple list of generated imports and exports will be shown</LI>
+	<LI><TT>show-local-rules</TT> - will show report output from any local rules run for each bundle JAR</LI>
+</UL>
+
+
+<P><A name="ApacheFelixManifestGenerator%28mangen%29-ObrReport"></A></P>
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-ObrReport"></A>ObrReport</H3>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Report options</B> </TD>
+<TD class="confluenceTd"> <TT>skip-jars</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P>Produce a report for each bundle JAR that can be used as an OBR descriptor. </P>
+
+<P>The <TT>skip-jars</TT> option can be used to specify a comma separated list of JAR name regex patterns for which OBR descriptors are not required (e.g. source JARs).</P>
+
+<P>OBR descriptor production is a quite different aspect of <TT>mangen</TT> usage to import/export generation and so a separate example <TT>obr.properties</TT> file has been included to show typical settings for it's usage. The <TT>-Dmangen.properties</TT> setting can be used to run <TT>mangen</TT> with these settings e.g.</P>
+
+<P><EM>Example:</EM></P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>
+    java -Dmangen.properties=lib\obr.properties -jar lib\mangen.jar e:\obr\repo\
+
+</PRE>
+</DIV></DIV>
+
+<P>The example <TT>obr.properties</TT> includes a number of features:</P>
+
+<UL>
+	<LI>there is no <EM>ProcessBundles</EM> rule, meaning that <TT>mangen</TT> will not automatically generate imports and exports.</LI>
+	<LI>there is a <EM>Merge existing</EM>  rule meaning <TT>mangen</TT> will use existing Manifest headers in each bundle JAR to generate the ObrReport</LI>
+	<LI>there is an <TT>mangen.obr.ver</TT> property that can be used to control the format of the OBR descriptors produced</LI>
+	<LI>text templates are included that allow the OBR version 1 and version 2 descriptors to be changed without needing to modify the ObrReport code.</LI>
+</UL>
+
+
+<P>Whilst running, the ObrReport will look for a number of specific properties to aid it's processing:</P>
+
+<UL>
+	<LI><TT>mangen.obr.ver</TT> - to determine which format of OBR descriptor to produce</LI>
+	<LI><TT>mangen.obr.descr.&lt;obr-ver&gt;</TT> - the main text template used to produce the OBR descriptor for each bundle</LI>
+	<LI><TT>mangen.obr.import.&lt;obr-ver&gt;</TT> - the template used to produce the descriptor text for each import.</LI>
+	<LI><TT>mangen.obr.export.&lt;obr-ver&gt;</TT> - the template used to produce the descriptor text for each export.</LI>
+	<LI><TT>mangen.obr.import.ver.&lt;obr-ver&gt;</TT> - the template used to produce a &quot;version&quot; descriptor for an import which has an explicit version specified.</LI>
+	<LI><TT>mangen.obr.export.ver.&lt;obr-ver&gt;</TT> - the template used to produce a &quot;version&quot; descriptor for an export which has an explicit version specified.</LI>
+</UL>
+
+
+<P>The templates include a simple &quot;tag substitution&quot; mechanism that will expand the following tags:</P>
+
+<UL>
+	<LI><TT>@@hdr:&lt;header-name&gt;@@</TT> - include the attribute value of &lt;header-name&gt; from the bundle's Manifest. The <TT>mangen</TT> attributes will be searched first, followed by the Main attributes</LI>
+	<LI><TT>@<INPUT type="text" name="variableValues.imports" size="12" onkeyup="updateOthers(this)">&nbsp;<SPAN class="templateparameter">(imports)</SPAN>@</TT> - process the list of imports and generate descriptor text based on the <TT>mangen.obr.import.&lt;obr-ver&gt;</TT> template</LI>
+	<LI><TT>@<INPUT type="text" name="variableValues.exports" size="12" onkeyup="updateOthers(this)">&nbsp;<SPAN class="templateparameter">(exports)</SPAN>@</TT> - process the list of exports and generate descriptor text based on the <TT>mangen.obr.export.&lt;obr-ver&gt;</TT> template</LI>
+	<LI><TT>@@import-ver@@</TT> - will be expanded using <TT>mangen.obr.import.ver.&lt;obr-ver&gt;</TT> if an explicit version was included for the import package</LI>
+	<LI><TT>@@export-ver@@</TT> - will be expanded using <TT>mangen.obr.export.ver.&lt;obr-ver&gt;</TT> if an explicit version was included for the export package</LI>
+	<LI><TT>@@pkg:name@@</TT> - name of the import or export package currently being processed</LI>
+	<LI><TT>@@pkg:ver@@</TT> - version of the import or export package currently being processed</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-Contentsofthedistributionfile"></A>Contents of the distribution file</H2>
+
+<P>The current <TT>mangen</TT> distribution includes the following:</P>
+
+<UL>
+	<LI>pre-compiled versions of <TT>mangen</TT> and libraries</LI>
+	<LI>full source code and Ant build files</LI>
+	<LI>this documentation in HTML format. The original documentation is maintained in TWiki format at Ascert's intranet set and a copy of the raw TWiki file is included.</LI>
+</UL>
+
+
+<P>The following third party libraries are also included in the distribution:</P>
+
+<UL>
+	<LI><A href="http://incubator.apache.org/felix/" class="external-link" rel="nofollow">Felix</A> library JARs - required Felix library JARs, used by <TT>mangen</TT> in Manifest processing, and generation</LI>
+	<LI><A href="http://asm.objectweb.org/" class="external-link" rel="nofollow">ASM</A> - the ASM java bytecode parsing toolkit used by the <TT>ASMClassScanner</TT> class scanning implementation.</LI>
+	<LI><A href="http://jakarta.apache.org/bcel/" class="external-link" rel="nofollow">BCEL</A> - the BCEL java  bytecode parsing toolkit used by the <TT>BCELScanner</TT> class scanning implementation.</LI>
+</UL>
+
+
+<P>Thanks also go to the following contributors:</P>
+
+<UL>
+	<LI><A href="mailto:heavy@ungoverned.org" class="external-link" rel="nofollow">Richard S. Hall</A> - both for his assistance in the development and testing of <TT>mangen</TT> and for his contribution of the ASM based class scanning implementation.</LI>
+</UL>
+
+
+
+<H1><A name="ApacheFelixManifestGenerator%28mangen%29-Extending%7B%7Bmangen%7D%7D"></A>Extending <TT>mangen</TT></H1>
+
+<P>First things first. You need to be a reasonably proficient Java developer to undertake extending <TT>mangen</TT>. If you're not, then you should consider a Java programming course or tutorial of some kind.</P>
+
+<P>Extensions to <TT>mangen</TT> can be performed in the following ways:</P>
+
+<UL>
+	<LI>creating new or enhanced Rules</LI>
+	<LI>creating new or enhanced Reports</LI>
+	<LI>supporting alternative class scanning implementations</LI>
+	<LI>Modifying the core source code</LI>
+</UL>
+
+
+<P>The idea is that as <TT>mangen</TT> matures most extension cases will be possible via the first two means, with new class scanners and core modifications being the exception. </P>
+
+<P>For detailed information, Javadoc API documentation for <TT>mangen</TT> can be found @@api-index-loc@@.</P>
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-CreatingnewRuletypes"></A>Creating new Rule types</H2>
+
+<P>A rule type is in fact just a Java class which implements the <TT>com.ascert.openosgi.Rule</TT> interface. If no package name is specified, these will be assumed to be in the <TT>com.ascert.openosgi.mangen.rules</TT> package. Although somewhat less readable, a fully-qualified class name can be supplied for rule types in other packages.</P>
+
+<P>At present, the simplest way to learn about creating new rules is to look at the source code for existing rules to understand how they're put together and what can be done in them.</P>
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-CreatingnewReporttypes"></A>Creating new Report types</H2>
+
+<P>Reports are similar to rules. A Report type is a Java class which implements the <TT>com.ascert.openosgi.Report</TT> interface. Unqualified report types will be assumed to be in <TT>com.ascert.openosgi.mangen.reports</TT> package, with the option to use fully-qualified class names if desired. </P>
+
+<P>As with rules, the source code for the existing reports is the best place to learn about creating new reports.</P>
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-Alternativeclassscanners"></A>Alternative class scanners</H2>
+
+<P>To parse the class files of an application <TT>mangen</TT> needs a class file bytecode scanning library. So that alternative scanning tools may be used <TT>mangen</TT> does not make direct usage of any library implementation. Instead a wrapper class is used which implements the <TT>ClassScanner</TT> interface, and hence insulates <TT>mangen</TT> from the specific details of different bytecode scanning tools. The <TT>mangen.scanner.class</TT> property can be used to control which scanner implementation class is used.</P>
+
+<P>At present, implementations of the  <TT>ClassScanner</TT> interface have been include for the ObjectWeb <A href="http://asm.objectweb.org/" class="external-link" rel="nofollow">ASM</A> toolkit and the  <A href="http://jakarta.apache.org/bcel/" class="external-link" rel="nofollow">Apache BCEL</A> toolkit. </P>
+
+
+<H1><A name="ApacheFelixManifestGenerator%28mangen%29-OngoingDevelopment"></A>Ongoing Development</H1>
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-ChangeLog"></A>Change Log</H2>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-Version1.0.1"></A>Version 1.0.1</H3>
+
+<UL>
+	<LI>Initial version submitted to Felix project.</LI>
+	<LI>Package names changed and license headers changed to Apache license</LI>
+	<LI><TT>OsgiPackage</TT> classes changed to use Felix manifest handling classes.</LI>
+	<LI>ASM and BCEL sources removed and maven dependencies created to pull these in from repositories.</LI>
+	<LI>Compiles and builds using normal maven build, but as yet doesn't create a standalone distribution which includes dependent jars and config <TT>.properties</TT> files.</LI>
+	<LI>No analysis work has been performed to determine enhancements and additional rules desirable to integrate with Felix build and take advantage of <TT>mangen</TT> class scanning.</LI>
+</UL>
+
+
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-0.1.xVersions"></A>0.1.x Versions</H3>
+
+<P>The 0.1.x versions of <TT>mangen</TT> are the original versions developed to work with Oscar. The versions and documentation can still be downloaded from the <A href="http://oscar-osgi.sourceforge.net/mangen/" class="external-link" rel="nofollow">OBR Sourceforge site</A>. The change history has been maintained here for completeness.</P>
+
+<H4><A name="ApacheFelixManifestGenerator%28mangen%29-Version0.1.2"></A>Version 0.1.2</H4>
+
+<UL>
+	<LI>Inclusion of <A href="#ApacheFelixManifestGenerator%2528mangen%2529-ObrReport">ObrReport</A> for generation of OBR descriptors <EM>[ oscar-osgi-Feature Requests-1221468 ]</EM></LI>
+	<LI>Removed &quot;default&quot; processing of JARs. Now an explicit <A href="#ApacheFelixManifestGenerator%2528mangen%2529-ProcessBundles">ProcessBundles</A> must be included to force JAR processing to take place. This allows reports, such as the new ObrReport to skip <TT>mangen</TT> import/export processing and just work from existing manifests.</LI>
+	<LI>default <TT>mangen.properties</TT> now explicitly lists each non java.* package rather than using wildcards, proved safer and more reliable when creating OSGi R4 manifests</LI>
+</UL>
+
+
+<H4><A name="ApacheFelixManifestGenerator%28mangen%29-Version0.1.1"></A>Version 0.1.1</H4>
+
+<UL>
+	<LI>Support for errors and warnings to cause non-zero exit status to be returned</LI>
+	<LI>Fix for occasional failures to update bundle JARs <EM>[ oscar-osgi-Bugs-1218334 ]</EM></LI>
+</UL>
+
+
+<H4><A name="ApacheFelixManifestGenerator%28mangen%29-Version0.1.0"></A>Version 0.1.0</H4>
+
+<UL>
+	<LI>First version</LI>
+	<LI>Support for current OSGi Release 3 (R3) manifest headers, and basic support for proposed upcoming R4 headers</LI>
+	<LI>Processing of JARs and directories containing JARs and parsing of contained classes using a subset of BCEL.</LI>
+	<LI>Simple but extensible rule based engine for import and export set manipulation.</LI>
+	<LI>Simple but extensible reporting engine</LI>
+	<LI>Updating of process bundle JARs via an UpdateBundles rule</LI>
+	<LI>Pluggable interface to allow alternative class byte code scanners to be used</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixManifestGenerator%28mangen%29-PossibleEnhancements"></A>Possible Enhancements</H2>
+
+<P>As with any piece of software, there are always more things you'd like to do than time available in which to work on them. This library is no exception. </P>
+
+<P>In it's present form it <TT>mangen</TT> is simple, reasonably fast, and usable. Ideas on some of the more significant areas where it could be enhanced or improved are described in the sections below.</P>
+
+<P>Most <TT>mangen</TT> enhancement ideas have now been created as issues in the <A href="https://issues.apache.org/jira/secure/IssueNavigator.jspa?component=12310910&sorter%2Ffield=priority&mode=hide&reset=true&pid=12310100&sorter%2Forder=ASC" class="external-link" rel="nofollow">Apache JIRA list</A>.</P>
+
+<P>Those which are more speculative have been left below.</P>
+
+<H3><A name="ApacheFelixManifestGenerator%28mangen%29-OnlineusagewithinanOSGienvironment"></A>Online usage within an OSGi environment</H3>
+
+<P>Extending the concept of <A href="#ApacheFelixManifestGenerator%2528mangen%2529-ManifestLessUsage">Manifest-less usage</A> comes an interesting possibility that a specific OSGi platform such as <A href="http://oscar.objectweb.org/" class="external-link" rel="nofollow">Oscar</A> could be extended to load any JAR and automatically 'fix-up' a usable Manifest. This would require internal access/knowledge of the specific platform's implementation since the existing standard OSGi API would not supply sufficient details and access to the set of loaded bundle JARs. Additionally, it would probably need to be a &quot;multi-step&quot; process since until a largely complete set of bundle JARs were loaded it may not be possible to resolve all imports and exports. This perhaps implies some form of platform extension to allow a set of JARs to be passed to some form of &quot;pre-load&quot; mechanism capable of resolving their imports and exports within the JAR set, and possibly from existing loaded bundle JARs or even an external <A href="http://oscar-osgi.sourceforge.net/" class="external-link" rel="nofollow">OBR</A>.   </P>
+
+<H1><A name="ApacheFelixManifestGenerator%28mangen%29-Acknowledgements"></A>Acknowledgements</H1>
+
+<P>Ascert is pleased to acknowledge the following projects, organisations and individuals whose tools have been used in the creation of this software:</P>
+
+<UL>
+	<LI><A href="http://asm.objectweb.org/" class="external-link" rel="nofollow">ASM</A> - ObjectWeb's bytecode scanning and manipulation toolkit.</LI>
+	<LI><A href="http://jakarta.apache.org/bcel/" class="external-link" rel="nofollow">BCEL</A> - Apache's bytecode scanning and manipulation toolkit.</LI>
+	<LI><A href="http://www.jedit.org/" class="external-link" rel="nofollow">jEdit</A> - home of the powerful and flexible jEdit<BR>
+   editor</LI>
+	<LI><A href="http://ant.apache.org/" class="external-link" rel="nofollow">Ant</A> - home of the Apache Ant build tool</LI>
+	<LI><A href="http://www.bluemarsh.com/" class="external-link" rel="nofollow">Blue Marsh Softworks</A> - authors of the excellent <A href="http://www.bluemarsh.com/java/jswat/index.html" class="external-link" rel="nofollow">JSwat</A> Java debugger.</LI>
+	<LI><A href="http://subversion.tigris.org/" class="external-link" rel="nofollow">Subversion</A> - home of the Subversion (aka SVN) version control system, and <A href="http://www.regnis.de/" class="external-link" rel="nofollow">Regnis</A> and <A href="http://tortoisesvn.tigris.org/" class="external-link" rel="nofollow">TortoiseSVN</A>, both of which are excellent SVN GUI clients</LI>
+	<LI><A href="http://java.sun.com/" class="external-link" rel="nofollow">Sun Java</A> - home of all things Java and a place we love.</LI>
+</UL>
+
+
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2008-03-09 15:06:53.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

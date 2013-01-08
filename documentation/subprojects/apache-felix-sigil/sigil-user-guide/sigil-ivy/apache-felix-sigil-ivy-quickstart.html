@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Sigil Ivy Quickstart</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-sigil.html">Apache Felix Sigil</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-sigil/sigil-user-guide.html">Sigil User Guide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-sigil/sigil-user-guide/sigil-ivy.html">Sigil Ivy</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-sigil-ivy-quickstart.html" target="felix_cwiki">/site/apache-felix-sigil-ivy-quickstart.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Sigil Ivy Quickstart</h1>
+      <div class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#shared-configuration">Shared Configuration</a><ul>
+<li><a href="#ivysettingsproperties">ivysettings.properties</a></li>
+<li><a href="#ivysettingsxml">ivysettings.xml</a></li>
+<li><a href="#sigil-reposproperties">sigil-repos.properties</a></li>
+</ul>
+</li>
+<li><a href="#project-configuration">Project Configuration</a><ul>
+<li><a href="#buildxml">build.xml</a></li>
+<li><a href="#ivyxml">ivy.xml</a></li>
+<li><a href="#sigilproperties">sigil.properties</a></li>
+</ul>
+</li>
+<li><a href="#project-build">Project Build</a></li>
+<li><a href="#next-steps">Next Steps</a></li>
+</ul>
+</div>
+<h2 id="overview">Overview</h2>
+<p>The sigil-ivy-plugin integrates Sigil with <a href="http://ant.apache.org/ivy/">Apache Ivy</a>. If you are not familiar with Ivy, you should visit their [tutorial|http://ant.apache.org/ivy/history/latest-milestone/tutorial.html].</p>
+<p>Sigil provides a custom Ivy resolver, which allows Ivy to resolve dependencies specified as OSGi Package-Imports, rather than as specific jar artifacts. This avoids the duplication and possible error of having to specify build dependencies separately from OSGi runtime dependencies.</p>
+<p>The plugin works by intercepting the ivy.xml parser and dynamically replacing any dependencies with the results of resolving the OSGi Package-Imports specified in sigil.properties. Sigil can resolve dependencies using a local directory of OSGi bundles, or using an <a href="http://www.osgi.org/Repository/">OBR repository</a>.</p>
+<p>The plugin also provides an Ant task to generate (multiple) OSGi bundles from each sigil.properties file using <a href="http://www.aqute.biz/Code/Bnd">Bnd</a>. sigil.properties is similar to .bnd instruction files, but it supports multiple bundles.</p>
+<p>This Quick Start is based on the Ivy <a href="http://ant.apache.org/ivy/history/latest-milestone/tutorial/dependence.html">project dependencies</a> tutorial, modified to use Sigil. The modified example is in <code>example/dependence</code> in the Sigil download.</p>
+<h2 id="shared-configuration">Shared Configuration</h2>
+<h3 id="ivysettingsproperties">ivysettings.properties</h3>
+<p>You will need to change ivy.jar to point to the location of your Ivy jar. If you don't have Ivy, you can download it from http://ant.apache.org/ivy/download.cgi.</p>
+<div class="codehilite"><pre>repository.dir=<span class="cp">${</span><span class="n">ivy</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span>/repository
+sigil-ivy-plugin.jar=<span class="cp">${</span><span class="n">ivy</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span>/../../../lib/sigil-ivy-plugin.jar
+ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
+</pre></div>
+
+
+<h3 id="ivysettingsxml">ivysettings.xml</h3>
+<p>The lines containing "sigil" need to be added to your ivysettings.xml:</p>
+<ul>
+<li><em>classpath</em> - this references the location of the sigil-ivy-plugin.jar</li>
+<li><em>typedef</em> - this defines the sigil-parser and sigil-resolver</li>
+<li><em>parsers</em> - the sigil-parser must be the last parser in the parsers section</li>
+<li><em>resolvers</em> - the sigil-resolver requires a config attribute to specify the repository configuration file</li>
+<li>
+<p><em>modules</em> - the modules entry ensures that the sigil-resolver is used to resolve the injected dependencies</p>
+<p><ivysettings>
+    <properties file="${ivy.settings.dir}/ivysettings.properties"/>
+    <settings defaultResolver="projects"/>
+    <caches defaultCacheDir="${ivy.settings.dir}/ivy-cache" /></p>
+<div class="codehilite"><pre><span class="nt">&lt;classpath</span> <span class="na">file=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">sigil</span><span class="o">-</span><span class="n">ivy</span><span class="o">-</span><span class="n">plugin</span><span class="o">.</span><span class="n">jar</span><span class="cp">}</span><span class="s">&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;typedef</span> <span class="na">name=</span><span class="s">&quot;sigil-parser&quot;</span> <span class="na">classname=</span><span class="s">&quot;org.cauldron.bld.ivy.SigilParser&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;typedef</span> <span class="na">name=</span><span class="s">&quot;sigil-resolver&quot;</span> <span class="na">classname=</span><span class="s">&quot;org.cauldron.bld.ivy.SigilResolver&quot;</span> <span class="nt">/&gt;</span>
+
+<span class="nt">&lt;parsers&gt;</span>
+    <span class="nt">&lt;sigil</span><span class="err">-parser</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/parsers&gt;</span>
+
+<span class="nt">&lt;resolvers&gt;</span>
+    <span class="nt">&lt;sigil</span><span class="err">-resolver</span> <span class="na">name=</span><span class="s">&quot;sigil&quot;</span> <span class="na">config=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">ivy</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span><span class="s">/sigil-repos.properties&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;filesystem</span> <span class="na">name=</span><span class="s">&quot;projects&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;artifact</span> <span class="na">pattern=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">repository</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span><span class="s">/[artifact]-[revision].[ext]&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;ivy</span> <span class="na">pattern=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">repository</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span><span class="s">/[module]-[revision].xml&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/filesystem&gt;</span>
+<span class="nt">&lt;/resolvers&gt;</span>
+
+<span class="nt">&lt;modules&gt;</span>
+    <span class="nt">&lt;module</span> <span class="na">organisation=</span><span class="s">&quot;sigil&quot;</span> <span class="na">name=</span><span class="s">&quot;*&quot;</span> <span class="na">resolver=</span><span class="s">&quot;sigil&quot;/</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/modules&gt;</span>
+</pre></div>
+
+
+<p></ivysettings></p>
+</li>
+</ul>
+<h3 id="sigil-reposproperties">sigil-repos.properties</h3>
+<p>This file contains the definition of the Sigil repositories. It is referenced via the config attribute on the sigil-resolver in ivysettings.xml.</p>
+<p>The repositories defined are:</p>
+<ul>
+<li><em>system</em> - resolves internal Java packages, such as <code>javax.swing</code> and optionally packages from bundle 0 of an OSGi framework provider</li>
+<li><em>project</em> - resolves against exports in sigil.properties of other projects. This allows Ivy to automatically determine the correct build order.</li>
+<li><em>spring</em> - this resolves against an OBR index for the SpringSource Enterprise Repository.</li>
+</ul>
+<p>It's also possible to define a <em>filesystem</em> repository based on a local directory containing bundles.</p>
+<div class="codehilite"><pre><span class="c1"># repository config</span>
+
+<span class="o">-</span><span class="n">repositories:</span>  <span class="nb">system</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">spring</span>
+
+<span class="nb">system</span><span class="p">;</span><span class="n">provider:</span>        <span class="nb">system</span>
+<span class="nb">system</span><span class="p">;</span><span class="n">level:</span>           <span class="o">-</span><span class="mi">1</span>
+
+<span class="n">project</span><span class="p">;</span><span class="n">provider:</span>       <span class="n">project</span>
+<span class="n">project</span><span class="p">;</span><span class="n">level:</span>  <span class="mi">0</span>
+<span class="n">project</span><span class="p">;</span><span class="n">pattern:</span>        <span class="o">..</span><span class="sr">/*/</span><span class="p">[</span><span class="n">sigilproject</span><span class="p">]</span>
+
+<span class="n">spring</span><span class="p">;</span><span class="n">provider:</span>        <span class="n">obr</span>
+<span class="n">spring</span><span class="p">;</span><span class="n">level:</span>           <span class="mi">2</span>
+<span class="n">spring</span><span class="p">;</span><span class="n">url:</span>             <span class="n">http:</span><span class="sr">//sigi</span><span class="n">l</span><span class="o">.</span><span class="n">codecauldron</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">spring</span><span class="o">-</span><span class="n">repository</span><span class="o">.</span><span class="n">obr</span>
+<span class="n">spring</span><span class="p">;</span><span class="nb">index</span><span class="p">:</span>           <span class="o">..</span><span class="sr">/settings/s</span><span class="n">pring</span><span class="o">-</span><span class="n">repository</span><span class="o">.</span><span class="n">obr</span>
+</pre></div>
+
+
+<h2 id="project-configuration">Project Configuration</h2>
+<h3 id="buildxml">build.xml</h3>
+<p>The sigil-ivy-plugin provides an Ant task to build bundles using Bnd. It requires bndlib.jar, which is on the manifest Class-Path, so you don't need to explicitly add bndlib.jar to the classpath, as long as it is present in the same directory as sigil-ivy-plugin.jar.</p>
+<div class="codehilite"><pre><span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">&quot;sigil.bundle&quot;</span>
+    <span class="na">classname=</span><span class="s">&quot;org.cauldron.bld.ant.BundleTask&quot;</span>
+    <span class="na">classpath=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">sigil</span><span class="o">-</span><span class="n">ivy</span><span class="o">-</span><span class="n">plugin</span><span class="o">.</span><span class="n">jar</span><span class="cp">}</span><span class="s">&quot;/</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;jar&quot;</span> <span class="na">depends=</span><span class="s">&quot;compile&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;sigil</span><span class="err">.bundle</span> <span class="na">destpattern=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">build</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span><span class="s">/[id].[ext]&quot;</span>
+                 <span class="na">classpathref=</span><span class="s">&quot;run.path.id&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/target&gt;</span>
+</pre></div>
+
+
+<h3 id="ivyxml">ivy.xml</h3>
+<p>The ivy.xml for the dependee project is unchanged (but, by default, Sigil ignores any dependences it contains).</p>
+<div class="codehilite"><pre><span class="nt">&lt;ivy-module</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;info</span> <span class="na">organisation=</span><span class="s">&quot;org.apache&quot;</span> <span class="na">module=</span><span class="s">&quot;dependee&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency</span> <span class="na">org=</span><span class="s">&quot;commons-lang&quot;</span> <span class="na">name=</span><span class="s">&quot;commons-lang&quot;</span> <span class="na">rev=</span><span class="s">&quot;2.0&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+<span class="nt">&lt;/ivy-module&gt;</span>
+</pre></div>
+
+
+<h3 id="sigilproperties">sigil.properties</h3>
+<p>Placing a sigil.properties file next to an ivy.xml file, causes the sigil-parser to dynamically replace the dependencies contained in ivy.xml with dependencies determined from the -imports property in sigil.properties.</p>
+<div class="codehilite"><pre><span class="c1"># dependee sigil.properties</span>
+
+<span class="n">version:</span> <span class="mf">1.0.0</span>
+
+<span class="o">-</span><span class="n">bundles:</span> <span class="n">dependee</span>
+
+<span class="o">-</span><span class="n">exports:</span> <span class="n">standalone</span>
+
+<span class="o">-</span><span class="n">imports:</span> <span class="o">\</span>
+  <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">lang</span><span class="p">;</span><span class="n">version</span><span class="o">=</span><span class="s">&quot;[2.0.0,2.4.0)&quot;</span><span class="p">,</span> <span class="o">\</span>
+
+<span class="o">-</span><span class="n">resources:</span> <span class="o">\</span>
+  <span class="n">version</span><span class="o">.</span><span class="n">properties</span>
+</pre></div>
+
+
+<h2 id="project-build">Project Build</h2>
+<p>{code:bgColor=#FFFFCE}
+$ cd dependee
+$ ant jar
+Buildfile: build.xml</p>
+<p>init:</p>
+<p>resolve:
+<a href="">ivy:retrieve</a> :: Ivy 2.0.0-rc2 - 20081028224207 :: http://ant.apache.org/ivy/ ::
+:: loading settings :: file = /Volumes/Users/derek/sigil-0.7.0/example/dependence/settings/ivysettings.xml
+<a href="">ivy:retrieve</a> Sigil: augmenting module=dependee ant.project.name=dependee
+<a href="">ivy:retrieve</a> Sigil: loading Project Repository: /Volumes/Users/derek/sigil-0.7.0/example/dependence/*/sigil.properties
+<a href="">ivy:retrieve</a> :: resolving dependencies :: org.apache#dependee;working@rodney
+<a href="">ivy:retrieve</a>  confs: [default]
+<a href="">ivy:retrieve</a> Sigil: augmenting module=com.springsource.org.apache.commons.lang ant.project.name=dependee
+<a href="">ivy:retrieve</a>  found sigil#com.springsource.org.apache.commons.lang;2.1.0 in sigil
+<a href="">ivy:retrieve</a> downloading http://repository.springsource.com/ivy/bundles/external/org.apache.commons/
+    com.springsource.org.apache.commons.lang/2.1.0/com.springsource.org.apache.commons.lang-2.1.0.jar ...
+<a href="">ivy:retrieve</a>  [SUCCESSFUL ] sigil#com.springsource.org.apache.commons.lang;2.1.0!com.springsource.org.apache.commons.lang.jar (2619ms)
+<a href="">ivy:retrieve</a> :: resolution report :: resolve 232ms :: artifacts dl 2620ms
+        ---------------------------------------------------------------------
+        |                  |            modules            ||   artifacts   |
+        |       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+        ---------------------------------------------------------------------
+        |      default     |   1   |   1   |   1   |   0   ||   1   |   1   |
+        ---------------------------------------------------------------------
+<a href="">ivy:retrieve</a> :: retrieving :: org.apache#dependee
+<a href="">ivy:retrieve</a>  confs: [default]
+<a href="">ivy:retrieve</a>  1 artifacts copied, 0 already retrieved (204kB/11ms)</p>
+<p>compile:
+    <a href="">mkdir</a> Created dir: /Volumes/Users/derek/sigil-0.7.0/example/dependence/dependee/build/classes
+    <a href="">javac</a> Compiling 1 source file to /Volumes/Users/derek/sigil-0.7.0/example/dependence/dependee/build/classes</p>
+<p>jar:
+<a href="">propertyfile</a> Creating new property file: /Volumes/Users/derek/sigil-0.7.0/example/dependence/dependee/build/classes/version.properties
+<a href="">sigil.bundle</a> creating bundle: dependee
+<a href="">sigil.bundle</a> dependee: 0 errors, 0 warnings</p>
+<p>BUILD SUCCESSFUL
+Total time: 6 seconds</p>
+<div class="codehilite"><pre><span class="n">Notice</span> <span class="n">how</span>
+</pre></div>
+
+
+<p>-imports: \
+  org.apache.commons.lang;version="[2.0.0,2.4.0)"</p>
+<div class="codehilite"><pre><span class="n">in</span> <span class="n">sigil</span><span class="o">.</span><span class="n">properties</span> <span class="n">is</span> <span class="n">resolved</span> <span class="n">to</span> <span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">lang</span><span class="o">-</span><span class="mf">2.1.0</span><span class="o">.</span><span class="n">jar</span><span class="p">,</span> <span class="n">using</span> <span class="n">the</span> <span class="n">OBR</span> <span class="n">resolver</span><span class="o">.</span>
+
+<span class="n">The</span> <span class="n">dependencies</span> <span class="n">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">xml</span> <span class="n">are</span> <span class="n">ignored</span> <span class="n">by</span> <span class="n">default</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">retain</span> <span class="n">them</span> <span class="n">by</span> <span class="n">setting</span> <span class="n">the</span> <span class="n">keepDependencies</span> <span class="n">attribute</span> <span class="n">on</span> <span class="n">the</span> <span class="n">sigil</span><span class="o">-</span><span class="n">parser</span><span class="o">.</span>
+
+<span class="n">Now</span> <span class="n">let</span><span class="s">&#39;s pretend that we&#39;</span><span class="n">ve</span> <span class="n">added</span> <span class="n">some</span> <span class="n">code</span> <span class="n">which</span> <span class="n">requires</span> <span class="n">the</span> <span class="n">following</span> <span class="n">imports</span> <span class="n">in</span> <span class="n">sigil</span><span class="o">.</span><span class="n">properties:</span>
+</pre></div>
+
+
+<p>-imports: \
+  org.apache.commons.lang;version="[2.0.0,2.4.0)", \
+  javax.servlet;version="(2.4,3.0]", \
+  org.apache.log4j;version="[1.2.14,1.3)", \
+  org.apache.commons.logging</p>
+<div class="codehilite"><pre><span class="p">{</span><span class="n">code:bgColor</span><span class="o">=</span><span class="c1">#FFFFCE}</span>
+<span class="nv">$</span> <span class="nv">ant</span> <span class="n">jar</span>
+<span class="n">Buildfile:</span> <span class="n">build</span><span class="o">.</span><span class="n">xml</span>
+
+<span class="n">init:</span>
+
+<span class="n">resolve:</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="o">::</span> <span class="n">Ivy</span> <span class="mf">2.0.0</span><span class="o">-</span><span class="n">rc2</span> <span class="o">-</span> <span class="mi">20081028224207</span> <span class="o">::</span> <span class="n">http:</span><span class="sr">//</span><span class="n">ant</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/ivy/</span> <span class="o">::</span>
+<span class="o">::</span> <span class="n">loading</span> <span class="n">settings</span> <span class="o">::</span> <span class="n">file</span> <span class="o">=</span> <span class="sr">/Volumes/</span><span class="n">Users</span><span class="sr">/derek/sigi</span><span class="n">l</span><span class="o">-</span><span class="mf">0.7.0</span><span class="sr">/example/</span><span class="n">dependence</span><span class="sr">/settings/i</span><span class="n">vysettings</span><span class="o">.</span><span class="n">xml</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">Sigil:</span> <span class="n">augmenting</span> <span class="n">module</span><span class="o">=</span><span class="n">dependee</span> <span class="n">ant</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">dependee</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">Sigil:</span> <span class="n">loading</span> <span class="n">Project</span> <span class="n">Repository:</span> <span class="sr">/Volumes/</span><span class="n">Users</span><span class="sr">/derek/sigi</span><span class="n">l</span><span class="o">-</span><span class="mf">0.7.0</span><span class="sr">/example/</span><span class="n">dependence</span><span class="sr">/*/sigi</span><span class="n">l</span><span class="o">.</span><span class="n">properties</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="o">::</span> <span class="n">resolving</span> <span class="n">dependencies</span> <span class="o">::</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="c1">#dependee;working@rodney</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="n">confs:</span> <span class="p">[</span><span class="n">default</span><span class="p">]</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">Sigil:</span> <span class="n">augmenting</span> <span class="n">module</span><span class="o">=</span><span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">logging</span> <span class="n">ant</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">dependee</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="n">found</span> <span class="n">sigil</span><span class="c1">#com.springsource.org.apache.commons.logging;1.1.1 in sigil</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">Sigil:</span> <span class="n">augmenting</span> <span class="n">module</span><span class="o">=</span><span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">log4j</span> <span class="n">ant</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">dependee</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="n">found</span> <span class="n">sigil</span><span class="c1">#com.springsource.org.apache.log4j;1.2.15 in sigil</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="n">found</span> <span class="n">sigil</span><span class="c1">#com.springsource.org.apache.commons.lang;2.1.0 in sigil</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">Sigil:</span> <span class="n">augmenting</span> <span class="n">module</span><span class="o">=</span><span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span> <span class="n">ant</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">dependee</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="n">found</span> <span class="n">sigil</span><span class="c1">#com.springsource.javax.servlet;2.5.0 in sigil</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">downloading</span> <span class="n">http:</span><span class="sr">//</span><span class="n">repository</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">com</span><span class="sr">/ivy/</span><span class="n">bundles</span><span class="sr">/external/o</span><span class="n">rg</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">/</span>
+    <span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">logging</span><span class="sr">/1.1.1/com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">logging</span><span class="o">-</span><span class="mf">1.1.1</span><span class="o">.</span><span class="n">jar</span> <span class="o">...</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="p">[</span><span class="n">SUCCESSFUL</span> <span class="p">]</span> <span class="n">sigil</span><span class="c1">#com.springsource.org.apache.commons.logging;1.1.1!com.springsource.org.apache.commons.logging.jar (3180ms)</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">downloading</span> <span class="n">http:</span><span class="sr">//</span><span class="n">repository</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">com</span><span class="sr">/ivy/</span><span class="n">bundles</span><span class="sr">/external/o</span><span class="n">rg</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">log4j</span><span class="o">/</span>
+    <span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">log4j</span><span class="sr">/1.2.15/com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">log4j</span><span class="o">-</span><span class="mf">1.2.15</span><span class="o">.</span><span class="n">jar</span> <span class="o">...</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="p">[</span><span class="n">SUCCESSFUL</span> <span class="p">]</span> <span class="n">sigil</span><span class="c1">#com.springsource.org.apache.log4j;1.2.15!com.springsource.org.apache.log4j.jar (5680ms)</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="n">downloading</span> <span class="n">http:</span><span class="sr">//</span><span class="n">repository</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">com</span><span class="sr">/ivy/</span><span class="n">bundles</span><span class="sr">/external/</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">/</span>
+    <span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="sr">/2.5.0/com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">-</span><span class="mf">2.5.0</span><span class="o">.</span><span class="n">jar</span> <span class="o">...</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="p">[</span><span class="n">SUCCESSFUL</span> <span class="p">]</span> <span class="n">sigil</span><span class="c1">#com.springsource.javax.servlet;2.5.0!com.springsource.javax.servlet.jar (1856ms)</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="o">::</span> <span class="n">resolution</span> <span class="n">report</span> <span class="o">::</span> <span class="n">resolve</span> <span class="mi">562</span><span class="n">ms</span> <span class="o">::</span> <span class="n">artifacts</span> <span class="n">dl</span> <span class="mi">10733</span><span class="n">ms</span>
+        <span class="o">---------------------------------------------------------------------</span>
+        <span class="o">|</span>                  <span class="o">|</span>            <span class="n">modules</span>            <span class="o">||</span>   <span class="n">artifacts</span>   <span class="o">|</span>
+        <span class="o">|</span>       <span class="n">conf</span>       <span class="o">|</span> <span class="n">number</span><span class="o">|</span> <span class="n">search</span><span class="o">|</span><span class="n">dwnlded</span><span class="o">|</span><span class="n">evicted</span><span class="o">||</span> <span class="n">number</span><span class="o">|</span><span class="n">dwnlded</span><span class="o">|</span>
+        <span class="o">---------------------------------------------------------------------</span>
+        <span class="o">|</span>      <span class="n">default</span>     <span class="o">|</span>   <span class="mi">4</span>   <span class="o">|</span>   <span class="mi">3</span>   <span class="o">|</span>   <span class="mi">3</span>   <span class="o">|</span>   <span class="mi">0</span>   <span class="o">||</span>   <span class="mi">4</span>   <span class="o">|</span>   <span class="mi">3</span>   <span class="o">|</span>
+        <span class="o">---------------------------------------------------------------------</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span> <span class="o">::</span> <span class="n">retrieving</span> <span class="o">::</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="c1">#dependee</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="n">confs:</span> <span class="p">[</span><span class="n">default</span><span class="p">]</span>
+<span class="p">[</span><span class="n">ivy:retrieve</span><span class="p">]</span>  <span class="mi">3</span> <span class="n">artifacts</span> <span class="n">copied</span><span class="p">,</span> <span class="mi">1</span> <span class="n">already</span> <span class="n">retrieved</span> <span class="p">(</span><span class="mi">534</span><span class="n">kB</span><span class="o">/</span><span class="mi">50</span><span class="n">ms</span><span class="p">)</span>
+
+<span class="n">compile:</span>
+
+<span class="n">jar:</span>
+<span class="p">[</span><span class="n">propertyfile</span><span class="p">]</span> <span class="n">Updating</span> <span class="n">property</span> <span class="n">file:</span> <span class="sr">/Volumes/</span><span class="n">Users</span><span class="sr">/derek/sigi</span><span class="n">l</span><span class="o">-</span><span class="mf">0.7.0</span><span class="sr">/example/</span><span class="n">dependence</span><span class="sr">/dependee/</span><span class="n">build</span><span class="sr">/classes/</span><span class="n">version</span><span class="o">.</span><span class="n">properties</span>
+<span class="p">[</span><span class="n">sigil</span><span class="o">.</span><span class="n">bundle</span><span class="p">]</span> <span class="n">creating</span> <span class="n">bundle:</span> <span class="n">dependee</span>
+<span class="p">[</span><span class="n">sigil</span><span class="o">.</span><span class="n">bundle</span><span class="p">]</span> <span class="n">BND:</span> <span class="n">Importing</span> <span class="n">packages</span> <span class="n">that</span> <span class="n">are</span> <span class="n">never</span> <span class="n">refered</span> <span class="n">to</span> <span class="n">by</span> <span class="n">any</span> <span class="n">class</span> <span class="n">on</span> <span class="n">the</span> <span class="n">Bundle</span><span class="o">-</span><span class="n">Classpath</span><span class="p">[</span><span class="n">Jar:dot</span><span class="p">]:</span> 
+    <span class="p">[</span><span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="p">,</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">logging</span><span class="p">,</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">log4j</span><span class="p">]</span>
+<span class="p">[</span><span class="n">sigil</span><span class="o">.</span><span class="n">bundle</span><span class="p">]</span> <span class="n">dependee:</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">1</span> <span class="n">warning</span>
+
+<span class="n">BUILD</span> <span class="n">SUCCESSFUL</span>
+<span class="n">Total</span> <span class="nb">time</span><span class="p">:</span> <span class="mi">16</span> <span class="n">seconds</span>
+</pre></div>
+
+
+<p>Notice that the additional dependencies have been resolved against the OBR repository. The warning from Bnd, is because those additional imports are not actually used.</p>
+<h2 id="next-steps">Next Steps</h2>
+<p>This Quick Start has shown how easily Sigil can integrate with existing Ivy builds. You should now examine the other examples, which give more details of the Sigil configuration and show some real-world examples.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

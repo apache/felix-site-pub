@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Dependency Manager - Background</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-dependency-manager-background.html" target="felix_cwiki">/site/apache-felix-dependency-manager-background.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Dependency Manager - Background</h1>
+      <h2 id="background">Background</h2>
+<p>In an OSGi framework, services are deployed using bundles and these bundles feature two types of dependencies: 
+1. Package dependencies. A bundle can export a package which others import. These dependencies, although dynamic, are relatively easy to handle and the whole resolution process is handled by the OSGi framework for you.
+1. Service dependencies. Services, implemented by components inside of bundles, can have their own life cycle within that of their containing bundle and therefore can be registered and unregistered at any time. Other components often depend on these services and need to deal with changes in their availability. </p>
+<p>When you look at dependency management, there are two aspects you need to take into account: </p>
+<p>The first is managing software configurations. This means you need to manage the dependencies from a configuration standpoint. What you are managing are bundles, since those are the units of deployment. What you need to manage are the package and service dependencies between bundles. Package dependencies are always visible by examining the bundle manifest and when a bundle is installed the framework will try to resolve such dependencies before that bundle can even be started. Service dependencies are only optionally described in the manifest by a list of services a bundle might export as well as a list it might use (import). The words 'optionally' and 'might' already indicate that these aren't things we can depend on. Even worse, these keywords have by now been deprecated. Besides that, the framework doesn't have to perform any checks on these attributes.</p>
+<p>The second is managing service dependencies at runtime. As mentioned before, a service oriented architecture is dynamic by design, so your implementation should be able to deal with this. Bundles can start in any order and any service can go away or be replaced by a different implementation at any point in time. OSGi itself offers basic assistance for tracking services. You can track them yourself by registering as a service listener. A slightly more advanced way is to create a service tracker, which you can subsequently query, or have it notify you on changes. All of these are too low-level to be good building blocks for developers.</p>
+<p>In real implementations, you are probably going to track multiple services. Using service trackers in such a scenario has the tendency to result in dependency logic that is entangled in the implementation instead of being expressed in a declarative way. Using a declarative way to specify dependencies has clear advantages when it comes to monitoring and managing them, a task that becomes more and more important in modern, federated, service oriented environments.</p>
+<p>The Dependency Manager provides you with the right building blocks to declaratively specify dependencies using a straightforward Java API that is easy to maintain and refactor.</p>
+<h3 id="design-goals">Design Goals</h3>
+<p>The goals that drove the design of the dependency manager are:
+<em> Provide a clean separation between a component implementation and the "glue" that binds it to the OSGi framework. The component implementation should not have to contain any OSGi specific code. In other words, it should be a POJO (Plain Old Java Object).
+</em> Minimize the amount of code that needs to be written. The specification and management of dependencies should be automated as much as possible, whilst still providing enough flexibility to customize the system.
+<em> Be extensible. Even though the core bundle provides a lot of different dependencies already, you should be able to add your own types of dependencies easily.
+</em> Easy to monitor and debug. Being a dynamic system, it's important to be able to see what the state of all components and dependencies are at any point in time.
+* Supporting powerful high level design patterns. When building real-world applications, more complex patterns need to be used, such as aspects and adapters. Support for these needs to be built into the core.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,477 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix HTTP Service</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixHTTPService-ApacheFelixHTTPService"></A>Apache Felix HTTP Service</H1>
+
+<DIV><A href="#ApacheFelixHTTPService-Installing">Installing</A> | <A href="#ApacheFelixHTTPService-UsingtheHttpService">Using the HttpService</A> | <A href="#ApacheFelixHTTPService-UsingtheExtHttpService">Using the ExtHttpService</A> | <A href="#ApacheFelixHTTPService-UsingtheWhiteboard">Using the Whiteboard</A> | <A href="#ApacheFelixHTTPService-UsingtheServletBridge">Using the Servlet Bridge</A> | <A href="#ApacheFelixHTTPService-ConfigurationProperties">Configuration Properties</A> | <A href="#ApacheFelixHTTPService-ServletAPIEvents">Servlet API Events</A> | <A href="#ApacheFelixHTTPService-ServletContextNotes">Servlet Context Notes</A> | <A href="#ApacheFelixHTTPService-Examples">Examples</A> | <A href="#ApacheFelixHTTPService-MavenArtifacts">Maven Artifacts</A></DIV>
+
+<P>This is an implementation of the HTTP Service Specification as described in chapter 102 of the OSGi Compendium. The goal is to provide a standard and simplified way to register servlets and resources in a Servlet container, and to associate them with URIs. It also implement a non-standard extension for registering servlet filters as well as a whiteboard implementation. Complete set of features:</P>
+
+<UL>
+	<LI>Standard HTTP Service implementation.</LI>
+	<LI>Extended HTTP Service implementation that allows for servlet filter registration.</LI>
+	<LI>Run either with Jetty or inside your own application server using the servlet bridge.</LI>
+	<LI>A whiteboard implementation for easy registration of servlets and filters.</LI>
+	<LI>One complete bundle that includes everything to simplify deployment.</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixHTTPService-Installing"></A>Installing</H2>
+
+<P>The Apache Felix HTTP Service project includes several bundles. </P>
+
+<UL>
+	<LI>org.apache.felix.http.jetty - HTTP Service implementation that is embedding Jetty server.</LI>
+	<LI>org.apache.felix.http.whiteboard - Whiteboard implementation that uses any HTTP Service implementation.</LI>
+	<LI>org.apache.felix.http.bridge - HTTP Service implementation that uses the host applicaiton server (bridged mode). Must be used with proxy.</LI>
+	<LI>org.apache.felix.http.bundle - All in one bundle that includes all of the above.</LI>
+	<LI>org.apache.felix.http.proxy - Proxy that is needed inside WAR when deployed inside an application server.</LI>
+</UL>
+
+
+<P>So, in most cases you could just use <B>org.apache.felix.http.bundle</B> and forget about all the other ones.</P>
+
+<H2><A name="ApacheFelixHTTPService-UsingtheHttpService"></A>Using the HttpService</H2>
+
+<P>The main components provided by the Apache Felix HTTP Service bundle are:</P>
+<UL>
+	<LI><TT>HttpService</TT> - Service used to dynamically register resources and servlets</LI>
+	<LI><TT>HttpContext</TT> - Additional (optional) component to handle authentication, resource and mime type mappings</LI>
+</UL>
+
+
+<P>Servlets created for the OSGi HTTP service don't need to have any reference to the OSGi specification (they only need to conform to the Servlet specification), like in the example:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class HelloWorld <SPAN class="code-keyword">extends</SPAN> HttpServlet
+{
+  @Override
+  <SPAN class="code-keyword">protected</SPAN> void doGet(HttpServletRequest req, HttpServletResponse resp) <SPAN class="code-keyword">throws</SPAN> ServletException, IOException 
+  {
+    resp.getWriter().write(<SPAN class="code-quote">&quot;Hello World&quot;</SPAN>);		
+  }	
+}
+</PRE>
+</DIV></DIV>
+
+<P>To register a Servlet and map it to a URI, you need to retrieve the <TT>HttpService</TT> and call its <TT>registerServlet</TT> method:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator
+{
+  <SPAN class="code-keyword">public</SPAN> void start(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception 
+  {
+    ServiceReference sRef = context.getServiceReference(HttpService.class.getName());
+    <SPAN class="code-keyword">if</SPAN> (sRef != <SPAN class="code-keyword">null</SPAN>)
+    {
+      HttpService service = (HttpService) context.getService(sRef);
+      service.registerServlet(<SPAN class="code-quote">&quot;/hello&quot;</SPAN>, <SPAN class="code-keyword">new</SPAN> HelloWorld(), <SPAN class="code-keyword">null</SPAN>, <SPAN class="code-keyword">null</SPAN>);
+    }
+  }
+}
+</PRE>
+</DIV></DIV>
+
+<P>In the same way, you can unregister a Servlet (for instance, in the <TT>stop</TT> method of the Bundle Activator) calling the <TT>HttpService.unregister</TT> method.</P>
+
+<P>As you notice in the example above, the <TT>registerServlet</TT> method accepts four parameters:</P>
+<UL>
+	<LI>the Servlet alias</LI>
+	<LI>the Servlet instance</LI>
+	<LI>an additional configuration Map</LI>
+	<LI>an HttpContext</LI>
+</UL>
+
+
+<P>The Servlet alias must begin with a slash and must not end with a slash. When a request is processed, the HTTP Service will try to exact match the requested URI with a registered Servlet. If not existent, it will remove the last '/' in the URI and everything that follows, and try to match the remaining part, and so on.</P>
+
+<P>An additional configuration Map can be optionally specified; if present, all the parameters contained will be copied in the ServletContext object. </P>
+
+<P>Finally, an HttpContext object can be optionally specified to handle authentication, mime type and resource mapping. The <TT>HttpContext</TT> interface is quite simple:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> HttpContext
+{
+  <SPAN class="code-object">String</SPAN> getMimeType(java.lang.<SPAN class="code-object">String</SPAN> name); <SPAN class="code-comment">//Returns the mime type of the specified resource
+</SPAN>  URL getResource(java.lang.<SPAN class="code-object">String</SPAN> name);   <SPAN class="code-comment">//Returns the URL to retrieve the specified resource
+</SPAN>  <SPAN class="code-object">boolean</SPAN> handleSecurity(HttpServletRequest request, HttpServletResponse response); <SPAN class="code-comment">//Manages security <SPAN class="code-keyword">for</SPAN> the specified request
+</SPAN>}
+</PRE>
+</DIV></DIV>
+
+<P>The use of a custom HttpContext is typical when you want to serve static contents with the HTTP Service. Let's see first the simplest example of resource registration (without <TT>HttpContext</TT>)</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator
+{
+  <SPAN class="code-keyword">public</SPAN> void start(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception 
+  {
+    ServiceReference sRef = context.getServiceReference(HttpService.class.getName());
+    <SPAN class="code-keyword">if</SPAN> (sRef != <SPAN class="code-keyword">null</SPAN>)
+    {
+      HttpService service = (HttpService) context.getService(sRef);
+      service.registerResources(<SPAN class="code-quote">&quot;/<SPAN class="code-keyword">static</SPAN>&quot;</SPAN>, <SPAN class="code-quote">&quot;/etc/www&quot;</SPAN>, <SPAN class="code-keyword">null</SPAN>);
+    }
+  }
+}
+</PRE>
+</DIV></DIV>
+
+<P>As a result of the <TT>service.registerResources(&quot;/static&quot;, &quot;/etc/www&quot;, null)</TT> code, all the files available under <TT>/etc/www</TT> will be exposed under <TT>/static</TT> (f.i.  <A href="http://localhost:8080/static/001.jpg" class="external-link" rel="nofollow">http://localhost:8080/static/001.jpg</A> will render the /etc/www/001.jpg). However, the example above can be simplistic in practice; the HttpContext object is the solution to customize the resource handling.</P>
+
+<P>For instance, you can set the define more complex URI to file mappings overriding the <TT>HttpContext.getResource</TT> method, or the correct mime type implementing the method <TT>HttpContext.getMimeType</TT> like in the example:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-comment">//....
+</SPAN>
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> getMimeType(<SPAN class="code-object">String</SPAN> file) 
+{  
+  <SPAN class="code-keyword">if</SPAN> (file.endsWith(<SPAN class="code-quote">&quot;.jpg&quot;</SPAN>)
+  {  
+    <SPAN class="code-keyword">return</SPAN> <SPAN class="code-quote">&quot;image/jpeg&quot;</SPAN>;  
+  } 
+  <SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN> (file.endsWith(<SPAN class="code-quote">&quot;.png&quot;</SPAN>)) 
+  {  
+    <SPAN class="code-keyword">return</SPAN> <SPAN class="code-quote">&quot;image/png&quot;</SPAN>;  
+  } 
+  <SPAN class="code-keyword">else</SPAN> 
+  {  
+    <SPAN class="code-keyword">return</SPAN> <SPAN class="code-quote">&quot;text/html&quot;</SPAN>;  
+  }  
+}  
+	
+<SPAN class="code-comment">//....</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>If you implement a customized HttpContext object, don't forget to specify it as third parameter of the <TT>registerResources</TT> method invocation:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator
+{
+  <SPAN class="code-keyword">public</SPAN> void start(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception 
+  {
+    ServiceReference sRef = context.getServiceReference(HttpService.class.getName());
+    <SPAN class="code-keyword">if</SPAN> (sRef != <SPAN class="code-keyword">null</SPAN>)
+    {
+      HttpService service = (HttpService) context.getService(sRef);
+      HttpContext myHttpContext = <SPAN class="code-keyword">new</SPAN> MyHttpContext());
+      service.registerResources(<SPAN class="code-quote">&quot;/<SPAN class="code-keyword">static</SPAN>&quot;</SPAN>, <SPAN class="code-quote">&quot;/etc/www&quot;</SPAN>, myHttpContext);
+    }
+  }
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixHTTPService-UsingtheExtHttpService"></A>Using the ExtHttpService</H2>
+
+<P>To be able to register filters, it is possible to get hold of <TT>org.apache.felix.http.api.ExtHttpService</TT>. This is exported by both jetty and the bridged implementation. Let's see the simplest example of a filter registration.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator
+{
+  <SPAN class="code-keyword">public</SPAN> void start(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception 
+  {
+    ServiceReference sRef = context.getServiceReference(ExtHttpService.class.getName());
+    <SPAN class="code-keyword">if</SPAN> (sRef != <SPAN class="code-keyword">null</SPAN>)
+    {
+      ExtHttpService service = (ExtHttpService) context.getService(sRef);
+      service.registerFilter(<SPAN class="code-keyword">new</SPAN> HelloWorldFilter(), <SPAN class="code-quote">&quot;/hello/.*&quot;</SPAN>, <SPAN class="code-keyword">null</SPAN>, 0, <SPAN class="code-keyword">null</SPAN>);
+    }
+  }
+}
+</PRE>
+</DIV></DIV>
+
+<P>Notice the pattern for filters is using regular expressions. So <TT>.&#42;</TT> is the same as a simple <TT><BR class="atl-forced-newline">*</TT> using standard servlet patterns. </P>
+
+<H2><A name="ApacheFelixHTTPService-UsingtheWhiteboard"></A>Using the Whiteboard</H2>
+
+<P>The whiteboard implementation simplifies the task of registering servlets and filters. A servlet (or filter) can be registered by exporting it as a service. The whiteboard implementation detects all <TT>javax.servlet.Servlet</TT>, <TT>javax.servlet.Filter</TT> and <TT>org.osgi.service.http.HttpContext</TT> services with the right service properties. Let us illustrate the usage by registering a servlet:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator
+{
+  <SPAN class="code-keyword">private</SPAN> ServiceRegistration registration;
+
+  <SPAN class="code-keyword">public</SPAN> void start(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception 
+  {
+    Hashtable props = <SPAN class="code-keyword">new</SPAN> Hashtable();
+    props.put(<SPAN class="code-quote">&quot;alias&quot;</SPAN>, <SPAN class="code-quote">&quot;/hello&quot;</SPAN>);
+    props.put(<SPAN class="code-quote">&quot;init.message&quot;</SPAN>, <SPAN class="code-quote">&quot;Hello World!&quot;</SPAN>);
+
+    <SPAN class="code-keyword">this</SPAN>.registration = context.registerService(Servlet.class.getName(), <SPAN class="code-keyword">new</SPAN> HelloWorldServlet(), props);
+  }
+
+  <SPAN class="code-keyword">public</SPAN> void stop(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception 
+  {
+    <SPAN class="code-keyword">this</SPAN>.registration.unregister();
+  }
+}
+</PRE>
+</DIV></DIV>
+
+<P>Servlet service properties:</P>
+<UL>
+	<LI><TT>alias</TT>&nbsp;- Servlet alias to register with.</LI>
+	<LI><TT>contextId</TT> - Id of context to register with.</LI>
+	<LI><TT>init.&#42;</TT> - Servlet initialization values.</LI>
+</UL>
+
+
+<P>Filter service properties:</P>
+<UL>
+	<LI><TT>pattern</TT> - Regular expression pattern to register filter with.</LI>
+	<LI><TT>contextId</TT> - Id of context to register with.</LI>
+	<LI><TT>service.ranking</TT> - Where in the chain this filter should be placed.</LI>
+	<LI><TT>init.&#42;</TT> - Filter initialization values.</LI>
+</UL>
+
+
+<P>HttpContext service properties:</P>
+<UL>
+	<LI><TT>contextId</TT> - Id of context to be referenced by a servlet or filter service.</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixHTTPService-UsingtheServletBridge"></A>Using the Servlet Bridge</H2>
+
+<P>The servlet bridge is used if you want to use the Http service inside a WAR deployed on a 3rd part applicaiton server. A little setup is needed for this to work:</P>
+
+<UL>
+	<LI>Deploy <TT>org.apache.felix.http.proxy</TT> jar file inside the web applicaiton (WEB-INF/lib).</LI>
+	<LI>In a startup listener (like ServletContextListener) set the BundleContext as a servlet context attribute (see <A href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge/src/main/java/org/apache/felix/http/samples/bridge/StartupListener.java" class="external-link" rel="nofollow">example</A>).</LI>
+	<LI>Define <TT>org.apache.felix.http.proxy.ProxyServlet</TT> inside your <TT>web.xml</TT> and register it to serve on all requests <TT>/*</TT> (see <A href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge/src/main/webapp/WEB-INF/web.xml" class="external-link" rel="nofollow">example</A>).</LI>
+	<LI>Define <TT>org.apache.felix.http.proxy.ProxyListener</TT> as a <TT>&lt;listener&gt;</TT> in your <TT>web.xml</TT> to allow HTTP Session related events to be forwarded (see the section of Servlet API Event forwarding below and <A href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge/src/main/webapp/WEB-INF/web.xml" class="external-link" rel="nofollow">example</A>).</LI>
+	<LI>Be sure to add <TT>javax.servlet;javax.servlet.http;version=2.5</TT> to OSGi system packages ((<TT>org.osgi.framework.system.packages</TT>).</LI>
+	<LI>Deploy <TT>org.apache.felix.http.bridge</TT> (or <TT>org.apache.felix.http.bundle</TT>) inside the OSGi framework.</LI>
+</UL>
+
+
+<P>A detailed example can be found <A href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge" class="external-link" rel="nofollow">here</A>.</P>
+
+<H2><A name="ApacheFelixHTTPService-ConfigurationProperties"></A>Configuration Properties</H2>
+
+<P>The service can both be configured using OSGi environment properties and using Configuration Admin. The service PID for this service is <TT>&quot;org.apache.felix.http&quot;</TT>. If you use both methods, Configuration Admin takes precedence. The following properties can be used (some legacy property names still exist but are not documented here on purpose):</P>
+
+<UL>
+	<LI><TT>org.osgi.service.http.port</TT> - The port used for servlets and resources available via HTTP. The default is <TT>80</TT>. A negative port number has the same effect as setting <TT>org.apache.felix.http.enable</TT> to <TT>false</TT>.</LI>
+	<LI><TT>org.osgi.service.http.port.secure</TT> - The port used for servlets and resources available via HTTPS. The default is <TT>443</TT>. A negative port number has the same effect as setting <TT>org.apache.felix.https.enable</TT> to <TT>false</TT>.</LI>
+	<LI><TT>org.apache.felix.http.nio</TT> - Flag to enable the use of NIO instead of traditional IO for HTTP. One consequence of using NIO with HTTP is that the bundle needs at least a Java 5 runtime. The default is <TT>true</TT>.</LI>
+	<LI><TT>org.apache.felix.https.nio</TT> - Flag to enable the use of NIO instead of traditional IO for HTTPS. One consequence of using NIO with HTTPS is that the bundle needs at least a Java 5 runtime. If this property is not set the (default) value of the <TT>org.apache.felix.http.nio</TT> property is used.</LI>
+	<LI><TT>org.apache.felix.http.enable</TT> - Flag to enable the use of HTTP. The default is <TT>true</TT>.</LI>
+	<LI><TT>org.apache.felix.https.enable</TT> - Flag to enable the user of HTTPS. The default is <TT>false</TT>.</LI>
+	<LI><TT>org.apache.felix.https.keystore</TT> - The name of the file containing the keystore.</LI>
+	<LI><TT>org.apache.felix.https.keystore.password</TT> - The password for the keystore.</LI>
+	<LI><TT>org.apache.felix.https.keystore.key.password</TT> - The password for the key in the keystore.</LI>
+	<LI><TT>org.apache.felix.https.truststore</TT> - The name of the file containing the truststore.</LI>
+	<LI><TT>org.apache.felix.https.truststore.password</TT> - The password for the truststore.</LI>
+	<LI><TT>org.apache.felix.https.clientcertificate</TT> - Flag to determine if the HTTPS protocol requires, wants or does not use client certificates. Legal values are <TT>needs</TT>, <TT>wants</TT> and <TT>none</TT>. The default is <TT>none</TT>.</LI>
+	<LI><TT>org.apache.felix.http.debug</TT> - Flag to enable debugging for this service implementation. The default is <TT>false</TT>.</LI>
+</UL>
+
+
+<P>Additionally, the all-in-one bundle uses the following environment properties:</P>
+
+<UL>
+	<LI><TT>org.apache.felix.http.jettyEnabled</TT> - True to enable jetty as the http container. The default is <TT>false</TT>.</LI>
+	<LI><TT>org.apache.felix.http.whiteboardEnabled</TT> - True to enable the whiteboard implementation. The default is <TT>false</TT>.</LI>
+</UL>
+
+
+<P>The Jetty based implementation supports the following Jetty specific configuration as of Http Service Jetty Bundle 2.4:</P>
+
+<UL>
+	<LI><TT>org.apache.felix.http.host</TT> - Host name or IP Address of the interface to listen on. The default is <TT>null</TT> causing Jetty to listen on all interfaces.</LI>
+	<LI><TT>org.apache.felix.http.context_path</TT> - The Servlet Context Path to use for the Http Service. If this property is not configured it  defaults to &quot;/&quot;. This must be a valid path starting with a slash and not  ending with a slash (unless it is the root context).</LI>
+	<LI><TT>org.apache.felix.http.timeout</TT> - Connection timeout in milliseconds. The default is 60000 (60 seconds).</LI>
+	<LI><TT>org.apache.felix.http.session.timeout</TT> - Allows for the specification of the Session life time as a number of minutes. This property serves the same purpose as the <TT>session-timeout</TT> element in a Web Application descriptor. The default is zero for no timeout at all.</LI>
+	<LI><TT>org.mortbay.jetty.servlet.SessionCookie</TT> - Name of the cookie used to transport the Session ID. The default is <TT>JSESSIONID</TT>.</LI>
+	<LI><TT>org.mortbay.jetty.servlet.SessionURL</TT> - Name of the request parameter to transport the Session ID. The default is <TT>jsessionid</TT>.</LI>
+	<LI><TT>org.mortbay.jetty.servlet.SessionDomain</TT> - Domain to set on the session cookie. The default is <TT>null</TT>.</LI>
+	<LI><TT>org.mortbay.jetty.servlet.SessionPath</TT> - The path to set on the session cookie. The default is the configured session context path (<TT>/</TT>).</LI>
+	<LI><TT>org.mortbay.jetty.servlet.MaxAge</TT> - The maximum age value to set on the cookie. The default is <TT>-1</TT>.</LI>
+	<LI><TT>org.apache.felix.http.jetty.headerBufferSize</TT> - Size of the buffer for request and response headers. Default is 16KB.</LI>
+	<LI><TT>org.apache.felix.http.jetty.requestBufferSize</TT> - Size of the buffer for requests not fitting the header buffer. Default is 8KB.</LI>
+	<LI><TT>org.apache.felix.http.jetty.responseBufferSize</TT> - Size of the buffer for responses. Default is 24KB.</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixHTTPService-ServletAPIEvents"></A>Servlet API Events</H2>
+
+<P>The Servlet API defines a number of <TT>EventListener</TT> interfaces to catch Servlet API related events. As of HTTP Service 2.1.0 most events generated by the servlet container are forwarded to interested service. To be registered to receive events services must be registered with the respective <TT>EventListener</TT> interface:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Interface </TH>
+<TH class="confluenceTh"> Description </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>javax.servlet.ServletContextAttributeListener</TT> </TD>
+<TD class="confluenceTd"> Events on servlet context attribute addition, change and removal. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>javax.servlet.ServletRequestAttributeListener</TT> </TD>
+<TD class="confluenceTd"> Events on request attribute addition, change and removal. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>javax.servlet.ServletRequestListener</TT> </TD>
+<TD class="confluenceTd"> Events on request start and end. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>javax.servlet.http.HttpSessionAttributeListener</TT> </TD>
+<TD class="confluenceTd"> Events on session attribute addition, change and removal. To receive such events in a bridged environment, the <TT>ProxyLister</TT> must be registered with the servlet container. See the <EM>Using the Servlet Bridge</EM> section above. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>javax.servlet.http.HttpSessionListener</TT> </TD>
+<TD class="confluenceTd"> Events on session creation and destroyal. To receive such events in a bridged environment, the <TT>ProxyLister</TT> must be registered with the servlet container. See the <EM>Using the Servlet Bridge</EM> section above. </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P>Of the defined <TT>EventListener</TT> interfaces in the Servlet API, the <TT>javax.servlet.ServletContextListener</TT> events are actually not support. For one thing they do not make much sense in an OSGi environment. On the other hand they are hard to capture and propagate. For example in a bridged environment the <TT>contextInitialized</TT> event may be sent before the framework and any of the contained bundles are actually ready to act. Likewise the <TT>contextDestroyed</TT> event may come to late.</P>
+
+
+<H2><A name="ApacheFelixHTTPService-ServletContextNotes"></A>Servlet Context Notes</H2>
+
+<P><TT>ServletContext</TT> instances are managed internally by the Http Service implementation. For each <TT>HttpContext</TT> instance used to register one or more servlets and/or resources a corresponding <TT>ServletContext</TT> instance is created. These <TT>ServletContext</TT> instances is partly based on the single <TT>ServletContext</TT> instance received from the Servlet Container &mdash; either embedded Jetty or some external Servlet Container when using the Http Service Bridge &mdash; and partly based on the provided <TT>HttpContext</TT> instance:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> Method(s) </TD>
+<TD class="confluenceTd"> Based on ... </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>getContextPath</TT>, <TT>getContext</TT>, <TT>getMajorVersion</TT>, <TT>getMinorVersion</TT>, <TT>getServerInfo</TT> </TD>
+<TD class="confluenceTd"> Servlet Containers <TT>ServletContext</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>getResourcePaths</TT> </TD>
+<TD class="confluenceTd"> <TT>Bundle.getEntryPaths</TT> of the bundle using the Http Service </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>getResource</TT>, <TT>getResourceAsStream</TT> </TD>
+<TD class="confluenceTd"> <TT>HttpContext.getResource</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>getMimeType</TT> </TD>
+<TD class="confluenceTd"> <TT>HttpContext.getMimeType</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>getRequestDispatcher</TT>, <TT>getNamedDispatcher</TT>, <TT>getInitParameter</TT>, <TT>getServlet</TT>, <TT>getRealPath</TT> </TD>
+<TD class="confluenceTd"> Always return <TT>null</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>getInitParameterNames</TT>, <TT>getServlets</TT>, <TT>getServletNames</TT> </TD>
+<TD class="confluenceTd"> Always returns empty <TT>Enumeration</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>getAttribute</TT>, <TT>getAttributeNames</TT>, <TT>setAttribute</TT>, <TT>removeAttribute</TT> </TD>
+<TD class="confluenceTd"> By default maintained for each <TT>ServletContext</TT> managed by the Http Service. If the <TT>org.apache.felix.http.shared_servlet_context_attributes</TT> framework property is set to <TT>true</TT> these methods are actually based on the <TT>ServletContext</TT> provided by the servlet container and thus attributes are shared amongst all <TT>ServlectContext</TT> instances, incl. the <TT>ServletContext</TT> provided by the servlet container </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+
+<H2><A name="ApacheFelixHTTPService-Examples"></A>Examples</H2>
+
+<P>A set of simple examples illustrating the various features are available. </P>
+
+<UL>
+	<LI>Filter registration sample: <A href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/filter/" class="external-link" rel="nofollow">http://svn.apache.org/repos/asf/felix/trunk/http/samples/filter/</A></LI>
+	<LI>Servlet bridge sample: <A href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge/" class="external-link" rel="nofollow">http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge/</A></LI>
+	<LI>Whiteboard sample: <A href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/whiteboard/" class="external-link" rel="nofollow">http://svn.apache.org/repos/asf/felix/trunk/http/samples/whiteboard/</A></LI>
+</UL>
+
+
+<H2><A name="ApacheFelixHTTPService-MavenArtifacts"></A>Maven Artifacts</H2>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.http.api&lt;/artifactId&gt;
+  &lt;version&gt;2.0.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.http.base&lt;/artifactId&gt;
+  &lt;version&gt;2.0.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.http.bridge&lt;/artifactId&gt;
+  &lt;version&gt;2.0.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.http.bundle&lt;/artifactId&gt;
+  &lt;version&gt;2.0.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.http.jetty&lt;/artifactId&gt;
+  &lt;version&gt;2.0.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.http.proxy&lt;/artifactId&gt;
+  &lt;version&gt;2.0.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.http.whiteboard&lt;/artifactId&gt;
+  &lt;version&gt;2.0.4&lt;/version&gt;
+&lt;/dependency&gt;
+</PRE>
+</DIV></DIV>
+
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on Thu Dec 13 08:14:21 EST 2012
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

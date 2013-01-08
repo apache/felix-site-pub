@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Branding the Web Console</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/branding-the-web-console.html" target="felix_cwiki">/site/branding-the-web-console.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Branding the Web Console</h1>
+      <h1 id="branding-the-web-console">Branding the Web Console</h1>
+<p>Branding the Web Consle mainly concerns hooking into the looks of the Web Console providing vendor-provided setup like CSS, Logo, Main Title, Vendor URL, etc.</p>
+<h2 id="brandingplugin-and-defaultbrandingplugin">BrandingPlugin and DefaultBrandingPlugin</h2>
+<p>Branding for the Web Console can be provided in two ways: By registering a <code>BrandingPlugin</code> service or by providing a branding properties files. The Web Console uses the branding from the <code>BrandingPlugin</code> service registered with the highest ranking.</p>
+<p>The <code>BrandingPlugin</code> interface provides the following information used for branding:</p>
+<div class="codehilite"><pre><span class="sr">//</span> <span class="n">Returns</span> <span class="n">an</span> <span class="n">indicative</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">branding</span> <span class="n">plugin</span>
+<span class="sr">//</span> <span class="n">This</span> <span class="n">value</span> <span class="n">is</span> <span class="n">used</span> <span class="n">as</span> <span class="n">the</span> <span class="n">Window</span><span class="o">/</span><span class="n">Page</span> <span class="n">title</span> <span class="n">together</span> <span class="n">with</span> <span class="n">the</span>
+<span class="sr">//</span> <span class="n">title</span> <span class="n">of</span> <span class="n">the</span> <span class="n">respective</span> <span class="n">plugin</span>
+<span class="n">String</span> <span class="n">getBrandName</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">product</span> <span class="n">in</span> <span class="n">which</span> <span class="n">the</span> <span class="n">web</span> <span class="n">console</span> <span class="n">is</span> <span class="n">contained</span>
+<span class="sr">//</span> <span class="ow">and</span> <span class="n">to</span> <span class="n">which</span> <span class="n">the</span> <span class="n">web</span> <span class="n">console</span> <span class="n">is</span> <span class="n">branded</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getProductName</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">an</span> <span class="p">(</span><span class="n">absolute</span><span class="p">)</span> <span class="n">URL</span> <span class="n">to</span> <span class="n">a</span> <span class="n">web</span> <span class="n">site</span> <span class="n">representing</span> <span class="n">the</span> <span class="n">product</span> <span class="n">to</span>
+<span class="sr">//</span> <span class="n">which</span> <span class="n">the</span> <span class="n">web</span> <span class="n">console</span> <span class="n">is</span> <span class="n">branded</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getProductURL</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">an</span> <span class="n">absolute</span> <span class="n">path</span> <span class="n">to</span> <span class="n">an</span> <span class="n">image</span> <span class="n">to</span> <span class="n">be</span> <span class="n">rendered</span> <span class="n">as</span> <span class="n">the</span> <span class="n">logo</span> <span class="n">of</span> <span class="n">the</span>
+<span class="sr">//</span> <span class="n">branding</span> <span class="n">product</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getProductImage</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">branding</span> <span class="n">product</span> <span class="n">vendor</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getVendorName</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">an</span> <span class="p">(</span><span class="n">absolute</span><span class="p">)</span> <span class="n">URL</span> <span class="n">to</span> <span class="n">the</span> <span class="n">web</span> <span class="n">site</span> <span class="n">of</span> <span class="n">the</span> <span class="n">branding</span> <span class="n">product</span>
+<span class="sr">//</span> <span class="n">vendor</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getVendorURL</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">an</span> <span class="n">absolute</span> <span class="n">path</span> <span class="n">to</span> <span class="n">an</span> <span class="n">image</span> <span class="n">to</span> <span class="n">be</span> <span class="n">rendered</span> <span class="n">as</span> <span class="n">the</span> <span class="n">logo</span> <span class="n">of</span> <span class="n">the</span>
+<span class="sr">//</span> <span class="n">branding</span> <span class="n">product</span> <span class="n">vendor</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getVendorImage</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">the</span> <span class="n">absolute</span> <span class="n">path</span> <span class="n">to</span> <span class="n">an</span> <span class="n">icon</span> <span class="n">to</span> <span class="n">be</span> <span class="n">used</span> <span class="n">as</span> <span class="n">the</span> <span class="n">web</span> <span class="n">console</span>
+<span class="sr">//</span> <span class="s">&quot;favicon&quot;</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getFavIcon</span><span class="p">();</span>
+
+<span class="sr">//</span> <span class="n">Returns</span> <span class="n">the</span> <span class="n">absolute</span> <span class="n">path</span> <span class="n">to</span> <span class="n">a</span> <span class="n">CSS</span> <span class="n">file</span> <span class="n">to</span> <span class="n">be</span> <span class="n">used</span> <span class="n">as</span> <span class="n">the</span> <span class="n">main</span> <span class="n">CSS</span> <span class="k">for</span>
+<span class="sr">//</span> <span class="n">the</span> <span class="n">basic</span> <span class="n">admin</span> <span class="n">site</span><span class="o">.</span>
+<span class="n">String</span> <span class="n">getMainStyleSheet</span><span class="p">();</span>
+</pre></div>
+
+
+<p>If no <code>BrandingPlugin</code> service is registered, the <code>DefaultBrandingPlugin</code> is used.</p>
+<p>The <code>DefaultBrandingPlugin</code> reads the <code>/META-INF/webconsole.properties</code> from the web console bundle to setup the branding using the following properties:</p>
+<table>
+<thead>
+<tr>
+<th>Property Name</th>
+<th>Default Value</th>
+<th><code>BrandingPlugin</code> method name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>webconsole.brand.name</code></td>
+<td>Apache Felix Web Console</td>
+<td><code>getBrandName()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.product.name</code></td>
+<td>Apache Felix</td>
+<td><code>getProductName()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.product.url</code></td>
+<td>http://felix.apache.org</td>
+<td><code>getProductURL()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.product.image</code></td>
+<td>/res/imgs/logo.png</td>
+<td><code>getProductImage()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.vendor.name</code></td>
+<td>The Apache Software Foundation</td>
+<td><code>getVendorName()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.vendor.url</code></td>
+<td>http://www.apache.org</td>
+<td><code>getVendorURL()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.vendor.image</code></td>
+<td>/res/imgs/logo.png</td>
+<td><code>getVendorImage()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.favicon</code></td>
+<td>/res/imgs/favicon.ico</td>
+<td><code>getFavIcon()</code></td>
+</tr>
+<tr>
+<td><code>webconsole.stylesheet</code></td>
+<td>/res/ui/webconsole.css</td>
+<td><code>getMainStyleSheet()</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Note:</em> The <code>/META-INF/webconsole.properties</code> file is not contained in the Apache Felix Web Console bundle itself. It may be provided by a Fragment Bundle attaching to the Apache Felix Web Console bundle. For an example of such a fragment bundle see prototype <a href="https://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/webconsolebranding/">Sling Web Console Branding Bundle</a> with its [<code>webconsole.properties</code>|https://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/webconsolebranding/src/main/resources/META-INF/webconsole.properties?view=markup]</p>
+<h2 id="branding-the-stylesheet">Branding the Stylesheet</h2>
+<p>Branding the CSS Stylesheet is basically possible with the <code>BrandingPlugin.getMainStyleSheet()</code> method. The default value of the <code>DefaultBrandingPlugin</code> points to <a href="http://svn.apache.org/viewvc/felix/trunk/webconsole/src/main/resources/res/ui/webconsole.css?view=markup"><code>webconsole.css</code></a>. This allows styling the main content structure as shown here:</p>
+<p>{code:html}
+<body>
+    <div id="main"></p>
+<div class="codehilite"><pre>    <span class="c">&lt;!-- Lead --&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;lead&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h1&gt;</span>
+            Bundle Name
+            <span class="nt">&lt;br&gt;</span>
+            Page Title
+        <span class="nt">&lt;/h1&gt;</span>
+        <span class="nt">&lt;p&gt;</span>
+            <span class="nt">&lt;a</span> <span class="na">target=</span><span class="s">&quot;_blank&quot;</span> <span class="na">href=</span><span class="s">&quot;productURL&quot;</span> <span class="na">title=</span><span class="s">&quot;productName&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;productImage&quot;</span> <span class="na">border=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/a&gt;</span>
+        <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="c">&lt;!-- Top Navigation --&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;technav&quot;</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- regular link --&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;&quot;</span><span class="nt">&gt;</span>title<span class="nt">&lt;/a&gt;</span>
+        <span class="c">&lt;!-- label of current page --&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;technavat&quot;</span><span class="nt">&gt;</span>title<span class="nt">&lt;/span&gt;</span>
+        <span class="c">&lt;!-- label of current page if drawing as link --&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;&quot;</span> <span class="na">class=</span><span class="s">&quot;technavat&quot;</span><span class="nt">&gt;</span>title<span class="nt">&lt;/a&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="c">&lt;!-- this should be inside a div ... --&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- here comes the content --&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p></body></p>
+<div class="codehilite"><pre><span class="n">Predefined</span> <span class="n">plugins</span> <span class="k">use</span> <span class="n">other</span> <span class="n">styles</span> <span class="nb">defined</span> <span class="n">by</span> <span class="n">further</span> <span class="n">CSS</span> <span class="n">styles</span> <span class="n">contained</span> <span class="n">in</span> <span class="n">the</span> <span class="n">web</span> <span class="n">console</span> <span class="n">bundle</span><span class="o">.</span>
+
+<span class="n">It</span> <span class="n">is</span> <span class="n">yet</span> <span class="n">unclear</span> <span class="n">how</span> <span class="n">these</span> <span class="n">plugins</span> <span class="n">can</span> <span class="n">be</span> <span class="n">styled</span><span class="o">....</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,309 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - 6.1. Extending the console</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD width="33%" class="ScrollbarPrevName">&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="6-advanced-uses.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="6-advanced-uses.html">6. Advanced uses</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="62-building-custom-distributions.html">6.2. Building custom distributions</A></TD><TD class="ScrollbarNextIcon"><A href="62-building-custom-distributions.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+<P><A name="6.1.Extendingtheconsole-top"></A></P>
+
+<H1><A name="6.1.Extendingtheconsole-6.1.Extendingtheconsole"></A>6.1. Extending the console</H1>
+
+<P>This chapter will guide you through the steps needed to extend the console and create a new shell.  We will leverage Maven, Blueprint and OSGi, so you will need some knowledge of those products.</P>
+
+<P>You may also find some information about the console at <A href="rfc-147-overview.html" title="RFC 147 Overview">RFC 147 Overview</A>.</P>
+
+<H2><A name="6.1.Extendingtheconsole-Createtheprojectusingmaven"></A>Create the project using maven</H2>
+
+<P>We first need to create the project using maven.  Let's leverage maven archetypes for that.</P>
+
+<H3><A name="6.1.Extendingtheconsole-Commandline"></A>Command line</H3>
+
+<P>Using the command line, we can create our project:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn archetype:create \
+  -DarchetypeArtifactId=maven-archetype-quickstart \
+  -DgroupId=org.apache.felix.karaf.shell.samples \
+  -DartifactId=shell-sample-commands \
+  -Dversion=1.0-SNAPSHOT
+</PRE>
+</DIV></DIV>
+
+<P>This generate the main <TT>pom.xml</TT> and some additional packages.</P>
+
+<H3><A name="6.1.Extendingtheconsole-Interactiveshell"></A>Interactive shell</H3>
+
+<P>You can also use the interactive mode for creating the skeleton project:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn archetype:generate
+</PRE>
+</DIV></DIV>
+<P>Use the following values when prompted:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+Choose a number:  (1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20/21/22/23/24/25/26/27/28/29/30/31/32/33/34/35/36) 15: : 15
+Define value <SPAN class="code-keyword">for</SPAN> groupId: : org.apache.felix.karaf.shell.samples
+Define value <SPAN class="code-keyword">for</SPAN> artifactId: : shell-sample-commands
+Define value <SPAN class="code-keyword">for</SPAN> version:  1.0-SNAPSHOT: : 
+Define value <SPAN class="code-keyword">for</SPAN> <SPAN class="code-keyword">package</SPAN>: : org.apache.felix.karaf.shell.samples
+</PRE>
+</DIV></DIV>
+
+<H3><A name="6.1.Extendingtheconsole-Manualcreation"></A>Manual creation</H3>
+
+<P>Alternatively, you can simply create the directory <TT>shell-sample-commands</TT> and create the <TT>pom.xml</TT> file inside it:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>pom.xml</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+&lt;project xmlns=<SPAN class="code-quote">&quot;http://maven.apache.org/POM/4.0.0&quot;</SPAN> <SPAN class="code-keyword">xmlns:xsi</SPAN>=<SPAN class="code-quote">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</SPAN>
+  xsi:schemaLocation=<SPAN class="code-quote">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</SPAN>&gt;
+  <SPAN class="code-tag">&lt;modelVersion&gt;</SPAN>4.0.0<SPAN class="code-tag">&lt;/modelVersion&gt;</SPAN>
+  <SPAN class="code-tag">&lt;groupId&gt;</SPAN>org.apache.felix.karaf.shell.samples<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+  <SPAN class="code-tag">&lt;artifactId&gt;</SPAN>shell-sample-commands<SPAN class="code-tag">&lt;artifactId&gt;</SPAN>
+  <SPAN class="code-tag">&lt;packaging&gt;</SPAN>jar<SPAN class="code-tag">&lt;/packaging&gt;</SPAN>
+  <SPAN class="code-tag">&lt;version&gt;</SPAN>1.0-SNAPSHOT<SPAN class="code-tag">&lt;/version&gt;</SPAN>
+  <SPAN class="code-tag">&lt;name&gt;</SPAN>shell-sample-commmands<SPAN class="code-tag">&lt;/name&gt;</SPAN>
+  <SPAN class="code-tag">&lt;url&gt;</SPAN>http://maven.apache.org<SPAN class="code-tag">&lt;/url&gt;</SPAN>
+  <SPAN class="code-tag">&lt;dependencies&gt;</SPAN>
+    <SPAN class="code-tag">&lt;dependency&gt;</SPAN>
+      <SPAN class="code-tag">&lt;groupId&gt;</SPAN>junit<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+      <SPAN class="code-tag">&lt;artifactId&gt;</SPAN>junit<SPAN class="code-tag">&lt;/artifactId&gt;</SPAN>
+      <SPAN class="code-tag">&lt;version&gt;</SPAN>3.8.1<SPAN class="code-tag">&lt;/version&gt;</SPAN>
+      <SPAN class="code-tag">&lt;scope&gt;</SPAN>test<SPAN class="code-tag">&lt;/scope&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/dependency&gt;</SPAN>
+  <SPAN class="code-tag">&lt;/dependencies&gt;</SPAN>
+<SPAN class="code-tag">&lt;/project&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H2><A name="6.1.Extendingtheconsole-Dependencies"></A>Dependencies</H2>
+
+<P>We need to tell maven which libraries our project depends on.  In the <TT>dependencies</TT> section of the pom, add the following one:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+  <SPAN class="code-tag">&lt;dependency&gt;</SPAN>
+    <SPAN class="code-tag">&lt;groupId&gt;</SPAN>org.apache.felix.karaf.shell<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+    <SPAN class="code-tag">&lt;artifactId&gt;</SPAN>org.apache.felix.karaf.shell.console<SPAN class="code-tag">&lt;/artifactId&gt;</SPAN>
+    <SPAN class="code-tag">&lt;version&gt;</SPAN>1.0.0<SPAN class="code-tag">&lt;/version&gt;</SPAN>
+  <SPAN class="code-tag">&lt;/dependency&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>This dependency is needed to have access to the base classes that are used to define commands.</P>
+
+<H2><A name="6.1.Extendingtheconsole-ConfiguringforJava5"></A>Configuring for Java 5</H2>
+
+<P>We are using annotations to define commands, so we need to ensure maven will actually use JDK 1.5 to compile the jar.<BR>
+Just add the following snippet after the <TT>dependencies</TT> section.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;build&gt;</SPAN>
+  <SPAN class="code-tag">&lt;plugins&gt;</SPAN>
+    <SPAN class="code-tag">&lt;plugin&gt;</SPAN>
+      <SPAN class="code-tag">&lt;groupId&gt;</SPAN>org.apache.maven.plugins<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+      <SPAN class="code-tag">&lt;artifactId&gt;</SPAN>maven-compiler-plugin<SPAN class="code-tag">&lt;/artifactId&gt;</SPAN>
+      <SPAN class="code-tag">&lt;configuration&gt;</SPAN>
+        <SPAN class="code-tag">&lt;target&gt;</SPAN>1.5<SPAN class="code-tag">&lt;/target&gt;</SPAN>
+        <SPAN class="code-tag">&lt;source&gt;</SPAN>1.5<SPAN class="code-tag">&lt;/source&gt;</SPAN>
+      <SPAN class="code-tag">&lt;/configuration&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/plugin&gt;</SPAN>
+  <SPAN class="code-tag">&lt;/plugins&gt;</SPAN>
+<SPAN class="code-tag">&lt;/build&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H2><A name="6.1.Extendingtheconsole-LoadingtheprojectinyourIDE"></A>Loading the project in your IDE</H2>
+
+<P>We can use maven to generate the needed files for your IDE:</P>
+
+<P>Inside the project, run the following command</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn eclipse:eclipse
+</PRE>
+</DIV></DIV>
+<P>or</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn idea:idea
+</PRE>
+</DIV></DIV>
+
+<P>The project files for your IDE should now be created.  Just open the IDE and load the project.</P>
+
+<H2><A name="6.1.Extendingtheconsole-Creatingabasiccommandclass"></A>Creating a basic command class</H2>
+
+<P>We can now create the command class <TT>HelloShellCommand.java</TT></P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>HelloShellCommand.java</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> org.apache.felix.karaf.shell.samples;
+
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.gogo.commands.Command;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.gogo.commands.Option;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.gogo.commands.Argument;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.karaf.shell.console.OsgiCommandSupport;
+
+@Command(scope = <SPAN class="code-quote">&quot;test&quot;</SPAN>, name = <SPAN class="code-quote">&quot;hello&quot;</SPAN>, description=<SPAN class="code-quote">&quot;Says hello&quot;</SPAN>)
+<SPAN class="code-keyword">public</SPAN> class HelloShellCommand <SPAN class="code-keyword">extends</SPAN> OsgiCommandSupport {
+
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-object">Object</SPAN> doExecute() <SPAN class="code-keyword">throws</SPAN> Exception {
+        <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Executing Hello command&quot;</SPAN>);
+        <SPAN class="code-keyword">return</SPAN> <SPAN class="code-keyword">null</SPAN>;
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="6.1.Extendingtheconsole-Creatingtheassociatedblueprintconfigurationfiles"></A>Creating the associated blueprint configuration files</H2>
+
+<P>The blueprint configuration file will be used to create the command and register it in the OSGi registry, which is the way to make the command available to Karaf console.  This blueprint file must be located in the <TT>OSGI-INF/blueprint/</TT> directory inside the bundle.</P>
+
+<P>If you don't have the <TT>src/main/resources</TT> directory yet, create it.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mkdir src/main/resources
+</PRE>
+</DIV></DIV>
+
+<P>Then, re-generate the IDE project files and reload it so that this folder is now recognized as a source folder.</P>
+
+<P>Inside this directory, create the <TT>OSGI-INF/blueprint/</TT> directory and put the following file inside (the name of this file has no impact at all):</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>shell-config.xml</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;blueprint xmlns=<SPAN class="code-quote">&quot;http://www.osgi.org/xmlns/blueprint/v1.0.0&quot;</SPAN>&gt;</SPAN>
+
+    <SPAN class="code-tag">&lt;command-bundle xmlns=<SPAN class="code-quote">&quot;http://felix.apache.org/karaf/xmlns/shell/v1.0.0&quot;</SPAN>&gt;</SPAN>
+        <SPAN class="code-tag">&lt;command name=<SPAN class="code-quote">&quot;test/hello&quot;</SPAN>&gt;</SPAN>
+            <SPAN class="code-tag">&lt;action class=<SPAN class="code-quote">&quot;org.apache.felix.karaf.shell.samples.HelloShellCommand&quot;</SPAN>/&gt;</SPAN>
+        <SPAN class="code-tag">&lt;/command&gt;</SPAN>
+    <SPAN class="code-tag">&lt;/command-bundle&gt;</SPAN>
+
+<SPAN class="code-tag">&lt;/blueprint&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H2><A name="6.1.Extendingtheconsole-Compilingthejar"></A>Compiling the jar</H2>
+
+<P>Let's try to build the jar.  Remove the test classes and sample classes if you used the artifact, then from the command line, run:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+mvn install
+</PRE>
+</DIV></DIV>
+
+<P>The end of the maven output should look like:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+[SMX4KNL:INFO] ------------------------------------------------------------------------
+[SMX4KNL:INFO] BUILD SUCCESSFUL
+[SMX4KNL:INFO] ------------------------------------------------------------------------
+</PRE>
+</DIV></DIV>
+
+<H2><A name="6.1.Extendingtheconsole-TurningthejarintoanOSGibundle"></A>Turning the jar into an OSGi bundle</H2>
+
+<P>OSGi bundles are jars but they require some manifest headers to be correctly recognized.  We will leverage Felix's manven plugin to easily generate those.  </P>
+
+<P>Lets turn it into a bundle: modify the line in the <TT>pom.xml</TT> to adjust the packaging:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+  <SPAN class="code-tag">&lt;packaging&gt;</SPAN>bundle<SPAN class="code-tag">&lt;/packaging&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>Add the following section at the bottom of the <TT>pom.xml</TT>, in the existing <TT>build/plugins</TT> section:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+      <SPAN class="code-tag">&lt;plugin&gt;</SPAN>
+        <SPAN class="code-tag">&lt;groupId&gt;</SPAN>org.apache.felix<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+        <SPAN class="code-tag">&lt;artifactId&gt;</SPAN>maven-bundle-plugin<SPAN class="code-tag">&lt;/artifactId&gt;</SPAN>
+        <SPAN class="code-tag">&lt;version&gt;</SPAN>2.0.1<SPAN class="code-tag">&lt;/version&gt;</SPAN>
+        <SPAN class="code-tag">&lt;extensions&gt;</SPAN>true<SPAN class="code-tag">&lt;/extensions&gt;</SPAN>
+        <SPAN class="code-tag">&lt;configuration&gt;</SPAN>
+            <SPAN class="code-tag">&lt;instructions&gt;</SPAN>
+                <SPAN class="code-tag">&lt;Import-Package&gt;</SPAN>org.osgi.service.command,*<SPAN class="code-tag">&lt;/Import-Package&gt;</SPAN>
+            <SPAN class="code-tag">&lt;/instructions&gt;</SPAN>
+        <SPAN class="code-tag">&lt;/configuration&gt;</SPAN>
+      <SPAN class="code-tag">&lt;/plugin&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>The <TT>Import-Package</TT> is required to make sure our bundle will import the <TT>org.osgi.service.command</TT> package so that the service will be correctly seen in Felix.</P>
+
+<P>Let's compiled it again using the <TT>mvn install</TT> command.</P>
+
+<H2><A name="6.1.Extendingtheconsole-TestinKaraf"></A>Test in Karaf</H2>
+
+<P>Launch a Karaf instance and run the following command to install the newly created bundle:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+karaf@root&gt; osgi:install -s mvn:org.apache.felix.karaf.shell.samples/shell-sample-commands/1.0-SNAPSHOT
+</PRE>
+</DIV></DIV>
+
+<P>Let's try running the command:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+karaf@root&gt; test:hello
+Executing Hello command
+</PRE>
+</DIV></DIV>
+
+<P>and for the link:</P>
+
+<P>Yeah <IMG class="emoticon" src="http://cwiki.apache.org/confluence/images/icons/emoticons/smile.gif" height="20" width="20" align="absmiddle" alt="" border="0"></P>
+
+<P><A href="#6.1.Extendingtheconsole-top">top</A></P>
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD width="33%" class="ScrollbarPrevName">&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="6-advanced-uses.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="6-advanced-uses.html">6. Advanced uses</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="62-building-custom-distributions.html">6.2. Building custom distributions</A></TD><TD class="ScrollbarNextIcon"><A href="62-building-custom-distributions.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+    </DIV>
+  </BODY>
+</HTML>

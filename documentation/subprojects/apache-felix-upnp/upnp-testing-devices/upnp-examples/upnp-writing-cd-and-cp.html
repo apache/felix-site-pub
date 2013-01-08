@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - UPnP Writing CD and CP</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-upnp.html">Apache Felix UPnP</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-upnp/upnp-testing-devices.html">UPnP Testing Devices</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples.html">UPnP Examples</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/upnp-writing-cd-and-cp.html" target="felix_cwiki">/site/upnp-writing-cd-and-cp.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>UPnP Writing CD and CP</h1>
+      <h1 id="writing-upnp-devices-and-control-points">Writing UPnP Devices and Control Points</h1>
+<p>The <a href="http://www.osgi.org/Specifications/HomePage">OSGi UPnP Specification (v 1.1)</a> dedicates section 111.6 "Working with a UPnP Device" to describe the details of implementing UPnP Devices on OSGi. Here we provide some hints on the main differences you may encounter working with OSGi with respect to the [UDA 1.0 Specification|http://www.upnp.org/resources/documents/CleanUPnPDA101-20031202s.pdf] .</p>
+<p>The first peculiarity is that OSGi provides a centralized register for discovering of UPnP devices as opposed to the distributed mechanism of the UPnP protocol stack. Thus, while in the UPnP networks the steps for subscribing the services of some device are typically 1) <em>discover</em> the required device and 2) <em>subscribe</em> the service, within the OSGi platform a Control Point may register an interest in receiving notify events even before the device is really plugged on the network. This is possible because the subscription mechanism is based on the <a href="http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPEventListener.html">UPnPEventListener</a>interface that is used for registering OSGi services, which ultimately handles the notify messages sent by the producers of the events. The base driver (importer) keeps track of such UPnPEventListener services and as soon as a matching service is discovered on the UPnP network, a subscription is made on behalf of the registered listeners.</p>
+<p>On the other hand, even if it is enough to register a service implementing the <a href="http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPDevice.html">UPnPDevice</a>interface to expose it as UPnP devices on the network, the developers have to implement on their own the event management required by the UPnP technology. From this point of view, for each evented state variable declared by the UPnP device, the developers have to monitor UPnPEventListenerservices that is error prone[1]. The correct implementation of the UPnP eventing phase is left entirely to developers. In particular, in UDA 1.0, the first time a Control Point subscribes a service, the current value of its state variables should soon be delivered to it. To manage this situation in a standard way, the last OSGi UPnP specification defined the extended interface [UPnPLocalStateVariable|http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPLocalStateVariable.html]. In fact, the previous basic interface UPnPStateVariable provided only a descriptive interface which did not enable to get the value of a state variable without knowing the final implementation class. Every developer should use this new interface in order to allow the specification of helper classes that ease the subscription/notify management (see [UPnPEventNotifier|http://svn.apache.org/viewvc/felix/trunk/upnp/extra/src/main/java/org/apache/felix/upnp/extra/util/UPnPSubscriber.java?view=markup] below).</p>
+<p>We have factorized and released part of the code used by the UPnP examples with the <em>org.apache.felix.upnp.extra</em> bundle.</p>
+<h2 id="the-extra-bundle-and-the-driver-interfaces">The Extra bundle and the driver interfaces</h2>
+<p>We provide some utility classes and services through the extra bundle and the services registered by the UPnP Base Driver.</p>
+<p>In the Extra bundle the class <a href="http://svn.apache.org/viewvc/felix/trunk/upnp/extra/src/main/java/org/apache/felix/upnp/extra/util/UPnPSubscriber.java?view=markup">org.apache.felix.upnp.extra.util.UPnPSubscriber</a> can be instantiated to subscribe one or more services. The constructor takes two parameters a [BundleContext |http://www.osgi.org/javadoc/r4/org/osgi/framework/BundleContext.html] reference and a [UPnPEventListener |http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPEventListener.html] reference. In this class the method subscribe(Filter aFilter) is a general and powerful way to subscribe to any service by using an [LDAP filter|http://www.osgi.org/javadoc/r4/org/osgi/framework/Filter.html]. For example by using the string :</p>
+<div class="codehilite"><pre><span class="s">&quot;(&amp; (UPnP.device.type=urn:schemas-upnp-org:device:BinaryLight:1) (UPnP.service.type= urn:schemas-upnp-org:service:SwitchPower:1))&quot;</span>
+</pre></div>
+
+
+<p>we would subscribe to the SwitchPower service offered by any device implementing the BinaryLight profile. Looking at the Felix UPnP TV sample code, the UPnPSubscriber class is used in the file <a href="http://svn.apache.org/viewvc/felix/trunk/upnp/samples/tv/src/main/java/org/apache/felix/upnp/sample/tv/TvDevice.java?view=markup">org.apache.felix.upnp.sample.tv.TVDevice</a> to subscribe to the different service types offered by the Cyberlink sample devices. However, in this case, the utility method {color:black}{<em>}subscribeEveryServiceType{</em>}{color} is used to provide just the device and service types.</p>
+<div class="codehilite"><pre><span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">CLOCK_DEVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:device:clock:1&quot;</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">TIME_SERVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:service:timer:1&quot;</span><span class="p">;</span>
+
+<span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">LIGHT_DEVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:device:light:1&quot;</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">POWER_SERVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:service:power:1&quot;</span><span class="p">;</span>
+
+<span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">AIRCON_DEVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:device:aircon:1&quot;</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">TEMP_SERVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:service:temp:1&quot;</span><span class="p">;</span>
+
+<span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">WASHER_DEVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:device:washer:1&quot;</span><span class="p">;</span>
+<span class="n">private</span> <span class="n">final</span> <span class="n">static</span> <span class="n">String</span> <span class="n">STATUS_SERVICE_TYPE</span> <span class="o">=</span> <span class="s">&quot;urn:schemas-upnp-org:service:state:1&quot;</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">doSubscribe</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">subscriber</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UPnPSubscriber</span><span class="p">(</span><span class="n">Activator</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">this</span><span class="p">);</span>
+  <span class="n">subscriber</span><span class="o">.</span><span class="n">subscribeEveryServiceType</span><span class="p">(</span><span class="n">CLOCK_DEVICE_TYPE</span><span class="p">,</span> <span class="n">TIME_SERVICE_TYPE</span><span class="p">);</span>
+  <span class="n">subscriber</span><span class="o">.</span><span class="n">subscribeEveryServiceType</span><span class="p">(</span><span class="n">AIRCON_DEVICE_TYPE</span><span class="p">,</span> <span class="n">TEMP_SERVICE_TYPE</span><span class="p">);</span>
+  <span class="n">subscriber</span><span class="o">.</span><span class="n">subscribeEveryServiceType</span><span class="p">(</span><span class="n">LIGHT_DEVICE_TYPE</span><span class="p">,</span> <span class="n">POWER_SERVICE_TYPE</span><span class="p">);</span>
+  <span class="n">subscriber</span><span class="o">.</span><span class="n">subscribeEveryServiceType</span><span class="p">(</span><span class="n">WASHER_DEVICE_TYPE</span><span class="p">,</span> <span class="n">STATUS_SERVICE_TYPE</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">undoSubscribe</span><span class="p">(){</span>
+       <span class="n">subscriber</span><span class="o">.</span><span class="n">unsubscribeAll</span><span class="p">();}</span>
+</pre></div>
+
+
+<p>The class <a href="http://svn.apache.org/viewvc/felix/trunk/upnp/extra/src/main/java/org/apache/felix/upnp/extra/util/UPnPEventNotifier.java?view=markup">org.apache.felix.upnp.extra.util.UPnPEventNotifier</a> is a utility class that manages the delivery of notifications for you. There are two constructors. The first one takes a [BundleContext|http://www.osgi.org/javadoc/r4/org/osgi/framework/BundleContext.html], a [UPnPDevice|http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPDevice.html] , and a [UPnPService |http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPService.html] reference. They are internally used to keep trace of all the registered UPnPEvenListener that are interested in monitoring events generated by your UPnP service. UPnPEventNotifier implements the java beans [PropertyChangeListener |http://java.sun.com/j2se/1.4.2/docs/api/java/beans/PropertyChangeListener.html] interface; once changes of the service state variables occurs you should call the method propertyChange(PropertyChangeEvent evt). Alternatively, you may use the second constructor to pass a reference to a model implementing the interface: [EventSource |http://svn.apache.org/viewvc/felix/trunk/upnp/extra/src/main/java/org/apache/felix/upnp/extra/util/EventSource.java?view=markup] defined in the Extra bundle. This model should use the [PropertyChangeSupport |http://java.sun.com/j2se/1.4.2/docs/api/java/beans/PropertyChangeSupport.html] to keep trace of PropertyChangeListener, {color:}and the related method firePropertyChange{color} to notify changes. The {color:black}EventSource{color} interface is used internally by the UPnPEventNotifier to register itself as propertychangeListener of the model. Thus, in this case, you don't have to call propertyChange()directly: it is a duty of your model. As an example, take a look at [LightModel |http://svn.apache.org/viewvc/felix/trunk/upnp/samples/binarylight/src/main/java/org/apache/felix/upnp/sample/binaryLight/LightModel.java?view=markup] class in the BinaryLight bundle{color:black}.{color}</p>
+<p>The Felix UPnP base driver registers a non standard service implementing two interfaces:</p>
+<p><a href="http://svn.apache.org/viewvc/felix/trunk/upnp/basedriver/src/main/java/org/apache/felix/upnp/basedriver/controller/DevicesInfo.java?view=markup">org.apache.felix.upnp.basedriver.controller.DevicesInfo</a>;
+<a href="http://svn.apache.org/viewvc/felix/trunk/upnp/basedriver/src/main/java/org/apache/felix/upnp/basedriver/controller/DriverController.java?view=markup">org.apache.felix.upnp.basedriver.controller.DriverController</a>;</p>
+<p>The former can be used to retrieve the XML description of both devices and services. Other than be used for debugging purpose, it allows access to the UPnP schema extensions defined by UPnP Vendors. According to the UDA 1.0 they consist of elements inserted in different points of the XML description and by convention starting with the prefix "X_". This interface is used by the context menu handler of the UPnP Tester bundle.</p>
+<p>The latter interface can be used to change the log messages of the base driver at runtime. Two different methods are available to modify the log level of the base driver or to enable the visualization of low level messages related to the UPnP stack protocol (CyberDomo). Furthermore, the interface allows developers to send an M-SEARCH discovery message to the UPnP networks, thus refreshing the list of imported devices.</p>
+<h5 id="the-felix-upnp-examples-known-issues-upnp-known-issues"><a href="/documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples.html">The Felix UPnP Examples</a> &lt;&lt; \| &gt;&gt; [Known Issues| UPnP Known Issues]</h5>
+<hr />
+<p>[1]() Developers should monitor UPnpEventListener services with a filter matching either the own service Id or service type, either the own device Id or device type and even a empty filter which are usually used to express interest for every UPnP device.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

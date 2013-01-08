@@ -1,0 +1,76 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Sigil JUnit</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H2><A name="SigilJUnit-Overview"></A>Overview</H2>
+
+<P>The Sigil JUnit plugin is an OSGi bundle that when started in an OSGi enabled JVM watches for other bundles that contain JUnit TestCase classes in the framework. The main access point to the plugin is the <TT>org.cauldron.sigil.junit.server.JUnitService</TT>.</P>
+
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>JUnitService.java</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> org.cauldron.sigil.junit.server;
+
+<SPAN class="code-keyword">import</SPAN> java.util.Set;
+
+<SPAN class="code-keyword">import</SPAN> org.osgi.framework.BundleContext;
+
+<SPAN class="code-keyword">import</SPAN> junit.framework.TestSuite;
+
+/**
+ *
+ */	
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> JUnitService {
+	/**
+	 * Returns the names of all tests currently installed in the OSGi runtime
+	 */	
+	Set&lt;<SPAN class="code-object">String</SPAN>&gt; getTests();
+
+	/**
+	 * Create a <SPAN class="code-keyword">new</SPAN> instance of the specified test. Equivalent to calling createTest(test, <SPAN class="code-keyword">null</SPAN>);
+	 */	
+	TestSuite createTest(<SPAN class="code-object">String</SPAN> test);
+	
+	/**
+	 * Create a <SPAN class="code-keyword">new</SPAN> instance of the specified test passing the specified bundle context to the test classes.
+	 * If ctx is <SPAN class="code-keyword">null</SPAN> the callers BundleContext is passed to the test.
+	 */	
+	TestSuite createTest(<SPAN class="code-object">String</SPAN> test, BundleContext ctx);
+}
+</PRE>
+</DIV></DIV>
+
+<P>When a test is created the <TT>JUnitService</TT> introspects the test class and looks for a method <TT>public void setBundleContext(BundleContext ctx);</TT> if one is found then the BundleContext is injected into the test class before being returned to the caller. </P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by dsavage@apache.org on 2009-09-16 13:47:49.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

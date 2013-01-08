@@ -1,0 +1,105 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - 6.3. Programmatically connect to the console</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="62-building-custom-distributions.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="62-building-custom-distributions.html">6.2. Building custom distributions</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="6-advanced-uses.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="6-advanced-uses.html">6. Advanced uses</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="64-embedding-karaf.html">6.4. Embedding Karaf</A></TD><TD class="ScrollbarNextIcon"><A href="64-embedding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+<P><A name="6.3.Programmaticallyconnecttotheconsole-top"></A></P>
+
+<H1><A name="6.3.Programmaticallyconnecttotheconsole-6.3.Programmaticallyconnecttotheconsole"></A>6.3. Programmatically connect to the console</H1>
+
+<P>A connection to Karaf console can also be done programmatically.<BR>
+The following code is a simplified version of the code from the client library.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">import</SPAN> org.apache.sshd.ClientChannel;
+<SPAN class="code-keyword">import</SPAN> org.apache.sshd.ClientSession;
+<SPAN class="code-keyword">import</SPAN> org.apache.sshd.SshClient;
+<SPAN class="code-keyword">import</SPAN> org.apache.sshd.client.<SPAN class="code-keyword">future</SPAN>.ConnectFuture;
+
+<SPAN class="code-keyword">public</SPAN> class Main {
+
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> void main(<SPAN class="code-object">String</SPAN>[] args) <SPAN class="code-keyword">throws</SPAN> Exception {
+        <SPAN class="code-object">String</SPAN> host = <SPAN class="code-quote">&quot;localhost&quot;</SPAN>;
+        <SPAN class="code-object">int</SPAN> port = 8101;
+        <SPAN class="code-object">String</SPAN> user = <SPAN class="code-quote">&quot;karaf&quot;</SPAN>;
+        <SPAN class="code-object">String</SPAN> password = <SPAN class="code-quote">&quot;karaf&quot;</SPAN>;
+
+        SshClient client = <SPAN class="code-keyword">null</SPAN>;
+        <SPAN class="code-keyword">try</SPAN> {
+            client = SshClient.setUpDefaultClient();
+            client.start();
+            ConnectFuture <SPAN class="code-keyword">future</SPAN> = client.connect(host, port);
+            <SPAN class="code-keyword">future</SPAN>.await();
+            ClientSession session = <SPAN class="code-keyword">future</SPAN>.getSession();
+            session.authPassword(user, password);
+            ClientChannel channel = session.createChannel(<SPAN class="code-quote">&quot;shell&quot;</SPAN>);
+            channel.setIn(<SPAN class="code-object">System</SPAN>.in);
+            channel.setOut(<SPAN class="code-object">System</SPAN>.out);
+            channel.setErr(<SPAN class="code-object">System</SPAN>.err);
+            channel.open();
+            channel.waitFor(ClientChannel.CLOSED, 0);
+        } <SPAN class="code-keyword">catch</SPAN> (Throwable t) {
+            t.printStackTrace();
+            <SPAN class="code-object">System</SPAN>.exit(1);
+        } <SPAN class="code-keyword">finally</SPAN> {
+            <SPAN class="code-keyword">try</SPAN> {
+                client.stop();
+            } <SPAN class="code-keyword">catch</SPAN> (Throwable t) { }
+        }
+        <SPAN class="code-object">System</SPAN>.exit(0);
+    }
+
+}
+</PRE>
+</DIV></DIV>
+
+<P>You can find a more complete example at the <A href="http://svn.apache.org/repos/asf/felix/trunk/karaf/client/src/main/java/org/apache/felix/karaf/client/Main.java" class="external-link" rel="nofollow">following location</A>.</P>
+
+
+
+<P><A href="#6.3.Programmaticallyconnecttotheconsole-top">top</A></P>
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="62-building-custom-distributions.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="62-building-custom-distributions.html">6.2. Building custom distributions</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="6-advanced-uses.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="6-advanced-uses.html">6. Advanced uses</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="64-embedding-karaf.html">6.4. Embedding Karaf</A></TD><TD class="ScrollbarNextIcon"><A href="64-embedding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+    </DIV>
+  </BODY>
+</HTML>

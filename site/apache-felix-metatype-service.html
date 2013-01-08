@@ -1,0 +1,183 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Metatype Service</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixMetatypeService-ApacheFelixMetatypeService"></A>Apache Felix Metatype Service</H1>
+
+<P>The OSGi Metatype specification provides a unified way to describe metadata about services and a Java interface to retrieve and manipulate such information. This information can optionally be localized, thus allowing the developer to provide human-readable metadata descriptions in multiple languages. The specification defines a rich dynamic typing system to describe service attributes in a precise way, which makes it possible to dynamically create user interfaces to configure services.</P>
+
+<P>The simplest way to specify service metatype information is to add one or more XML files in the <TT>OSGI-INF/metatype</TT> folder.<BR>
+For example, the <TT>OSGI-INF/metatype/metatype.xml</TT> file included in the <A href="apache-felix-file-install.html" title="Apache Felix File Install">Apache Felix File Install</A> subproject is as follows:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+&lt;?xml version=<SPAN class="code-quote">&quot;1.0&quot;</SPAN> encoding=<SPAN class="code-quote">&quot;UTF-8&quot;</SPAN>?&gt;
+&lt;metatype:MetaData xmlns:metatype=<SPAN class="code-quote">&quot;http:<SPAN class="code-comment">//www.osgi.org/xmlns/metatype/v1.0.0&quot;</SPAN>&gt;
+</SPAN>
+  &lt;OCD description=<SPAN class="code-quote">&quot;FileInstaller&quot;</SPAN> name=<SPAN class="code-quote">&quot;org.apache.felix.fileinstall&quot;</SPAN> id=<SPAN class="code-quote">&quot;org.apache.felix.fileinstall&quot;</SPAN>&gt;
+       
+    &lt;AD name=<SPAN class="code-quote">&quot;Poll directory&quot;</SPAN>  id=<SPAN class="code-quote">&quot;felix.fileinstall.dir&quot;</SPAN> required=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">true</SPAN>&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;load&quot;</SPAN>/&gt;   
+    &lt;AD name=<SPAN class="code-quote">&quot;Poll interval&quot;</SPAN>  id=<SPAN class="code-quote">&quot;felix.fileinstall.poll&quot;</SPAN> required=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">false</SPAN>&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;5000&quot;</SPAN>/&gt;
+    &lt;AD name=<SPAN class="code-quote">&quot;Debug&quot;</SPAN>  id=<SPAN class="code-quote">&quot;felix.fileinstall.debug&quot;</SPAN> required=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">false</SPAN>&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;-1&quot;</SPAN>/&gt;
+    &lt;AD name=<SPAN class="code-quote">&quot;Start <SPAN class="code-keyword">new</SPAN> bundles?&quot;</SPAN>  id=<SPAN class="code-quote">&quot;felix.fileinstall.bundles.<SPAN class="code-keyword">new</SPAN>.start&quot;</SPAN> required=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">false</SPAN>&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">true</SPAN>&quot;</SPAN>/&gt;
+    
+  &lt;/OCD&gt;
+  
+    &lt;Designate pid=<SPAN class="code-quote">&quot;org.apache.felix.fileinstall&quot;</SPAN>&gt;
+        &lt;<SPAN class="code-object">Object</SPAN> ocdref=<SPAN class="code-quote">&quot;org.apache.felix.fileinstall&quot;</SPAN>/&gt;
+    &lt;/Designate&gt;
+  
+&lt;/metatype:MetaData&gt;
+</PRE>
+</DIV></DIV>
+
+<P>The main elements of this simple example are:</P>
+
+<UL>
+	<LI><B>OCD</B>, Object Class Definition; contains the information about a set of attributes.</LI>
+	<LI><B>AD</B>, Attribute Definition; describes an attribute (name, description, unique id, type, cardinality, default value, ...).</LI>
+	<LI><B>Designate</B>, defines the association between an Object Class Definition and a pid; the pid can be a reference to a factory or a singleton configuration object.</LI>
+</UL>
+
+
+<P>The following types are supported by the specification:</P>
+
+<UL>
+	<LI>String</LI>
+	<LI>Long</LI>
+	<LI>Double</LI>
+	<LI>Float</LI>
+	<LI>Integer</LI>
+	<LI>Byte</LI>
+	<LI>Char</LI>
+	<LI>Boolean</LI>
+	<LI>Short</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixMetatypeService-Localization"></A>Localization</H2>
+
+<P>As mentioned before, it is possible to localize metatype information. A good example is the <A href="apache-felix-web-console.html" title="Apache Felix Web Console">Apache Felix Web Console</A> subproject, which includes the following metatype information: </P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+&lt;?xml version=<SPAN class="code-quote">&quot;1.0&quot;</SPAN> encoding=<SPAN class="code-quote">&quot;UTF-8&quot;</SPAN>?&gt;
+
+&lt;metatype:MetaData xmlns:metatype=<SPAN class="code-quote">&quot;http:<SPAN class="code-comment">//www.osgi.org/xmlns/metatype/v1.0.0&quot;</SPAN> localization=<SPAN class="code-quote">&quot;OSGI-INF/metatype/metatype&quot;</SPAN>&gt;
+</SPAN>
+    &lt;OCD id=<SPAN class="code-quote">&quot;org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</SPAN> name=<SPAN class="code-quote">&quot;%manager.name&quot;</SPAN> description=<SPAN class="code-quote">&quot;%manager.description&quot;</SPAN>&gt;
+        &lt;AD id=<SPAN class="code-quote">&quot;manager.root&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;/system/console&quot;</SPAN> name=<SPAN class="code-quote">&quot;%manager.root.name&quot;</SPAN> description=<SPAN class="code-quote">&quot;%manager.root.description&quot;</SPAN>/&gt;
+        &lt;AD id=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>.render&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;bundles&quot;</SPAN> name=<SPAN class="code-quote">&quot;%<SPAN class="code-keyword">default</SPAN>.render.name&quot;</SPAN> description=<SPAN class="code-quote">&quot;%<SPAN class="code-keyword">default</SPAN>.render.description&quot;</SPAN>/&gt;
+        &lt;AD id=<SPAN class="code-quote">&quot;realm&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;OSGi Management Console&quot;</SPAN> name=<SPAN class="code-quote">&quot;%realm.name&quot;</SPAN> description=<SPAN class="code-quote">&quot;%realm.description&quot;</SPAN>/&gt;
+        &lt;AD id=<SPAN class="code-quote">&quot;username&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;admin&quot;</SPAN> name=<SPAN class="code-quote">&quot;%username.name&quot;</SPAN> description=<SPAN class="code-quote">&quot;%username.description&quot;</SPAN>/&gt;
+        &lt;AD id=<SPAN class="code-quote">&quot;password&quot;</SPAN> type=<SPAN class="code-quote">&quot;<SPAN class="code-object">String</SPAN>&quot;</SPAN> <SPAN class="code-keyword">default</SPAN>=<SPAN class="code-quote">&quot;admin&quot;</SPAN> name=<SPAN class="code-quote">&quot;%password.name&quot;</SPAN> description=<SPAN class="code-quote">&quot;%password.description&quot;</SPAN>/&gt;
+    &lt;/OCD&gt;
+    
+    &lt;Designate pid=<SPAN class="code-quote">&quot;org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</SPAN>&gt;
+        &lt;<SPAN class="code-object">Object</SPAN> ocdref=<SPAN class="code-quote">&quot;org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</SPAN>/&gt;
+    &lt;/Designate&gt;
+    
+&lt;/metatype:MetaData&gt;
+</PRE>
+</DIV></DIV>
+
+<P>The key elements to write a localized metatype definition are</P>
+
+<UL>
+	<LI>The <B>localization</B> attribute, that points to the property file that localize this XML.</LI>
+	<LI>The <B>%</B> notation that specifies a localizable string name.</LI>
+	<LI>One or more property files defining localized strings.</LI>
+</UL>
+
+
+<P>The following example shows the localization property file of the Web Console:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+manager.name = Apache Felix OSGi Management Console
+manager.description = Configuration of the Apache Felix OSGi Management Console.
+
+manager.root.name = Root URI
+manager.root.description = The root path to the OSGi Management Console.
+
+realm.name = Realm
+realm.description = The name of the HTTP Authentication Realm.
+
+username.name = User Name
+username.description = The name of the user allowed to access the OSGi \
+ Management Console. To disable authentication clear <SPAN class="code-keyword">this</SPAN> value.
+
+password.name = Password
+password.description = The password <SPAN class="code-keyword">for</SPAN> the user allowed to access the OSGi \
+ Management Console.
+ 
+<SPAN class="code-keyword">default</SPAN>.render.name = Default Page
+<SPAN class="code-keyword">default</SPAN>.render.description = The name of the <SPAN class="code-keyword">default</SPAN> configuration page \
+ when invoking the OSGi Management console.
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixMetatypeService-MetatypeServiceAPI"></A>Metatype Service API</H2>
+
+<P>Before using the Metatype Service API, it's worth noting that this specification is not part of the OSGi core specification, so it's not included in the standard Felix distribution. It is therefore necessary to download and install the additional Metatype bundle.</P>
+
+<P>Accessing the Metatype service is as simple as performing a lookup in the service registry:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+  ServiceReference metatypeRef = bundleContext.getServiceReference(MetaTypeService.class.getName());
+  MetaTypeService service = (MetaTypeService) bundleContext.getService(metatypeRef);
+  
+  MetaTypeInformation information = service.getMetaTypeInformation(myBundle);
+</PRE>
+</DIV></DIV> 
+
+<P>After retrieving the <TT>MetaTypeInformation</TT> object for the required bundle, we have access to all the information contained in the metatype XML definition. In particular, it is possible to access the ObjectClassDefinition (optionally specifying a locale):</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">  
+  ObjectClassDefinition ocd = information.getObjectClassDefinition(pid, locale);
+</PRE>
+</DIV></DIV> 
+
+<P>With the <TT>ObjectClassDefinition</TT>, it is possible to retrieve all the attribute definitions:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">  
+  AttributeDefinition[] attributes = ocd.getAttributeDefinitions(ObjectClassDefinition.ALL); 
+</PRE>
+</DIV></DIV> 
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2009-04-03 00:46:54.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

@@ -1,0 +1,102 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix SCR Plugin FAQ</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixSCRPluginFAQ-ApacheFelixSCRPluginFrequentlyAskedQuestions"></A>Apache Felix SCR Plugin Frequently Asked Questions</H1>
+
+<STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1265097402513 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1265097402513 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1265097402513 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1265097402513">
+<UL>
+    <LI><A href="#ApacheFelixSCRPluginFAQ-ApacheFelixSCRPluginFrequentlyAskedQuestions">Apache Felix SCR Plugin Frequently Asked Questions</A></LI>
+<UL>
+    <LI><A href="#ApacheFelixSCRPluginFAQ-SyntaxErrorwhenEnumsareused%253F">Syntax Error when Enums are used?</A></LI>
+    <LI><A href="#ApacheFelixSCRPluginFAQ-NoClassDefFoundErrorduringbuild">NoClassDefFoundError during build</A></LI>
+</UL>
+</UL></DIV>
+
+<H2><A name="ApacheFelixSCRPluginFAQ-SyntaxErrorwhenEnumsareused%3F"></A>Syntax Error when Enums are used?</H2>
+
+<P>During a SCR plugin run, a syntax error might occur if enums are used in the source code. This is a know problem of the used QDox version that reads the Java source files. Usually this happens when an enum is used inline and does not end with a &quot;;&quot;. So adding this character should solve the problem:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>public interface MyTest {
+
+     /** more error codes may be added */
+     enum Result {
+ 	OK, UNKNOWN, ERROR, DENIED
+     };     // &lt;!-- HERE
+ 
+     /** @return the result */
+     public void getResult(); 
+  }
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixSCRPluginFAQ-NoClassDefFoundErrorduringbuild"></A>NoClassDefFoundError during build </H2>
+
+<P>If the javadoc tags are used (and not the annotations) then the QDox library is used to parse/introspect the java class. For this the classes have to be loaded and static fields have to be initialized. If you have have for example something like</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>  private static final org.slf4f.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(&quot;name&quot;);
+</PRE>
+</DIV></DIV>
+<P>in your code, during the plugin run, a slf4j logger is tried to instantiated. This requires an implementation of the logger. Ususally your module only depends on the slf4j API and therefore a </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>java.lang.NoClassDefFoundError: org/slf4j/impl/StaticLoggerBinder
+</PRE>
+</DIV></DIV>
+<P>is thrown - this often happens with slf4j but might also happen with other libraries.</P>
+
+<P>In these cases you should add a dependency to the missing class to the dependency list of the plugin, like:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>     &lt;plugin&gt;
+         &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+         &lt;artifactId&gt;maven-scr-plugin&lt;/artifactId&gt;
+         &lt;version&gt;1.4.2&lt;/version&gt;
+         &lt;dependencies&gt;
+             &lt;dependency&gt;
+                 &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+                 &lt;artifactId&gt;slf4j-simple&lt;/artifactId&gt;
+                 &lt;version&gt;1.5.2&lt;/version&gt;
+             &lt;/dependency&gt;
+         &lt;/dependencies&gt;
+</PRE>
+</DIV></DIV>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by cziegeler@apache.org on 2010-02-02 07:56:41.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

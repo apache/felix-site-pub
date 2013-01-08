@@ -1,0 +1,100 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - 4.3. Logging system</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="42-remote-console.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="42-remote-console.html">4.2. Remote Console</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="4-understanding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="4-understanding-karaf.html">4. Understanding Karaf</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="44-deployer.html">4.4. Deployer</A></TD><TD class="ScrollbarNextIcon"><A href="44-deployer.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+<P><A name="4.3.Loggingsystem-top"></A></P>
+
+<H1><A name="4.3.Loggingsystem-4.3.Loggingsystem"></A>4.3. Logging system</H1>
+
+<P>Karaf provides a powerful logging system based on <A href="http://wiki.ops4j.org/confluence/display/ops4j/Pax%20Logging" class="external-link" rel="nofollow">OPS4j Pax Logging</A>. </P>
+
+<P>In addition to being a standard OSGi Log service, it supports the following APIs:</P>
+<UL>
+	<LI>Apache Commons Logging</LI>
+	<LI>SLF4J</LI>
+	<LI>Apache Log4j</LI>
+	<LI>Java Util Logging</LI>
+</UL>
+
+
+<P>Karaf also comes with a set of console commands that can be used to display, view and change the log levels.</P>
+
+<H2><A name="4.3.Loggingsystem-Configuration"></A>Configuration</H2>
+
+<P>The configuration of the logging system uses a <A href="http://logging.apache.org/log4j/1.2/manual.html" class="external-link" rel="nofollow">standard Log4j configuration file</A> at the following location:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+[karaf]/etc/org.ops4j.pax.logging.cfg
+</PRE>
+</DIV></DIV>
+
+<P>You can edit this file at runtime and any change will be reloaded and be effective immediately.</P>
+
+<H2><A name="4.3.Loggingsystem-Commands"></A>Commands</H2>
+
+<P>The log subshell comes with 3 commands:</P>
+<UL>
+	<LI><TT>log:display</TT>: display the last log entries</LI>
+	<LI><TT>log:display-exception</TT>: display the last exception from the log</LI>
+	<LI><TT>log:get</TT>: show the log levels</LI>
+	<LI><TT>log:set</TT>: set the log levels</LI>
+</UL>
+
+
+<P>For example, if you want to debug something, you might want to run the following commands:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+&gt; log:set DEBUG
+... <SPAN class="code-keyword">do</SPAN> something ...
+&gt; log:display
+</PRE>
+</DIV></DIV>
+
+<P>Note that the log levels set using the <TT>log:set</TT> commands are not persistent and will be lost upon restart.<BR>
+To configure those in a persistent way, you should edit the configuration file mentioned above.<BR>
+<A href="#4.3.Loggingsystem-top">top</A></P>
+<STYLE type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</STYLE><DIV class="Scrollbar"><TABLE class="ScrollbarTable"><TR><TD class="ScrollbarPrevIcon"><A href="42-remote-console.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/back_16.gif" width="16" height="16"></A></TD><TD width="33%" class="ScrollbarPrevName"><A href="42-remote-console.html">4.2. Remote Console</A>&nbsp;</TD><TD width="33%" class="ScrollbarParent"><SUP><A href="4-understanding-karaf.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/up_16.gif" width="8" height="8"></A></SUP><A href="4-understanding-karaf.html">4. Understanding Karaf</A></TD><TD width="33%" class="ScrollbarNextName">&nbsp;<A href="44-deployer.html">4.4. Deployer</A></TD><TD class="ScrollbarNextIcon"><A href="44-deployer.html"><IMG border="0" align="middle" src="http://cwiki.apache.org/confluence/images/icons/forwd_16.gif" width="16" height="16"></A></TD></TR></TABLE></DIV>
+    </DIV>
+  </BODY>
+</HTML>

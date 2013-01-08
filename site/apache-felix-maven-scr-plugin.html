@@ -1,0 +1,86 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Maven SCR Plugin</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<P>The Apache Felix Maven SCR Plugin is a great tool to ease the development of OSGi components and services. Components and services are defined through annotations and the plugin creates the necessary descriptors for the OSGi Declarative Services, Config Admin and Metatype services. Starting with version 1.4.0 of the plugin, OSGi Declarative Services versions 1.0 and 1.1 are supported.</P>
+
+<P>Make sure to see the <A href="apache-felix-scr-plugin-faq.html" title="Apache Felix SCR Plugin FAQ">FAQ</A> for known problems.</P>
+
+<H2><A name="ApacheFelixMavenSCRPlugin-Introduction"></A>Introduction</H2>
+
+<P>In OSGi based systems functionality is mainly provided through services. Unlike traditional systems but comparable to Spring, a service is not reqiured to implement a framework defined interface. Instead services implement one or more interfaces, which stipulate the type of service provided. It is the lifetime of the bundle, which defines the lifetime of the service: A service object may be instantiated when the bundle is started and will automatically be removed when the bundle is stopped (and the service has not already been unregistered).</P>
+
+<P>Usually, the functionality of a bundle - be it the packages exported or be it the services provided - is made available to the rest of the system, when the bundle is started. To give the bundle a change to take action, a bundle may declare a <TT>BundleActivator</TT> class in the <TT>Bundle-Activato</TT> manifest header of the bundle. When the bundle is started, the <TT>start(BundleContext)</TT> method is called, while the <TT>stop(BundleContext)</TT> method is called when the bundle is stopped. These methods are one place to instantiate and register services with the service registry.</P>
+
+<P>The drawback of this method of service registration is that the services have to acquire other services whose functionality is used themselves and also have to observe the presence as services may come and go at any time. Though this observation is rather easy as basically a <TT>ServiceListener</TT> is to be implemented which listens for service registration and unregistration events, this is somewhat tedious and repeating for each service using other services.</P>
+
+<P>To overcome this situation, the OSGi Service Platform Compendium Specification provides the <EM>Declarative Services Specification</EM>. This specification enables the declaration of services in configuration files, which are read by the <EM>Declarative Services Runtime</EM> to observe dependencies and activate (register) and deactivate (unregister) services depending on whether requirements can be met. Additionally, the dependencies may be supplied through declared methods. The specification calls a class declared this way a component. A component may or may not be a service registered with the service registry.</P>
+
+<P>Components are declared using XML configuration files contained in the respective bundle and listed in the <TT>Service-Component</TT> bundle manifest header. These configuration files may be handwritten and registered. To support automatic generation of the component descriptors, the Maven SCR Plugin helps in the generation of these files by means of JavaDoc tags embedded in the Java source code of the components.</P>
+
+<P>Related to declarative services is configuration support. To support configuration of services and components, OSGi provides the Configuration Admin Service Specification. This specification defines a service, which is the center of providing configuration to services and components. As such the Configuration Admin Service cares for storing configuration and deliver the configuration automatically or on-demand to clients. Configuration objects are identified by so-called Persistent Identifiers (PID) and are bound to bundles when used. For services implementing the special <TT>ManagedService</TT> or <TT>ManagedServiceFactory</TT> interfaces the PID has to be provided in the service properties as a property with the name <TT>service.pid</TT>. For Declarative Services, the name of the component is used as the PID to retrieve the configuration from the Configuration Admin Service.</P>
+
+<P>The Configuration Admin Service not only allows components to get or retrieve configuration, it also provides the entry point for Management Agents to retrieve and update configuration data. To help building Management Agents the OSGi Metatype Service Specification defines a descripton model which may be used to describe data used by components and services. The configuration properties and meta type description for a given PID together are used to build the user interface to configure the service and/or component.</P>
+
+<P>To summarize:</P>
+<OL>
+	<LI><EM>Declarative Services</EM> provides a means to define components (and services) through one or more XML files. Each component may get default configuration from its own definition.</LI>
+	<LI>The <EM>Configuration Admin Service</EM> provides functionality to provide configuration to components and services as well as to support management tools to update (and create) configuration data.</LI>
+	<LI>The <EM>Metatype Service</EM> provides a description suitable for management tools to manage configurations provided by the Configuration Admin Service. The descriptions of the data is provided in one or more XML files and associated languag binding files.</LI>
+</OL>
+
+
+<H2><A name="ApacheFelixMavenSCRPlugin-Wheretogofromhere"></A>Where to go from here</H2>
+
+<UL>
+	<LI><A href="apache-felix-maven-scr-plugin-use.html" title="Apache Felix Maven SCR Plugin Use">Using the Apache Felix Maven SCR Plugin to generate Declarative Services and Metatype Service descriptors during a Maven Build</A></LI>
+	<LI><A href="apache-felix-scr-ant-task-use.html" title="Apache Felix SCR Ant Task Use">Using the Apache Felix SCR Ant Task to generate Declarative Services and Metatype Service descriptors during an Ant driven Build.</A></LI>
+	<LI><A href="scr-annotations.html" title="SCR Annotations">Using Java 5 Annotations to describe the component or service.</A></LI>
+	<LI><A href="scr-javadoc-tags.html" title="SCR JavaDoc Tags">Using JavaDoc Tags to describe the component or service.</A></LI>
+	<LI><A href="extending-scr-annotations.html" title="Extending SCR Annotations">How add new Annotations extending the base Annotations</A></LI>
+</UL>
+
+
+<H2><A name="ApacheFelixMavenSCRPlugin-DifferencesbetweenJavaDoctagsandannotations"></A>Differences between JavaDoc tags and annotations</H2>
+
+<P>In general both mechanisms provide the same functionality. There are some subtle difference which are listed in this section:</P>
+<UL>
+	<LI>While the <TT>metatype</TT> flag is turned on by default for the JavaDoc tags, the default for the annotations is to generate no metadata. The reason for this is, that it turned out that services with metadata are less often used.</LI>
+	<LI>The JavaDoc support adds properties and references from super classes if the source is in the same module to a component even if the super class does not have the <TT>@scr.component</TT> tag. With the annotations the super class is required to have the <TT>Component</TT> annotation.</LI>
+	<LI>Property values are handled differently. While the JavaDoc version has an auto detection of types together with an explicit type parameter, the annotations version has several attributes. Each type has its own attribute (like <TT>shortValue</TT>, <TT>intValue</TT> and so on). This is because of a limitation in the Java annotations which only allow typed parameters.</LI>
+</UL>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on 2010-11-09 06:42:27.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

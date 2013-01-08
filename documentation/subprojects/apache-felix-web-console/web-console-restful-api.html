@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Web Console RESTful API</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/web-console-restful-api.html" target="felix_cwiki">/site/web-console-restful-api.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Web Console RESTful API</h1>
+      <h1 id="web-console-restful-api">Web Console RESTful API</h1>
+<div class="toc">
+<ul>
+<li><a href="#web-console-restful-api">Web Console RESTful API</a><ul>
+<li><a href="#url-space">URL Space</a></li>
+<li><a href="#request-methods">Request Methods</a></li>
+<li><a href="#bundles-plugin">Bundles Plugin</a><ul>
+<li><a href="#urls">URLs</a></li>
+<li><a href="#get-requests">GET Requests</a><ul>
+<li><a href="#get-bundlesjson">GET .../bundles.json</a></li>
+<li><a href="#get-bundlesidjson">GET .../bundles/id.json</a></li>
+</ul>
+</li>
+<li><a href="#post-requests">POST Requests</a></li>
+</ul>
+</li>
+<li><a href="#services-plugin">Services Plugin</a></li>
+<li><a href="#configuration-admin-plugin">Configuration Admin Plugin</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="warning" markdown="1">
+Please note that the APIs described on this page have not been standardized or stabilized yet. As such they cannot be relied upon. They are merely a description of the current code. In future releases these APIs will be fixed to be properly RESTful.
+</div>
+
+<h2 id="url-space">URL Space</h2>
+<p>The Web Console URL space is by default rooted at <code>/system/console</code> inside the Servlet Context used by the OSGi Http Service. This default can be reconfigured, though this is not really recommended.</p>
+<p>It is expected that the Web Console owns the complete URL space below the root path.</p>
+<p>The next level in the URL Space of the Web Console is defined by the labels defined by the registered Web Console plugins. For example the Bundles plugins registers itself with the <code>bundles</code> label.</p>
+<h2 id="request-methods">Request Methods</h2>
+<p>ALthough the HTTP RFC defines a number of request methods and the REST architectural style mandates to use these methods as intended by the specification, Web Browsers in general only support the GET and POST methods. Moreover, firewall administrators more often than not block all HTTP methods except GET and POST. For this reason the Web Console limits the used methods to just these two.</p>
+<h2 id="bundles-plugin">Bundles Plugin</h2>
+<h3 id="urls">URLs</h3>
+<p><code>.../bundles</code> -- addresses all bundles in the framework
+<code>.../bundles/*id*</code> -- addresses a single bundle in the framework. The <code>*id*</code> can in this case be the bundle's ID (as per <code>Bundle.getBundleId()</code>), the bundle's symbolic name (which actually may cause multiple bundles to be addressed), or the bundle's symbolic name and version separated by a colon. Examples are <code>.../bundles/0</code>, <code>.../bundles/org.apache.felix.webconsole</code>, and <code>.../bundles/org.apache.felix.webconsole:3.1.4</code>.</p>
+<h3 id="get-requests">GET Requests</h3>
+<p>GET requests are used to retrieve information on the bundles (or bundle) available in the framework. To response formats are currently supported: regular HTML and JSON if requests are sent with the <code>.json</code> extension; e.g. <code>.../bundles/0.json</code>. The HTML response is destined at browsers and is not further described here.</p>
+<h4 id="get-bundlesjson">GET .../bundles.json</h4>
+<div class="note" markdown="1">
+Due to a bug ([FELIX-3132](https://issues.apache.org/jira/browse/FELIX-3132)) the form `.../bundles.json` only works in builds after SVN Revision 1175527. As a workaround request `.../bundles/.json`
+</div>
+
+<p>Request to this URL sends back an overview of all bundles along with an overview of all bundles (bundles existing, active, fragment, resolved, installed)</p>
+<div class="codehilite"><pre><span class="p">{</span>
+   <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;Bundle information: 84 bundles in total - all 84 bundles active.&quot;</span><span class="p">,</span>
+   <span class="s">&quot;s&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">81</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">],</span>
+   <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+         <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;System Bundle&quot;</span><span class="p">,</span>
+         <span class="s">&quot;fragment&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+         <span class="s">&quot;stateRaw&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+         <span class="s">&quot;state&quot;</span><span class="p">:</span> <span class="s">&quot;Active&quot;</span><span class="p">,</span>
+         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;3.0.8&quot;</span><span class="p">,</span>
+         <span class="s">&quot;symbolicName&quot;</span><span class="p">:</span> <span class="s">&quot;org.apache.felix.framework&quot;</span><span class="p">,</span>
+         <span class="s">&quot;category&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span>
+      <span class="p">},</span>
+      <span class="o">....</span>
+   <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="get-bundlesidjson">GET .../bundles/id.json</h4>
+<p>This URL returns detailed information of a bundle like the bundle headers, imported packages, exported packages, importing bundles, registered services.</p>
+<div class="codehilite"><pre><span class="p">{</span>
+    <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;Bundle information: 84 bundles in total - all 84 bundles active.&quot;</span><span class="p">,</span>
+    <span class="s">&quot;s&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">84</span><span class="p">,</span>
+        <span class="mi">81</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">0</span>
+    <span class="p">],</span>
+    <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
+            <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Apache Felix Web Management Console&quot;</span><span class="p">,</span>
+            <span class="s">&quot;fragment&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+            <span class="s">&quot;stateRaw&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s">&quot;state&quot;</span><span class="p">:</span> <span class="s">&quot;Active&quot;</span><span class="p">,</span>
+            <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;3.1.9.SNAPSHOT&quot;</span><span class="p">,</span>
+            <span class="s">&quot;symbolicName&quot;</span><span class="p">:</span> <span class="s">&quot;org.apache.felix.webconsole&quot;</span><span class="p">,</span>
+            <span class="s">&quot;category&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+            <span class="s">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Symbolic Name&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;org.apache.felix.webconsole&quot;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Version&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;3.1.9.SNAPSHOT&quot;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Bundle Location&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;slinginstall:org.apache.felix.webconsole-3.1.6.jar&quot;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Last Modification&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;Sun Sep 25 20:59:46 CEST 2011&quot;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Bundle Documentation&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;http://felix.apache.org/site/apache-felix-web-console.html&quot;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Vendor&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;The Apache Software Foundation&quot;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Description&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;Web Based Management Console for OSGi Frameworks. See http://felix.apache.org/site/apache-felix-web-console.html for more information on this bundle.&quot;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Start Level&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="mi">5</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Exported Packages&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;org.apache.felix.webconsole,version=3.1.2&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Imported Packages&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;javax.servlet,version=2.5.0 from &lt;a href=&#39;/system/console/bundles/15&#39;&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;javax.servlet.http,version=2.5.0 from &lt;a href=&#39;/system/console/bundles/15&#39;&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.apache.felix.scr,version=1.6.0 from &lt;a href=&#39;/system/console/bundles/11&#39;&gt;org.apache.felix.scr (11)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.osgi.framework,version=1.5.0 from &lt;a href=&#39;/system/console/bundles/0&#39;&gt;org.apache.felix.framework (0)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.osgi.service.cm,version=1.3.0 from &lt;a href=&#39;/system/console/bundles/9&#39;&gt;org.apache.felix.configadmin (9)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.osgi.service.http,version=1.2.0 from &lt;a href=&#39;/system/console/bundles/15&#39;&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.osgi.service.log,version=1.3.0 from &lt;a href=&#39;/system/console/bundles/6&#39;&gt;org.apache.sling.commons.logservice (6)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.osgi.service.metatype,version=1.1.0 from &lt;a href=&#39;/system/console/bundles/12&#39;&gt;org.apache.felix.metatype (12)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.osgi.service.packageadmin,version=1.2.0 from &lt;a href=&#39;/system/console/bundles/0&#39;&gt;org.apache.felix.framework (0)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;org.osgi.service.startlevel,version=1.1.0 from &lt;a href=&#39;/system/console/bundles/0&#39;&gt;org.apache.felix.framework (0)&lt;/a&gt;&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Importing Bundles&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;&lt;a href=&#39;/system/console/bundles/19&#39;&gt;org.apache.felix.webconsole.plugins.memoryusage (19)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;&lt;a href=&#39;/system/console/bundles/62&#39;&gt;org.apache.sling.commons.mime (62)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;&lt;a href=&#39;/system/console/bundles/14&#39;&gt;org.apache.sling.extensions.threaddump (14)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;&lt;a href=&#39;/system/console/bundles/20&#39;&gt;org.apache.sling.extensions.webconsolesecurityprovider (20)&lt;/a&gt;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;&lt;a href=&#39;/system/console/bundles/18&#39;&gt;org.apache.sling.jcr.webconsole (18)&lt;/a&gt;&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/369&#39;&gt;369&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/370&#39;&gt;370&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/371&#39;&gt;371&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/372&#39;&gt;372&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/373&#39;&gt;373&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/374&#39;&gt;374&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/375&#39;&gt;375&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/376&#39;&gt;376&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.osgi.service.cm.ManagedService, org.osgi.service.metatype.MetaTypeProvider&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Service PID: org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Description: OSGi Management Console Configuration Receiver&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Vendor: The Apache Software Foundation&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Service ID &lt;a href=&#39;/system/console/services/453&#39;&gt;453&lt;/a&gt;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Manifest Headers&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s">&quot;Bnd-LastModified: 1316977184980&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Build-Jdk: 1.6.0_13&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Built-By: fmeschbe&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-Activator: org.apache.felix.webconsole.internal.OsgiManagerActivator&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-Description: Web Based Management Console for OSGi Frameworks. See http://felix.apache.org/site/apache-felix-web-console.html for more information on this bundle.&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-DocURL: http://felix.apache.org/site/apache-felix-web-console.html&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-ManifestVersion: 2&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-Name: Apache Felix Web Management Console&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-SymbolicName: org.apache.felix.webconsole&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-Vendor: The Apache Software Foundation&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Bundle-Version: 3.1.9.SNAPSHOT&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Created-By: Apache Maven Bundle Plugin&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;DynamicImport-Package: org.apache.felix.bundlerepository, org.osgi.service.obr&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Export-Package: org.apache.felix.webconsole; uses:=\&quot;javax.servlet, org.osgi.framework, javax.servlet.http\&quot;; version=\&quot;3.1.2\&quot;&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Import-Package: javax.servlet; version=\&quot;2.4\&quot;, javax.servlet.http; version=\&quot;2.4\&quot;, org.apache.felix.scr; resolution:=optional; version=\&quot;1.0\&quot;, org.apache.felix.shell; resolution:=optional, org.apache.felix.webconsole; version=\&quot;3.1.2\&quot;, org.osgi.framework, org.osgi.service.cm; resolution:=optional, org.osgi.service.condpermadmin; resolution:=optional, org.osgi.service.deploymentadmin; resolution:=optional, org.osgi.service.http, org.osgi.service.log; resolution:=optional, org.osgi.service.metatype; resolution:=optional, org.osgi.service.packageadmin; resolution:=optional, org.osgi.service.permissionadmin; resolution:=optional, org.osgi.service.prefs; resolution:=optional, org.osgi.service.startlevel; resolution:=optional, org.osgi.service.wireadmin; resolution:=optional&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Manifest-Version: 1.0&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;Tool: Bnd-0.0.255&quot;</span>
+                    <span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="post-requests">POST Requests</h3>
+<p>To update the bundles the <code>action</code> request method is used to indicate the action:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Requires a Bundle</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>refreshPackages</code></td>
+<td>no</td>
+<td>Calls <code>PackageAdmin.refreshPackages(Bundle[]())</code> with a <code>null</code> argument -- refreshing all pending bundles</td>
+</tr>
+<tr>
+<td><code>install</code></td>
+<td>no</td>
+<td>Installs (or updates) and optionally starts one or more bundles. Parameters:</td>
+</tr>
+<tr>
+<td>* <code>bundlestart</code> -- whether to start newly installed bundles or not. Has no influence on updated bundles.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>* <code>bundlestartlevel</code> -- the start level to set on newly installed bundles. Has no influence on updated bundles.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>* <code>bundlefile</code> -- one or more uploaded files being the bundles to install or update. The manifests in the bundles are inspected to see whether any bundle is an update or new install.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>* <code>refreshPackages</code> -- whether to call <code>PackageAdmin.refreshPackages(Bundle[]())</code> with the installed/updated bundles after installation/update.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>start</code></td>
+<td>yes</td>
+<td>Starts the bundle</td>
+</tr>
+<tr>
+<td><code>stop</code></td>
+<td>yes</td>
+<td>Stops the bundle</td>
+</tr>
+<tr>
+<td><code>refresh</code></td>
+<td>yes</td>
+<td>Calls <code>PackageAdmin.refreshPackages(Bundle[]())</code> with the bundle as its sole argument thus forcing the bundle to be rewired.</td>
+</tr>
+<tr>
+<td><code>update</code></td>
+<td>yes</td>
+<td>Calls <code>Bundle.update()</code> on the bundle or tries to update the bundle through the OBR.</td>
+</tr>
+<tr>
+<td><code>uninstall</code></td>
+<td>yes</td>
+<td>Calls <code>Bundle.uninstall()</code> on the bundle.</td>
+</tr>
+</tbody>
+</table>
+<p>The response on those actions requiring a bundle is a simple JSON response:</p>
+<div class="codehilite"><pre><span class="p">{</span>
+    <span class="s">&quot;fragment&quot;</span><span class="p">:</span> <span class="o">--</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">is</span> <span class="n">a</span> <span class="n">fragement</span>
+    <span class="s">&quot;stateRaw&quot;</span><span class="p">:</span> <span class="o">--</span> <span class="n">the</span> <span class="n">state</span> <span class="n">code</span> <span class="n">of</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">after</span> <span class="n">executing</span> <span class="n">the</span> <span class="n">action</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Since some bundle operations take place asynchronously a short delay of 800ms is inserted before preparing and sending the response.</p>
+<p>The response on those actions not taking a bundle is the bundle overview of the bundles in the framework as if requesting <code>.../bundles.json</code>. Again a delay of 800ms is inserted since some operations are executed asynchronously.</p>
+<h2 id="services-plugin">Services Plugin</h2>
+<p>TBD</p>
+<h2 id="configuration-admin-plugin">Configuration Admin Plugin</h2>
+<p>TBD</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

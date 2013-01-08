@@ -1,0 +1,189 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Sigil Properties</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H2><A name="SigilProperties-Overview"></A>Overview</H2>
+
+<P>sigil.properties is the common configuration file used in both the Eclipse and Ivy plugins. It is also used for the repository configuration (sigil-repos.properties).</P>
+
+
+<P>It supports 4 types of property:</P>
+
+<UL>
+	<LI><B>simple</B> - e.g. name: foo or -activator: org.acme.Activator</LI>
+</UL>
+
+
+<UL>
+	<LI><B>list</B> - e.g. -bundles: foo-api, foo-impl</LI>
+</UL>
+
+
+<UL>
+	<LI><B>map</B> - e.g. -imports: org.foo; version=1.2, org.bar; version=&quot;[1.0, 1.1)&quot;</LI>
+</UL>
+
+
+<UL>
+	<LI><B>sub-property</B> - e.g. header;Bundle-Vendor: Acme or foo-api;-exports: org.foo</LI>
+</UL>
+
+
+<P>The sub-property type allows values to be set that are groups of properties. The key prefix before ';' identifies the sub-property name. All keys with the same prefix contribute to the sub-property value.</P>
+
+<P>The -defaults mechanism allows projects to share common bundle headers and default package import versions.</P>
+
+<P>Most values are passed to <A href="http://www.aqute.biz/Code/Bnd" class="external-link" rel="nofollow">Bnd</A>, so Bnd syntax can usually be used, for example: -resources: @lib, to embed a library.</P>
+
+
+<H2><A name="SigilProperties-Reference"></A>Reference</H2>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Name </TH>
+<TH class="confluenceTh"> Type </TH>
+<TH class="confluenceTh"> Description </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> -bundles </TD>
+<TD class="confluenceTd"> list </TD>
+<TD class="confluenceTd"> Set bundles to create. Each bundle should be defined as sub-properties prefixed with the bundle name, unless only a single bundle is defined, when the prefix can be omitted.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -repositories </TD>
+<TD class="confluenceTd"> list </TD>
+<TD class="confluenceTd"> Set repositories to use. Each repository should be defined as sub-properties prefixed with the repository name.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -defaults </TD>
+<TD class="confluenceTd"> simple </TD>
+<TD class="confluenceTd"> Reads in specified defaults file. If prefixed with '-' then any error reading file is ignored. Default is -../sigil-defaults.properties </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> header;<EM>key</EM> </TD>
+<TD class="confluenceTd"> sub-property </TD>
+<TD class="confluenceTd"> Specify additional bundle headers. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> package;<EM>key</EM> </TD>
+<TD class="confluenceTd"> sub-property </TD>
+<TD class="confluenceTd"> Specify default Import-Package versions. e.g. package;org.osgi.framework: 1.4 </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> bundle;<EM>key</EM> </TD>
+<TD class="confluenceTd"> sub-property </TD>
+<TD class="confluenceTd"> Specify default Require-Bundle versions. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> name </TD>
+<TD class="confluenceTd"> simple </TD>
+<TD class="confluenceTd"> Set Bundle-SymbolicName. Default is bundle id from -bundles. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> version </TD>
+<TD class="confluenceTd"> simple </TD>
+<TD class="confluenceTd"> Set bundle version and default export version. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -activator </TD>
+<TD class="confluenceTd"> simple </TD>
+<TD class="confluenceTd"> Set bundle activator. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -contents </TD>
+<TD class="confluenceTd"> list </TD>
+<TD class="confluenceTd"> Add specified packages to bundle. Defaults from -sourcedirs, or if not set -exports. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -sourcedirs </TD>
+<TD class="confluenceTd"> list </TD>
+<TD class="confluenceTd"> Alternative way to specify bundle contents. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -resources </TD>
+<TD class="confluenceTd"> list </TD>
+<TD class="confluenceTd"> Specify additional resources to add to bundle. Supports BND use of {} to filter files and @name.jar to embed jar from classpath. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -exports </TD>
+<TD class="confluenceTd"> map </TD>
+<TD class="confluenceTd"> Set Export-Package bundle header. Export version defaults from bundle version.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -requires </TD>
+<TD class="confluenceTd"> map </TD>
+<TD class="confluenceTd"> Specify Require-Bundle dependencies. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -imports </TD>
+<TD class="confluenceTd"> map </TD>
+<TD class="confluenceTd"> Specify Import-Package dependencies. Sigil adds the resolve attribute:
+<UL>
+	<LI>resolve=compile Only use import to determine compile dependencies; do NOT add to bundle headers.</LI>
+	<LI>resolve=runtime Always add import to bundle headers (even if it appears unneeded). Do NOT generate compile dependency.</LI>
+</UL>
+</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -fragment </TD>
+<TD class="confluenceTd"> map </TD>
+<TD class="confluenceTd"> Set Fragment-Host bundle header. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> -libs </TD>
+<TD class="confluenceTd"> map </TD>
+<TD class="confluenceTd"> Add jars to bundle. Attributes:
+<UL>
+	<LI>kind=classpath also adds jar to Bundle-Classpath</LI>
+	<LI>kind=codebase sets Newton RMI-Codebase</LI>
+</UL>
+</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> option;<EM>name</EM> </TD>
+<TD class="confluenceTd"> sub-property </TD>
+<TD class="confluenceTd"> Specify Sigil options:
+<UL>
+	<LI>option;addMissingImports=true Let Bnd calculate imports (i.e. specify *) then update with Sigil versions. Default: true.</LI>
+	<LI>option;omitUnusedImports=true (implies addMissingImports=true) Avoids Bnd warnings when project contains multiple bundles which don't all use all imports. Default: true for projects with multiple bundles; otherwise false.</LI>
+</UL>
+</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by dsavage@apache.org on 2009-09-16 06:07:45.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

@@ -1,0 +1,52 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Building Felix</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="BuildingFelix-BuildingFelix"></A>Building Felix</H1>
+
+<P>A basic start to checking-out and building Felix:</P>
+<OL>
+	<LI>Download and install the latest Maven 2 release.</LI>
+	<LI>Check out or update the Felix trunk (i.e., <TT>svn checkout <A href="http://svn.apache.org/repos/asf/felix/trunk" class="external-link" rel="nofollow">http://svn.apache.org/repos/asf/felix/trunk</A> felix</TT>).</LI>
+	<LI><DEL>Perform an &quot;mvn clean install&quot; in the trunk to clean and build everything. Due to a bug in Maven related to having multiple packaging plugins in the same project, this step no longer works. We were forced to split our POM file into profiles that group subprojects according to the packaging plugin they use; to build everything, we created an Ant build.xml file. Simply type &quot;ant&quot; to do the equivalent of &quot;mvn clean install&quot; or do &quot;ant clean&quot; or &quot;ant install&quot; to do &quot;mvn clean&quot; or &quot;mvn install&quot;, respectively.</DEL></LI>
+	<LI>Go to the top of the project and type: &quot;mvn -Dpackaging=plugins install&quot; and then &quot;mvn -Dpackaging=bundle install&quot; to build the project.</LI>
+	<LI>To run the newly built framework, cd into <B>main</B> and type &quot;java &#45;jar bin/felix.jar&quot;.</LI>
+	<LI>If you want to create the installers, cd into <B>installers</B> and do a &quot;mvn clean install&quot;, which will generate the installers in the installers/target/images/ directory.</LI>
+</OL>
+
+
+<P><DEL>There is a simple build script in the trunk, called build_run.sh, that will build and run the framework for those that want a simple way to do all of this.</DEL></P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on Thu Dec 13 14:29:16 EST 2012
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

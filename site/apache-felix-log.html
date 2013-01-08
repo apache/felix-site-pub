@@ -1,0 +1,183 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Log</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixLog-ApacheFelixLog"></A>Apache Felix Log</H1>
+
+<P>The OSGi Service Compendium specification defines a general purpose Log Service for the OSGi Platform. It is a very simple specification that doesn't provide all the functionality commonly available in enterprise-level logging tools, but its extensible service model can be used to build fairly sophisticated logging solutions.</P>
+
+<P>The Log Service specification defines four main entities:</P>
+
+<UL>
+	<LI><B><TT>org.osgi.service.log.LogService</TT></B> - service interface to log information, including log level, message, exception, and <TT>ServiceReference</TT> that generated the log.</LI>
+	<LI><B><TT>org.osgi.service.log.LogReaderService</TT></B> - service interface to add and remove <TT>LogListener</TT> instances and to retrieve recent log entries.</LI>
+	<LI><B><TT>org.osgi.service.log.LogEntry</TT></B> - interface defining a log entry.</LI>
+	<LI><B><TT>org.osgi.service.log.LogListener</TT></B> - interface defining a listener for log entries, which is notified about new log entries.</LI>
+</UL>
+
+
+<H2><A name="ApacheFelixLog-Accessingthelogservice"></A>Accessing the log service</H2>
+
+<P>To access a <TT>LogService</TT> instance it is necessary to look it up in the OSGi service registry as demonstrated in the following code snippet:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator
+{
+    <SPAN class="code-keyword">public</SPAN> void start(BundleContext context) <SPAN class="code-keyword">throws</SPAN> Exception 
+    {	
+        ServiceReference ref = context.getServiceReference(LogService.class.getName());
+        <SPAN class="code-keyword">if</SPAN> (ref != <SPAN class="code-keyword">null</SPAN>)
+        {
+            LogService log = (LogService) context.getService(ref);
+
+            <SPAN class="code-comment">// Use the log...
+</SPAN>        }
+    }
+
+    <SPAN class="code-comment">//..</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>It is possible, and advisable, to use more sophisticated service acquisition mechanisms like a Service Tracker, Dynamic Services or iPOJO.</P>
+
+<H2><A name="ApacheFelixLog-Usingthelogservice"></A>Using the log service</H2>
+
+<P>The <TT>LogService</TT> interface provides four methods for logging:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> LogService
+{
+    <SPAN class="code-comment">//..
+</SPAN>
+    <SPAN class="code-comment">// Log a message specifying a log level
+</SPAN>    <SPAN class="code-keyword">public</SPAN> log(<SPAN class="code-object">int</SPAN> level, java.lang.<SPAN class="code-object">String</SPAN> message)  
+
+    <SPAN class="code-comment">// Log an exception
+</SPAN>    <SPAN class="code-keyword">public</SPAN> log(<SPAN class="code-object">int</SPAN> level, java.lang.<SPAN class="code-object">String</SPAN> message, java.lang.Throwable exception)  
+
+    <SPAN class="code-comment">// Log a message specifying the ServiceReference that generated it
+</SPAN>    <SPAN class="code-keyword">public</SPAN> log(ServiceReference sr, <SPAN class="code-object">int</SPAN> level, java.lang.<SPAN class="code-object">String</SPAN> message)  
+
+    <SPAN class="code-comment">// Log a message specifying the ServiceReference and exception
+</SPAN>    <SPAN class="code-keyword">public</SPAN> log(ServiceReference sr, <SPAN class="code-object">int</SPAN> level, java.lang.<SPAN class="code-object">String</SPAN> message, java.lang.Throwable exception)  
+}	
+</PRE>
+</DIV></DIV>
+
+<P>Log levels are defined in the same interface:</P>
+
+<UL>
+	<LI><TT>LogService.LOG_DEBUG</TT></LI>
+	<LI><TT>LogService.LOG_INFO</TT></LI>
+	<LI><TT>LogService.LOG_WARNING</TT></LI>
+	<LI><TT>LogService.LOG_ERROR</TT></LI>
+</UL>
+
+
+<H2><A name="ApacheFelixLog-Retrievinglogentries"></A>Retrieving log entries</H2>
+
+<P>The <TT>LogReaderService</TT> provides a <TT>getLog()</TT> method to retrieve an <TT>Enumeration</TT> of the latest log entries. The following code snippets demonstrates how to retrieve it from the service registry and use it:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ServiceReference ref = context.getServiceReference(LogReaderService.class.getName());
+<SPAN class="code-keyword">if</SPAN> (ref != <SPAN class="code-keyword">null</SPAN>)
+{
+    LogReaderService reader = (LogReaderService) context.getService(ref);	
+    Enumeration&lt;LogEntry&gt; latestLogs = reader.getLog();
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixLog-Creatingandregisteringa%7B%7BLogListener%7D%7D"></A>Creating and registering a <TT>LogListener</TT></H2>
+
+<P>The Log Service specification doesn't define any particular entity to store, display, or write log entries; it's up to the developer to implement this functionality or to choose an available implementation capable of doing that. To create such a bundle, the first step is to create an implementation of the <TT>LogListener</TT> interface. The following code shows a simple implementation that echoes the log message:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class LogWriter <SPAN class="code-keyword">implements</SPAN> LogListener
+{
+    <SPAN class="code-comment">// Invoked by the log service implementation <SPAN class="code-keyword">for</SPAN> each log entry
+</SPAN>    <SPAN class="code-keyword">public</SPAN> void logged(LogEntry entry) 
+    {
+        <SPAN class="code-object">System</SPAN>.out.println(entry.getMessage());
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<P>The only method to implement is <TT>logged()</TT> method, which is called every time a log entry is created in the associated logging service. A <TT>LogListener</TT> implementation must be registered with the <TT>LogReaderService</TT> so it can start receiving log entries, as demonstrated in the following code snippet:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ServiceReference ref = context.getServiceReference(LogReaderService.class.getName());
+<SPAN class="code-keyword">if</SPAN> (ref != <SPAN class="code-keyword">null</SPAN>)
+{
+    LogReaderService reader = (LogReaderService) context.getService(ref);
+    reader.addLogListener(<SPAN class="code-keyword">new</SPAN> LogWriter());
+}
+</PRE>
+</DIV></DIV>		
+
+
+<H2><A name="ApacheFelixLog-SetupofApacheFelixLogService"></A>Setup of Apache Felix Log Service</H2>
+
+<P>The Apache Felix Log Service bundle doesn't have any specific dependency on Felix, so it can run on any OSGi container. For its configuration, it will use the following optional system properties:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh">Property</TH>
+<TH class="confluenceTh">Default</TH>
+<TH class="confluenceTh">Description</TH>
+</TR>
+<TR>
+<TD class="confluenceTd"><TT>org.apache.felix.log.maxSize</TT></TD>
+<TD class="confluenceTd">100</TD>
+<TD class="confluenceTd">The maximum size of the log history. A value of -1 means the log has no maximum size; a value of 0 means that no historical information is maintained</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"><TT>org.apache.felix.log.storeDebug</TT></TD>
+<TD class="confluenceTd">false</TD>
+<TD class="confluenceTd">Determines whether or not debug messages will be stored in the history</TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by heavy@ungoverned.org on 2010-01-09 20:38:00.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

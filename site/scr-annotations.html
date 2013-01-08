@@ -1,0 +1,519 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - SCR Annotations</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+
+
+<P>The <TT>maven-scr-plugin</TT> uses the <TT>SCR</TT> annotations from the corresponding subproject at Apache Felix. All annotations are in the <TT>org.apache.felix.scr.annotations</TT> package. If you want to use the annotations in your project, you have to use a <TT>maven-scr-plugin</TT> version &gt;= 1.2.0 and make sure that you add a dependency to the annotations to your <TT>POM</TT>:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;dependency&gt;</SPAN>
+    <SPAN class="code-tag">&lt;groupId&gt;</SPAN>org.apache.felix<SPAN class="code-tag">&lt;/groupId&gt;</SPAN>
+    <SPAN class="code-tag">&lt;artifactId&gt;</SPAN>org.apache.felix.scr.annotations<SPAN class="code-tag">&lt;/artifactId&gt;</SPAN>
+    <SPAN class="code-tag">&lt;version&gt;</SPAN>1.2.0<SPAN class="code-tag">&lt;/version&gt;</SPAN>
+<SPAN class="code-tag">&lt;/dependency&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>The following annotations are supported:</P>
+<UL>
+	<LI><TT><A href="#SCRAnnotations-Component">Component</A></TT></LI>
+	<LI><TT><A href="#SCRAnnotations-scrancomponentmethod">Activate</A></TT></LI>
+	<LI><TT><A href="#SCRAnnotations-scrancomponentmethod">Deactivate</A></TT></LI>
+	<LI><TT><A href="#SCRAnnotations-scrancomponentmethod">Modified</A></TT></LI>
+	<LI><TT><A href="#SCRAnnotations-Service">Service</A></TT></LI>
+	<LI><TT><A href="#SCRAnnotations-Property">Property</A></TT></LI>
+	<LI><TT><A href="#SCRAnnotations-Reference">Reference</A></TT></LI>
+</UL>
+
+
+
+<H3><A name="SCRAnnotations-Component"></A>Component</H3>
+
+<P>The <TT>Component</TT> annotation is the only required annotation. If this annotation is not declared for a Java class, the class is not declared as a component.</P>
+
+<P>This annotation is used to declare the <TT>&lt;component&gt;</TT> element of the component declaration. See section 112.4.3, Component Element, in the OSGi Service Platform Service Compendium Specification for more information. The required <TT>&lt;implementation&gt;</TT> element is automatically generated with the fully qualified name of the class containing the <TT>Component</TT> annotation.</P>
+
+<P>Supported attributes:</P>
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Name</B> </TD>
+<TD class="confluenceTd"> <B>Default Value</B> </TD>
+<TD class="confluenceTd"> <B>Required</B> </TD>
+<TD class="confluenceTd"> <B>SCR</B> </TD>
+<TD class="confluenceTd"> <B>Metatype</B> </TD>
+<TD class="confluenceTd"> <B>Description</B> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> name </TD>
+<TD class="confluenceTd"> Fully qualified name of the Java class </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>component.name</TT> </TD>
+<TD class="confluenceTd"> <TT>OCD.id</TT> </TD>
+<TD class="confluenceTd"> Defines the Component name also used as the PID for the Configuration Admin Service </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> ds </TD>
+<TD class="confluenceTd"> <TT>true</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> Whether Declarative Services descriptor is generated or not. If this parameter is not set or set to <TT>true</TT> the Declarative Services descriptor is generated in the service descriptor file for this component. Otherwise no Declarative Services descriptor is generated for this component. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> specVersion </TD>
+<TD class="confluenceTd"> <TT>1.0</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash; </TD>
+<TD class="confluenceTd"> &ndash; </TD>
+<TD class="confluenceTd"> Defines what Declarative Services specification the component is written against. Though the Maven SCR Plugin is very good at detecting whether components are written against the original or a newer specification, there are some cases, where the plugin may fail. For these cases, the <TT>specVersion</TT> attribute may be set to the correct version. Currently supported values for this attribute are <TT>1.0</TT> and <TT>1.1</TT>. Since version 1.4.1 of the Maven SCR Plugin and version 1.0.1 of the SCR Annotations. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> componentAbstract </TD>
+<TD class="confluenceTd"> see description </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> This marks an abstract service description which is not added to the descriptor but intended for reuse through inheritance. This attribute defaults to <TT>true</TT> for abstract classes and <TT>false</TT> for concrete classes. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> enabled </TD>
+<TD class="confluenceTd"> <TT>true</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>component.enabled</TT> </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> Whether the component is enabled when the bundle starts </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> factory </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>component.factory</TT> </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> Whether the component is a factory component </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> immediate </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>component.immediate</TT> </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> Whether the component is immediately activated </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> inherit </TD>
+<TD class="confluenceTd"> <TT>true</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> Whether any service, property and reference declarations from base classes should be inherited by this class. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> metatype </TD>
+<TD class="confluenceTd"> <TT>false</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> Whether Metatype Service data is generated or not. If this parameter is set to <TT>true</TT> Metatype Service data is generated in the <TT>metatype.xml</TT> file for this component. Otherwise no Metatype Service data is generated for this component. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> label </TD>
+<TD class="confluenceTd"> <TT>%&lt;name&gt;.name</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> <TT>OCD.name</TT> </TD>
+<TD class="confluenceTd"> This is generally used as a title for the object described by the meta type. This name may be localized by prepending a <TT>%</TT> sign to the name. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> description </TD>
+<TD class="confluenceTd"> <TT>%&lt;name&gt;.name</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> <TT>OCD.description</TT> </TD>
+<TD class="confluenceTd"> This is generally used as a description for the object described by the meta type. This name may be localized by prepending a <TT>%</TT> sign to the name. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> createPid </TD>
+<TD class="confluenceTd"> <TT>true</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>service.pid</TT> </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> Generate the <TT>service.pid</TT> property if non is declared. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> configurationFactory </TD>
+<TD class="confluenceTd"> <TT>false</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash; </TD>
+<TD class="confluenceTd"> <TT>Designate.factoryPid</TT> </TD>
+<TD class="confluenceTd"> Is this a configuration factory? (since 1.4.0) </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P>The follwing attributes are supported since version 1.4.0 of the plugin and required a Declarative Service implementation 1.1:</P>
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> policy </TD>
+<TD class="confluenceTd"> <TT>OPTIONAL</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> component.policy </TD>
+<TD class="confluenceTd"> &ndash; </TD>
+<TD class="confluenceTd"> The configuration policy for this component: <TT>OPTIONAL</TT>, <TT>IGNORE</TT>, or <TT>REQUIRE</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+
+<H4><A name="SCRAnnotations-AbstractServiceDescriptions"></A>Abstract Service Descriptions</H4>
+
+<P>If the <TT>Component</TT> annotations contains the attribute <TT>componentAbstract</TT> with a value of true, the containing class is regarded as an abstract class. It is not added to the service descriptor and the tags are not validated. The information about this class is added to the bundle. Classes from other bundles (or the same) can extends this abstract class and do not need to specify the references of the abstract class if they set the <TT>inherit</TT> parameter on the <TT>scr.component</TT> tag to true.</P>
+
+<P>This allows to create abstract classes which already provide some valuable functionality without having to deal with the details like reference definitions in each and every subclass.</P>
+
+
+<P><A name="SCRAnnotations-componentmethod"></A></P>
+<H3><A name="SCRAnnotations-%7B%7BActivate%7D%7D%2C%7B%7BDeactivate%7D%7D%2Cand%7B%7BModified%7D%7D"></A><TT>Activate</TT>, <TT>Deactivate</TT>, and <TT>Modified</TT></H3>
+
+<P>The Declarative Service version 1.1 allows to specify the name for the activate, deactivate and modified method (see the spec for more information). The <TT>Activate</TT>, <TT>Deactivate</TT>, and <TT>Modified</TT> annotation can be used to mark a method to be used for the specified purpose. However, as the DS specifies a method search algorithm, there are rare cases where the marked method is not used (if there is another method with the same name, but a different signature this might happen).</P>
+
+
+<H3><A name="SCRAnnotations-Service"></A>Service</H3>
+
+<P>The <TT>Service</TT> annotation defines whether and which service interfaces are provided by the component. This is a class annotation.</P>
+
+<P>This tag is used to declare <TT>&lt;service&gt;</TT> and <TT>&lt;provide&gt;</TT> elements of the component declaration. See section 112.4.6, Service Elements, in the OSGi Service Platform Service Compendium Specification for more information.</P>
+
+<P>Supported attributes:</P>
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Name</B> </TD>
+<TD class="confluenceTd"> <B>Default Value</B> </TD>
+<TD class="confluenceTd"> <B>Required</B> </TD>
+<TD class="confluenceTd"> <B>Descriptor</B> </TD>
+<TD class="confluenceTd"> <B>Description</B> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> value </TD>
+<TD class="confluenceTd"> All implemented interfaces </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>provide.interface</TT> </TD>
+<TD class="confluenceTd"> The name of the service interface provided by the component. This can either be the fully qualified  name or just the interface class name if the interface is either in the same package or is imported. If this property is not set <TT>provide</TT> elements will be generated for all interfaces generated by the class </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> serviceFactory </TD>
+<TD class="confluenceTd"> <TT>false</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>service.servicefactory</TT> </TD>
+<TD class="confluenceTd"> Whether the component is registered as a <TT>ServiceFactory</TT> or not </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+<P>Omitting the <TT>Service</TT> annotation will just define (and activate if required) the component but not register it as a service. Multiple <TT>Service</TT> annotations may be declared each with its own <TT>value</TT>. These annotations need to be wrapped into a <TT>Services</TT> anotation. The component is registered as a <TT>ServiceFactory</TT> if at least on <TT>Service</TT> annotations declares the <TT>serviceFactory</TT> attribute as <TT>true</TT>.</P>
+
+
+
+<H3><A name="SCRAnnotations-Property"></A>Property</H3>
+
+<P>The <TT>Property</TT> annotation defines properties which are made available to the component through the <TT>ComponentContext.getProperties()</TT> method. These tags are not strictly required but may be used by components to defined initial configuration. Additionally properties may be set here to identify the component if it is registered as a service, for example the <TT>service.description</TT> and <TT>service.vendor</TT> properties.</P>
+
+<P>This tag may be defined in the Java Class comment of the component or in a coment to a field defining a constant with the name of the property.</P>
+
+<P>This tag is used to declare <TT>&lt;property&gt;</TT> elements of the component declaration. See section 112.4.5, Properties and Property Elements, in the OSGi Service Platform Service Compendium Specification for more information.</P>
+
+<P>Supported parameters:</P>
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Name</B> </TD>
+<TD class="confluenceTd"> <B>Default Value</B> </TD>
+<TD class="confluenceTd"> <B>Required</B> </TD>
+<TD class="confluenceTd"> <B>SCR</B> </TD>
+<TD class="confluenceTd"> <B>Metatype</B> </TD>
+<TD class="confluenceTd"> <B>Description</B> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> name </TD>
+<TD class="confluenceTd"> The name of constant </TD>
+<TD class="confluenceTd"> yes </TD>
+<TD class="confluenceTd"> <TT>property.name</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.id</TT> </TD>
+<TD class="confluenceTd"> The name of the property. If this tag is defined on a field with an initialization expression, the value of that expression is used as the name if the field is of type <TT>String</TT>. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> value </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The string value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> longValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The long value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> doubleValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The double value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> floatValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The float value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> intValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The int value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> byteValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The byte value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> charValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The char value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> boolValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The boolean value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> shortValue </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>property.value</TT> </TD>
+<TD class="confluenceTd"> <TT>AD.default</TT> </TD>
+<TD class="confluenceTd"> The short value of the property. This can either be a single value or an array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> label </TD>
+<TD class="confluenceTd"> <TT>%&lt;name&gt;.name</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> <TT>AD.name</TT> </TD>
+<TD class="confluenceTd"> The label to display in a form to configure this property. This name may be localized by prepending a <TT>%</TT> sign to the name. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> description </TD>
+<TD class="confluenceTd"> <TT>%&lt;name&gt;.description</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> <TT>AD.description</TT> </TD>
+<TD class="confluenceTd"> A descriptive text to provide the client in a form to configure this property. This name may be localized by prepending a <TT>%</TT> sign to the name. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> propertyPrivate </TD>
+<TD class="confluenceTd"> Depending on the name </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> See description </TD>
+<TD class="confluenceTd"> Boolean flag defining whether a metatype descriptor entry should be generated for this property or not. By default a metatype descriptor entry, i.e. an <TT>AD</TT> element, is generated except for the properties <TT>service.pid</TT>, <TT>service.description</TT>, <TT>service.id</TT>, <TT>service.ranking</TT>, <TT>service.vendor</TT>, <TT>service.bundlelocation</TT> and <TT>service.factoryPid</TT>. If a property should not be available for display in a configuration user interface, this parameter should be set to <TT>true</TT>. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> cardinality </TD>
+<TD class="confluenceTd"> Depends on property value(s) </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> <TT>AD.cardinality</TT> </TD>
+<TD class="confluenceTd"> Defines the cardinality of the property and its collection type. If the cardinality is negative, the property is expected to be stored in a <TT>java.util.Vector</TT> (primitive types such as <TT>boolean</TT> are boxed in the Wrapper class), if the cardinality is positive, the property is stored in an array (primitve types are unboxed, that is <TT>Boolean</TT> type values are stored in <TT>boolean[]</TT>). The actual value defines the maximum number of elements in the vector or array, where <TT>Integer.MIN_INT</TT> describes an unbounded Vector and <TT>Integer.MAX_INT</TT> describes an unbounded array. If the cardinality is zero, the property is a scalar value. If the defined value of the property is set in the <TT>value</TT> attribute, the cardinality defaults to <TT>0</TT> (zero for scalar value). If the property is defined in one or more properties starting with <TT>values</TT>, the cardinality defaults to <TT>Integer.MAX_INT</TT>, that is an unbounded array. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> options </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> See below </TD>
+<TD class="confluenceTd"> See below for a description of the <TT>options</TT> attribute. </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+<UL>
+	<LI>Generating <TT>&lt;properties&gt;</TT> elements referring to bundle entries is not currently supported.</LI>
+	<LI>Multiple property annotations can be embedded in the <TT>Properties</TT> annoation.</LI>
+</UL>
+
+
+
+<H4><A name="SCRAnnotations-NamingtheProperty"></A>Naming the Property</H4>
+
+<P>It is important to carefully define the name of properties. By using a constant of the form</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+@Property(value=<SPAN class="code-quote">&quot;default value&quot;</SPAN>)
+static final String CONSTANT_NAME = <SPAN class="code-quote">&quot;property.name&quot;</SPAN>;
+</PRE>
+</DIV></DIV>
+
+<P>and defining the <TT>Property</TT> annotation on this constant, the name of the property is taken from the constant value. Thus it may easily be ensured, that both the property in the descriptor files and the property used by the implementation are actually the same. In addition the value attribute can point to another constant.</P>
+
+
+<H4><A name="SCRAnnotations-The%7B%7Boptions%7D%7DParameter"></A>The <TT>options</TT> Parameter</H4>
+
+<P>Some properties may only be set to a set of possible values. To support user interfaces which provide a selection list of values or a list of checkboxes the option values and labels may be defined as parameters to the <TT>Property</TT> annotation. All parameters in the form of name-value pairs occurring <EM>after</EM> the <TT>options</TT> attribute are used to build the list of available value options. The parameter name is used as the value while the parameter value is used as the label in the user interface. This label may be prepended with a <TT>%</TT> sign to localize the string.</P>
+
+<P>The options are written to the <TT>metatype.xml</TT> file as <TT>Option</TT> elements inside the <TT>AD</TT> element defining the property. The name of the parameter will be used for the <TT>Option.value</TT> attribute while the value of the parameter defines the <TT>Option.label</TT> attribute.</P>
+
+<P>Please note, that all parameters of the <TT>Property</TT> annotation occurring <EM>after</EM> the <TT>options</TT> parameter are used to build the options list. Hence no non-option value parameters should actually follow the <TT>options</TT> parameter.</P>
+
+<H4><A name="SCRAnnotations-MultivalueProperties"></A>Multivalue Properties</H4>
+
+<P>Generally the value of a property is scalar, that is a property has a single value such as <TT>true</TT>, <TT>5</TT> or <TT>&quot;This is a String&quot;</TT>. Such scalar values are defined with the different <TT>value</TT> attributes of the <TT>Property</TT> annotation. In the case of a scalar property value, the <TT>cardinality</TT> parameter value is assumed to be <TT>0</TT> (zero) unless of course set otherwise.</P>
+
+<P>There may be properties, which have a list of values, such as a list of possible URL mappings for an URL Mapper. Such multiple values are defined just by comma separate as the value of the annotation parameter.</P>
+
+<P>If the cardinality of the property is not explicilty set with the <TT>cardinality</TT> property, it defaults to <TT>Integer.MAX_INT</TT>, i.e. unbound array, if multiple values are defined. Otherwise the <TT>cardinality</TT> parameter may be set for example to a negative value to store the values in a <TT>java.util.Vector</TT> instead.</P>
+
+
+
+<H3><A name="SCRAnnotations-Reference"></A>Reference</H3>
+
+<P>The <TT>Reference</TT> annotation defines references to other services made available to the component by the Service Component Runtime.</P>
+
+<P>This annotation may be declared on a Class level or any Java field to which it might apply. Depending on where the annotation is declared, the parameters may have different default values.</P>
+
+<P>This annotation is used to declare <TT>&lt;reference&gt;</TT> elements of the component declaration. See section 112.4.7, Reference Element, in the OSGi Service Platform Service Compendium Specification for more information.</P>
+
+<P>Supported parameters:</P>
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"> <B>Name</B> </TD>
+<TD class="confluenceTd"> <B>Default Value</B> </TD>
+<TD class="confluenceTd"> <B>Required</B> </TD>
+<TD class="confluenceTd"> <B>Descriptor</B> </TD>
+<TD class="confluenceTd"> <B>Description</B> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> name </TD>
+<TD class="confluenceTd"> Name of the field </TD>
+<TD class="confluenceTd"> yes </TD>
+<TD class="confluenceTd"> <TT>reference.name</TT> </TD>
+<TD class="confluenceTd"> The local name of the reference. If the <TT>Reference</TT> annotation is declared in the class comment, this parameter is required. If the annotation is declared on a field, the default value for the <TT>name</TT> parameter is the name of the field </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> interfaceReference </TD>
+<TD class="confluenceTd"> Type of the field </TD>
+<TD class="confluenceTd"> yes </TD>
+<TD class="confluenceTd"> <TT>reference.interface</TT> </TD>
+<TD class="confluenceTd"> The name of the service interface. This name is used by the Service Component Runtime to access the service on behalf of the component. If the <TT>Reference</TT> annotation is declared on a class level, this parameter is required. If the annoation is declared on a field, the default value for the <TT>interfaceReference</TT> parameter is the type of the field </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> cardinality </TD>
+<TD class="confluenceTd"> <TT>1..1</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>reference.cardinality</TT> </TD>
+<TD class="confluenceTd"> The cardinality of the service reference. This must be one of value from the enumeration <TT>ReferenceCardinality</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> policy </TD>
+<TD class="confluenceTd"> <TT>static</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>reference.policy</TT> </TD>
+<TD class="confluenceTd"> The dynamicity policy of the reference. If <TT>dynamic</TT> the service will be made available to the component as it comes and goes. If <TT>static</TT> the component will be deactivated and re-activated if the service comes and/or goes away. This must be one of <TT>static</TT> and <TT>dynamic</TT> </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> target </TD>
+<TD class="confluenceTd"> &ndash;  </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>reference.target</TT> </TD>
+<TD class="confluenceTd"> A service target filter to select specific services to be made available. In order to be able to overwrite the value of this value by a configuration property, this parameter must be declared. If the parameter is not declared, the respective declaration attribute will not be generated </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> bind </TD>
+<TD class="confluenceTd"> See description </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>reference.bind</TT> </TD>
+<TD class="confluenceTd"> The name of the method to be called when the service is to be bound to the component. The default value is the name created by appending the reference <TT>name</TT> to the string <TT>bind</TT>. The method must be declared <TT>public</TT> or <TT>protected</TT> and take single argument which is declared with the service interface type </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> unbind </TD>
+<TD class="confluenceTd"> See description </TD>
+<TD class="confluenceTd"> no </TD>
+<TD class="confluenceTd"> <TT>reference.unbind</TT> </TD>
+<TD class="confluenceTd"> The name of the method to be called when the service is to be unbound from the component. The default value is the name created by appending the reference <TT>name</TT> to the string <TT>unbind</TT>. The method must be declared <TT>public</TT> or <TT>protected</TT> and take single argument which is declared with the service interface type </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> strategy </TD>
+<TD class="confluenceTd"> <TT>event</TT> </TD>
+<TD class="confluenceTd"> no </TD>
+<TH class="confluenceTh"> <TT>reference.strategy</TT> </TH>
+<TD class="confluenceTd"> The strategy used for this reference, one of <TT>event</TT> or <TT>lookup</TT> </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+<P><EM>Notes</EM>:</P>
+<UL>
+	<LI>If you define a reference on a field with a strategy of <TT>event</TT> and there is no bind or unbind method, the plugin will create the necessary methods.</LI>
+</UL>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by cziegeler@apache.org on Wed May 23 04:09:05 EDT 2012
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

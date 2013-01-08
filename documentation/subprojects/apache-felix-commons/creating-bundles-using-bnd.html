@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Creating Bundles Using BND</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-commons.html">Apache Felix Commons</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/creating-bundles-using-bnd.html" target="felix_cwiki">/site/creating-bundles-using-bnd.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Creating Bundles Using BND</h1>
+      <h5 id="purpose">Purpose</h5>
+<p>Provide the list of steps required to create a library bundle by wrapping the library jar using bnd (http://www.aqute.biz/Code/Bnd).</p>
+<h5 id="steps">Steps</h5>
+<ol>
+<li>Use bnd to analyze the library jar (e.g., java -jar bnd-0.0.jar print path/to/FOO.jar) </li>
+<li>At the bottom of the bnd output, look for "Unresolved references to ..." which identify package dependencies. If found, 
+  a. Identifiy the library jars that provide the missing packages 
+  b. Recursively use this process on each dependency </li>
+<li>Create a directory that will be the project directory for the bundle (e.g., mkdir FOO-osgi) </li>
+<li>Copy the template pom.xml file to the bundle's project directory </li>
+<li>Edit the pom.xml file to tailor it for the library jar. Specifically, 
+  a. change artifactId 
+  b. verify description 
+  c. change version 
+  d. change FOO's library jar dependency (groupId, artifactId) 
+  e. add any other dependencies (from step 2b) 
+  f. change Export-Package 
+  g. change Private-Package or delete it if it's not needed
+  h. All packages listed in step 1 should be in either Export-Package or Private-Package. Use the library's javadoc to identify the exported packages. The remaining packages should be private.</li>
+<li>Run "mvn package" to in the project directory to create the bundle </li>
+<li>Use bnd to verify the bundle's contents (e.g., java -jar bnd-0.0.jar print target/FOO-osgi-VERSION.jar) </li>
+<li>Run "mvn install" to install the bundle in the local repository</li>
+</ol>
+<h5 id="example-pom">Example POM</h5>
+<div class="codehilite"><pre><span class="nt">&lt;project</span>
+  <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span>
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.felix.commons<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>FOO-osgi<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;name&gt;</span><span class="cp">${</span><span class="n">pom</span><span class="o">.</span><span class="n">artifactId</span><span class="cp">}</span> bundle<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;description&gt;</span>
+    This bundle simply wraps FOO-<span class="cp">${</span><span class="n">pom</span><span class="o">.</span><span class="n">version</span><span class="cp">}</span>.jar.
+  <span class="nt">&lt;/description&gt;</span>
+  <span class="nt">&lt;version&gt;</span>X.Y<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>bundle<span class="nt">&lt;/packaging&gt;</span>
+
+  <span class="nt">&lt;organization&gt;</span> 
+    <span class="nt">&lt;name&gt;</span>Apache Felix Project<span class="nt">&lt;/name&gt;</span> 
+    <span class="nt">&lt;url&gt;</span>http://felix.apache.org/<span class="nt">&lt;/url&gt;</span> 
+  <span class="nt">&lt;/organization&gt;</span>
+
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>FOO<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>FOO<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span><span class="cp">${</span><span class="n">pom</span><span class="o">.</span><span class="n">version</span><span class="cp">}</span><span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-bundle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;instructions&gt;</span>
+            <span class="nt">&lt;Bundle</span><span class="err">-SymbolicName</span><span class="nt">&gt;</span><span class="cp">${</span><span class="n">pom</span><span class="o">.</span><span class="n">artifactId</span><span class="cp">}</span><span class="nt">&lt;/Bundle-SymbolicName&gt;</span>
+            <span class="nt">&lt;Export</span><span class="err">-Package</span><span class="nt">&gt;</span>FOO<span class="nt">&lt;/Export-Package&gt;</span>
+            <span class="nt">&lt;Private</span><span class="err">-Package</span><span class="nt">&gt;</span>FOO.impl<span class="nt">&lt;/Private-Package&gt;</span>
+          <span class="nt">&lt;/instructions&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<h5 id="resources">Resources</h5>
+<p>Bnd - Bundle Tool
+http://www.aqute.biz/Code/Bnd</p>
+<p>Bundle Plugin for Maven
+http://felix.apache.org/site/maven-bundle-plugin-bnd.html</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

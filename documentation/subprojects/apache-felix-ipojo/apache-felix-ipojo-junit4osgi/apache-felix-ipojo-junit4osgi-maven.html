@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - apache-felix-ipojo-junit4osgi-maven</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi.html">apache-felix-ipojo-junit4osgi</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-ipojo-junit4osgi-maven.html" target="felix_cwiki">/site/apache-felix-ipojo-junit4osgi-maven.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>apache-felix-ipojo-junit4osgi-maven</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# The Maven-junit4OSGi-plugin
+
+*junit4OSGi tests can also be executed automatically during the `integration-test` phase of a maven build process. This page describes the maven-junit4osgi-plugin allowing a seamless maven integration.* 
+
+{div:class=toc}
+[TOC]
+{div}
+
+## What does the maven-junit4osgi-plugin provide?
+    * Allows testing OSGi applications
+    * Integrated in a Maven-based build process
+    * Provides the same output as Surefire
+    * Supports Maven site generation
+
+## Using the plug-in
+
+### Download and building the plug-in
+The plug-in sources are available in the iPOJO trunk.
+However the junit4osgi and iPOJO runtime are also required. So, download the source of iPOJO:
+`svn co http://svn.apache.org/repos/asf/felix/trunk/ipojo/`
+To compile it, run the following commands:
+
+    cd ipojo
+    mvn clean install -Pexamples
+
+## Simple configuration
+So, first the project using the plug-in is not the project under test. It's another project containing either only integration-test packaged in a bundle, or is empty (and so depends on other bundles containing integration tests).
+Tests contained in the project are developed with junit4osgi, and are packaged in a bundle with the maven-bundle-plugin.
+In the pom file, add the following plugin configuration to use the maven-junit4osgi-plugin:
+
+    <plugin>
+    <groupid>org.apache.felix</groupid>
+    <artifactid>maven-junit4osgi-plugin</artifactid>
+    <executions>
+    <execution>
+    <goals>
+          <goal>test</goal>
+    </goals>
+    <configuration>
+    <deployprojectartifact>true</deployprojectartifact>
+    </configuration>
+    </execution>
+    </executions>
+    </plugin>
+
+## Plugin parameter
+The plug-in has only one parameter. The `deployProjectArtifact` parameter enables or disables the current artifact deployment. If the current project contains tests, the plug-in can deploy the built artifact (as illustrated in this pom). Otherwise, the current project artifact is not deployed. This can be useful if the project just depends on other test bundles and sets the test configuration (as this pom).
+
+### Configuring the set of bundles to deploy
+There is two different ways to configure the plug-in to deploy other bundles. If the bundle to deploy is a maven artifact, just add this artifact as a maven project dependency. Here is an example:
+
+    <dependency>  
+        <artifactid>tests.manipulation.metadata</artifactid>  
+        <groupid>ipojo.tests</groupid>  
+        <version>1.1.0-SNAPSHOT</version>  
+    </dependency>  
+
+If your bundle is not a maven artifact, you can configure the plugin with the bundle URL (from where the bundle will be deployed)
+
+    <configuration>
+    <deployprojectartifact>true</deployprojectartifact>
+    <bundles>
+    <param>file:/Users/clement/bundles/test-metadata.jar</param>
+    </bundles>
+    </configuration>
+
+Set bundles are installed and started. You can depend on bundle that does not contain test as well as bundle containing tests.
+
+### Configuring Felix
+It is also possible to set Felix properties in the configuration:
+
+    <configuration>
+        <configuration>
+        <org.osgi.http.port>8083</org.osgi.http.port>
+        </configuration>
+    </configuration>
+
+### Showing/hiding test trace
+The plugin collects System.out, System.err and logged messages to write them in the test report. Moreover, the plugin allows hiding traces when tests are executed. To achieve this just add the `hideOutputs` parameter.
+
+    <configuration>
+        <hideOutputs>true</hideOutputs>
+    </configuration>
+
+### Disabling/Enabling the Log Service
+The plugin exposed a LogService in the OSGi framework to collects logged messaged. This service enabled by default. You can diable it by launching the plugin with the `logService` property set to `false`
+
+    mvn clean integration-test -DlogService=false
+
+### Skipping integration-test
+Sometimes you want to skip tests :-(. The plugin uses the `maven.test.skip` property to skip tests such as 
+
+    mvn clean install -Dmaven.test.skip=true
+
+### Ignoring failures
+If tests throws errors or have failures, the plugin breaks the Maven build. You can by-pass this behavior by ignoring errors and failures. This is useful during test generation. 
+
+    mvn clean install -Dmaven.test.failure.ignore=true
+
+## Executing the plug-in
+To execute test, just launch the `mvn clean integration-test` command.
+
+    [INFO] Scanning for projects...
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Building iPOJO Primitive Manipulation Test Suite
+    [INFO]    task-segment: [integration-test]
+    [INFO] ------------------------------------------------------------------------
+    [INFO] [resources:resources]
+    [INFO] Using default encoding to copy filtered resources.
+    [INFO] [compiler:compile]
+    [INFO] Nothing to compile - all classes are up to date
+    [INFO] [resources:testResources]
+    [INFO] Using default encoding to copy filtered resources.
+    [INFO] [compiler:testCompile]
+    [INFO] No sources to compile
+    [INFO] [surefire:test]
+    [INFO] No tests to run.
+    [INFO] [bundle:bundle]
+    [INFO] [ipojo:ipojo-bundle {execution: default}]
+    [INFO] Start bundle manipulation
+    [INFO] Metadata file : /Users/clement/Documents/workspaces/felix-trunk/ipojo/tests/manipulator/primitives/target/classes/metadata.xml
+    [INFO] Input Bundle File : /Users/clement/Documents/workspaces/felix-trunk/ipojo/tests/manipulator/primitives/target/tests.manipulation.primitives-1.1.0-SNAPSHOT.jar
+    [INFO] Bundle manipulation - SUCCESS
+    [INFO] [junit4osgi:test {execution: default}]
+    Analyzing org.apache.felix.ipojo - compile
+    Analyzing org.apache.felix.ipojo.metadata - compile
+    Analyzing org.osgi.core - compile
+    Analyzing junit - compile
+    Analyzing org.apache.felix.ipojo.junit4osgi - compile
+    Analyzing tests.manipulation.metadata - test
+
+    -------------------------------------------------------
+    T E S T S
+    -------------------------------------------------------
+    Deploy : /Users/clement/Documents/workspaces/felix-trunk/ipojo/tests/manipulator/primitives/target/tests.manipulation.primitives-1.1.0-SNAPSHOT.jar
+    Loading org.apache.felix.ipojo.test.scenarios.manipulation.ManipulationTestSuite
+    Loading org.apache.felix.ipojo.test.scenarios.manipulation.ManipulationTestSuite
+    Junit Extender starting ...
+    Running Manipulation Metadata Test Suite
+    Tests run: 16, Failures: 0, Errors: 0, Time elapsed: 0 sec
+    Running Primitive Manipulation Test Suite
+    Tests run: 17, Failures: 0, Errors: 0, Time elapsed: 0 sec
+
+    Results :
+
+    Tests run: 33, Failures: 0, Errors:0
+
+    Unload test suites [class org.apache.felix.ipojo.test.scenarios.manipulation.ManipulationTestSuite]
+    Unload test suites [class org.apache.felix.ipojo.test.scenarios.manipulation.ManipulationTestSuite]
+    Cleaning test suites ...
+    [INFO] ------------------------------------------------------------------------
+    [INFO] BUILD SUCCESSFUL
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Total time: 6 seconds
+    [INFO] Finished at: Mon Nov 10 21:30:21 CET 2008
+    [INFO] Final Memory: 9M/18M
+    [INFO] ------------------------------------------------------------------------
+
+Failures and errors are reported in the plugin output.
+
+## Generating the report web page
+When test are executed, the plug-in generates XML reports (int the target/junit4osgi-reports directory) using the same convention as Surefire. So, it is possible to configure Surefire to generate the web page with test results.
+To do this, add the following report configuration to the project executing tests:
+
+    <reporting>
+    <plugins>
+    <plugin>
+    <groupid>org.apache.maven.plugins</groupid>
+    <artifactid>maven-surefire-report-plugin</artifactid>
+    <version>2.4.3</version>
+    <configuration>
+    <showsuccess>true</showsuccess>
+    </configuration>
+    </plugin>
+    </plugins>
+    </reporting>
+
+This snippet configures the maven-surefire-report-plugin to collect results from the 'target/surefire-reports' directory.
+Then execute the plugin with the following command:
+{code:none}
+mvn org.apache.maven.plugins:maven-surefire-report-plugin:2.4.3:report
+
+    This command generates the web page with test results in 'target/site'. This page shows an example of page generated with this command.
+
+    h2. Plug-in design
+    The plug-in is quiet simple, it just starts an embedded Felix with a special activator installing and starting the junit4osgi framework and specified bundles.
+    Then, before executing test, the plug-in waits for "stability". Indeed, as bundle activation can be asynchronous, the plug-in need to wait that the configuration is stable. Stability is obtained when all bundles are activated, and no new services appear or disappear on a 500 ms period. If after several second the stability cannot be reached, the plug-in stops.
+    Once the stability is reached, the junit4ogsi runner service is used to execute tests. Then results are collected and reports are generated.
+
+    h2. Conclusion
+    This page has presented a front-end automating the execution of junit4osgi tests. Now it is possible to integrate OSGi application tests in a build process. The presented maven plugin provides following features:
+        * An easy integration in a Maven-based build process
+        * A good flexibility allowing reproducing production execution environments to test the application
+        * Test result output is the same as surefire
+        * Is able to generate Surefire-like reports
+    \\
+    \\
+    {include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Framework Bundle Cache</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-framework-bundle-cache.html" target="felix_cwiki">/site/apache-felix-framework-bundle-cache.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Framework Bundle Cache</h1>
+      <h1 id="apache-felix-framework-bundle-cache">Apache Felix Framework Bundle Cache</h1>
+<ul>
+<li><a href="">Introduction</a></li>
+<li><a href="">Default Behavior</a></li>
+<li><a href="">Configuring Default Behavior</a></li>
+</ul>
+<h1 id="introduction">Introduction</h1>
+<p>The OSGi specification states that the framework must cache bundles and their run-time state, but it does not explicitly define how this should be done. As a result, each OSGi framework implementation is likely to cache bundles differently. This document describes in detail how the Felix framework handles bundle caching by default and also describes the mechanisms to modify this default behavior.</p>
+<h1 id="default-behavior">Default Behavior</h1>
+<p>Since the OSGi R4.2 specification, the standard framework launching and embedding API requires that frameworks should use "reasonable defaults" for all configuration properties so it is possible to start a framework without any configuration. One such default value is the location of the framework bundle cache. When the Felix framework is start, it creates a bundle cache directory, called <code>felix-cache</code>, in the current working directory by default. All bundle information is saved inside the bundle cache directory.</p>
+<p>The structure of a bundle cache directory is reasonably simple; it contains a directory for each bundle, where the directory name corresponds to the bundle identifier number. Each bundle directory contains a file for the bundle's location, identifier, start level, state, and a directory containing the bundle JAR file and any extracted embedded JAR files or native libraries if any exist. As an example, the bundle cache directory for a bundle containing an embedded JAR file and a native library looks like this:</p>
+<div class="codehilite"><pre>   <span class="cp">${</span><span class="n">user</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span>
+      felix-cache/
+         bundle4/
+            bundle.id
+            bundle.lastmodified
+            bundle.location
+            bundle.startlevel
+            bundle.state
+            data/
+            version0.0/
+               revision.location
+               bundle.jar
+               bundle.jar-embedded/
+                  embedded.jar
+               bundle.jar-lib/
+                  0/
+                     libnative.so
+</pre></div>
+
+
+<p>The above directory structure indicates that the imaginary bundle is cached in the <code>felix-cache</code> in the current working directory and "4" is its bundle identifier. Additionally, besides the bundle JAR file, the bundle has one embedded JAR file and one native library. The naming convention is rather straightforward and consistent, although the directory structure may seem rather indirect. The precise details behind the rationale for the directory structure around embedded JAR files and native libraries is not so important, but suffice it to say it results from how fragment content can be shared among hosts.</p>
+<p>All cached bundle directories will follow the basic pattern displayed above, except for the names of the embedded JAR files and native libraries. Embedded JAR files and native libraries use the names specified in the bundle manifest and may also include sub-directories to avoid name clashes. The naming convention for the directory containing the bundle JAR file, <code>version0.0</code>, requires further explanation.</p>
+<p>The bundle JAR directory uses a numbering scheme to keep track of the number of times a bundle is updated and the number of times it is refreshed; the name of the directory maps like this: <code>version&lt;refresh-count&gt;.&lt;revision-count&gt;</code>. The reasoning behind this is tricky. It is necessary to keep track of the revision count because the OSGi specification requires when a bundle is updated that the update takes effect immediately. However, it also requires that old packages from older revisions of the updated bundle are kept available until a refresh of the framework is performed. As a result, it is possible for multiple revisions of a bundle JAR to be providing packages at a given time.</p>
+<p>For example, if a bundle provides package <code>foo</code> and it is updated and now provides packages <code>foo</code> and <code>bar</code>, then after the update <code>foo</code> will be supplied from the older revision and <code>bar</code> will be supplied from the newer revision. This is possible for any number of updates, thus the bundle JAR directory must keep each revision around until a refresh is performed. Such "revision directories" are generally only run-time directories and are removed when the framework is shutdown or refreshed, they are not intended to exist for multiple sessions of execution.</p>
+<p>To illustrate, upon initial installation, the bundle JAR file is placed into a revision directory named <code>revision0.0</code>. When an update is performed, the updated bundle JAR file is placed in a directory named <code>revision0.1</code>. If another update is performed without a refresh of the framework, the newer revision will be placed into a directory named <code>revision0.2</code> and so on. When the framework is refreshed or shutdown, all revision directories are purged from the bundle cache and only the most recent revision directory is maintained.</p>
+<p>Simply purging the old revision directories may appear adequate for refreshing the framework, but it is not due to how the JVM handles native libraries. When a native library is loaded it is associated with a specific class loader; no other class loader can load the same native library. The uniqueness of a native library is determined by its absolute path in the file system. Consequently, when the framework is refreshed, it is necessary to recreate the class loaders for all refreshed bundles. If a refreshed bundle has a native library, then this would result in an exception since the native library is still associated with the prior class loader; the refresh counter remedies this situation.</p>
+<p>After purging all old revision directories, the current revision directory is renamed based on the current refresh count. By renaming the directory, it is possible to re-load the native library since its path in the file system has changed. The old class loaders and native libraries will eventually be garbage collected. The current refresh count is stored in a file, called <code>refresh.counter</code>, in the bundle's directory. To illustrate, if a bundle was updated and has two revision directories, <code>revision0.0</code> and <code>revision0.1</code>, after a refresh the older revision directory will be deleted and the newest revision directory will be renamed to <code>revision1.0</code>. If the bundle is refresh again, its revision directory will become <code>revision2.0</code> and so on. Note: Bundles may be refreshed when they are updated or when they depend on other bundles that have been updated; either way it is necessary to increment the refresh count and rename the revision directory during a refresh operation.</p>
+<h1 id="configuring-default-behavior">Configuring Default Behavior</h1>
+<p>It is possible to modify the default behavior of Felix' bundle cache by setting certain configuration properties; see the <a href="">usage document</a> for information on how to set configuration properties for Felix. Felix' bundle cache recognizes the following configuration properties:</p>
+<ul>
+<li><code>org.osgi.framework.storage</code> - Sets the directory to use as the bundle cache; by default bundle cache directory is <code>felix-cache</code> in the current working directory. The value should be a valid directory name. The directory name can be either absolute or relative. Relative directory names are relative to the current working directory. The specified directory will be created if it does not exist.</li>
+<li><code>org.osgi.framework.storage.clean</code> - Determines whether the bundle cache is flushed. The value can either be "<code>none</code>" or "<code>onFirstInit</code>", where "<code>none</code>" does not flush the bundle cache and "<code>onFirstInit</code>" flushes the bundle cache when the framework instance is first initialized. The default value is "<code>none</code>".</li>
+<li><code>felix.cache.rootdir</code> - Sets the root directory to use to calculate the bundle cache directory for relative directory names. If <code>org.osgi.framework.storage</code> is set to a relative name, by default it is relative to the current working directory. If this property is set, then it will be calculated as being relative to the specified root directory.</li>
+<li><code>felix.cache.bufsize</code> - Sets the buffer size to be used by the cache; the default value is 4096. The integer value of this string provides control over the size of the internal buffer of the disk cache for performance reasons.</li>
+</ul>
+<p>To be clear, if a relative bundle cache directory is specified then the absolute location of the bundle cache directory is computed like this: <code>$\{felix.cache.rootdir}+$\{org.osgi.framework.storage</code>}, where <code>felix.cache.rootdir</code> has the default value of the current working directory. If <code>$\{org.osgi.framework.storage</code>} is specified as absolute, then it is used as the location of the bundle cache. If the bundle cache directory does not exist, it is created.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

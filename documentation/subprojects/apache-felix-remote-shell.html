@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Remote Shell</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-remote-shell.html" target="felix_cwiki">/site/apache-felix-remote-shell.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Remote Shell</h1>
+      <h1 id="apache-felix-remote-shell">Apache Felix Remote Shell</h1>
+<p>The Apache Felix Remote Shell provided by the <code>org.apache.felix.shell.remote</code> bundle offers remote access to <a href="/documentation/subprojects/apache-felix-shell.html">Apache Felix Shell</a> and [Apache Felix Gogo] using telnet clients. The remote shell provides simple telnet access with no bells and whistles -- it just works.</p>
+<p>To use remote shell with the Felix shell, you have to install the <code>org.apache.felix.shell</code> bundle in addition to the <code>org.apache.felix.shell.remote</code> bundle. To use it with Gogo, you have to install the <code>org.apache.felix.gogo.runtime</code> and <code>org.apache.felix.gogo.shell</code> bundles in addition to the <code>org.apache.felix.shell.remote</code> bundle. Once you have the shell bundles installed with the remote shell bundle, start them all to enable remote shell access.</p>
+<div class="info" markdown="1">
+**Default shell**
+If you have both the Felix shell and Gogo installed and active, then the default is to connect to Gogo when you telnet into the remote shell. If you wish to telnet into the Felix shell, you should stop the Gogo runtime bundle.
+</div>
+
+<h2 id="configuration">Configuration</h2>
+<p>The Apache Felix Remote Shell bundle currently is configured using framework properties obtained from the bundle's context. The following properties are supported:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>osgi.shell.telnet.ip</code></td>
+<td>127.0.0.1</td>
+<td>IP Address on which the remote shell is accessible (since 1.0.4).</td>
+</tr>
+<tr>
+<td><code>osgi.shell.telnet.port</code></td>
+<td>6666</td>
+<td>Port on which the remote shell is accessible.</td>
+</tr>
+<tr>
+<td><code>osgi.shell.telnet.maxconn</code></td>
+<td>2</td>
+<td>The maximum number of simultaneous connections.</td>
+</tr>
+<tr>
+<td><code>osgi.shell.telnet.socketTimeout</code></td>
+<td>0</td>
+<td>Sets the SO_TIMEOUT socket option to the given number of milliseconds. The default is no timeout (since 1.0.4).</td>
+</tr>
+</tbody>
+</table>
+<div class="note" markdown="1">
+**Be aware**
+The remote shell does not listen on all interfaces by default; it only listens on the localhost. That is, by default the remote shell is only accessible from the host on which the remote shell is running. To access the system from another host, you have to configure the IP address of the interface to which the remote shell should be attached.
+</div>
+
+<h2 id="security-note">Security Note</h2>
+<p>This remote shell bundle does not employ any security at all. Thus if no security manager is active in the framework's JVM, then any user connecting to the remote shell has full control over the framework.</p>
+<p>To have some minimum level of security ensure the IP Address configured with the <code>osgi.shell.telnet.ip</code> property is not publicly accessible.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

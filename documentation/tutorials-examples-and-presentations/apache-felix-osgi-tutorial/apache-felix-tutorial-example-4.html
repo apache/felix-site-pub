@@ -1,0 +1,316 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Tutorial Example 4</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-tutorial-example-4.html" target="felix_cwiki">/site/apache-felix-tutorial-example-4.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Tutorial Example 4</h1>
+      <h2 id="example-4-robust-dictionary-client-bundle">Example 4 - Robust Dictionary Client Bundle</h2>
+<p>In Example 3, we create a simple client bundle for our dictionary service. The problem with that client was that it did not monitor the dynamic availability of the dictionary service, thus an error would occur if the dictionary service disappeared while the client was using it. In this example we create a client for the dictionary service that monitors the dynamic availability of the dictionary service. The result is a more robust client.</p>
+<p>The functionality of the new dictionary client is essentially the same as the old client, it reads words from standard input and checks for their existence in the dictionary service. Our bundle uses its bundle context to register itself as a service event listener; monitoring service events allows the bundle to monitor the dynamic availability of the dictionary service. Our client uses the first dictionary service it finds. The source code for our bundle is as follows in a file called <code>Activator.java</code>:</p>
+<div class="codehilite"><pre><span class="o">/*</span>
+ <span class="o">*</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">tutorial</span><span class="o">.</span>
+<span class="o">**/</span>
+
+<span class="nb">package</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example4</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">InputStreamReader</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">IOException</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">InvalidSyntaxException</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceReference</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceListener</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceEvent</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">DictionaryService</span><span class="p">;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">This</span> <span class="n">class</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">uses</span> <span class="n">a</span> <span class="n">dictionary</span>
+ <span class="o">*</span> <span class="n">service</span> <span class="n">to</span> <span class="n">check</span> <span class="k">for</span> <span class="n">the</span> <span class="n">proper</span> <span class="n">spelling</span> <span class="n">of</span> <span class="n">a</span> <span class="n">word</span> <span class="n">by</span>
+ <span class="o">*</span> <span class="n">checking</span> <span class="k">for</span> <span class="n">its</span> <span class="n">existence</span> <span class="n">in</span> <span class="n">the</span> <span class="n">dictionary</span><span class="o">.</span> <span class="n">This</span> <span class="n">bundle</span>
+ <span class="o">*</span> <span class="n">is</span> <span class="n">more</span> <span class="n">complex</span> <span class="n">than</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">in</span> <span class="n">Example</span> <span class="mi">3</span> <span class="n">because</span> <span class="n">it</span>
+ <span class="o">*</span> <span class="n">monitors</span> <span class="n">the</span> <span class="n">dynamic</span> <span class="n">availability</span> <span class="n">of</span> <span class="n">the</span> <span class="n">dictionary</span>
+ <span class="o">*</span> <span class="n">services</span><span class="o">.</span> <span class="n">In</span> <span class="n">other</span> <span class="n">words</span><span class="p">,</span> <span class="k">if</span> <span class="n">the</span> <span class="n">service</span> <span class="n">it</span> <span class="n">is</span> <span class="n">using</span>
+ <span class="o">*</span> <span class="n">departs</span><span class="p">,</span> <span class="k">then</span> <span class="n">it</span> <span class="n">stops</span> <span class="n">using</span> <span class="n">it</span> <span class="n">gracefully</span><span class="p">,</span> <span class="ow">or</span> <span class="k">if</span> <span class="n">it</span> <span class="n">needs</span>
+ <span class="o">*</span> <span class="n">a</span> <span class="n">service</span> <span class="ow">and</span> <span class="n">one</span> <span class="n">arrives</span><span class="p">,</span> <span class="k">then</span> <span class="n">it</span> <span class="n">starts</span> <span class="n">using</span> <span class="n">it</span>
+ <span class="o">*</span> <span class="n">automatically</span><span class="o">.</span> <span class="n">As</span> <span class="n">before</span><span class="p">,</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">first</span> <span class="n">service</span>
+ <span class="o">*</span> <span class="n">that</span> <span class="n">it</span> <span class="n">finds</span> <span class="ow">and</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">calling</span> <span class="n">thread</span> <span class="n">of</span> <span class="n">the</span>
+ <span class="o">*</span> <span class="n">start</span><span class="p">()</span> <span class="n">method</span> <span class="n">to</span> <span class="nb">read</span> <span class="n">words</span> <span class="n">from</span> <span class="n">standard</span> <span class="n">input</span><span class="o">.</span>
+ <span class="o">*</span> <span class="n">You</span> <span class="n">can</span> <span class="n">stop</span> <span class="n">checking</span> <span class="n">words</span> <span class="n">by</span> <span class="n">entering</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">line</span><span class="p">,</span> <span class="n">but</span>
+ <span class="o">*</span> <span class="n">to</span> <span class="n">start</span> <span class="n">checking</span> <span class="n">words</span> <span class="n">again</span> <span class="n">you</span> <span class="n">must</span> <span class="n">stop</span> <span class="ow">and</span> <span class="k">then</span> <span class="n">restart</span>
+ <span class="o">*</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+<span class="o">**/</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span><span class="p">,</span> <span class="n">ServiceListener</span>
+<span class="p">{</span>
+    <span class="sr">//</span> <span class="n">Bundle</span><span class="s">&#39;s context.</span>
+<span class="s">    private BundleContext m_context = null;</span>
+<span class="s">    // The service reference being used.</span>
+<span class="s">    private ServiceReference m_ref = null;</span>
+<span class="s">    // The service object being used.</span>
+<span class="s">    private DictionaryService m_dictionary = null;</span>
+
+<span class="s">    /**</span>
+<span class="s">     * Implements BundleActivator.start(). Adds itself</span>
+<span class="s">     * as a listener for service events, then queries for </span>
+<span class="s">     * available dictionary services. If any dictionaries are</span>
+<span class="s">     * found it gets a reference to the first one available and</span>
+<span class="s">     * then starts its &quot;word checking loop&quot;. If no dictionaries</span>
+<span class="s">     * are found, then it just goes directly into its &quot;word checking</span>
+<span class="s">     * loop&quot;, but it will not be able to check any words until a</span>
+<span class="s">     * dictionary service arrives; any arriving dictionary service</span>
+<span class="s">     * will be automatically used by the client if a dictionary is</span>
+<span class="s">     * not already in use. Once it has dictionary, it reads words</span>
+<span class="s">     * from standard input and checks for their existence in the</span>
+<span class="s">     * dictionary that it is using.</span>
+<span class="s">     * (NOTE: It is very bad practice to use the calling thread</span>
+<span class="s">     * to perform a lengthy process like this; this is only done</span>
+<span class="s">     * for the purpose of the tutorial.)</span>
+<span class="s">     * @param context the framework context for the bundle.</span>
+<span class="s">    **/</span>
+<span class="s">    public void start(BundleContext context) throws Exception</span>
+<span class="s">    {</span>
+<span class="s">        m_context = context;</span>
+
+<span class="s">        // We synchronize while registering the service listener and</span>
+<span class="s">        // performing our initial dictionary service lookup since we</span>
+<span class="s">        // don&#39;</span><span class="n">t</span> <span class="n">want</span> <span class="n">to</span> <span class="n">receive</span> <span class="n">service</span> <span class="n">events</span> <span class="n">when</span> <span class="n">looking</span> <span class="n">up</span> <span class="n">the</span>
+        <span class="sr">//</span> <span class="n">dictionary</span> <span class="n">service</span><span class="p">,</span> <span class="k">if</span> <span class="n">one</span> <span class="nb">exists</span><span class="o">.</span>
+        <span class="n">synchronized</span> <span class="p">(</span><span class="n">this</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="sr">//</span> <span class="n">Listen</span> <span class="k">for</span> <span class="n">events</span> <span class="n">pertaining</span> <span class="n">to</span> <span class="n">dictionary</span> <span class="n">services</span><span class="o">.</span>
+            <span class="n">m_context</span><span class="o">.</span><span class="n">addServiceListener</span><span class="p">(</span><span class="n">this</span><span class="p">,</span>
+                <span class="s">&quot;(&amp;(objectClass=&quot;</span> <span class="o">+</span> <span class="n">DictionaryService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span> <span class="o">+</span>
+                <span class="s">&quot;(Language=*))&quot;</span><span class="p">);</span>
+
+            <span class="sr">//</span> <span class="n">Query</span> <span class="k">for</span> <span class="n">any</span> <span class="n">service</span> <span class="n">references</span> <span class="n">matching</span> <span class="n">any</span> <span class="n">language</span><span class="o">.</span>
+            <span class="n">ServiceReference</span><span class="o">[]</span> <span class="n">refs</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getServiceReferences</span><span class="p">(</span>
+                <span class="n">DictionaryService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="s">&quot;(Language=*)&quot;</span><span class="p">);</span>
+
+            <span class="sr">//</span> <span class="n">If</span> <span class="n">we</span> <span class="n">found</span> <span class="n">any</span> <span class="n">dictionary</span> <span class="n">services</span><span class="p">,</span> <span class="k">then</span> <span class="n">just</span> <span class="n">get</span>
+            <span class="sr">//</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">first</span> <span class="n">one</span> <span class="n">so</span> <span class="n">we</span> <span class="n">can</span> <span class="k">use</span> <span class="n">it</span><span class="o">.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">refs</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">m_ref</span> <span class="o">=</span> <span class="n">refs</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+                <span class="n">m_dictionary</span> <span class="o">=</span> <span class="p">(</span><span class="n">DictionaryService</span><span class="p">)</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="n">m_ref</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">try</span>
+        <span class="p">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Enter a blank line to exit.&quot;</span><span class="p">);</span>
+            <span class="n">String</span> <span class="n">word</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+            <span class="n">BufferedReader</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="p">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="p">(</span><span class="n">System</span><span class="o">.</span><span class="n">in</span><span class="p">));</span>
+
+            <span class="sr">//</span> <span class="n">Loop</span> <span class="n">endlessly</span><span class="o">.</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">true</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="sr">//</span> <span class="n">Ask</span> <span class="n">the</span> <span class="n">user</span> <span class="n">to</span> <span class="n">enter</span> <span class="n">a</span> <span class="n">word</span><span class="o">.</span>
+                <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="k">print</span><span class="p">(</span><span class="s">&quot;Enter word: &quot;</span><span class="p">);</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="n">readLine</span><span class="p">();</span>
+
+                <span class="sr">//</span> <span class="n">If</span> <span class="n">the</span> <span class="n">user</span> <span class="n">entered</span> <span class="n">a</span> <span class="n">blank</span> <span class="n">line</span><span class="p">,</span> <span class="k">then</span>
+                <span class="sr">//</span> <span class="nb">exit</span> <span class="n">the</span> <span class="n">loop</span><span class="o">.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="nb">length</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">break</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="sr">//</span> <span class="n">If</span> <span class="n">there</span> <span class="n">is</span> <span class="nb">no</span> <span class="n">dictionary</span><span class="p">,</span> <span class="k">then</span> <span class="n">say</span> <span class="n">so</span><span class="o">.</span>
+                <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">m_dictionary</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;No dictionary available.&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="sr">//</span> <span class="n">Otherwise</span> <span class="k">print</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">word</span> <span class="n">is</span> <span class="n">correct</span> <span class="ow">or</span> <span class="ow">not</span><span class="o">.</span>
+                <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">m_dictionary</span><span class="o">.</span><span class="n">checkWord</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+                <span class="p">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Correct.&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">else</span>
+                <span class="p">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Incorrect.&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span><span class="o">.</span> <span class="n">Does</span> <span class="n">nothing</span> <span class="n">since</span>
+     <span class="o">*</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">will</span> <span class="n">automatically</span> <span class="n">unget</span> <span class="n">any</span> <span class="n">used</span> <span class="n">services</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="sr">//</span> <span class="n">NOTE:</span> <span class="n">The</span> <span class="n">service</span> <span class="n">is</span> <span class="n">automatically</span> <span class="n">released</span><span class="o">.</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">ServiceListener</span><span class="o">.</span><span class="n">serviceChanged</span><span class="p">()</span><span class="o">.</span> <span class="n">Checks</span>
+     <span class="o">*</span> <span class="n">to</span> <span class="n">see</span> <span class="k">if</span> <span class="n">the</span> <span class="n">service</span> <span class="n">we</span> <span class="n">are</span> <span class="n">using</span> <span class="n">is</span> <span class="n">leaving</span> <span class="ow">or</span> <span class="n">tries</span> <span class="n">to</span> <span class="n">get</span>
+     <span class="o">*</span> <span class="n">a</span> <span class="n">service</span> <span class="k">if</span> <span class="n">we</span> <span class="n">need</span> <span class="n">one</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">event</span> <span class="n">the</span> <span class="n">fired</span> <span class="n">service</span> <span class="n">event</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">serviceChanged</span><span class="p">(</span><span class="n">ServiceEvent</span> <span class="n">event</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">objectClass</span> <span class="o">=</span>
+            <span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="p">)</span> <span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">()</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span><span class="s">&quot;objectClass&quot;</span><span class="p">);</span>
+
+        <span class="sr">//</span> <span class="n">If</span> <span class="n">a</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">was</span> <span class="n">registered</span><span class="p">,</span> <span class="n">see</span> <span class="k">if</span> <span class="n">we</span>
+        <span class="sr">//</span> <span class="n">need</span> <span class="n">one</span><span class="o">.</span> <span class="n">If</span> <span class="n">so</span><span class="p">,</span> <span class="n">get</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">it</span><span class="o">.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="o">.</span><span class="n">REGISTERED</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">m_ref</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="sr">//</span> <span class="n">Get</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span> <span class="n">object</span><span class="o">.</span>
+                <span class="n">m_ref</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">();</span>
+                <span class="n">m_dictionary</span> <span class="o">=</span> <span class="p">(</span><span class="n">DictionaryService</span><span class="p">)</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="n">m_ref</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="sr">//</span> <span class="n">If</span> <span class="n">a</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">was</span> <span class="n">unregistered</span><span class="p">,</span> <span class="n">see</span> <span class="k">if</span> <span class="n">it</span>
+        <span class="sr">//</span> <span class="n">was</span> <span class="n">the</span> <span class="n">one</span> <span class="n">we</span> <span class="n">were</span> <span class="n">using</span><span class="o">.</span> <span class="n">If</span> <span class="n">so</span><span class="p">,</span> <span class="n">unget</span> <span class="n">the</span> <span class="n">service</span>
+        <span class="sr">//</span> <span class="ow">and</span> <span class="n">try</span> <span class="n">to</span> <span class="n">query</span> <span class="n">to</span> <span class="n">get</span> <span class="n">another</span> <span class="n">one</span><span class="o">.</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="o">.</span><span class="n">UNREGISTERING</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">()</span> <span class="o">==</span> <span class="n">m_ref</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="sr">//</span> <span class="n">Unget</span> <span class="n">service</span> <span class="n">object</span> <span class="ow">and</span> <span class="n">null</span> <span class="n">references</span><span class="o">.</span>
+                <span class="n">m_context</span><span class="o">.</span><span class="n">ungetService</span><span class="p">(</span><span class="n">m_ref</span><span class="p">);</span>
+                <span class="n">m_ref</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+                <span class="n">m_dictionary</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+                <span class="sr">//</span> <span class="n">Query</span> <span class="n">to</span> <span class="n">see</span> <span class="k">if</span> <span class="n">we</span> <span class="n">can</span> <span class="n">get</span> <span class="n">another</span> <span class="n">service</span><span class="o">.</span>
+                <span class="n">ServiceReference</span><span class="o">[]</span> <span class="n">refs</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+                <span class="n">try</span>
+                <span class="p">{</span>
+                    <span class="n">refs</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getServiceReferences</span><span class="p">(</span>
+                        <span class="n">DictionaryService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="s">&quot;(Language=*)&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="n">catch</span> <span class="p">(</span><span class="n">InvalidSyntaxException</span> <span class="n">ex</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">This</span> <span class="n">will</span> <span class="n">never</span> <span class="n">happen</span><span class="o">.</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">refs</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">Get</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">first</span> <span class="n">service</span> <span class="n">object</span><span class="o">.</span>
+                    <span class="n">m_ref</span> <span class="o">=</span> <span class="n">refs</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+                    <span class="n">m_dictionary</span> <span class="o">=</span> <span class="p">(</span><span class="n">DictionaryService</span><span class="p">)</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="n">m_ref</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The client listens for service events indicating the arrival or departure of dictionary services. If a new dictionary service arrives, the bundle will start using that service if and only if it currently does not have a dictionary service. If an existing dictionary service disappears, the bundle will check to see if the disappearing service is the one it is using; if it is it stops using it and tries to query for another dictionary service, otherwise it ignores the event.</p>
+<p>Like normal, we must create a <code>manifest.mf</code> file that contains the meta-data for our bundle:</p>
+<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">Dynamic</span> <span class="n">dictionary</span> <span class="n">client</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Description:</span> <span class="n">A</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">dictionary</span> <span class="n">service</span> <span class="n">whenever</span> <span class="n">it</span> <span class="n">becomes</span> <span class="n">available</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Vendor:</span> <span class="n">Apache</span> <span class="n">Felix</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Version:</span> <span class="mf">1.0.0</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator:</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example4</span><span class="o">.</span><span class="n">Activator</span>
+<span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="p">,</span>
+ <span class="n">tutorial</span><span class="o">.</span><span class="n">example2</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+
+
+<p>We specify the class to activate our bundle via the <code>Bundle-Activator</code> attribute and also specify that our bundle imports the core OSGi framework package and the dictionary service interface package using the <code>Import-Package</code> attribute. The OSGi framework will automatically handle the details of resolving import packages. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
+<p>To compile our source code, we need to have the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) and the <code>example2.jar</code> file in our class path. We compile the source file using a command like:</p>
+<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*.</span><span class="n">java</span>
+</pre></div>
+
+
+<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory; this subdirectory is <code>tutorial\example4</code>, named after the package we specified in the source file. For the above command to work, the <code>c:\classes</code> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</p>
+<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">example4</span><span class="o">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="o">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="n">tutorial</span><span class="o">\</span><span class="n">example4</span>
+</pre></div>
+
+
+<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example4</code> directory inside of the <code>c:\classes</code> directory. Once the JAR file is created, we are ready to install and start the bundle.</p>
+<p>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>. After running Felix, we should check that all tutorial bundles are stopped, except for the English dictionary service bundle from Example 2. We can use the Felix <code>lb</code> shell command to get a list of all bundles, their state, and their bundle identifier number. If the Example 2 bundle is not active, we should start the bundle using the <code>start</code> command along with the bundle's identifier number displayed by the <code>lb</code> command and stop any other unneeded tutorial bundles using the stop command. (Note: Felix uses some bundles to provide its command shell, so do not stop these bundles.) Now we can install and start our dictionary client bundle. Assuming that we created our bundle in the directory <code>c:\tutorial</code>, we can install and start it in Felix' shell using the following command:</p>
+<div class="codehilite"><pre><span class="n">start</span> <span class="n">file:</span><span class="sr">/c:/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">example4</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands. When we start the bundle, it will use the shell thread to prompt us for words. Enter one word at a time to check the words and enter a blank line to stop checking words. To restart the bundle, we must use the Felix shell <code>lb</code> command to get the bundle identifier number for the bundle and first use the <code>stop</code> command to stop the bundle, then the <code>start</code> command to restart it. To test the dictionary service, enter any of the words in the dictionary (e.g., "welcome", "to", "the", "OSGi", "tutorial") or any word not in the dictionary.</p>
+<p>Since this client monitors the dynamic availability of the dictionary service, it is robust in the face of sudden departures of the the dictionary service. Further, when a dictionary service arrives, it automatically gets the service if it needs it and continues to function. These capabilities are a little difficult to demonstrate since we are using a simple single-threaded approach, but in a multi-threaded or GUI-oriented application this robustness is very useful.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

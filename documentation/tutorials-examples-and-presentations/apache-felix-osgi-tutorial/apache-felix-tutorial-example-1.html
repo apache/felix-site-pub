@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Tutorial Example 1</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-tutorial-example-1.html" target="felix_cwiki">/site/apache-felix-tutorial-example-1.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Tutorial Example 1</h1>
+      <h1 id="apache-felix-tutorial-example-1-service-event-listener-bundle">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</h1>
+<p>This example creates a simple bundle that listens for OSGi service events. This example does not do much at first, because it only prints out the details of registering and unregistering services. In the next example we will create a bundle that implements a service, which will cause this bundle to actually do something. For now, we will just use this example to help us understand the basics of creating a bundle.</p>
+<p>A bundle gains access to the OSGi framework using a unique instance of <code>BundleContext</code>. In order for a bundle to get its unique bundle context, it must implement the <code>BundleActivator</code> interface; this interface has two methods, <code>start()</code> and <code>stop()</code>, that both receive the bundle's context and are called when the bundle is started and stopped, respectively. In the following source code, our bundle implements the <code>BundleActivator</code> interface and uses the context to add itself as a listener for service events (the file for our bundle is called <code>Activator.java</code>):</p>
+<div class="codehilite"><pre><span class="o">/*</span>
+ <span class="o">*</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">OSGi</span> <span class="n">tutorial</span><span class="o">.</span>
+<span class="o">**/</span>
+
+<span class="nb">package</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example1</span><span class="p">;</span>
+
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceListener</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceEvent</span><span class="p">;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="n">This</span> <span class="n">class</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">simple</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">utilizes</span> <span class="n">the</span> <span class="n">OSGi</span>
+ <span class="o">*</span> <span class="n">framework</span><span class="s">&#39;s event mechanism to listen for service events. Upon</span>
+<span class="s"> * receiving a service event, it prints out the event&#39;</span><span class="n">s</span> <span class="n">details</span><span class="o">.</span>
+<span class="o">**/</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span><span class="p">,</span> <span class="n">ServiceListener</span>
+<span class="p">{</span>
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">start</span><span class="p">()</span><span class="o">.</span> <span class="n">Prints</span>
+     <span class="o">*</span> <span class="n">a</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">adds</span> <span class="n">itself</span> <span class="n">to</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">as</span> <span class="n">a</span> <span class="n">service</span>
+     <span class="o">*</span> <span class="n">listener</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Starting to listen for service events.&quot;</span><span class="p">);</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">addServiceListener</span><span class="p">(</span><span class="n">this</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">BundleActivator</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span><span class="o">.</span> <span class="n">Prints</span>
+     <span class="o">*</span> <span class="n">a</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">removes</span> <span class="n">itself</span> <span class="n">from</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">as</span> <span class="n">a</span>
+     <span class="o">*</span> <span class="n">service</span> <span class="n">listener</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">context</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">context</span> <span class="k">for</span> <span class="n">the</span> <span class="n">bundle</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">removeServiceListener</span><span class="p">(</span><span class="n">this</span><span class="p">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Stopped listening for service events.&quot;</span><span class="p">);</span>
+
+        <span class="sr">//</span> <span class="n">Note:</span> <span class="n">It</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">required</span> <span class="n">that</span> <span class="n">we</span> <span class="n">remove</span> <span class="n">the</span> <span class="n">listener</span> <span class="n">here</span><span class="p">,</span>
+        <span class="sr">//</span> <span class="n">since</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">will</span> <span class="k">do</span> <span class="n">it</span> <span class="n">automatically</span> <span class="n">anyway</span><span class="o">.</span>
+    <span class="p">}</span>
+
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">Implements</span> <span class="n">ServiceListener</span><span class="o">.</span><span class="n">serviceChanged</span><span class="p">()</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">Prints</span> <span class="n">the</span> <span class="n">details</span> <span class="n">of</span> <span class="n">any</span> <span class="n">service</span> <span class="n">event</span> <span class="n">from</span> <span class="n">the</span> <span class="n">framework</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@param</span> <span class="n">event</span> <span class="n">the</span> <span class="n">fired</span> <span class="n">service</span> <span class="n">event</span><span class="o">.</span>
+    <span class="o">**/</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">serviceChanged</span><span class="p">(</span><span class="n">ServiceEvent</span> <span class="n">event</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">objectClass</span> <span class="o">=</span> <span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="p">)</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">()</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span><span class="s">&quot;objectClass&quot;</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="o">.</span><span class="n">REGISTERED</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span>
+                <span class="s">&quot;Ex1: Service of type &quot;</span> <span class="o">+</span> <span class="n">objectClass</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot; registered.&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="o">.</span><span class="n">UNREGISTERING</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span>
+                <span class="s">&quot;Ex1: Service of type &quot;</span> <span class="o">+</span> <span class="n">objectClass</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot; unregistered.&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="o">.</span><span class="n">MODIFIED</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span>
+                <span class="s">&quot;Ex1: Service of type &quot;</span> <span class="o">+</span> <span class="n">objectClass</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot; modified.&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>After implementing the Java source code for the bundle, we must also define a manifest file that contains meta-data needed by the OSGi framework for manipulating the bundle. The manifest is packaged into a JAR file along with the Java class file associated with our bundle; the whole JAR package is actually referred to as a bundle. We create a file called <code>manifest.mf</code> that contains the following:</p>
+<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">Service</span> <span class="n">listener</span> <span class="n">example</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Description:</span> <span class="n">A</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">displays</span> <span class="n">messages</span> <span class="n">at</span> <span class="n">startup</span> <span class="ow">and</span> <span class="n">when</span> <span class="n">service</span> <span class="n">events</span> <span class="n">occur</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Vendor:</span> <span class="n">Apache</span> <span class="n">Felix</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Version:</span> <span class="mf">1.0.0</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator:</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">example1</span><span class="o">.</span><span class="n">Activator</span>
+<span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span>
+</pre></div>
+
+
+<p>Most of the above meta-data is for human consumption and does not affect the OSGi framework. Only the <code>Bundle-Activator</code> and <code>Import-Package</code> meta-data is used by the framework. The <code>Bundle-Activator</code> attribute tells the framework which class implements the <code>BundleActivator</code> interface. With this information, when the OSGi framework starts the bundle, an instance of the specified class is created and its <code>start()</code> method is invoked. The created instance will also have its <code>stop()</code> method called when the framework stops the bundle. The <code>Import-Package</code> attribute informs the framework of the bundle's dependencies on external packages; all bundles with an activator must import <code>org.osgi.framework</code> since it contains the core OSGi class definitions. Any packages dependencies will be verified and resolved by the OSGi framework. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
+<p>Now we need to compile the source code. To compile we must have the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) in our class path. We compile the source file using a command like:</p>
+<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*.</span><span class="n">java</span>
+</pre></div>
+
+
+<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory; this subdirectory is <code>tutorial\example1</code>, named after the package we specified in the source file. For the above command to work, the <code>c:\classes</code> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</p>
+<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">example1</span><span class="o">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="o">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="n">tutorial</span><span class="o">\</span><span class="n">example1</span>
+</pre></div>
+
+
+<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example1</code> directory inside of the <code>c:\classes</code> directory. Once the JAR file is created, we are ready to install and start the bundle.</p>
+<p>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>. Now we will install and start our bundle. Assuming that we created our bundle in the directory <code>c:\tutorial</code>, we can install and start it in Felix' shell using the following command:</p>
+<div class="codehilite"><pre><span class="n">start</span> <span class="n">file:</span><span class="sr">/c:/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">example1</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+
+
+<p>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands. To stop the bundle, use the Felix <code>stop</code> shell command. Keep in mind, that this bundle will not do much at this point since it only listens for service events and we are not registering any services. In the next example we will register a service that will generate an event for this bundle to receive. To exit Felix, we use the <code>shutdown</code> command.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

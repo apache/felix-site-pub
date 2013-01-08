@@ -1,0 +1,110 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Running Apache Sling on Apache Felix Karaf</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="license.html" title="license">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<P>This page shows you how you can use Apache Felix Karaf to run Apache Sling.  While doing so, we also try to give you an example of all the different techniques you can use for adding bundles to Karaf's OSGi runtime.</P>
+
+<DIV class="panelMacro"><TABLE class="infoMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://cwiki.apache.org/confluence/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>What is Apache Sling?</B><BR>Apache Sling is a Web application framework based on REST principles that provides easy development of content-oriented applications. Sling uses a JCR repository, such as Apache Jackrabbit, as its data store.  The project is currently undergoing incubation at the ASF.  Have a look at <A href="http://incubator.apache.org/sling/site/index.html" class="external-link" rel="nofollow">http://incubator.apache.org/sling/site/index.html</A> for more information</TD></TR></TABLE></DIV>
+
+<H3><A name="RunningApacheSlingonApacheFelixKaraf-Beforeyoustart..."></A>Before you start...</H3>
+<P>Apache Sling currently hasn't been released yet, so you need to build Sling locally yourself before you can continue with the rest of the page.  This will also put all the artifacts you require in your Maven repository.</P>
+
+<H3><A name="RunningApacheSlingonApacheFelixKaraf-Usinghotdeploy"></A>Using hotdeploy</H3>
+<P>You can deploy a new bundle to Karaf by copying it into the <B><TT>&lt;SMX4_KERNEL_HOME&gt;/deploy</TT></B>.  The Sling console depends on commons-io.  The latest version of this jar file (1.4) already is an OSGi bundle, so it can be installed like this:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>cp ~/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4.jar \
+  ~/opt/apache-servicemix-kernel-1.0-m2/deploy
+</PRE>
+</DIV></DIV>
+<P>You can verify successful installation of the bundle by typing this command on the Karaf console:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>osgi list
+</PRE>
+</DIV></DIV>
+
+<H3><A name="RunningApacheSlingonApacheFelixKaraf-Using%7B%7Bosgi%7D%7Dcommands"></A>Using <TT>osgi</TT> commands</H3>
+<P>Karaf comes with an additional URL handler that allows you to deploy bundles right out of the Maven repository from the Karaf console.  We are going to use this technique for deploying OPS4J's Pax Web service now.  The first command will install the bundle and give you the bundle ID, which can be used to start the bundle in a second command.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>gert@kiwi:/&gt; osgi install mvn:http://repository.ops4j.org/maven2!org.ops4j.pax.web.bundles/service/0.2.0
+Bundle ID: 27
+gert@kiwi:/&gt; osgi start 27
+</PRE>
+</DIV></DIV>
+
+<P>If the bundle is already available in your local Maven repository, you can also use an even handier syntax to deploy it.  For example, we could also have installed the commons-io bundle using this command instead of hot-deployment:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>gert@kiwi:/&gt; osgi install mvn:commons-io/commons-io/1.4
+Bundle ID: 28
+gert@kiwi:/&gt; osgi start 28
+</PRE>
+</DIV></DIV>
+
+<H3><A name="RunningApacheSlingonApacheFelixKaraf-UsingtheOBR"></A>Using the OBR</H3>
+<P>While building Sling, you also created an OBR repository inside your local Maven repository.  Let's leverage OBR to install our next two bundles.  First, add a reference to the <TT>repository.xml</TT> file in your local Maven repo using <TT>obr addUrl</TT> and check if you see any Sling bundles listed with <TT>obr list</TT></P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>gert@kiwi:/&gt; obr addUrl file:///home/gert/.m2/repository/repository.xml 
+gert@kiwi:/&gt; obr list
+</PRE>
+</DIV></DIV>
+
+<P>Now, you can use these two commands to add two Sling bundles to start the Sling web console:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>gert@kiwi:/&gt; obr deploy org.apache.sling.osgi.assembly                                                  
+Target resource(s):
+-------------------
+   Sling - Assembly Packaging (2.0.0.incubator-SNAPSHOT)
+
+Deploying...done.
+gert@kiwi:/&gt; obr deploy org.apache.sling.osgi.console.web
+Target resource(s):
+-------------------
+   Sling - Sling Management Console (2.0.0.incubator-SNAPSHOT)
+
+Deploying...done.
+</PRE>
+</DIV></DIV>
+
+<P>Use <TT>osgi list</TT> to list all bundles and use <TT>osgi start</TT> as shown above to start the two new bundles.  This should give you the Sling Management console at <A href="http://localhost:8080/system/console" class="external-link" rel="nofollow">http://localhost:8080/system/console</A>.  Congratulations, you just deployed your first (non-ServiceMix) application on top of Karaf!</P>
+
+<H3><A name="RunningApacheSlingonApacheFelixKaraf-Nextsteps"></A>Next steps</H3>
+<P>Although you can use the Sling Management console, you still need to deploy some additional bundles before you can go ahead and click-and-install all the other Sling bundles though the console.  You can use either hotdeployment or the OSGi commands to deploy them.</P>
+<UL>
+	<LI>org.apache.felix.commons/org.apache.felix.commons.commons-beanutils</LI>
+	<LI>org.apache.felix.commons/org.apache.felix.commons.commons-codec</LI>
+	<LI>org.apache.felix.commons/org.apache.felix.commons.commons-collections</LI>
+	<LI>org.apache.felix.commons/org.apache.felix.commons.commons-fileutils</LI>
+	<LI>org.apache.felix/org.apache.felix.eventadmin</LI>
+	<LI>org.apache.felix/org.apache.felix.scr</LI>
+</UL>
+
+
+<P>You also need a JTA spec bundle and a JNDI implementation, both of them come with the <A href="http://servicemix.apache.org/SMX4NMR/index.html" class="external-link" rel="nofollow">ServiceMix NMR project </A></P>
+
+<P>When all this is done, just go back to the Sling Management Console and install whatever bundle of Sling you need (skip the LogService bundle, this is already provided by Karaf).</P>
+    </DIV>
+  </BODY>
+</HTML>

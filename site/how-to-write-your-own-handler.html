@@ -1,0 +1,862 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - How to write your own handler</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<STYLE type="text/css">
+ @import url(http://felix.apache.org/ipojo/site/superfish.css); 
+</STYLE>
+
+<STYLE type="text/css">
+ @import url(http://felix.apache.org/ipojo/site/style.css); 
+</STYLE>
+
+<P>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shCore.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushCSharp.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushPhp.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushJScript.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushVb.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushSql.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushXml.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushShell.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushDelphi.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushPython.js"></SCRIPT>
+<SCRIPT class="javascript" src="http://cwiki.apache.org/confluence/download/resources/confluence.ext.code:code/shBrushJava.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/jquery-1.js"></SCRIPT>
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/hoverIntent.js"></SCRIPT>
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/superfish.js"></SCRIPT> 
+<SCRIPT type="text/javascript" src="http://felix.apache.org/ipojo/site/supersubs.js"></SCRIPT> 
+
+<SCRIPT type="text/javascript"> 
+ 
+    $(document).ready(function(){ 
+        $("ul.sf-menu").supersubs({ 
+            minWidth:    14,   // minimum width of sub-menus in em units 
+            maxWidth:    30,   // maximum width of sub-menus in em units 
+            extraWidth:  1     // extra width can ensure lines don't sometimes turn over 
+                               // due to slight rounding differences and font-family 
+        }).superfish();  // call supersubs first, then superfish, so that subs are 
+                         // not display:none when measuring. Call before initialising 
+                         // containing tabs for same reason. 
+    }); 
+ 
+</SCRIPT>
+<DIV class="main">
+<DIV class="page-header">
+<IMG src="http://felix.apache.org/ipojo/site/header.png" class="header">
+<A href="http://ipojo.org/"><IMG src="http://felix.apache.org/ipojo/site/ipojo.png" width="225" class="header-logo"></A>
+<UL class="sf-menu sf-js-enabled sf-shadow" id="ipojo-menu">
+<LI class="current">
+<!-- Menu Overview -->
+<A href="" class="sf-with-ul">Overview<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+	<LI>
+	<A href="apache-felix-ipojo.html" title="Apache Felix iPOJO">Home</A>							
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-why-choose-ipojo.html" title="apache-felix-ipojo-why-choose-ipojo">Why choose iPOJO</A>
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-successstories.html" title="apache-felix-ipojo-successstories">Success stories</A>
+	</LI>
+	<LI>
+	<A href="apache-felix-ipojo-feature-overview.html" title="Apache Felix iPOJO Feature Overview">Features</A>
+	</LI>
+</UL>
+</LI>	
+
+<LI class="">			
+<!-- Menu download -->
+<LI>
+<A href="download.html" title="Download">Download </A>
+</LI>
+
+<LI class="">					
+<!-- Menu Documentation -->
+<A href="" class="sf-with-ul">Documentation<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+    <!-- sub- menu : getting started -->
+    <LI class="">
+    <A href="" class="sf-with-ul">Getting Started<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+    <UL>
+     <LI><A href="ipojo-in-10-minutes.html" title="iPOJO in 10 minutes">iPOJO in 10 minutes</A></LI>
+     <LI><A href="how-to-use-ipojo-annotations.html" title="How to use iPOJO Annotations">Using Annotations</A></LI>
+     <LI><A href="ipojo-hello-word-maven-based-tutorial.html" title="iPOJO Hello Word (Maven-Based) tutorial">Maven tutorial</A></LI>
+     <LI><A href="ipojo-advanced-tutorial.html" title="iPOJO Advanced Tutorial">Advanced tutorial</A></LI>
+     <LI><A href="apache-felix-ipojo-dosgi.html" title="apache-felix-ipojo-dosgi">Using Distributed OSGi</A></LI>
+     <LI><A href="ipojo-composition-tutorial.html" title="iPOJO Composition Tutorial">Application Composition</A></LI>
+    </UL>
+    </LI> <!-- end of getting started -->
+    <!-- sub menu : Describing Components -->
+     <LI class="">
+        <A href="http://felix.apache.org/site/describing-components.html" class="sf-with-ul">Describing components<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+        <UL>
+        <LI><A href="service-requirement-handler.html" title="Service Requirement Handler">Requiring a service</A></LI>
+        <LI><A href="providing-osgi-services.html" title="Providing OSGi services">Providing a service</A></LI>
+        <LI><A href="lifecycle-callback-handler.html" title="Lifecycle Callback Handler">Lifecycle management</A></LI>
+        <LI><A href="configuration-handler.html" title="Configuration Handler">Configuration</A></LI>
+        <LI><A href="architecture-handler.html" title="Architecture Handler">Introspection</A></LI>
+        <LI><A href="controller-lifecycle-handler.html" title="Controller Lifecycle Handler">Impacting the lifecycle</A></LI>
+        <LI><A href="event-admin-handlers.html" title="Event Admin Handlers">Asynchronous communication</A></LI>
+        <LI><A href="ipojo-jmx-handler.html" title="iPOJO JMX Handler">JMX management</A></LI>
+        <LI><A href="extender-pattern-handler.html" title="Extender Pattern Handler">Extender pattern</A></LI>
+        <LI><A href="white-board-pattern-handler.html" title="White Board Pattern Handler">Whiteboard pattern</A></LI>
+        <LI><A href="temporal-service-dependency.html" title="Temporal Service Dependency">Temporal dependencies</A></LI>
+        </UL>
+     </LI> <!-- End of describing components -->
+    <!-- sub- menu : User Guide -->
+    <LI class="">
+    <A href="" class="sf-with-ul">User Guide<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+        <UL>
+        <LI><A href="combining-ipojo-and-configuration-admin.html" title="Combining iPOJO and Configuration Admin">iPOJO and config admin</A></LI>
+        <LI><A href="how-to-use-ipojo-factories.html" title="How-to use iPOJO factories">Factories and Instances</A></LI>
+        <LI><A href="using-xml-schemas.html" title="Using XML Schemas">XML Schemas</A></LI>
+        <LI><A href="apache-felix-ipojo-api.html" title="apache-felix-ipojo-api">API</A></LI>
+        <LI><A href="apache-felix-ipojo-testing-components.html" title="apache-felix-ipojo-testing-components">Testing components</A></LI>
+        <LI><A href="apache-felix-ipojo-eclipse-integration.html" title="apache-felix-ipojo-eclipse-integration">Eclipse Integration</A></LI>
+        <LI><A href="ipojo-faq.html" title="iPOJO FAQ">FAQ</A></LI>
+        <LI><A href="ipojo-reference-card.html" title="iPOJO-Reference-Card">Reference Card</A></LI>
+        </UL>
+    </LI> <!-- end of user guide -->
+    <!-- sub- menu : Dev Guide -->
+    <LI> 
+    <A href="" class="sf-with-ul">Advanced Topics<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+       <UL>
+        <LI><A href="http://felix.apache.org/ipojo/api/1.6.0" class="external-link" rel="nofollow">Javadoc</A></LI>
+        <LI><A href="" title="How to write your own handler">Handler development</A></LI>
+        <LI><A href="how-to-use-ipojo-manipulation-metadata.html" title="How to use iPOJO Manipulation Metadata">Manipulation Metadata </A></LI>
+        <LI><A href="dive-into-the-ipojo-manipulation-depths.html" title="Dive into the iPOJO Manipulation depths">Dive into the iPOJO Manipulation depths</A></LI>
+       </UL>
+    </LI> <!-- End of Dev guide -->
+</UL> 
+</LI> <!-- End of doc -->
+<!-- Menu 4 : Tools -->
+<LI class="">
+<A href="" class="sf-with-ul">Tools<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+   <LI><A href="ipojo-ant-task.html" title="iPOJO Ant Task">Ant Task</A></LI>
+   <LI><A href="ipojo-eclipse-plug-in.html" title="iPOJO Eclipse Plug-in">Eclipse Plugin</A></LI>
+   <LI><A href="ipojo-maven-plug-in.html" title="iPOJO Maven Plug-in">Maven Plugin</A></LI>
+   <LI><A href="ipojo-arch-command.html" title="iPOJO-Arch-Command"><TT>arch</TT> shell command</A></LI>
+   <LI><A href="apache-felix-ipojo-online-manipulator.html" title="apache-felix-ipojo-online-manipulator">Online Manipulator</A></LI>
+   <LI><A href="ipojo-webconsole-plugin.html" title="iPOJO Webconsole Plugin">Webconsole plugin</A></LI>
+   <LI><A href="apache-felix-ipojo-junit4osgi.html" title="apache-felix-ipojo-junit4osgi">Junit4OSGi</A></LI>
+</UL>   
+</LI><!-- End of tools -->	
+<!-- Menu 5 : Support -->
+<LI>
+<A href="ipojo-support.html" title="ipojo-support">Support </A>
+</LI>
+<!-- End of the menu 5 -->			
+<!-- Menu 6 : Misc -->
+<LI class="">
+<A href="" class="sf-with-ul">Misc<SPAN class="sf-sub-indicator"> &raquo;</SPAN><SPAN class="sf-sub-indicator"> &raquo;</SPAN></A>
+<UL>
+   <LI><A href="apache-felix-ipojo-supportedvms.html" title="apache-felix-ipojo-supportedVMs">Supported JVMs</A></LI>
+   <LI><A href="apache-felix-ipojo-supportedosgi.html" title="apache-felix-ipojo-supportedOSGi">Supported OSGi Implementations</A></LI>
+   <LI><A href="http://ipojo-dark-side.blogspot.com/" class="external-link" rel="nofollow">iPOJO's Dark Side Blog</A></LI>
+   <LI><A href="article-presentations.html" title="Article & Presentations">Article &amp; Presentations</A></LI>
+   <LI><A href="http://www.apache.org/">ASF</A></LI>
+   <LI><A href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</A></LI>
+   <LI><A href="http://www.apache.org/foundation/thanks.html">Sponsors</A></LI>
+</UL>
+</LI><!-- End of misc -->
+</UL> <!-- End of the menu -->
+</DIV> <!-- Page header -->
+</P>
+
+<DIV class="content">
+
+<H1><A name="Howtowriteyourownhandler-HowtowriteyouriPOJOHandler"></A>How to write your iPOJO Handler</H1>
+
+<P><EM>This document explains how developers can use iPOJO extensibility mechanism to extend the (primitive) component instance container. Such extensibility mechanism does not require to modify the iPOJO core.</EM></P>
+
+<DIV class="toc"><DIV>
+<UL>
+    <LI><A href="#Howtowriteyourownhandler-iPOJOConcepts">iPOJO Concepts</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Handlerdevelopmentbasis">Handler development basis</A></LI>
+<UL>
+    <LI><A href="#Howtowriteyourownhandler-Fundamentals">Fundamentals</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Declaringyourhandler">Declaring your handler</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Handlerlifecycle">Handler lifecycle</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Readinghandlerandinstanceconfigurations">Reading handler and instance configurations</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-InteractingwiththePOJO">Interacting with the POJO</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Usingyourhandler">Using your handler</A></LI>
+</UL>
+    <LI><A href="#Howtowriteyourownhandler-LogHandlerexample">Log Handler example</A></LI>
+<UL>
+    <LI><A href="#Howtowriteyourownhandler-Handlermetadata">Handler metadata</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Handlerimplementation">Handler implementation</A></LI>
+<UL>
+    <LI><A href="#Howtowriteyourownhandler-LogHandlerclass">LogHandler class</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-InitializeComponentFactoryMethod">InitializeComponentFactory Method</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-ConfigureMethod">Configure Method</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-StateChangedMethod">StateChanged Method</A></LI>
+</UL>
+    <LI><A href="#Howtowriteyourownhandler-Handlerpackaging">Handler packaging</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Handlerusage">Handler usage</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Download">Download</A></LI>
+</UL>
+    <LI><A href="#Howtowriteyourownhandler-PropertiesHandlerexample">Properties Handler example</A></LI>
+<UL>
+    <LI><A href="#Howtowriteyourownhandler-Handlerimplementation">Handler implementation</A></LI>
+<UL>
+    <LI><A href="#Howtowriteyourownhandler-PropertiesHandlerclass">PropertiesHandler class</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-ConfigureMethod">Configure Method</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Thestartandstopmethods">The start and stop methods</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-onGetandonSetmethods">onGet and onSet methods</A></LI>
+</UL>
+    <LI><A href="#Howtowriteyourownhandler-Handlerpackaging">Handler packaging</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Handlerusage">Handler usage</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Download">Download</A></LI>
+</UL>
+    <LI><A href="#Howtowriteyourownhandler-Advancedtopics">Advanced topics</A></LI>
+<UL>
+    <LI><A href="#Howtowriteyourownhandler-Handlerreconfiguration">Handler reconfiguration</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Describingyourhandler">Describing your handler</A></LI>
+</UL>
+    <LI><A href="#Howtowriteyourownhandler-Handler%2527sannotations">Handler's annotations</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Handler%2527sXSD">Handler's XSD</A></LI>
+    <LI><A href="#Howtowriteyourownhandler-Conclusion">Conclusion</A></LI>
+</UL></DIV></DIV>
+
+<P>First, iPOJO concepts are briefly explained. The second section explains the steps to create a handler. The two last sections describes the implementation and the usage of two small example handlers : a Log Handler, logging messages inside the OSGi log service, and a Property Handler, injecting properties values inside fields.</P>
+
+<H2><A name="Howtowriteyourownhandler-iPOJOConcepts"></A>iPOJO Concepts </H2>
+<P>iPOJO is a service oriented component model aiming to simplify OSGi applications development. iPOJO is based on the POJO concepts. A POJO is a simple Java class without any dependency on its runtime environment. In iPOJO, POJO are encapsulated in a container managing the relation between the POJO and the external world. This container keeps separated the POJO from the external &quot;wild&quot; world. Moreover, this container can be extended, using handlers.<BR>
+Basically, iPOJO contains two main concepts: component type and component instance. A component type is a type of component. A component type defines its implementation class, its creation policy, and its container. A component instance is a configured instance of a component type. This instance is created with the component type factory. A component instance inherits of all component type characteristics but has a unique name and its own configuration (set of &lt;key, value&gt;).<BR>
+Above these concepts, iPOJO runtime will manage component type factories and component instances. Each component instance is managed separately (but the factory can delete them).</P>
+
+<P>A component type declares its container configuration. Each component instance owns its container conform to the component type container configuration. An iPOJO container is composed by an <TT>InstanceManager</TT>, encapsulating the POJO, on which are plugged handlers. A handler manages one non functional concern. Handlers participate to the component instance lifecycle; can interact with the POJO; can manage relations with external entity like database, or other POJOs... For example, a persistence handler may interact with a database to store and inject POJO state, while an administration handler may use JMX to allow remote configuration of instance properties.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="how-to-write-your-own-handler.data/POJO-Container-Handler.png" style="border: 0px solid black"></SPAN></P>
+
+<P>iPOJO is an extensible model allowing developer to manage other non functional concerns. Indeed, handlers can be developed singly, without modifying the iPOJO core. At runtime, iPOJO looks for each handler needed by a component instance and plugs an instance of each (required) handler on the container. So iPOJO containers are flexible, light and adaptable to each component. When a needed handler cannot be found, the component instance cannot be created.<BR>
+An external handler is identified by a namespace. This namespace will be used by developers to refer to the external handler (when he configures its component type) and by iPOJO to instantiate the handler object.</P>
+
+<P><EM>Note :</EM> iPOJO core contains 6 &quot;core&quot; handlers managing service providing, service dependencies, lifecycle callbacks, lifecycle controller, instance dynamic configuration, and component instance architecture. Theses handlers follow the same rules than external handlers, except that they use the iPOJO default namespace (i.e. org.apache.felix.ipojo).</P>
+
+<H2><A name="Howtowriteyourownhandler-Handlerdevelopmentbasis"></A>Handler development basis </H2>
+<H3><A name="Howtowriteyourownhandler-Fundamentals"></A>Fundamentals </H3>
+<P>As explain above, the handler interacts with the POJO, with the component's container and with the external world (e.g. : other components, services, bundles, the OSGi framework, ...). The skeleton of such an agent is defined in iPOJO is defined by the <TT>PrimitiveHandler</TT> (abstract) class that can be found in the <TT>org.apache.felix.ipojo</TT> package.</P>
+
+<P>You need to implement the three basic lifecycle methods of this class, but you can extends this model by redefining some other methods (e.g. : to intercept POJO method calls, field accesses, ...).</P>
+
+<P><A name="Howtowriteyourownhandler-description"></A></P>
+<H3><A name="Howtowriteyourownhandler-Declaringyourhandler"></A>Declaring your handler </H3>
+<P>You first need to declare your handler, so iPOJO will be able to initialize, configure and use it when needed. First, you must give a name and an XML namespace to your handler. By doing that, iPOJO can recognize that a certain component uses your handler, so it can initialize it. You need to declare, in the <TT>metadata.xml</TT> of the bundle containing your handler, the class name of your handler and its name and XML namespace. You can, of course, declare several handlers, and even declare components using these handlers, in the same bundle.<BR>
+Then, you must know that a handler is a component (almost) like standard iPOJO components : it can use other handlers (like core handlers : service requirements, provided services, ...). You can consequently describe your handler's required services, provided services, etc. in its metadata.xml, as for classic iPOJO components.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;ipojo&gt;</SPAN>
+ ... 
+    &lt;handler className=<SPAN class="code-quote">&quot;your.handler.class&quot;</SPAN> 
+        name=<SPAN class="code-quote">&quot;HandlerName&quot;</SPAN> 
+        namespace=<SPAN class="code-quote">&quot;the.namespace.of.your.handler&quot;</SPAN>&gt;
+        ...
+        <SPAN class="code-tag">&lt;provides interface=<SPAN class="code-quote">&quot;a.provided.Service&quot;</SPAN>&gt;</SPAN>        
+            &lt;property field=<SPAN class="code-quote">&quot;a_field&quot;</SPAN> 
+                name=<SPAN class="code-quote">&quot;a.property&quot;</SPAN> value=<SPAN class="code-quote">&quot;a.value&quot;</SPAN>/&gt;
+        <SPAN class="code-tag">&lt;/provides&gt;</SPAN>
+        ...
+    <SPAN class="code-tag">&lt;/handler&gt;</SPAN>
+<SPAN class="code-tag">&lt;/ipojo&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P><EM>Note :</EM> In order to use iPOJO annotations processing, the namespace must be a valid package name and the name must be a valid annotation name (without the '@'). Refer to the <A href="#Howtowriteyourownhandler-annotations">annotations</A> section.</P>
+
+<P><EM>Hint :</EM> It is a good idea to provide a documented XML schema description (XSD) with your handler to help users to configure your handler and to validate their configurations. Refer to the <A href="#Howtowriteyourownhandler-xsd">xsd</A> section.</P>
+
+<H3><A name="Howtowriteyourownhandler-Handlerlifecycle"></A>Handler lifecycle </H3>
+<P>A handler lifecycle is composed of four different states.</P>
+
+<P><SPAN class="image-wrap" style=""><IMG src="how-to-write-your-own-handler.data/Handler-Lifecycle.png" style="border: 0px solid black"></SPAN></P>
+
+<UL>
+	<LI>First, when iPOJO parses the <TT>metadata.xml</TT> of a bundle, it detects that a certain component type use your handler (using XML qualified names, see the following &igrave;Using your handler&icirc; section). When it finds such a reference, it initializes the handler by calling the <TT>initializeComponentFactory()</TT> method. This method should be static but actually can't be so for some technical reasons. Consequently, a &igrave;mock&icirc; instance of the handler is created, the <TT>initializeComponentFactory()</TT> method is called, and this instance is destroyed. This method aims to check the validity of the component type description, avoiding starting invalid factories.If you override this method, you should here set up the component description (e.g. : common properties, exported services, ...) and check the handler configuration. The parameters passed to this method are the <TT>ComponentTypeDescription</TT> and the component's <TT>Metadata</TT> (i.e. : the structure of the component type declaration).</LI>
+	<LI>Once your handler has been initialized, iPOJO configures it for each created instance of the using components. The <TT>ComponentTypeDescription</TT> and the instance specific properties are passed to the <TT>configure()</TT> method of your handler.This method is mandatory so you have to implement it. Here you should check the handler configuration (if not already done in the <TT>initializeComponentFactory()</TT> method) and configure the handler with given instance specific properties.</LI>
+	<LI>Then, iPOJO starts the handler, following the component instance lifecycle, by calling the <TT>start()</TT> method. You have to put in this method the activation code of your handler. A freshly started handler is by default in an active state (if all its used handlers, like required services, are in an active state).</LI>
+	<LI>Once started, the handler state can be either in a valid or in an invalid state, depending on its used handlers (a handler is an iPOJO component, so it can depend on other handlers, like service dependencies, provided services, ... See the &igrave;Handler extends Component&icirc; section). The validity of your handler depends on used handlers status, but it also can be changed in your handler code by using the <TT>setValidity()</TT> method.</LI>
+	<LI>Finally, when the component instance is stopped (generally just before being destroyed), the stop method of the handler is called. Place here the inactivation code of your handler.</LI>
+</UL>
+
+
+<P><EM>Note :</EM> Keep in mind that the <TT>stop()</TT> method of your handler is called when the component instance is stopped (not necessarily destroyed). This instance can be restarted later, so the same instance of your handler must have to ability to restart too.</P>
+
+<H3><A name="Howtowriteyourownhandler-Readinghandlerandinstanceconfigurations"></A>Reading handler and instance configurations </H3>
+<P>Your handler need to read how it is configured in the using component type description. The configuration is written in the <TT>metadata.xml</TT> of the using bundle, but is passed to the <TT>initializeComponentFactory()</TT> and <TT>configure()</TT> methods as an <TT>Element</TT> object.</P>
+
+<P>The <TT>Element</TT> type (placed in the <TT>org.apache.felix.ipojo.metadata package</TT>), coupled with the <TT>Attribute</TT> type, is used to retrieve the structure and the content of the component configuration. The <TT>Element</TT> parameter, passed to the initialization and configuration methods, represents the root of the component type description (i.e. the root of the tree is the <TT>component</TT> XML tag).</P>
+
+<P>Several methods allows to browse the entire configuration from the root <TT>Element</TT> :</P>
+
+<UL>
+	<LI>The <TT><B>getElement()</B></TT> methods let you access the content of an <TT>Element</TT> (i.e. the children elements)</LI>
+	<LI>The <TT><B>getAttribute()</B></TT> methods allows you to access the attributes of an <TT>Element</TT>.</LI>
+	<LI>The <TT><B>containsElement()</B></TT> and <TT><B>containsAttribute()</B></TT> methods test the presence of a child-element or an attribute in an <TT>Element</TT>.</LI>
+</UL>
+
+
+<P><EM>Note :</EM> As described in the <A href="#Howtowriteyourownhandler-description">description</A> section, a name and a namespace are associated to each handler. To safely retrieve the configuration of this handler from the component metadata, you can take inspiration from the following snippet (the <TT>componentMetadata</TT> variable is the component root <TT>Element</TT> passed to the <TT>initializeComponentFactory()</TT> and <TT>configure()</TT> methods) :</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ Element[] handlerConfig = 
+           componentMetadata.getElements(<SPAN class="code-quote">&quot;HandlerName&quot;</SPAN>,
+                               <SPAN class="code-quote">&quot;the.namespace.of.your.handler&quot;</SPAN>);
+</PRE>
+</DIV></DIV>
+
+<P>You will also need to read specific instance configuration (properties defined in the <TT>instance</TT> XML tag). The instance properties are directly passed, as a <TT>Dictionary,</TT> to the <TT>configure()</TT> method. With these properties, you can easily allow instances to override some component fixed configuration.</P>
+
+<H3><A name="Howtowriteyourownhandler-InteractingwiththePOJO"></A>Interacting with the POJO </H3>
+<P>One of the most interesting features of an handler is the ability to interact with the component's POJO. Indeed, you can intercept method calls and returns, inject values in the POJO's fields...</P>
+
+<P>The <TT>getPojoMetadata()</TT> method of the PrimitiveHandler class lets you access the structure of the POJO (represented by the <TT>PojoMetadata</TT> type) without having to use (slow) reflection. It allows you to list all fields and methods of the POJO, and get informations about implemented interfaces and the super-class. The <TT>PojoMetadata</TT> class implements the following operations :</P>
+
+<UL>
+	<LI>The <TT><B>getInterfaces()</B></TT> method returns the list of implemented interfaces, while the <TT><B>isInterfaceImplemented()</B></TT> methods test if a given interface is implemented by the POJO.</LI>
+	<LI>The <TT><B>getSuperClass()</B></TT> method returns the name of the class extended by the POJO (or <TT>null</TT> instead of <TT>java.lang.Object</TT>).</LI>
+	<LI>The <TT><B>getField()</B></TT> methods lets you access the fields of the POJO. The returned object is a <TT>FieldMetadata</TT> that provides informations about a particular field inside the POJO.</LI>
+	<LI>The <TT><B>getMethod()</B></TT> methods lets you access the methods of the POJO. The returned object is a <TT>MethodMetadata</TT> that provides informations about a particular method in the POJO.</LI>
+</UL>
+
+
+<P>Once you've retrieved informations about the POJO structure, you can interact with it, via the <TT>InstanceManager</TT>, accessible in your handler by the <TT>getInstanceManager()</TT> method. It allows you to register interceptors, that are called before and after POJO method calls or field accesses.</P>
+
+<P><EM>Note :</EM> The InstanceManager manages the component instance attached to your handler instance. Thus, it can't be available in the <TT>initializeComponentFactory()</TT> because this method is run before the creation of any component instance.</P>
+
+<P>You need to implement some of the following methods to intercept fields accesses :</P>
+
+<UL>
+	<LI>The <TT>void <B>onSet</B>(Object pojo, String fieldName, Object value)</TT> method: This method is called each time a field of the POJO is assigned. The first parameter is the instance of the concerned POJO, the second is the name of the accessed field and the third is the value assigned to the POJO's field. If the field type is a primitive type, this method receives the boxed object.</LI>
+	<LI>The <TT>Object <B>onGet</B>(Object pojo, String fieldName, Object value)</TT> method : This method is called each time a field of the POJO is read. The first parameter is the instance of the concerned POJO, the second is the name of the accessed field and the third is the actual value of the POJO's field. If the field type is a primitive type, this method receives the boxed object. The returned object is the value the intercepted read process will return. It's the standard way to inject a value in the field : returning a specific object whatever the field really contains.</LI>
+</UL>
+
+
+<P>You need to implements some of the following methods to intercept methods accesses. When these methods are called, the first parameter is the POJO's instance on which the intercepted method is called and the second parameter contains the descriptor of the called method.</P>
+
+<UL>
+	<LI>The <TT>void <B>onEntry</B>(Object pojo, Method method, Object[] args)</TT> method: This method is called before the execution of an intercepted method. The third parameter is the list of parameters with which the method have been called. The method is executed just after the execution of the <TT>onEntry()</TT> callback.</LI>
+	<LI>The <TT>void <B>onExit</B>(Object pojo, Method method, Object returnedObj)</TT> method: This method is called right after the successful execution of an intercepted method. The third parameter is the value returned by the method (or <TT>null</TT> if the method return type is <TT>void</TT>). This value must not be modified.</LI>
+	<LI>The <TT>void <B>onError</B>(Object pojo, Method method, Throwable throwable)</TT> method: This method is called right after the unexpected return of an intercepted method (i.e. when an uncaught exception occurred). The third parameter is the thrown object that caused the method termination.</LI>
+	<LI>The <TT>void <B>onFinally</B>(Object pojo, Method method)</TT> method: This method is called after the termination of an intercepted method (expected or not), after the call of the <TT>onExit()</TT> or <TT>onError()</TT> callback.</LI>
+</UL>
+
+
+<P><EM>Warning :</EM> The <TT>InstanceManager</TT> has to know your handler wants to intercept fields or methods access, otherwise the implemented callbacks won't be called. Thus you need to register each field and method you want to intercept, so the <TT>InstanceManager</TT> will call the appropriated callbacks when the specified field or method is accessed :</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+ getInstanceManager().register(anInterestingFieldMetadata, <SPAN class="code-keyword">this</SPAN>);
+ ...
+ getInstanceManager().register(anInterestingMethodMetadata, <SPAN class="code-keyword">this</SPAN>);
+ ...
+</PRE>
+</DIV></DIV>
+
+<P><EM>Note :</EM> The <TT>PrimitiveHandler</TT> abstract class implements the <TT>FieldInterceptor</TT> and <TT>MethodInterceptor</TT> interfaces, which declares the methods described just above. You can create your own interceptor class (implementing one or both of these interfaces) and give it to the <TT>InstanceManager</TT> register method instead of the handler object itself.</P>
+
+<H3><A name="Howtowriteyourownhandler-Usingyourhandler"></A>Using your handler </H3>
+<P>Once your handler has been declared, you can use it in iPOJO components. To do so, you first have to be bound to your handler's namespace (using standard XML namespace declaration). Then you can configure the handler in your components type description. An example of bundle's <TT>metadata.xml</TT> declaring components using the handler is shown hereafter :</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;ipojo <SPAN class="code-keyword">xmlns:your-shortcut</SPAN>=<SPAN class="code-quote">&quot;the.namespace.of.your.handler&quot;</SPAN>&gt;</SPAN>
+    ...
+    <SPAN class="code-tag">&lt;component className=<SPAN class="code-quote">&quot;your.component.class&quot;</SPAN>&gt;</SPAN>
+        ...
+        <SPAN class="code-tag">&lt;your-shortcut:HandlerName param1=<SPAN class="code-quote">&quot;value1&quot;</SPAN> ...&gt;</SPAN>
+            &lt;!-- 
+            Configuration of your handler for 
+            this component type
+             --&gt;
+        <SPAN class="code-tag">&lt;/your-shortcut{noformat}:HandlerName&gt;</SPAN>
+        ...
+    <SPAN class="code-tag">&lt;/component&gt;</SPAN>
+    ...
+<SPAN class="code-tag">&lt;/ipojo&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<P>The remainder of this document describes two examples of handlers:</P>
+<UL>
+	<LI>A log handler logging messages in the OSGi Log Service</LI>
+	<LI>A properties handler reading a property files to configure POJO field</LI>
+</UL>
+
+
+<H2><A name="Howtowriteyourownhandler-LogHandlerexample"></A>Log Handler example</H2>
+<P>This section describes how to create a simple handler. This handler logs a message in the <EM>OSGi Log Service</EM> (if present) when the component instance state changes. The code source of this handler is downloadable <A href="http://people.apache.org/~clement/ipojo/tutorials/handler/loghandler.zip" class="external-link" rel="nofollow">here</A>.</P>
+
+<H3><A name="Howtowriteyourownhandler-Handlermetadata"></A>Handler metadata</H3>
+<P>The handler namespace is <TT>&quot;org.apache.felix.ipojo.log.handler.LogHandler&quot;</TT>. It is also the name of the handler implementation class. You can note that the handler has an optional dependency on a OSGi log service. If no log services are found, a default implementation is used instead.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;ipojo&gt;</SPAN>
+    <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- Declare the handler --&gt;</SPAN></SPAN>
+    &lt;handler 
+        classname=<SPAN class="code-quote">&quot;org.apache.felix.ipojo.handler.log.LogHandler&quot;</SPAN>  
+        name=<SPAN class="code-quote">&quot;log&quot;</SPAN>  
+        namespace=<SPAN class="code-quote">&quot;org.apache.felix.ipojo.log.handler.LogHandler&quot;</SPAN> &gt;
+        <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- The log service dependency --&gt;</SPAN></SPAN>
+        &lt;requires field=<SPAN class="code-quote">&quot;m_log&quot;</SPAN>  optional=<SPAN class="code-quote">&quot;true&quot;</SPAN>  
+        default-implementation=
+         <SPAN class="code-quote">&quot;org.apache.felix.ipojo.handler.log.PrimitiveLogService&quot;</SPAN>/&gt;
+    <SPAN class="code-tag">&lt;/handler&gt;</SPAN>
+<SPAN class="code-tag">&lt;/ipojo&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H3><A name="Howtowriteyourownhandler-Handlerimplementation"></A>Handler implementation </H3>
+<P>The handler needs to override following methods:</P>
+<UL>
+	<LI><TT>configure</TT> : to parse the metadata and load the properties file</LI>
+	<LI><TT>stateChanged</TT> : to log messages when the instance state changes.</LI>
+</UL>
+
+
+<H4><A name="Howtowriteyourownhandler-LogHandlerclass"></A>LogHandler class </H4>
+<P>The handler is implemented inside the <TT>LogHandler</TT> class in the <TT>org.apache.felix.ipojo.handler.log</TT> package. This class extends the <TT>org.apache.felix.ipojo.PrimitiveHandler</TT> class.<BR>
+The handler needs to be notified when component instances becomes valid or invalid, thus it implements the <TT>InstanceStateListener</TT> interface.</P>
+
+<H4><A name="Howtowriteyourownhandler-InitializeComponentFactoryMethod"></A>InitializeComponentFactory Method </H4>
+<P>This method parses and checks the component type metadata. The handler needs a log element from its namespace. According to the result, the configure method can throw an exception or parse the level attribute (to get the logging level).</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> void initializeComponentFactory(ComponentTypeDescription typeDesc,
+                                       Element metadata)
+                                      <SPAN class="code-keyword">throws</SPAN> ConfigurationException { 
+    
+    <SPAN class="code-comment">// Get all Namespace:log element from the metadata 
+</SPAN>    Element[] log_elements = metadata.getElements(<SPAN class="code-quote">&quot;log&quot;</SPAN>, NAMESPACE);  
+    <SPAN class="code-keyword">if</SPAN> (log elements.length == 1) { <SPAN class="code-comment">// There must be exactly one configuration element.
+</SPAN>        Element log_element = log_elements[0]; <SPAN class="code-comment">// There must be a level attribute 
+</SPAN>                                               <SPAN class="code-comment">// in the configuration element 
+</SPAN>        <SPAN class="code-keyword">if</SPAN>(log_element.containsAttribute(<SPAN class="code-quote">&quot;level&quot;</SPAN>)) { 
+            <SPAN class="code-object">String</SPAN> level = log_element.getAttribute(<SPAN class="code-quote">&quot;level&quot;</SPAN>); <SPAN class="code-comment">// Check the value of the 
+</SPAN>                                                              <SPAN class="code-comment">// level attribute
+</SPAN>            <SPAN class="code-keyword">if</SPAN> (level == <SPAN class="code-keyword">null</SPAN>) {
+                <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;No level attribute found in the configuration&quot;</SPAN>);
+            }
+            <SPAN class="code-keyword">if</SPAN> (!level.equalsIgnoreCase(<SPAN class="code-quote">&quot;info&quot;</SPAN>) &amp;&amp; 
+                !level.equalsIgnoreCase(<SPAN class="code-quote">&quot;warning&quot;</SPAN>) &amp;&amp; 
+                !level.equalsIgnoreCase(<SPAN class="code-quote">&quot;error&quot;</SPAN>)) {
+                <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;Bad log level specified, &quot;</SPAN>
+                + <SPAN class="code-quote">&quot;accepted values are : info, warning, error&quot;</SPAN>);
+            }
+        }
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H4><A name="Howtowriteyourownhandler-ConfigureMethod"></A>Configure Method </H4>
+<P>This method reads the component description and configures the handler. Then, the handler registers itself to the instance manager to be informed of the component's validity changes.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> void configure(Element metadata, Dictionary config)
+                                <SPAN class="code-keyword">throws</SPAN> ConfigurationException {
+   
+   <SPAN class="code-comment">// Get the configuration element
+</SPAN>   Element log_element = metadata.getElements(<SPAN class="code-quote">&quot;log&quot;</SPAN>, NAMESPACE)[0];
+   
+   <SPAN class="code-comment">// Get the level attribute's value
+</SPAN>   <SPAN class="code-object">String</SPAN> level = log_element.getAttribute(<SPAN class="code-quote">&quot;level&quot;</SPAN>);
+   
+   <SPAN class="code-comment">// Extract the log level
+</SPAN>   <SPAN class="code-keyword">if</SPAN>(level.equalsIgnoreCase(<SPAN class="code-quote">&quot;info&quot;</SPAN>)) { 
+       m_level = LogService.LOG_INFO;
+    } <SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN> (level.equalsIgnoreCase(<SPAN class="code-quote">&quot;warning&quot;</SPAN>)) { 
+       m_level = LogService.LOG_WARNING;
+    } <SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN> (level.equalsIgnoreCase(<SPAN class="code-quote">&quot;error&quot;</SPAN>)) { 
+       m_level = LogService.LOG_ERROR;
+    }
+    
+    m_manager = getInstanceManager(); 
+    m_context = m_manager.getContext();
+}
+</PRE>
+</DIV></DIV>
+
+<H4><A name="Howtowriteyourownhandler-StateChangedMethod"></A>StateChanged Method </H4>
+<P>This method is called by the instance manager to notify that the component instance state changes. The handler needs to log a message containing the new state.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> void stateChanged(<SPAN class="code-object">int</SPAN> state) {
+    <SPAN class="code-comment">// Log the state changed events
+</SPAN>    <SPAN class="code-keyword">if</SPAN> (state == InstanceManager.VALID) { 
+        m_log.log(m_level, <SPAN class="code-quote">&quot;The component instance &quot;</SPAN> 
+            + m_manager.getInstanceName() + <SPAN class="code-quote">&quot; becomes VALID&quot;</SPAN>); 
+    } <SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN> (state == InstanceManager.INVALID) { 
+        m_log.log(m_level, <SPAN class="code-quote">&quot;The component instance &quot;</SPAN> 
+            + m_manager.getInstanceName() + <SPAN class="code-quote">&quot; becomes INVALID&quot;</SPAN>); 
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H3><A name="Howtowriteyourownhandler-Handlerpackaging"></A>Handler packaging </H3>
+<P>This handler needs to be packaged inside an iPOJO bundle. The bundle will import the <TT>org.apache.felix.ipojo</TT>, <TT>org.osgi.framework</TT> and <TT>org.osgi.service.log</TT> packages.</P>
+
+<H3><A name="Howtowriteyourownhandler-Handlerusage"></A>Handler usage </H3>
+<P>To use this handler, a component needs to declare an <TT>org.apache.felix.ipojo.log.handler.LogHandler:log</TT> XML element, with a level attribute. This level attribute's value can be <TT>&quot;error&quot;</TT>, <TT>&quot;warning&quot;</TT> or <TT>&quot;info&quot;</TT>. Here is an usage example:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-xml">
+<SPAN class="code-tag">&lt;ipojo <SPAN class="code-keyword">xmlns:log</SPAN>=<SPAN class="code-quote">&quot;org.apache.felix.ipojo.log.handler.LogHandler&quot;</SPAN>&gt;</SPAN>
+     
+    <SPAN class="code-tag"><SPAN class="code-comment">&lt;!-- Declare a component using the LogHandler --&gt;</SPAN></SPAN>
+    <SPAN class="code-tag">&lt;component classname=<SPAN class="code-quote">&quot;...&quot;</SPAN>&gt;</SPAN>
+        ...
+        &lt;!-- Configuration of the LogHandler ?
+        <SPAN class="code-tag">&lt;log:log level=<SPAN class="code-quote">&quot;WARNING&quot;</SPAN>/&gt;</SPAN>
+     <SPAN class="code-tag">&lt;/component&gt;</SPAN>
+     ...
+<SPAN class="code-tag">&lt;/ipojo&gt;</SPAN>
+</PRE>
+</DIV></DIV>
+
+<H3><A name="Howtowriteyourownhandler-Download"></A>Download </H3>
+<P>The LogHandler is available <A href="http://people.apache.org/~clement/ipojo/tutorials/handler/loghandler.zip" class="external-link" rel="nofollow">here</A>. The archive file contains the handler implementation and a simple component using this handler.</P>
+
+<H2><A name="Howtowriteyourownhandler-PropertiesHandlerexample"></A>Properties Handler example </H2>
+<P>This section presents a second handler. This handler loads a property file containing field name and initial value. Then it injects and maintains these values inside POJO fields. In this example, only String values are managed.</P>
+
+<P>You can find the sources of this example handler in the <TT>example/handler/property</TT> directory of the iPOJO sources.</P>
+
+<P>This handler is always valid, so do not participate to the component instance lifecycle. Moreover, the handler does not need to be notified when the component instance state changed. But, it need to be notified when POJO fields need a value or change their value.</P>
+
+<H3><A name="Howtowriteyourownhandler-Handlerimplementation"></A>Handler implementation </H3>
+<P>The handler needs to override following methods:</P>
+
+<UL>
+	<LI><TT>configure</TT> : to parse the metadata and load the properties file</LI>
+	<LI><TT>stop</TT> : to store the properties</LI>
+	<LI><TT>onGet</TT> : to inject a values inside a field</LI>
+	<LI><TT>onSet</TT> : to obtain the new field value</LI>
+</UL>
+
+
+<H4><A name="Howtowriteyourownhandler-PropertiesHandlerclass"></A>PropertiesHandler class </H4>
+<P>The handler is implemented by the <TT>PropertiesHandler</TT> class present in the <TT>org.apache.felix.ipojo.properties.handler</TT> package. The class has several fields:</P>
+
+<UL>
+	<LI>The properties to maintain (<TT>m_properties</TT>)</LI>
+	<LI>The properties file name (<TT>m_file</TT>)</LI>
+</UL>
+
+
+<P><EM>Note:</EM> the file name is the absolute path on the local machine of the file.</P>
+
+<H4><A name="Howtowriteyourownhandler-ConfigureMethod"></A>Configure Method </H4>
+<P>This method begins by parsing the component type metadata. The handler needs a properties element from its namespace. According to the result, the configure method can return immediately or parse the file attribute (to get the properties file path). Then, it builds a field list (String array) to register to field notification. By registering with a field array, the handler will be a part of the component instance container and will be notified of field access.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> void configure(Element metadata, Dictionary configuration)
+                                             <SPAN class="code-keyword">throws</SPAN> ConfigurationException {
+    <SPAN class="code-comment">// Parse metadata to get &lt;properties file=<SPAN class="code-quote">&quot;$file&quot;</SPAN>/&gt;
+</SPAN>    <SPAN class="code-comment">// Get all example.handler.properties:properties element
+</SPAN>    Element[] elem = metadata.getElements(<SPAN class="code-quote">&quot;properties&quot;</SPAN>, NAMESPACE).   
+    <SPAN class="code-keyword">switch</SPAN> (elem.length) {
+        <SPAN class="code-keyword">case</SPAN> 0: <SPAN class="code-comment">// No matching element in metadata, <SPAN class="code-keyword">throw</SPAN> a configuration error. 
+</SPAN>            <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;No properties found&quot;</SPAN>);
+        <SPAN class="code-keyword">case</SPAN> 1: <SPAN class="code-comment">// One 'properties' found, get attributes
+</SPAN>            m_file = elem[0].getAttribute(<SPAN class="code-quote">&quot;file&quot;</SPAN>); 
+            <SPAN class="code-keyword">if</SPAN> (m_file == <SPAN class="code-keyword">null</SPAN>) { <SPAN class="code-comment">// <SPAN class="code-keyword">if</SPAN> file is <SPAN class="code-keyword">null</SPAN>, <SPAN class="code-keyword">throw</SPAN> a configuration error. 
+</SPAN>                <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;Malformed properties &quot;</SPAN> 
+                   + <SPAN class="code-quote">&quot; element : file attribute must be set&quot;</SPAN>);
+             } 
+             <SPAN class="code-keyword">break</SPAN>;
+         <SPAN class="code-keyword">default</SPAN>: <SPAN class="code-comment">// To simplify we handle only one properties element. 
+</SPAN>             <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;Only one properties element is supported&quot;</SPAN>); 
+     }  
+     <SPAN class="code-comment">// Look <SPAN class="code-keyword">if</SPAN> the instance configuration overrides file location : 
+</SPAN>     <SPAN class="code-object">String</SPAN> instanceFile = (<SPAN class="code-object">String</SPAN>) configuration.get(<SPAN class="code-quote">&quot;properties.file&quot;</SPAN>); 
+     <SPAN class="code-keyword">if</SPAN> (instanceFile != <SPAN class="code-keyword">null</SPAN>) {
+         m_file = instanceFile; 
+      }
+      <SPAN class="code-comment">// Load properties
+</SPAN>      <SPAN class="code-keyword">try</SPAN>{
+          loadProperties();
+      } <SPAN class="code-keyword">catch</SPAN>(IOException e) {
+          <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;Error when reading the &quot;</SPAN> 
+             +  m_file + <SPAN class="code-quote">&quot; file : &quot;</SPAN> + e.getMessage()); 
+      }
+      <SPAN class="code-comment">// Register fields 
+</SPAN>      <SPAN class="code-comment">// By convention, properties file entries are field name, 
+</SPAN>      <SPAN class="code-comment">// so looks <SPAN class="code-keyword">for</SPAN> each property to get field list.
+</SPAN>      <SPAN class="code-comment">//First get the Pojo Metadata metadata:
+</SPAN>      PojoMetadata pojoMeta = getPojoMetadata();
+      Enumeration e = m_properties.keys();
+      <SPAN class="code-keyword">while</SPAN>(e.hasMoreElements()) { 
+          <SPAN class="code-object">String</SPAN> field = (<SPAN class="code-object">String</SPAN>) e.nextElement();
+          FieldMetadata fm = pojoMeta.getField(field);
+          <SPAN class="code-keyword">if</SPAN>(fm==<SPAN class="code-keyword">null</SPAN>){
+              <SPAN class="code-comment">//The field does not exist
+</SPAN>              <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;The field &quot;</SPAN> + field + 
+                   <SPAN class="code-quote">&quot; is declared in the properties file but does not &quot;</SPAN> +
+                   <SPAN class="code-quote">&quot; exist in the pojo&quot;</SPAN>);
+          }
+          <SPAN class="code-comment">// Then check that the field is a <SPAN class="code-object">String</SPAN> field 
+</SPAN>          <SPAN class="code-keyword">if</SPAN> (!fm.getFieldType().equals(<SPAN class="code-object">String</SPAN>.class.getName())) { 
+              <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> ConfigurationException(<SPAN class="code-quote">&quot;The field &quot;</SPAN> + field + 
+                  <SPAN class="code-quote">&quot; exists in the pojo, but is not a <SPAN class="code-object">String</SPAN>&quot;</SPAN>); 
+          } 
+          <SPAN class="code-comment">// All checks are ok, register the interceptor. 
+</SPAN>          getInstanceManager().register(fm, <SPAN class="code-keyword">this</SPAN>);
+      }
+  }
+}
+</PRE>
+</DIV></DIV>
+
+<H4><A name="Howtowriteyourownhandler-Thestartandstopmethods"></A>The start and stop methods </H4>
+<P>The start method does nothing, but needs to be implemented.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> void start() {}
+</PRE>
+</DIV></DIV>
+
+<P>The stop method stores properties inside the properties file.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> void stop() { 
+    <SPAN class="code-keyword">try</SPAN> { 
+        saveProperties();
+    } <SPAN class="code-keyword">catch</SPAN> (IOException e) { 
+        <SPAN class="code-comment">// Log an error message by using the iPOJO logger 
+</SPAN>        error(<SPAN class="code-quote">&quot;Cannot read the file : &quot;</SPAN> + m_file, e); 
+    } 
+    m_properties = <SPAN class="code-keyword">null</SPAN>;
+}
+</PRE>
+</DIV></DIV>
+
+<H4><A name="Howtowriteyourownhandler-onGetandonSetmethods"></A>onGet and onSet methods </H4>
+<P>The onGet method is called when the POJO need a field value. When called, the method needs to return the stored value.The onSet method is called when the POJO modifies a field value. If the new value if null, the handler will remove this properties from the property list.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">Object</SPAN> onGet(<SPAN class="code-object">Object</SPAN> pojo, <SPAN class="code-object">String</SPAN> field, <SPAN class="code-object">Object</SPAN> o) { 
+    <SPAN class="code-comment">// When the pojo requires a value <SPAN class="code-keyword">for</SPAN> a managed field,
+</SPAN>    <SPAN class="code-comment">// <SPAN class="code-keyword">this</SPAN> method is invoked. 
+</SPAN>    <SPAN class="code-comment">// So, we have just to <SPAN class="code-keyword">return</SPAN> the stored value. 
+</SPAN>    <SPAN class="code-keyword">return</SPAN> m_properties.get(field);
+}
+
+<SPAN class="code-keyword">public</SPAN> void onSet(<SPAN class="code-object">Object</SPAN> pojo, <SPAN class="code-object">String</SPAN> field, <SPAN class="code-object">Object</SPAN> newvalue) { 
+    <SPAN class="code-comment">// When the pojo set a value to a managed field, 
+</SPAN>    <SPAN class="code-comment">// <SPAN class="code-keyword">this</SPAN> method is invoked. 
+</SPAN>    <SPAN class="code-comment">// So, we update the stored value. 
+</SPAN>    m_properties.put(field, newvalue);
+}
+</PRE>
+</DIV></DIV>
+
+<H3><A name="Howtowriteyourownhandler-Handlerpackaging"></A>Handler packaging </H3>
+<P>This handler needs to be inside a bundle importing the <TT>org.apache.felix.ipojo</TT> packages and exporting the <TT>org.apache.felix.ipojo.properties.handler</TT> package.</P>
+
+<H3><A name="Howtowriteyourownhandler-Handlerusage"></A>Handler usage </H3>
+<P>To use this handler, a component need to declare an <TT>Properties</TT> XML element in the <TT>org.apache.felix.ipojo.properties.handler</TT> namespace, with a <TT>file</TT> attribute indicating the absolute file path of the properties file.</P>
+
+<P><EM>Note :</EM> you need to escape '\' (anti-slash characters) in the file path name.</P>
+
+<H3><A name="Howtowriteyourownhandler-Download"></A>Download </H3>
+<P>The PropertiesHandler is available <A href="http://people.apache.org/~clement/ipojo/tutorials/handler/property-handler.zip" class="external-link" rel="nofollow">here</A>. The archive file contains the handler implementation and a simple component using this handler.</P>
+
+<H2><A name="Howtowriteyourownhandler-Advancedtopics"></A>Advanced topics </H2>
+<H3><A name="Howtowriteyourownhandler-Handlerreconfiguration"></A>Handler reconfiguration </H3>
+<P>iPOJO has the ability to reconfigure component instances while they are running. When instances are reconfigured, their used handler need to update their configuration (if they support such an operation). <BR>
+To do so, reconfigurable handlers must override the <TT>reconfigure()</TT> method, which notify the concerned handlers of the new instance configuration (represented as a <TT>Dictionary</TT>).</P>
+
+<H3><A name="Howtowriteyourownhandler-Describingyourhandler"></A>Describing your handler </H3>
+<P>Handlers have the possibility to describe their state, overriding the <TT>getDescription()</TT> method and the <TT>HandlerDescription</TT> class. <BR>
+By default, only the handler's name and validity are displayed in component instance's description (informations displayed by the (<TT>arch -instance an.instance.name</TT> command). The standard way to add description to your handler is shown hereafter :</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class YourHandler <SPAN class="code-keyword">extends</SPAN> PrimitiveHandler {  
+    ... 
+    <SPAN class="code-comment">// Method returning the handler description. 
+</SPAN>    <SPAN class="code-keyword">public</SPAN> HandlerDescription getDescription() { 
+        <SPAN class="code-keyword">return</SPAN> <SPAN class="code-keyword">new</SPAN> YourHandlerDescription(<SPAN class="code-keyword">this</SPAN>);
+    }
+    
+    ...
+    
+    <SPAN class="code-keyword">private</SPAN> class YourHandlerDescription <SPAN class="code-keyword">extends</SPAN> HandlerDescription {  
+        <SPAN class="code-keyword">public</SPAN> Description(PrimitiveHandler h) { <SPAN class="code-keyword">super</SPAN>(h); }  
+        
+        <SPAN class="code-comment">// Method returning the custom description of <SPAN class="code-keyword">this</SPAN> handler. 
+</SPAN>        <SPAN class="code-keyword">public</SPAN> Element getHandlerInfo() { 
+             <SPAN class="code-comment">// Needed to get the root description element. 
+</SPAN>             Element elem = <SPAN class="code-keyword">super</SPAN>.getHandlerInfo();  
+             <SPAN class="code-comment">// Add here attributes and sub-elements 
+</SPAN>             <SPAN class="code-comment">// into the root description element. 
+</SPAN>             <SPAN class="code-comment">// Example : elem.addAttribute(<SPAN class="code-keyword">new</SPAN> Attribute(<SPAN class="code-quote">&quot;param&quot;</SPAN>, <SPAN class="code-quote">&quot;value&quot;</SPAN>)); 
+</SPAN>             Element subElement = <SPAN class="code-keyword">new</SPAN> Element(<SPAN class="code-quote">&quot;subElement&quot;</SPAN>, &quot;&quot;); 
+             subElement.addAttribute(<SPAN class="code-keyword">new</SPAN> Attribute(<SPAN class="code-quote">&quot;subParam&quot;</SPAN>, <SPAN class="code-quote">&quot;subValue&quot;</SPAN>)); 
+             elem.addElement(subElement);
+             ...
+             <SPAN class="code-keyword">return</SPAN> elem; 
+       }
+   }
+}
+</PRE>
+</DIV></DIV>
+<P><A name="Howtowriteyourownhandler-annotations"></A> </P>
+<H2><A name="Howtowriteyourownhandler-Handler%27sannotations"></A>Handler's annotations </H2>
+<P>Your handle can also provide annotations. Annotations will allows users to configure the Handler from the source code (avoiding XML edition). iPOJO supports annotation of external handlers. Indeed, it detects annotations and re-creates the <TT>Element-Attribute</TT> structure.<BR>
+So, first, external Handler annotations <B>MUST</B> follow some principles:</P>
+<UL>
+	<LI>The annotation package must be the Handler namespace</LI>
+	<LI>The annotation name must be the Handler name</LI>
+	<LI>The package must contain either the 'ipojo' or the 'handler' word.</LI>
+</UL>
+
+
+<P>So, when iPOJO detects the annotation, an Element is created with the annotation package as the <TT>Element namespace</TT> and the annotation name as the <TT>Element name</TT>.<BR>
+Then, 'scalar' annotation attributes are mapped to Attribute. Sub-annotations (annotation attribute) are mapped to sub-elements. For example, the annotation for the property handler is:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> org.apache.felix.ipojo.properties.handler;
+
+<SPAN class="code-keyword">import</SPAN> java.lang.annotation.ElementType;
+<SPAN class="code-keyword">import</SPAN> java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+<SPAN class="code-keyword">public</SPAN> @<SPAN class="code-keyword">interface</SPAN> Properties {
+    
+    <SPAN class="code-object">String</SPAN> file();
+
+}
+</PRE>
+</DIV></DIV>
+<P>This annotations is put on the <TT>class</TT> element, and allows setting the property file:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+@Component
+@Properties(file=<SPAN class="code-quote">&quot;/Users/clement/felix/properties/i1.properties&quot;</SPAN>)
+<SPAN class="code-keyword">public</SPAN> class Example {
+    ...
+}
+</PRE>
+</DIV></DIV>
+
+<P>However, your handler can also provide several annotations to represent Element and sub-elements. Your annotations can also be placed on different code elements (Type, Field, Method). In this case, to recreate the Element/Sub-Element hierarchy, iPOJO processes as following:</P>
+<UL>
+	<LI>The first annotation of a package <TT>P</TT> is processed by creating the root Element (component sub-element).</LI>
+	<LI>All others annotations of the package <TT>P</TT> are processed as sub-element of the previously created Element.</LI>
+</UL>
+
+
+<P>For example, the following code:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.annotations.Component;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.handlers.jmx.Config;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.handlers.jmx.Method;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.ipojo.handlers.jmx.Property;
+
+@Component
+@Config(domain=<SPAN class="code-quote">&quot;my-domain&quot;</SPAN>, usesMOSGi=<SPAN class="code-keyword">false</SPAN>) <SPAN class="code-comment">// External handler annotation
+</SPAN><SPAN class="code-keyword">public</SPAN> class JMXSimple {
+
+    @Property(name=<SPAN class="code-quote">&quot;prop&quot;</SPAN>, notification=<SPAN class="code-keyword">true</SPAN>, rights=<SPAN class="code-quote">&quot;w&quot;</SPAN>) <SPAN class="code-comment">//External handler annotation
+</SPAN>    <SPAN class="code-object">String</SPAN> m_foo;
+    
+    @Method(description=<SPAN class="code-quote">&quot;set the foo prop&quot;</SPAN>) <SPAN class="code-comment">//External handler annotation
+</SPAN>    <SPAN class="code-keyword">public</SPAN> void setFoo(<SPAN class="code-object">String</SPAN> mes) {
+        <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Set foo to &quot;</SPAN> + mes);
+        m_foo = mes;
+    }
+    
+    @Method(description=<SPAN class="code-quote">&quot;get the foo prop&quot;</SPAN>) <SPAN class="code-comment">//External handler annotation
+</SPAN>    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> getFoo() {
+        <SPAN class="code-keyword">return</SPAN> m_foo;
+    }
+}
+</PRE>
+</DIV></DIV>
+<P>will be translated to:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<DIV class="error"><SPAN class="error">Unable to find source-code formatter for language: shell.</SPAN> Available languages are: actionscript, html, java, javascript, none, sql, xhtml, xml</DIV><PRE>
+component { 
+    $classname=<SPAN class="code-quote">&quot;org.apache.felix.ipojo.test.scenarios.component.jmx.JMXSimple&quot;</SPAN>
+    $<SPAN class="code-keyword">public</SPAN>=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">true</SPAN>&quot;</SPAN> $name=<SPAN class="code-quote">&quot;org.apache.felix.ipojo.test.scenarios.component.jmx.JMXSimple&quot;</SPAN>
+    org.apache.felix.ipojo.handlers.jmx:config { 
+        $usesmosgi=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">false</SPAN>&quot;</SPAN> $domain=<SPAN class="code-quote">&quot;my-domain&quot;</SPAN> 
+        org.apache.felix.ipojo.handlers.jmx:property { 
+            $rights=<SPAN class="code-quote">&quot;w&quot;</SPAN> $notification=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">true</SPAN>&quot;</SPAN> $field=<SPAN class="code-quote">&quot;m_foo&quot;</SPAN> $name=<SPAN class="code-quote">&quot;prop&quot;</SPAN> }
+        org.apache.felix.ipojo.handlers.jmx:method { 
+            $description=<SPAN class="code-quote">&quot;set the foo prop&quot;</SPAN> $method=<SPAN class="code-quote">&quot;setFoo&quot;</SPAN> }
+        org.apache.felix.ipojo.handlers.jmx:method { 
+            $description=<SPAN class="code-quote">&quot;get the foo prop&quot;</SPAN> $method=<SPAN class="code-quote">&quot;getFoo&quot;</SPAN> }
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<P><B>Note:</B> To customize this hierarchy, you can also use the <TT>id/parent</TT> annotation attributse. The id attribute is used to refer to an Element. An annotation with a <TT>parent</TT> (targeting an <TT>id</TT>) attribute will be processed as a sub-element of the Element identified by the given <TT>id</TT>.</P>
+
+<P><A name="Howtowriteyourownhandler-xsd"></A> </P>
+<H2><A name="Howtowriteyourownhandler-Handler%27sXSD"></A>Handler's XSD </H2>
+<P>Coming soon...</P>
+
+<H2><A name="Howtowriteyourownhandler-Conclusion"></A>Conclusion </H2>
+<P>In this document, we present how-to develop handler for your components. We describe two small examples : a log handler and a properties handler. These handlers are plugged on (primitive) instance. However, it is possible to extends <TT>CompositeHandler</TT> too to customize the composition model.</P>
+
+<P>If you develop handler and you want to share it, feel free to contact us by sending a mail on the Felix mailing list.</P>
+
+<P><BR class="atl-forced-newline"></P>
+
+ </DIV>
+        <IMG src="http://felix.apache.org/ipojo/site/footer.png" class="footer">
+</DIV>
+
+<SCRIPT type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</SCRIPT>
+<SCRIPT type="text/javascript">
+try{
+var pageTracker = _gat._getTracker("UA-1518442-4");
+pageTracker._trackPageview();
+} catch(err) {}
+</SCRIPT>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by clement.escoffier on 2009-12-27 09:09:14.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

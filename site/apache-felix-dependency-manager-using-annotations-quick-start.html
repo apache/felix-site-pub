@@ -1,0 +1,167 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Dependency Manager - Using Annotations - Quick Start</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixDependencyManager-UsingAnnotations-QuickStart-QuickStart"></A>Quick Start</H1>
+
+<P>This sections presents a simple &quot;Hello World&quot; component defined using annotations, and also explains how to build the bundle using either Bnd, Ant, or Maven.</P>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-QuickStart-HelloWorldComponent"></A>Hello World Component</H2>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">package</SPAN> org.apache.felix.dependencymanager.samples.annotation.hello;
+
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.dm.annotation.api.Component;
+<SPAN class="code-keyword">import</SPAN> org.apache.felix.dm.annotation.api.Start;
+
+@Component
+<SPAN class="code-keyword">public</SPAN> class HelloWorld {
+    @Start
+    <SPAN class="code-keyword">public</SPAN> void activate() {
+       <SPAN class="code-object">System</SPAN>.out.println(<SPAN class="code-quote">&quot;Hello world !&quot;</SPAN>);
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-QuickStart-CompilingwithBnd%3A"></A>Compiling with Bnd:</H2>
+
+<P>The annotations must be processed at compilation phase and you have to use a special Bnd plugin (declared using the &quot;-plugin&quot; bnd directive):</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>Bundle-Name: Hello World Using Dependency Manager Annotations
+Bundle-SymbolicName: org.apache.felix.dependencymanager.samples.annotation.hello
+Import-Package: *
+Private-Package: org.apache.felix.dependencymanager.samples.annotation.hello
+-plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=warn
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-QuickStart-CompilingwithAnt%3A"></A>Compiling with Ant:</H2>
+
+<P>Since Bnd provides a Ant task, you can use the bnd directives above with the following build.xml:<BR>
+(it is assumed that directives.bnd, bnd.jar, json-20070829.jar and org.apache.felix.dependencymanager.annotation.jar are in the current directory)</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;project name=&quot;TestDM&quot; default=&quot;bnd&quot;&gt;
+	&lt;property name=&quot;bnd&quot; value=&quot;bnd.jar&quot; /&gt;
+	&lt;property name=&quot;json&quot; value=&quot;json-20070829.jar&quot; /&gt;
+	&lt;property name=&quot;dmannot&quot; value=&quot;org.apache.felix.dependencymanager.annotation.jar&quot; /&gt;
+
+	&lt;target name=&quot;compile&quot;&gt;
+		&lt;delete dir=&quot;target/classes&quot; quiet=&quot;yes&quot; /&gt;
+		&lt;mkdir dir=&quot;target/classes&quot; /&gt;
+		&lt;javac srcdir=&quot;src/main/java&quot; destdir=&quot;target/classes&quot; classpath=&quot;${dmannot}&quot; /&gt;
+	&lt;/target&gt;
+
+	&lt;target name=&quot;bnd&quot; depends=&quot;compile&quot;&gt;
+		&lt;taskdef resource=&quot;aQute/bnd/ant/taskdef.properties&quot; classpath=&quot;${dmannot}:${bnd}:${json}&quot; /&gt;
+		&lt;bnd classpath=&quot;target/classes&quot; eclipse=&quot;false&quot; files=&quot;directives.bnd&quot; output=&quot;org.apache.felix.dependencymanager.samples.annotation.hello.jar&quot; /&gt;
+	&lt;/target&gt;
+&lt;/project&gt;
+</PRE>
+</DIV></DIV>
+
+<H2><A name="ApacheFelixDependencyManager-UsingAnnotations-QuickStart-CompilingwithMaven%3A"></A>Compiling with Maven:</H2>
+
+<P>When compiling with Maven, you have to use the Dependency Manager Maven annotation plugin:</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+	xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;
+	&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+	&lt;properties&gt;
+		&lt;osgi.version&gt;4.2.0&lt;/osgi.version&gt;
+	&lt;/properties&gt;
+	&lt;name&gt;Hello World Using Dependency Manager Annotations&lt;/name&gt;
+	&lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+	&lt;artifactId&gt;org.apache.felix.dependencymanager.samples.annotation.hello&lt;/artifactId&gt;
+	&lt;version&gt;3.0.0-SNAPSHOT&lt;/version&gt;
+	&lt;packaging&gt;bundle&lt;/packaging&gt;
+	&lt;dependencies&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;${pom.groupId}&lt;/groupId&gt;
+			&lt;artifactId&gt;org.apache.felix.dependencymanager.annotation&lt;/artifactId&gt;
+			&lt;version&gt;3.0.0&lt;/version&gt;
+		&lt;/dependency&gt;
+	&lt;/dependencies&gt;
+	&lt;build&gt;
+		&lt;plugins&gt;
+			&lt;plugin&gt;
+				&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+				&lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+				&lt;configuration&gt;
+					&lt;source&gt;1.5&lt;/source&gt;
+					&lt;target&gt;1.5&lt;/target&gt;
+				&lt;/configuration&gt;
+			&lt;/plugin&gt;
+			&lt;plugin&gt;
+				&lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+				&lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+				&lt;version&gt;2.3.4&lt;/version&gt;
+				&lt;extensions&gt;true&lt;/extensions&gt;
+				&lt;configuration&gt;
+					&lt;instructions&gt;
+						&lt;Bundle-Name&gt;Hello World Using Dependency Manager Annotations&lt;/Bundle-Name&gt;
+						&lt;Bundle-SymbolicName&gt;org.apache.felix.dependencymanager.samples.annotation.hello&lt;/Bundle-SymbolicName&gt;
+						&lt;Import-Package&gt;*&lt;/Import-Package&gt;
+						&lt;Private-Package&gt;org.apache.felix.dependencymanager.samples.annotation.hello&lt;/Private-Package&gt;
+					&lt;/instructions&gt;
+				&lt;/configuration&gt;
+			&lt;/plugin&gt;
+			&lt;plugin&gt;
+				&lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+				&lt;artifactId&gt;org.apache.felix.dependencymanager.annotation&lt;/artifactId&gt;
+				&lt;version&gt;3.0.0&lt;/version&gt;
+				&lt;executions&gt;
+					&lt;execution&gt;
+						&lt;goals&gt;
+							&lt;goal&gt;scan&lt;/goal&gt;
+						&lt;/goals&gt;
+						&lt;configuration&gt;
+							&lt;log&gt;info&lt;/log&gt;
+						&lt;/configuration&gt;
+					&lt;/execution&gt;
+				&lt;/executions&gt;
+			&lt;/plugin&gt;
+		&lt;/plugins&gt;
+	&lt;/build&gt;
+&lt;/project&gt;
+</PRE>
+</DIV></DIV>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by pderop on Thu May 12 17:44:36 EDT 2011
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

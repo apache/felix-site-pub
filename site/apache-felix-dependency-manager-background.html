@@ -1,0 +1,68 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Dependency Manager - Background</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H2><A name="ApacheFelixDependencyManager-Background-Background"></A>Background</H2>
+
+<P>In an OSGi framework, services are deployed using bundles and these bundles feature two types of dependencies: </P>
+<OL>
+	<LI>Package dependencies. A bundle can export a package which others import. These dependencies, although dynamic, are relatively easy to handle and the whole resolution process is handled by the OSGi framework for you.</LI>
+	<LI>Service dependencies. Services, implemented by components inside of bundles, can have their own life cycle within that of their containing bundle and therefore can be registered and unregistered at any time. Other components often depend on these services and need to deal with changes in their availability.</LI>
+</OL>
+
+
+<P>When you look at dependency management, there are two aspects you need to take into account: </P>
+
+<P>The first is managing software configurations. This means you need to manage the dependencies from a configuration standpoint. What you are managing are bundles, since those are the units of deployment. What you need to manage are the package and service dependencies between bundles. Package dependencies are always visible by examining the bundle manifest and when a bundle is installed the framework will try to resolve such dependencies before that bundle can even be started. Service dependencies are only optionally described in the manifest by a list of services a bundle might export as well as a list it might use (import). The words 'optionally' and 'might' already indicate that these aren't things we can depend on. Even worse, these keywords have by now been deprecated. Besides that, the framework doesn't have to perform any checks on these attributes.</P>
+
+<P>The second is managing service dependencies at runtime. As mentioned before, a service oriented architecture is dynamic by design, so your implementation should be able to deal with this. Bundles can start in any order and any service can go away or be replaced by a different implementation at any point in time. OSGi itself offers basic assistance for tracking services. You can track them yourself by registering as a service listener. A slightly more advanced way is to create a service tracker, which you can subsequently query, or have it notify you on changes. All of these are too low-level to be good building blocks for developers.</P>
+
+<P>In real implementations, you are probably going to track multiple services. Using service trackers in such a scenario has the tendency to result in dependency logic that is entangled in the implementation instead of being expressed in a declarative way. Using a declarative way to specify dependencies has clear advantages when it comes to monitoring and managing them, a task that becomes more and more important in modern, federated, service oriented environments.</P>
+
+<P>The Dependency Manager provides you with the right building blocks to declaratively specify dependencies using a straightforward Java API that is easy to maintain and refactor.</P>
+
+<H3><A name="ApacheFelixDependencyManager-Background-DesignGoals"></A>Design Goals</H3>
+
+<P>The goals that drove the design of the dependency manager are:</P>
+<UL>
+	<LI>Provide a clean separation between a component implementation and the &quot;glue&quot; that binds it to the OSGi framework. The component implementation should not have to contain any OSGi specific code. In other words, it should be a POJO (Plain Old Java Object).</LI>
+	<LI>Minimize the amount of code that needs to be written. The specification and management of dependencies should be automated as much as possible, whilst still providing enough flexibility to customize the system.</LI>
+	<LI>Be extensible. Even though the core bundle provides a lot of different dependencies already, you should be able to add your own types of dependencies easily.</LI>
+	<LI>Easy to monitor and debug. Being a dynamic system, it's important to be able to see what the state of all components and dependencies are at any point in time.</LI>
+	<LI>Supporting powerful high level design patterns. When building real-world applications, more complex patterns need to be used, such as aspects and adapters. Support for these needs to be built into the core.</LI>
+</UL>
+
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by marrs on 2010-09-08 16:43:42.0
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

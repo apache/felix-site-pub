@@ -1,0 +1,90 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Extending SCR Annotations</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+
+
+<P><B>Note:</B> This page documents functionality available with the SCR Generator 1.0.0 release providing the declaration file generation mechanism for the Maven SCR Plugin 1.6.0 (and newer) and the SCR Ant Task 1.0.0 (and newer).</P>
+
+<P>The SCR Annotations library has been updated in version 1.4.0 to comply with the rules described here. As such the this library may be used as basis to learn more about providing pluggbale Java 5 annotations for the Maven SCR Plugin and SCR Ant Task. The source code for the SCR Annotations library is available from the Apache Felix SVN repository at <A href="http://svn.apache.org/repos/asf/felix/trunk/scrplugin/annotations" class="external-link" rel="nofollow">annotations</A>.</P>
+
+<P>This page outlines the required steps to implement your own extended Java 5 annotations:</P>
+
+<OL>
+	<LI>Define the Annotations</LI>
+	<LI>Define an <TT>AnnotationTagProvider</TT></LI>
+	<LI>Register the <TT>AnnotationsTagProvider</TT></LI>
+</OL>
+
+
+<P>It is interesting to note, that the SCR Annotations 1.4.0 library providing the default and Sling Java 5 tags for the SCR Generator by itself is already implemented according to the rules outlined herein. This means, that actually the SCR Generator does not have any built-in annotations but only provides the framework to allow for the definition of Java 5 Annotations.</P>
+
+
+<H2><A name="ExtendingSCRAnnotations-DefinetheAnnotations"></A>Define the Annotations</H2>
+
+<P>To start with you will define Java 5 Annotations to suit your application needs. The <A href="http://svn.apache.org/repos/asf/felix/trunk/scrplugin/annotations/src/main/java/org/apache/felix/scr/annotations/sling" class="external-link" rel="nofollow"><TT>org.apache.felix.scr.annotations.sling</TT></A> package provides three sample annotations:</P>
+
+<UL>
+	<LI><TT>SlingServlet</TT> &ndash; used to declare a <TT>javax.servlet.Servlet</TT> service component with the appropriate service registration properties to configure the service as an Apache Sling Servlet.</LI>
+	<LI><TT>SlingFilter</TT> &ndash; used to declare a <TT>javax.servlet.Filter</TT> service component with the appropriate service registration properties to configure the service as a Filter used by the Apache Sling Main Servlet.</LI>
+	<LI><TT>SlingFilterScope</TT> &ndash; helper annotation to define the <TT>filter.scope</TT> service registration property for Filters defined with the <TT>SlingFilter</TT> annotation.</LI>
+</UL>
+
+
+<P>These annotations will be used by the application programmer to annotate his/her classes for use with Declarative Services.</P>
+
+<P>It is suggested to maintain the Anntoations in their own package.</P>
+
+
+<H2><A name="ExtendingSCRAnnotations-Definean%7B%7BAnnotationTagProvider%7D%7D"></A>Define an <TT>AnnotationTagProvider</TT></H2>
+
+<P>The <A href="http://svn.apache.org/repos/asf/felix/trunk/scrplugin/generator/src/main/java/org/apache/felix/scrplugin/tags/annotation/AnnotationTagProvider.java" class="external-link" rel="nofollow"><TT>AnnotationTagProvider</TT></A> interface defines the interface of a helper class which is used to convert Java 5 Annotation data into internal data structures to be then used as the basis for the generation of the descriptor files.</P>
+
+<P>Implementations of this interface are fed with the annotations and are expected to return a list of objects representing the actual information to be processed into the descriptor files. If a processor does not understand a particular annotations an empty list is just returned.</P>
+
+<P>The objects returned by the <TT>AnnotationTagProvider</TT> must implement the <A href="http://svn.apache.org/repos/asf/felix/trunk/scrplugin/generator/src/main/java/org/apache/felix/scrplugin/tags/JavaTag.java" class="external-link" rel="nofollow"><TT>JavaTag</TT></A> interface. To ease the implementation the <A href="http://svn.apache.org/repos/asf/felix/trunk/scrplugin/generator/src/main/java/org/apache/felix/scrplugin/tags/annotation/AbstractTag.java" class="external-link" rel="nofollow"><TT>AbstractTag</TT></A> may be used as a base class.</P>
+
+<P>The <A href="http://svn.apache.org/repos/asf/felix/trunk/scrplugin/annotations/src/main/java/org/apache/felix/scrplugin/tags/annotations/sling" class="external-link" rel="nofollow"><TT>org.apache.felix.scrplugin.tags.annotation.sling</TT></A> package contains the <TT>AnnotationTagProvider</TT> supporting Sling Annotations mentioned above as well as corresponding <TT>JavaTag</TT> implementations (mostly extending from <TT>AbstractTag</TT>).</P>
+
+
+<H2><A name="ExtendingSCRAnnotations-Registerthe%7B%7BAnnotationsTagProvider%7D%7D"></A>Register the <TT>AnnotationsTagProvider</TT></H2>
+
+<P>To finally make the <TT>AnnotationTagProvider</TT> implementations available to the SCR Generator (and thus the Maven SCR Plugin and/or SCR Ant Task) the fully qualified class names of these implementations must be listed in an <A href="http://svn.apache.org/repos/asf/felix/trunk/scrplugin/annotations/src/main/resources/META-INF/services/org.apache.felix.scrplugin.tags.annotation.AnnotationTagProvider" class="external-link" rel="nofollow"><TT>META-INF/services/org.apache.felix.scrplugin.tags.annotation.AnnotationTagProvider</TT></A> file.</P>
+
+<P>The classes listed in this file will automatically be picked up by the SCR Generator from the library placed on the build class path and thus enable support for the respective annotations.</P>
+
+<P>Again, refer to the actual implementation in the SCR Annotations library referred to above.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by fmeschbe on Mon May 21 06:07:30 EDT 2012
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>

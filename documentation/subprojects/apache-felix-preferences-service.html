@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Preferences Service</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/apache-felix-preferences-service.html" target="felix_cwiki">/site/apache-felix-preferences-service.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Apache Felix Preferences Service</h1>
+      <h1 id="apache-felix-preferences-service">Apache Felix Preferences Service</h1>
+<p>The OSGi service compendium specification defines a general purpose service to store data persistently, so that they can survive the restart of a bundle or of the whole OSGi container. This service is not intended to be a full-featured persistence layer for OSGi bundles, rather a simple tool to store informations that can be used in various stages of the bundle lifecycle.</p>
+<p>The service supports the storage of scalar values (boolan, double, float, int, long and strings) and byte arrays, arranged in a hierarchical model. While there is no limitations on the size of data objects stored, the specification clearly states that the Preferences Service is intended to store only small objects.</p>
+<p>The entry point to the Preferences Service API is the <em>PreferencesService</em> interface. It provides access to different roots of Preferences trees:
+<em> a </em>system root<em> 
+</em> any number of <em>user roots</em>
+The <em>user root</em> for a specific user is automatically created the first time it is requested.</p>
+<p>User roots and system root are bundle specific, and cannot be accessed by other bundles. </p>
+<h2 id="accessing-the-preferences-service">Accessing the Preferences Service</h2>
+<p>If the OSGi platform provides a Preferences Service, getting a reference to it is as simple as doing a normal OSGi service lookup:</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
+<span class="p">{</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> 
+    <span class="p">{</span>   
+        <span class="n">ServiceReference</span> <span class="nb">ref</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">(</span><span class="n">PreferencesService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">());</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">ref</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">PreferencesService</span> <span class="n">service</span> <span class="o">=</span> <span class="p">(</span><span class="n">PreferencesService</span><span class="p">)</span> <span class="n">context</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="nb">ref</span><span class="p">);</span>
+
+            <span class="sr">//</span><span class="o">...</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="sr">//</span><span class="o">..</span>
+</pre></div>
+
+
+<p>To access the <em>system root</em></p>
+<div class="codehilite"><pre>        <span class="n">Preferences</span> <span class="n">systemRoot</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">getSystemPreferences</span><span class="p">();</span>
+</pre></div>
+
+
+<p>To access a <em>user root</em></p>
+<div class="codehilite"><pre>        <span class="n">Preferences</span> <span class="n">mickeyRoot</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">getUserPreferences</span><span class="p">(</span><span class="s">&quot;mickey&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<h2 id="store-and-retrieve-value-in-preferences">Store and retrieve value in Preferences</h2>
+<p>The <em>Preferences</em> interface offers some simple methods to store key/value pairs:</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">void</span> <span class="n">put</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">String</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">putInt</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="nb">int</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">putLong</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">long</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">putBoolean</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">putFloat</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">float</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">putDouble</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">double</span> <span class="n">value</span><span class="p">);</span>
+
+<span class="n">public</span> <span class="n">void</span> <span class="n">putByteArray</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">byte</span><span class="o">[]</span> <span class="n">value</span><span class="p">);</span>
+</pre></div>
+
+
+<p>For each of these methods, a correspondent <em>get</em> method exists. Get methods always accept two arguments: the first to specify the key of the property to retrieve, the second a default value in case of not-existent property (or in case of errors). For instance:</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">float</span> <span class="n">getFloat</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">float</span> <span class="n">def</span><span class="p">)</span>
+</pre></div>
+
+
+<p>As mentioned before, data can be stored in a hierarchical way. The following example shows how to create nodes under the system root to store data:</p>
+<div class="codehilite"><pre><span class="n">Preferences</span> <span class="n">colorPreferences</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">getSystemPreferences</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">);</span>
+<span class="n">colorPreferences</span><span class="o">.</span><span class="n">setString</span><span class="p">(</span><span class="s">&quot;background&quot;</span><span class="p">,</span> <span class="s">&quot;#eeeeee&quot;</span><span class="p">);</span>
+<span class="n">colorPreferences</span><span class="o">.</span><span class="n">setString</span><span class="p">(</span><span class="s">&quot;font&quot;</span><span class="p">,</span> <span class="s">&quot;#000000&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<p>The Preferences interface offers different method to navigate the preference tree, like <code>childrenNames(), parent() and node(String name)</code>. Check the <a href="http://www.osgi.org/javadoc/r4v41/org/osgi/service/prefs/Preferences.html">Preferences interface Javadoc</a> for a complete list.</p>
+<h2 id="flush-and-sync">flush() and sync()</h2>
+<p>Two additional methods of the <em>Preferences</em> interface can be useful.
+<em> </em>flush()<em> forces any change of the Preferences object to be saved in the persistent storage
+</em> <em>sync()</em> reload the content of the Preferences object from the persistent storage; before reloading, all the contents are saved</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

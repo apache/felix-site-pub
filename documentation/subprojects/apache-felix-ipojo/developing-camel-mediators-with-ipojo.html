@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Developing Camel mediators with iPOJO</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+      </div>
+
+      
+      <div class="tip">
+           This page is a translated version of <a href="/site/developing-camel-mediators-with-ipojo.html" target="felix_cwiki">/site/developing-camel-mediators-with-ipojo.html</a>. In case of
+           doubt you might want to refer to the old page.
+      </div>
+      
+      
+      <h1>Developing Camel mediators with iPOJO</h1>
+      <p>{include:apache-felix-ipojo-header}</p>
+<div class="content">
+
+# Developing Camel mediators with iPOJO
+*The [Camel OSGi tutorial ]() provides a very simple and neat overview of Camel. This article mentions the usage of iPOJO to implement the mediator. This document provides this implementation.*
+
+## Step 1 : Initial project setup
+Instead of using the 'spring-osgi-bundle-archetype' maven archetype, we will use the iPOJO one to create the iPOJO bundle.
+To create the simple iPOJO service project, execute the following command in your Unix/Dos console.
+
+    mvn archetype:create -DarchetypeGroupId=org.apache.felix -DarchetypeArtifactId=maven-ipojo-plugin -DarchetypeVersion=1.0.0 -DgroupId=demo -DartifactId=demo.service-ipojo-bundle -Dversion=0.1
+
+## Step 2 : Develop the interface
+So now, it is time to create the interface that we will use in the project. Create a new folder "service" in `src/main/java/demo` tree. Add the interface `TransformService.java` and copy paste the code below:
+{code:java|title=TransformService.java}
+package demo.service;
+public interface TransformService {
+    public Object transform(Object obj);
+}
+
+    h2. Step 3 : Create the class implementing the interface
+    Next, we will create the class  implementing the interface .
+    Create the class  in the folder 
+    {code:java|title=TransformServiceImpl.java}
+    package demo.service;
+
+    import java.util.Date;
+
+    import org.apache.commons.logging.Log;
+    import org.apache.commons.logging.LogFactory;
+
+    public class TransformServiceImpl implements TransformService {
+        private static final transient Log LOG = LogFactory.getLog(TransformServiceImpl.class);
+        private boolean verbose = true;
+        private String prefix = "MyTransform";
+
+        public Object transform(Object body) {
+            String answer = prefix + " set body:  " + new Date();
+            if (verbose) {
+                System.out.println(">> call >> " + answer);
+            }
+            LOG.info(">> call >>" + answer);
+            return answer;
+        }
+
+        public boolean isVerbose() {
+            return verbose;
+        }
+
+        public void setVerbose(boolean verbose) {
+            this.verbose = verbose;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public void setPrefix(String prefix) {
+            this.prefix = prefix;
+        }
+    }
+
+## Step 4 : Create the iPOJO configuration files
+The next step concerns the creation of the iPOJO configuration file who will allow the registration of the `TranformService` as an OSGi service.
+Create or edit the file metadata.xml in the folder src/main/resources/
+{code:xml|title=metadata.xml}
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo>
+    <component classname="demo.service.TransformServiceImpl" name="my-ipojo-transformer">
+        <provides/>
+    </component>
+    <instance component="my-ipojo-transformer"/>
+</ipojo>
+
+    h2. Step 5 : Generate the bundle
+    Before generating the bundle, we need to edit the  file to describe our bundle.
+    {code:xml|title=pom.xml}
+    <project>
+      <modelVersion>4.0.0</modelVersion>
+      <packaging>bundle</packaging>
+      <groupId>demo</groupId>
+      <artifactId>demo.service-ipojo-bundle</artifactId>
+      <version>0.1</version>
+      <name>demo.service-ipojo-bundle</name>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>1.4.2</version>
+            <extensions>true</extensions>
+            <configuration>
+              <instructions>
+                <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+                <Import-Package>*</Import-Package>
+                <Export-Package>*</Export-Package>
+              </instructions>
+            </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>maven-ipojo-plugin</artifactId>
+              <executions>
+                <execution>
+                    <goals>
+                      <goal>ipojo-bundle</goal>
+                   </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <dependencies>
+          <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
+              <version>1.5.0</version>
+              <scope>provided</scope>
+            </dependency>
+            <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>com.springsource.slf4j.api</artifactId>
+              <version>1.5.0</version>
+              <scope>provided</scope>
+            </dependency>
+            <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>com.springsource.slf4j.log4j</artifactId>
+              <version>1.5.0</version>
+              <scope>provided</scope>
+              <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.log4j</groupId>
+                    <artifactId>com.springsource.org.apache.log4j</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+        </dependencies>
+    </project>
+
+## Step 6 & 7: Create the Camel context file and the bundle
+These steps are exactly the same as into the OSGi Camel Tutorial. So refer to the step 6 and 7 of the [article](http://activemq.apache.org/camel/tutorial-osgi-camel-part1.html).
+## Step 8: Deploy the bundles
+We will see how to execute the Canel route on ServiceMix Kernel.
+As mentioned in the documentation, [Apache ServiceMix Kernel]() is a small OSGi based runtime which provides a lightweight container onto which various components and applications can be deployed. Moreover, the server provides administration, security, logging and provisioning features that will help you during the deployment and administration steps.
+If this is not yet done, download ServiceMix Kernel 1.0.0 server and install it. Launch the server by executing the command in the bin folder:
+
+    /Users/clement/apache-servicemix-kernel-1.0.0/bin>servicemix
+
+If this is the first time Servicemix is started, then you will see that a new data folder is created. Notes that this application requires Java 6.
+In order to allow our bundles to work with Camel, execute the following commands to download and install the 'Camel and iPOJO bundles':
+
+    servicemix> osgi install -s mvn:org.springframework/spring-tx/2.5.5
+    servicemix> osgi install -s mvn:org.apache.camel/camel-core/1.5.0
+    servicemix> osgi install -s mvn:org.apache.camel/camel-spring/1.5.0
+    servicemix> osgi install -s mvn:org.apache.camel/camel-osgi/1.5.0
+    servicemix> osgi install -s mvn:org.apache.felix/org.apache.felix.ipojo/1.0.0
+
+Next, copy the two jar files into the deploy folder, first the iPOJO service and next the Camel bundle. After a few seconds, you should see on the Servicemix log console the following text:
+
+    servicemix> >> call >> MyTransform set body:  Sat Dec 27 19:29:16 CET 2008
+
+Remarks :
+    * In case of trouble, use the command: osgi list to see if all the deployed bundles are installed correctly and have their status equals to active
+    * To see the log of ServiceMix, use the command: log d
+
+{include:apache-felix-ipojo-footer}
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

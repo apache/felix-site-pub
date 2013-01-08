@@ -1,0 +1,317 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+  <HEAD>
+    <TITLE>Apache Felix - Apache Felix Config Admin</TITLE>
+    <LINK rel="stylesheet" href="http://felix.apache.org/site/media.data/site.css" type="text/css" media="all">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </HEAD>
+  <BODY>
+    <DIV class="title"><DIV class="logo"><A href="http://felix.apache.org/site/index.html"><IMG border="0" alt="Apache Felix" src="http://felix.apache.org/site/media.data/logo.png"></A></DIV><DIV class="header"><A href="http://www.apache.org/"><IMG border="0" alt="Apache" src="http://felix.apache.org/site/media.data/apache.png"></A></DIV></DIV>
+    <DIV class="menu">
+<UL>
+	<LI><A href="news.html" title="news">news</A></LI>
+	<LI><A href="http://www.apache.org/licenses/" class="external-link" rel="nofollow">license</A></LI>
+	<LI><A href="http://felix.apache.org/site/downloads.cgi" class="external-link" rel="nofollow">downloads</A></LI>
+	<LI><A href="documentation.html" title="documentation">documentation</A></LI>
+	<LI><A href="mailinglists.html" title="mailinglists">mailing lists</A></LI>
+	<LI><A href="contributing.html" title="Contributing">contributing</A></LI>
+	<LI><A href="http://www.apache.org/" class="external-link" rel="nofollow">asf</A></LI>
+	<LI><A href="http://www.apache.org/security/" class="external-link" rel="nofollow">security</A></LI>
+	<LI><A href="http://www.apache.org/foundation/sponsorship.html" class="external-link" rel="nofollow">sponsorship</A></LI>
+	<LI><A href="http://www.apache.org/foundation/thanks.html" class="external-link" rel="nofollow">sponsors</A>
+<!-- ApacheCon Ad -->
+<IFRAME src="http://www.apache.org/ads/button.html" style="border-width:0; float: left" frameborder="0" scrolling="no" width="135" height="135"></IFRAME>
+<P style="height: 100px">
+<!-- ApacheCon Ad --></LI>
+</UL>
+    </DIV>
+    <DIV class="main">
+<H1><A name="ApacheFelixConfigAdmin-ConfigurationAdminService"></A>Configuration Admin Service</H1>
+
+<P>The OSGi Componendium Configuration Admin Service specifies a service, which allows for easy management of configuration data for configurable components. Basicaly configuration is a list of name-value pairs. Configuration is managed by management applications by asking the Configuration Admin Service for such configuration. After updating the configuration, it is sent back to the Configuration Admin Service. The Configuration Admin Service is like a central hub, which cares for persisting this configuration and also for distributing the configuration to interested parties. One class of such parties are the components to be configured. These are registered as <TT>ManagedService</TT> services. There is also a notion of <TT>ManagedServiceFactory</TT>, which allows for multiple configurations of the same kind to be applied.</P>
+
+<P>For more information, I suggest you read Chapter 104, Configuration Admin Service Specification, of the OSGi Compendium Services Specification book. IMHO this is worth reading.</P>
+
+<P>For a starter this page sets out to describe how you can create a component, which is interested in some configuration. As such this page is at its very beginning just highlighting the simplest of all cases: A single component being interested in its configuration.</P>
+
+
+<H2><A name="ApacheFelixConfigAdmin-%7B%7BManagedService%7D%7DExample"></A><TT>ManagedService</TT> Example</H2>
+
+<P>Consider you have requirement for some configuration, say the line length of a pretty printer. You want to have this configurable through configuration admin.</P>
+
+<P>You need the following parts:</P>
+
+<UL>
+	<LI>A service PID identifying the configuration</LI>
+	<LI>A <TT>ManagedService</TT> to receive the configuration</LI>
+	<LI>Name(s) for the configuration property/ies</LI>
+</UL>
+
+
+<P>The PID is just a string, which must be globally unique. Assuming a simple case where your PrettyPrinter configurator receives the configuration has a unique class name, you may well use that name. So lets assume, our <TT>ManagedService</TT> is called <TT>org.sample.PrettyPrinterConfigurator</TT> and that name is also used as the PID. For more information on the Service PID, refer to Section 104.3, The Persistent Identity of the OSGi Compendium Services Specification.</P>
+
+<P>The class would be:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>PrettyPrinterConfigurator.java</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java">
+   <SPAN class="code-keyword">package</SPAN> org.sample;
+   class PrettyPrinterConfigurator <SPAN class="code-keyword">implements</SPAN> ManagedService {
+       <SPAN class="code-keyword">public</SPAN> void update(Dictionary props)
+           <SPAN class="code-keyword">throws</SPAN> ConfigurationException {
+           <SPAN class="code-keyword">if</SPAN> (props == <SPAN class="code-keyword">null</SPAN>) {
+               <SPAN class="code-comment">// no configuration from configuration admin
+</SPAN>               <SPAN class="code-comment">// or old configuration has been deleted
+</SPAN>           } <SPAN class="code-keyword">else</SPAN> {
+               <SPAN class="code-comment">// apply configuration from config admin
+</SPAN>           }
+       }
+   }
+</PRE>
+</DIV></DIV>
+
+<P>Now, in your bundle activator's start() method you register the <TT>PrettyPrinterConfigurator</TT> as a <TT>ManagedService</TT>:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>PrettyPrinterActivator.java</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java">
+...
+<SPAN class="code-keyword">private</SPAN> ServiceRegistration ppcService;
+<SPAN class="code-keyword">public</SPAN> void start(BundleContext context) {
+    Dictionary props = <SPAN class="code-keyword">new</SPAN> Hashtable();
+    props.put(<SPAN class="code-quote">&quot;service.pid&quot;</SPAN>, <SPAN class="code-quote">&quot;org.sample.PrettyPrinterConfigurator&quot;</SPAN>);
+    ppcService = context.registerService(ManagedService.class.getName(),
+        <SPAN class="code-keyword">new</SPAN> PrettyPrinterConfigurator(), props);
+}
+<SPAN class="code-keyword">public</SPAN> void stop(BundleContext context) {
+    <SPAN class="code-keyword">if</SPAN> (ppcService != <SPAN class="code-keyword">null</SPAN>) {
+        ppcService.unregister();
+        ppcService = <SPAN class="code-keyword">null</SPAN>;
+    }
+}
+...
+</PRE>
+</DIV></DIV>
+
+<P>That's more or less it. You may now go on to use your favourite tool to create and edit the configuration for the <TT>PrettyPrinterConfigurator</TT>, for example something like this:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+Configuration config = configurationAdmin.getConfiguration(
+    <SPAN class="code-quote">&quot;org.sample.PrettyPrinterConfigurator&quot;</SPAN>);
+Dictionary props = config.getProperties();
+
+<SPAN class="code-comment">// <SPAN class="code-keyword">if</SPAN> <SPAN class="code-keyword">null</SPAN>, the configuration is <SPAN class="code-keyword">new</SPAN>
+</SPAN><SPAN class="code-keyword">if</SPAN> (props == <SPAN class="code-keyword">null</SPAN>) {
+    props = <SPAN class="code-keyword">new</SPAN> Hashtable();
+}
+
+<SPAN class="code-comment">// set some properties
+</SPAN>props.put(..., ...);
+
+<SPAN class="code-comment">// update the configuration
+</SPAN>config.update(props);
+</PRE>
+</DIV></DIV>
+
+<P>After the call to <TT>update</TT> the Configuration Admin service persists the new configuration data and sends an update to the <TT>ManagedService</TT> registered with the service PID <TT>org.sample.PrettyPrinterConfigurator</TT>, which happens to be our <TT>PrettyPrinterConfigurator</TT> class as expected.</P>
+
+
+<H2><A name="ApacheFelixConfigAdmin-ManagedServiceFactoryexample"></A>ManagedServiceFactory example</H2>
+
+<P>Registering a service as ManagedServiceFactory means that it will be able to receive several different configuration dictionaries; that's particularly useful when we want to create a Service Factory, that is, a service responsible for creating multiple instances of a specific service.</P>
+
+<P>A ManagedServiceFactory service needs to implement the ManagedServiceFactory interface, as showed in the example.</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class SmsSenderFactory <SPAN class="code-keyword">implements</SPAN> ManagedServiceFactory
+{	
+	Map existingServices = <SPAN class="code-keyword">new</SPAN> HashMap();
+	
+	<SPAN class="code-keyword">public</SPAN> void updated(<SPAN class="code-object">String</SPAN> pid, Dictionary dictionary) <SPAN class="code-keyword">throws</SPAN> ConfigurationException 
+	{
+		<SPAN class="code-comment">// invoked when a <SPAN class="code-keyword">new</SPAN> configuration dictionary is assigned
+</SPAN>		<SPAN class="code-comment">// to service 'pid'. 
+</SPAN>		<SPAN class="code-keyword">if</SPAN> (existingServices.containsKey(pid))  <SPAN class="code-comment">//the service already exists
+</SPAN>		{
+			MyService service = (MyService) existingServices.get(pid);
+			service.configure(dictionary);
+		}
+		<SPAN class="code-keyword">else</SPAN> <SPAN class="code-comment">//configuration dictionary <SPAN class="code-keyword">for</SPAN> a <SPAN class="code-keyword">new</SPAN> service
+</SPAN>		{
+			MyService service = createNewServiceInstance();
+			service.configure(dictionary);
+			existingServices.put(pid, service);
+		}
+	}
+	
+	<SPAN class="code-keyword">public</SPAN> void deleted(<SPAN class="code-object">String</SPAN> pid) 
+	{
+		<SPAN class="code-comment">// invoked when the service 'pid' is deleted
+</SPAN>		existingServices.remove(pid);
+	}
+
+	<SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> getName() 
+	{
+		<SPAN class="code-keyword">return</SPAN> <SPAN class="code-quote">&quot;test.smssenderfactory&quot;</SPAN>;
+	}
+}
+</PRE>
+</DIV></DIV>
+
+<P>The example above shows that, differently from the ManagedService, the ManagedServiceFactory is designed to manage multiple instances of a service. In fact, the <TT>update</TT> method accept a <TT>pid</TT> and a <TT>Dictionary</TT> as arguments, thus allowing to associate a certain configuration dictionary to a particular service instance (identified by the <TT>pid</TT>).</P>
+
+<P>Note also that the ManagedServiceFactory interface requires to implement (besides the <TT>getName</TT> method) a <TT>delete</TT> method: this method is invoked when the Configuration Admin Service asks the ManagedServiceFactory to delete a specific service instance.</P>
+
+<P>The registration of a <TT>ManagedServiceFactory</TT> follows the same steps of the <TT>ManagedService</TT> example:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">private</SPAN> ServiceRegistration factoryService;
+<SPAN class="code-keyword">public</SPAN> void start(BundleContext context) {
+    Dictionary props = <SPAN class="code-keyword">new</SPAN> Hashtable();
+    props.put(<SPAN class="code-quote">&quot;service.pid&quot;</SPAN>, <SPAN class="code-quote">&quot;test.smssenderfactory&quot;</SPAN>);
+    factoryService = context.registerService(ManagedServiceFactory.class.getName(),
+        <SPAN class="code-keyword">new</SPAN> SmsSenderFactory(), props);
+}
+<SPAN class="code-keyword">public</SPAN> void stop(BundleContext context) {
+    <SPAN class="code-keyword">if</SPAN> (factoryService != <SPAN class="code-keyword">null</SPAN>) {
+        factoryService.unregister();
+        factoryService = <SPAN class="code-keyword">null</SPAN>;
+    }
+}
+...
+</PRE>
+</DIV></DIV>
+
+<P>Finally, using the ConfigurationAdmin interface, it is possible to send new or updated configuration dictionaries to the newly created ManagedServiceFactory:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">
+<SPAN class="code-keyword">public</SPAN> class Activator <SPAN class="code-keyword">implements</SPAN> BundleActivator 
+{   
+    <SPAN class="code-keyword">private</SPAN> List configurationList = <SPAN class="code-keyword">new</SPAN> ArrayList();  
+	 
+    <SPAN class="code-keyword">public</SPAN> void start(BundleContext bundleContext) <SPAN class="code-keyword">throws</SPAN> Exception 
+    {  
+        ServiceReference configurationAdminReference = 
+            bundleContext.getServiceReference(ConfigurationAdmin.class.getName());  
+              
+        <SPAN class="code-keyword">if</SPAN> (configurationAdminReference != <SPAN class="code-keyword">null</SPAN>) 
+        {  
+            ConfigurationAdmin confAdmin = (ConfigurationAdmin) bundleContext.getService(configurationAdminReference);  
+              
+            Configuration configuration = confAdmin.createFactoryConfiguration(<SPAN class="code-quote">&quot;test.smssenderfactory&quot;</SPAN>, <SPAN class="code-keyword">null</SPAN>);  
+            Dictionary properties = createServiceProperties();
+            configuration.update(properties);  
+              
+            <SPAN class="code-comment">//Store in the configurationList the configuration object, the dictionary object
+</SPAN>            <SPAN class="code-comment">//or configuration.getPid()  <SPAN class="code-keyword">for</SPAN> <SPAN class="code-keyword">future</SPAN> use  
+</SPAN>            configurationList.add(configuration);  
+        }  
+    }   
+}  
+</PRE>
+</DIV></DIV>
+
+
+<H2><A name="ApacheFelixConfigAdmin-ApacheFelixImplementationDetails"></A>Apache Felix Implementation Details</H2>
+
+<P>The Apache Felix implementation of the Configuration Admin Service specification has a few specialities, which may be of interest when deploying it. These are described here.</P>
+
+
+<H3><A name="ApacheFelixConfigAdmin-ConfigurationProperties"></A>Configuration Properties</H3>
+
+<P>The Apache Felix implementation is configurable with Framework properties. Here is a short table listing the properties. Please refer to the later sections for a description of these properties.</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Property </TH>
+<TH class="confluenceTh"> Type </TH>
+<TH class="confluenceTh"> Default Value </TH>
+<TH class="confluenceTh"> Description </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.cm.loglevel</TT> </TD>
+<TD class="confluenceTd"> int </TD>
+<TD class="confluenceTd"> <TT>2</TT> </TD>
+<TD class="confluenceTd"> Logging level to use in the absence of an OSGi LogService. See the <EM>Logging</EM> section below. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <TT>felix.cm.dir</TT> </TD>
+<TD class="confluenceTd"> String </TD>
+<TD class="confluenceTd"> <TT>BundleContext.getDataFile(&quot;config&quot;)</TT> </TD>
+<TD class="confluenceTd"> Location of the Configuration Admin configuration files. See the <EM>Configuration Files</EM> section below. </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<H3><A name="ApacheFelixConfigAdmin-Logging"></A>Logging</H3>
+
+<P>Logging goes to the OSGi LogService if such a service is registered int the OSGi framework. If no OSGi LogService is registered, the log output is directed to the Java platform standard error output (<TT>System.err</TT>).</P>
+
+<P>To limit the output in the absence of an OSGi LogService, the <TT>felix.cm.loglevel</TT> framework property may be set to an integer value limiting the level of the log messages actually written: Only messages whose level is lower than or equal to the limit is actually written. All other messages are discarded.</P>
+
+<P>The log levels correspond to the predefined log levels of the OSGi Log Service Specification as listed in the following table:</P>
+
+<DIV class="table-wrap">
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Level Number </TH>
+<TH class="confluenceTh"> LogService Constant </TH>
+<TH class="confluenceTh"> Remark </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> 1 </TD>
+<TD class="confluenceTd"> LOG_ERROR </TD>
+<TD class="confluenceTd"> Used for error messages </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> 2 </TD>
+<TD class="confluenceTd"> LOG_WARNING </TD>
+<TD class="confluenceTd"> Used for warning messages. This is the default value of the <TT>felix.cm.loglevel</TT> property if it is not set or if the value cannot be converted to an integer. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> 3 </TD>
+<TD class="confluenceTd"> LOG_INFO </TD>
+<TD class="confluenceTd"> Used for informational messages </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> 4 </TD>
+<TD class="confluenceTd"> LOG_DEBUG </TD>
+<TD class="confluenceTd"> Used for debug messages </TD>
+</TR>
+</TBODY></TABLE>
+</DIV>
+
+
+<P><B>Note</B>: The <TT>felix.cm.loglevel</TT> property is ignored if an OSGi LogService is actually used for logging because it is then the responsibility of the LogService to limit the actual log output.</P>
+
+
+<H3><A name="ApacheFelixConfigAdmin-ConfigurationFiles"></A>Configuration Files</H3>
+
+<P>By default the Apache Felix Configuration Admin Implementation stores the configuration data in the platform filesystem. The location of the configuration data can be configured with the <TT>felix.cm.dir</TT> framework property.</P>
+
+<P>The resolution of the location using the <TT>felix.cm.dir</TT> and the <TT>BundleContext</TT> is implemented according to the following algorithm.</P>
+
+<OL>
+	<LI>If the <TT>felix.cm.dir</TT> property is not set, a directory named <TT>config</TT> is used inside the persistent storage area of the Apache Felix Configuration Admin Service bundle is used. This is the default behaviour.</LI>
+	<LI>If the <TT>felix.cm.dir</TT> property is not set and the framework does not support persistent storage area for bundles in the filesystem, the <TT>config</TT> directory is used in the current working directory as specified in the <TT>user.dir</TT> system property is assumed.</LI>
+	<LI>Otherwise the <TT>felix.cm.dir</TT> property value is used as the directory name to take the configuration data.</LI>
+</OL>
+
+
+<P>The result of these steps may be a relative file. In this case and if the framework provides access to persistent storage area, the directory name is resolved as being inside the persistent storage area. Otherwise the directory name is resolved to an absolute path calling the File.getAbsoluteFile() method.</P>
+
+<P>If a non-directory file exists as the location found in the previous step or the named directory (including any parent directories) cannot be created, the configuration data cannot be stored in the filesystem. Generally this will result in failure to store configuration data at all, except if there is a <TT>org.apache.felix.cm.PersistenceManager</TT> service registered, which is then used.</P>
+        <DIV class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+Last modified by kgilmer on Wed Oct 26 02:07:02 EDT 2011
+        </DIV>
+        <DIV class="trademarkFooter">
+Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project logo are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </DIV>
+    </DIV>
+  </BODY>
+</HTML>
