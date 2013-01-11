@@ -67,14 +67,24 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/release-management-nexus.html" target="felix_cwiki">/site/release-management-nexus.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
       
       <h1>Release Management (Nexus)</h1>
       <p><em>This is the new release process for Apache Felix, based on the updated Maven <a href="http://maven.apache.org/developers/release/releasing.html">process</a></em></p>
+<h2 id="basics">Basics</h2>
+<p>Apache Felix artifacts are distributed in two channels: The Maven Repository and the Apache
+distribution channels.</p>
+<p>The basic steps for releasing are:</p>
+<ul>
+<li><a href="#staging-the-release-candidates">Release the module with the Maven Release plugin deploying to the Nexus Staging repository</a></li>
+<li>Check the artifacts</li>
+<li><a href="#starting-the-vote">Call for vote</a></li>
+<li><a href="#promoting-the-release">Publish the release candidate</a>:<ul>
+<li>Publish the staged artifacts from Nexus Staging</li>
+<li><code>svn add</code> the artifacts to Subversion repository and <code>svn rm</code> the artifacts from the previous release</li>
+</ul>
+</li>
+<li><a href="#create-an-announcement">Announce the release</a></li>
+</ul>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>To prepare or perform a release you <em>MUST BE</em> at least an Apache Felix Committer.</p>
 <ul>
@@ -117,181 +127,206 @@
 <li>Make sure you have correct NOTICE, <a href="/documentation/development/dependencies-file-template.html">DEPENDENCIES</a>, and LICENSE files. Remember to update the copyright year.</li>
 <li>Make sure you have an updated change log file, typically in <code>doc/changelog.txt</code> but in the project root is also acceptable.</li>
 <li>make sure there are no snapshots in the POMs to be released</li>
-<li>check that your POMs will not lose content when they are rewritten during the release process</li>
-<li>
-<ul>
+<li>check that your POMs will not lose content when they are rewritten during the release process<ul>
 <li><code>mvn release:prepare -DdryRun=true</code></li>
-</ul>
-</li>
-<li>
-<ul>
 <li>diff the original <code>pom.xml</code> with the one called <code>pom.xml.tag</code> to see if the license or any other info has been removed. This has been known to happen if the starting <code>&lt;project&gt;</code> tag is not on a single line. The only things that should be different between these files are the <code>&lt;version&gt;</code> and <code>&lt;scm&gt;</code> elements. If there are any other changes, you must fix the original <code>pom.xml</code> file and commit before proceeding with the release</li>
 </ul>
 </li>
-<li>
-<p>publish a snapshot</p>
-<p>$ mvn deploy
-...
-[INFO] [deploy:deploy]
-[INFO] Retrieving previous build number from apache.snapshots.https
-...</p>
-</li>
-<li>
-<ul>
+<li>publish a snapshot
+    <div class="codehilite"><code>$ mvn deploy <br />
+    ...<br />
+    [INFO] [deploy:deploy]<br />
+    [INFO] Retrieving previous build number from apache.snapshots.https<br />
+    ...</code></div><ul>
 <li>if you experience an error during deployment like a HTTP 401 check your settings for the required server entries as outlined in the <em>Prerequisites</em></li>
-</ul>
-</li>
-<li>
-<ul>
 <li>be sure that the generated artifacts respect the Apache release <a href="http://www.apache.org/dev/release.html">rules</a>: NOTICE and LICENSE files should be present in the META-INF directory within the jar. For -sources artifacts, be sure that your POM does not use the maven-source-plugin:2.0.3 which is broken. The recommended version at this time is 2.0.4</li>
-</ul>
-</li>
-<li>
-<ul>
 <li>you should verify the deployment under the <a href="https://repository.apache.org/content/groups/snapshots/org/apache/felix">snapshot</a> repository on Apache</li>
 </ul>
 </li>
-<li>
-<p>prepare the release</p>
-<p>mvn release:clean
-mvn release:prepare</p>
-</li>
-<li>
-<ul>
+<li>prepare the release
+    <div class="codehilite"><code>$ mvn release:clean  <br />
+    $ mvn release:prepare</code></div><ul>
 <li>preparing the release will create the new tag in SVN, automatically checking in on your behalf</li>
 </ul>
 </li>
-<li>
-<p>stage the release for a vote</p>
-<p>mvn release:perform</p>
-</li>
-<li>
-<ul>
+<li>stage the release for a vote
+    <div class="codehilite"><code>$ mvn release:perform</code></div><ul>
 <li>the release will automatically be inserted into a temporary staging repository for you, see the Nexus <a href="http://www.sonatype.com/books/nexus-book/reference/staging.html">staging documentation</a> for full details</li>
-</ul>
-</li>
-<li>
-<ul>
 <li>you can continue to use <code>mvn release:prepare</code> and <code>mvn release:perform</code> on other sub-projects as necessary on the same machine and they will be combined in the same staging repository - this is useful when making a release of the Felix framework and its associated bundles.</li>
 </ul>
 </li>
-<li>close the staging repository</li>
-<li>
-<ul>
+<li>close the staging repository<ul>
 <li>login to <a href="https://repository.apache.org">https://repository.apache.org</a> using your Apache SVN credentials. Click on <em>Staging</em> on the left. Then click on <em>org.apache.felix</em> in the list of repositories. In the panel below you should see an open repository that is linked to your username and IP. Right click on this repository and select <em>Close</em>. This will close the repository from future deployments and make it available for others to view. If you are staging multiple releases together, skip this step until you have staged everything</li>
 </ul>
 </li>
-<li>verify the staged artifacts</li>
-<li>
-<ul>
+<li>verify the staged artifacts<ul>
 <li>if you click on your repository, a tree view will appear below. You can then browse the contents to ensure the artifacts are as you expect them. Pay particular attention to the existence of *.asc (signature) files. If you don't like the content of the repository, right click your repository and choose <em>Drop</em>. You can then rollback your release (see <em>Canceling the Release</em>) and repeat the process</li>
-</ul>
-</li>
-<li>
-<ul>
 <li>note the staging repository URL (especially the number at the end of the URL) you will need this in your vote email</li>
 </ul>
 </li>
 </ol>
 <h2 id="starting-the-vote">Starting the Vote</h2>
 <p>Propose a vote on the dev list with the closed issues, the issues left, and the staging repository - for example:</p>
-<div class="codehilite"><pre><span class="n">To:</span> <span class="s">&quot;Felix Developers List&quot;</span> <span class="sr">&lt;dev@felix.apache.org&gt;</span>
-<span class="n">Subject:</span> <span class="p">[</span><span class="n">VOTE</span><span class="p">]</span> <span class="n">Release</span> <span class="n">Felix</span> <span class="n">XXX</span> <span class="n">version</span> <span class="n">Y</span><span class="o">.</span><span class="n">Z</span>
+<div class="codehilite"><pre>To: &quot;Felix Developers List&quot; &lt;dev@felix.apache.org&gt;
+Subject: [VOTE] Release Felix XXX version Y.Z
 
-<span class="n">Hi</span><span class="p">,</span>
+Hi,
 
-<span class="n">We</span> <span class="n">solved</span> <span class="n">N</span> <span class="n">issues</span> <span class="n">in</span> <span class="n">this</span> <span class="n">release:</span>
-<span class="n">http:</span><span class="sr">//iss</span><span class="n">ues</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/jira/</span><span class="o">...</span>
+We solved N issues in this release:
+http://issues.apache.org/jira/...
 
-<span class="n">There</span> <span class="n">are</span> <span class="n">still</span> <span class="n">some</span> <span class="n">outstanding</span> <span class="n">issues:</span>
-<span class="n">http:</span><span class="sr">//iss</span><span class="n">ues</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/jira/</span><span class="o">...</span>
+There are still some outstanding issues:
+http://issues.apache.org/jira/...
 
-<span class="n">Staging</span> <span class="n">repository:</span>
-<span class="n">https:</span><span class="sr">//</span><span class="n">repository</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/content/</span><span class="n">repositories</span><span class="sr">/orgapachefelix-[YOUR REPOSITORY ID]/</span>
+Staging repository:
+https://repository.apache.org/content/repositories/orgapachefelix-[YOUR REPOSITORY ID]/
 
-<span class="n">You</span> <span class="n">can</span> <span class="k">use</span> <span class="n">this</span> <span class="n">UNIX</span> <span class="n">script</span> <span class="n">to</span> <span class="n">download</span> <span class="n">the</span> <span class="n">release</span> <span class="ow">and</span> <span class="n">verify</span> <span class="n">the</span> <span class="n">signatures:</span>
-<span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/felix/</span><span class="n">trunk</span><span class="o">/</span><span class="n">check_staged_release</span><span class="o">.</span><span class="n">sh</span>
+You can use this UNIX script to download the release and verify the signatures:
+http://svn.apache.org/repos/asf/felix/trunk/check_staged_release.sh
 
-<span class="n">Usage:</span>
-<span class="n">sh</span> <span class="n">check_staged_release</span><span class="o">.</span><span class="n">sh</span> <span class="p">[</span><span class="n">YOUR</span> <span class="n">REPOSITORY</span> <span class="n">ID</span><span class="p">]</span> <span class="sr">/tmp/</span><span class="n">felix</span><span class="o">-</span><span class="n">staging</span>
+Usage:
+sh check_staged_release.sh [YOUR REPOSITORY ID] /tmp/felix-staging
 
-<span class="n">Please</span> <span class="n">vote</span> <span class="n">to</span> <span class="n">approve</span> <span class="n">this</span> <span class="n">release:</span>
+Please vote to approve this release:
 
-<span class="p">[</span> <span class="p">]</span> <span class="o">+</span><span class="mi">1</span> <span class="n">Approve</span> <span class="n">the</span> <span class="n">release</span>
-<span class="p">[</span> <span class="p">]</span> <span class="o">-</span><span class="mi">1</span> <span class="n">Veto</span> <span class="n">the</span> <span class="n">release</span> <span class="p">(</span><span class="n">please</span> <span class="n">provide</span> <span class="n">specific</span> <span class="n">comments</span><span class="p">)</span>
+[ ] +1 Approve the release
+[ ] -1 Veto the release (please provide specific comments)
 
-<span class="n">This</span> <span class="n">vote</span> <span class="n">will</span> <span class="n">be</span> <span class="nb">open</span> <span class="k">for</span> <span class="mi">72</span> <span class="n">hours</span><span class="o">.</span>
+This vote will be open for 72 hours.
 </pre></div>
 
 
-<ul>
-<li>to get the JIRA release notes link, browse to the FELIX <a href="http://issues.apache.org/jira/browse/FELIX">JIRA</a> page, select [Release Notes|http://issues.apache.org/jira/secure/ConfigureReleaseNote.jspa?projectId=12310100] and choose the relevant sub-project release and format (HTML)</li>
-<li>to get the list of issues left in JIRA, select the <a href="http://issues.apache.org/jira/browse/FELIX?report=com.atlassian.jira.plugin.system.project:openissues-panel">Open Issues</a> tab on the main FELIX page, and select the relevant sub-project.</li>
-</ul>
+<p>To get the JIRA release notes link, browse to the FELIX <a href="http://issues.apache.org/jira/browse/FELIX">JIRA</a> page, select [Release Notes|http://issues.apache.org/jira/secure/ConfigureReleaseNote.jspa?projectId=12310100] and choose the relevant sub-project release and format (HTML)</p>
+<p>To get the list of issues left in JIRA, select the <a href="http://issues.apache.org/jira/browse/FELIX?report=com.atlassian.jira.plugin.system.project:openissues-panel">Open Issues</a> tab on the main FELIX page, and select the relevant sub-project.</p>
 <h2 id="wait-for-the-results">Wait for the Results</h2>
 <p>From <a href="http://www.apache.org/foundation/voting.html">Votes on Package Releases</a>:</p>
-<p>{quote}Votes on whether a package is ready to be released follow a format similar to majority approval  -- except that the decision is officially determined solely by whether at least three +1 votes were registered. Releases may not be vetoed. Generally the community will table the vote to release if anyone identifies serious problems, but in most cases the ultimate decision, once three or more positive votes have been garnered, lies with the individual serving as release manager. The specifics of the process may vary from project to project, but the 'minimum of three +1 votes' rule is universal.{quote}</p>
-<p>The list of binding voters is available at <a href="http://felix.apache.org/site/project-management-committee-pmc.html">http://felix.apache.org/site/project-management-committee-pmc.html</a></p>
+<blockquote>
+<p>Votes on whether a package is ready to be released follow a format similar to majority approval  -- except that the decision is officially determined solely by whether at least three +1 votes were registered. Releases may not be vetoed. Generally the community will table the vote to release if anyone identifies serious problems, but in most cases the ultimate decision, once three or more positive votes have been garnered, lies with the individual serving as release manager. The specifics of the process may vary from project to project, but the 'minimum of three +1 votes' rule is universal.</p>
+</blockquote>
+<p>The list of binding voters is available at <a href=""></a></p>
 <p>If the vote is successful, post the result to the dev list - for example:</p>
-<div class="codehilite"><pre><span class="n">To:</span> <span class="s">&quot;Felix Developers List&quot;</span> <span class="sr">&lt;dev@felix.apache.org&gt;</span>
-<span class="n">Subject:</span> <span class="p">[</span><span class="n">RESULT</span><span class="p">]</span> <span class="p">[</span><span class="n">VOTE</span><span class="p">]</span> <span class="n">Release</span> <span class="n">Felix</span> <span class="n">XXX</span> <span class="n">version</span> <span class="n">Y</span><span class="o">.</span><span class="n">Z</span>
+<div class="codehilite"><pre>To: &quot;Felix Developers List&quot; &lt;dev@felix.apache.org&gt;
+Subject: [RESULT] [VOTE] Release Felix XXX version Y.Z
 
-<span class="n">Hi</span><span class="p">,</span>
+Hi,
 
-<span class="n">The</span> <span class="n">vote</span> <span class="n">has</span> <span class="n">passed</span> <span class="n">with</span> <span class="n">the</span> <span class="n">following</span> <span class="n">result</span> <span class="p">:</span>
+The vote has passed with the following result :
 
-  <span class="o">+</span><span class="mi">1</span> <span class="p">(</span><span class="n">binding</span><span class="p">):</span> <span class="o">&lt;&lt;</span><span class="n">list</span> <span class="n">of</span> <span class="n">names</span><span class="o">&gt;&gt;</span>
-  <span class="o">+</span><span class="mi">1</span> <span class="p">(</span><span class="n">non</span> <span class="n">binding</span><span class="p">):</span> <span class="o">&lt;&lt;</span><span class="n">list</span> <span class="n">of</span> <span class="n">names</span><span class="o">&gt;&gt;</span>
+  +1 (binding): &lt;&lt;list of names&gt;&gt;
+  +1 (non binding): &lt;&lt;list of names&gt;&gt;
 
-<span class="n">I</span> <span class="n">will</span> <span class="n">copy</span> <span class="n">this</span> <span class="n">release</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Felix</span> <span class="n">dist</span> <span class="n">directory</span> <span class="ow">and</span>
-<span class="n">promote</span> <span class="n">the</span> <span class="n">artifacts</span> <span class="n">to</span> <span class="n">the</span> <span class="n">central</span> <span class="n">Maven</span> <span class="n">repository</span><span class="o">.</span>
+I will copy this release to the Felix dist directory and
+promote the artifacts to the central Maven repository.
 </pre></div>
 
 
 <p>If the vote is unsuccessful, you need to fix the issues and restart the process - see <em>Canceling the Release</em>.
 If the vote is successful, you need to promote and distribute the release - see <em>Promoting the Release</em>.</p>
 <h2 id="canceling-the-release">Canceling the Release</h2>
-<p>If the vote fails, or you decide to redo the release:
-1. remove the release tag from Subversion (<code>svn del ...</code>)
-1. login to <a href="https://repository.apache.org">https://repository.apache.org</a> using your Apache SVN credentials. Click on <em>Staging</em> on the left. Then click on <em>org.apache.felix</em> in the list of repositories. In the panel below you should see a closed repository that is linked to your username and IP (if it's not yet closed you need to right click and select <em>Close</em>). Right click on this repository and select <em>Drop</em>.
-1. rollback the version in the <code>pom.xml</code> and commit any fixes you need to make</p>
+<p>If the vote fails, or you decide to redo the release:</p>
+<ol>
+<li>remove the release tag from Subversion (<code>svn rm ...</code>)</li>
+<li>login to <a href="https://repository.apache.org">https://repository.apache.org</a> using your Apache SVN credentials. Click on <em>Staging</em> on the left. Then click on <em>org.apache.felix</em> in the list of repositories. In the panel below you should see a closed repository that is linked to your username and IP (if it's not yet closed you need to right click and select <em>Close</em>). Right click on this repository and select <em>Drop</em>.</li>
+<li>rollback the version in the <code>pom.xml</code> and commit any fixes you need to make</li>
+</ol>
 <div class="info" markdown="1">
 The release manager is free to either reuse the same version when proposing a new release for vote (for example 2.1.2 after a failed 2.1.2 release attempt), or choose a different number (for example 2.1.4 after a failed 2.1.2 attempt).  (cf. vote on 02/14/11).
 </div>
 
 <h2 id="promoting-the-release">Promoting the Release</h2>
-<p>If the vote passes:
-1. copy the released artifacts to the Felix dist directory (<code>/x1/www/www.apache.org/dist/felix</code>) on <code>people.apache.org</code>
-1. delete the old release from the Felix dist directory (it's archived)
-1. login to <a href="https://repository.apache.org">https://repository.apache.org</a> with your Apache SVN credentials. Click on <em>Staging</em>. Find your closed staging repository, select it, and click the <em>Release</em> button.
-1. next click on <em>Repositories</em>, select the <em>Releases</em> repository and validate that your artifacts are all there
-1. if you're releasing bundles, you can also add them to the Felix Release OBR (see <em>Appendix C</em>).
-1. update the news section on the website at <a href="http://cwiki.apache.org/confluence/display/FELIX/news">news</a>
-1. update the download page on the website at <a href="http://cwiki.apache.org/confluence/display/FELIX/downloads">downloads</a> to point to the new release.</p>
+<p>If the vote passes:</p>
+<ul>
+<li><a href="#upload-the-artifacts">Upload the Artifacts</a></li>
+<li><a href="#release-to-the-maven-repository">Release to the Maven Repository</a></li>
+<li><a href="#release-bundle-to-the-obr">Release Bundles to the OBR</a></li>
+<li><a href="#update-the-site">Update the Site</a></li>
+</ul>
+<h3 id="upload-the-artifacts">Upload the Artifacts</h3>
+<p>We use the distribution mechanism as described in <a href="http://www.apache.org/dev/release.html#upload-ci">How do I upload a release (newer way)?</a></p>
+<ol>
+<li>Checkout (https://dist.apache.org/repos/dist/release/felix)</li>
+<li><code>svn add</code> the artifacts to your checkout</li>
+<li><code>svn rm</code> the artifacts from the previous release from your checkout. This
+will remove the artifacts from the main distribution and the mirrors. They
+are still kept in the archive.</li>
+<li><code>svn commit</code> your changes</li>
+</ol>
+<p>After committing your changes, the <a href="http://www.apache.org/dist/felix">Apache Felix Dist</a>
+folder is immediately updated. Updating the mirrors takes another few hours
+(up to a day).</p>
+<h3 id="release-to-the-maven-repository">Release to the Maven Repository</h3>
+<ol>
+<li>Login to (https://repository.apache.org) with your Apache SVN credentials.</li>
+<li>Click on <em>Staging</em>.</li>
+<li>Find your closed staging repository, select it, and click the <em>Release</em> button.</li>
+<li>Click on <em>Repositories</em></li>
+<li>Select the <em>Releases</em> repository</li>
+<li>Validate that your artifacts are all there</li>
+</ol>
+<h3 id="release-bundles-to-the-obr">Release Bundles to the OBR</h3>
+<p>If you're releasing bundles, you can also add them to the Felix Release OBR. To do this, execute the following command:</p>
+<div class="codehilite"><pre><span class="nv">$ </span><span class="nb">export </span><span class="nv">site</span><span class="o">=</span><span class="c"># your checkout of (https://svn.apache.org/repos/asf/felix/site/trunk/content)</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">obr</span><span class="o">=</span><span class="k">${</span><span class="nv">site</span><span class="k">}</span>/obr
+<span class="nv">$ </span>mvn clean install <span class="se">\</span>
+    org.apache.felix:maven-bundle-plugin:deploy <span class="se">\</span>
+    -DprefixUrl<span class="o">=</span>http://repo1.maven.org/maven2 <span class="se">\</span>
+    -DremoteOBR<span class="o">=</span>releases.xml <span class="se">\</span>
+    -DaltDeploymentRepository<span class="o">=</span>apache.website::default::file:///<span class="k">${</span><span class="nv">obr</span><span class="k">}</span>
+<span class="nv">$ </span>svn commit -m<span class="s2">&quot;...&quot;</span> <span class="k">${</span><span class="nv">obr</span><span class="k">}</span>/repository.xml
+</pre></div>
+
+
+<p>After committing the site must be published. If you release to OBR before
+<a href="update-the-site">updating the site</a> you can defer publishing until after that.
+Otherwise publish the site by visiting the <a href="https://cms.apache.org/felix/publish">Site Publication</a>
+link.</p>
+<p>The (http://felix.apache.org/obr/releases.xml) page immediately updated.</p>
+<p><strong>Note</strong>: the project building the bundle must use the <a href=""></a> and use a version equal to or higher than 1.4.2.</p>
+<p><strong>Note</strong>: with Maven 3, you must add an extension to your <code>&lt;build&gt;</code> providing the SCP/SSH protocol:</p>
+<div class="codehilite"><pre><span class="nt">&lt;build&gt;</span>
+...
+  <span class="nt">&lt;extensions&gt;</span>
+    <span class="nt">&lt;extension&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.maven.wagon<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>wagon-ssh<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.0-beta-6<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/extension&gt;</span>
+  <span class="nt">&lt;/extensions&gt;</span>  
+<span class="nt">&lt;/build&gt;</span>
+</pre></div>
+
+
+<h3 id="update-the-site">Update the Site</h3>
+<ol>
+<li>Update the news section on the website at <a href="https://cms.apache.org/redirect?uri=http%3A//felix.apache.org/news.html">news</a></li>
+<li>Update the download page on the website at <a href="https://cms.apache.org/redirect?uri=http%3A//felix.apache.org/downloads.list">downloads</a> to point to the new release.</li>
+<li>Commit your changes (click the commit link)</li>
+<li>Publish the site (https://cms.apache.org/felix/publish)</li>
+</ol>
 <p>For the last two tasks, it's better to give the mirrors some time to distribute the uploaded artifacts (one day should be fine). This ensures that once the website (news and download page) is updated, people can actually download the artifacts.</p>
 <h2 id="update-jira">Update JIRA</h2>
 <p>Go to <a href="https://issues.apache.org/jira/secure/project/ViewProject.jspa?pid=12310100">Admin</a> section on the FELIX JIRA and mark the Y.Z version as released - create version Y.Z+1, if that hasn't already been done.</p>
 <h2 id="create-an-announcement">Create an Announcement</h2>
-<div class="codehilite"><pre>To: &quot;Felix Users List&quot; <span class="nt">&lt;users</span><span class="err">@felix.apache.org</span><span class="nt">&gt;</span>
+<div class="codehilite"><pre>To: &quot;Felix Users List&quot; &lt;users@felix.apache.org&gt;
 Subject: [ANN] Felix XXX version Y.Z Released
 
 The Felix team is pleased to announce the release of Felix XXX version Y.Z
 
-<span class="err">&lt;</span><span class="nt">&lt;insert</span> <span class="err">short</span> <span class="err">description</span> <span class="err">of</span> <span class="err">the</span> <span class="err">sub-project</span><span class="nt">&gt;</span>&gt;
+&lt;&lt;insert short description of the sub-project&gt;&gt;
 
   http://felix.apache.org/site/apache-felix-XXX.html
 
 This release is available from http://felix.apache.org/site/downloads.cgi and Maven:
 
-  <span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.XXX<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>Y.Z<span class="nt">&lt;/version&gt;</span>
-  <span class="nt">&lt;/dependency&gt;</span>
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+    &lt;artifactId&gt;org.apache.felix.XXX&lt;/artifactId&gt;
+    &lt;version&gt;Y.Z&lt;/version&gt;
+  &lt;/dependency&gt;
 
 Release Notes:
 
-<span class="err">&lt;</span><span class="nt">&lt;insert</span> <span class="err">release</span> <span class="err">notes</span> <span class="err">in</span> <span class="err">text</span> <span class="err">format</span> <span class="err">from</span> <span class="err">JIRA</span><span class="nt">&gt;</span>&gt;
+&lt;&lt;insert release notes in text format from JIRA&gt;&gt;
 
 Enjoy!
 
@@ -300,70 +335,43 @@ Enjoy!
 
 
 <p>Remember to forward this announcement to <code>users@felix.apache.org</code> - try not to cross-post (CC:) announcements to both user and dev lists.</p>
-<p><em>Remind Richard about this release when he writes the next board report ;)</em></p>
+<p><em>Remind Felix about this release when he writes the next board report ;)</em></p>
 <h2 id="appendix-a-create-and-add-your-key-to-httpwwwapacheorgdistfelixkeys">Appendix A: create and add your key to http://www.apache.org/dist/felix/KEYS</h2>
-<p>If you are using a <em>nix system with a working OpenSSH, GnuPG, and bash you can create and add your own key with the following command:
-1. </em>Create a public/private pair key*:</p>
-<div class="codehilite"><pre><span class="n">gpg</span> <span class="o">--</span><span class="n">gen</span><span class="o">-</span><span class="n">key</span>
+<p>If you are using a *nix system with a working OpenSSH, GnuPG, and bash you can create and add your own key with the following command:</p>
+<div class="codehilite"><pre><span class="nv">$ </span>gpg --gen-key
 </pre></div>
 
 
-<p>When gpg asks for e-mail linked the key you  <em>MUST USE</em> the <committer>@apache.org one
-  When gpg asks for comment linked the key you <em>SHOULD USE</em> "CODE SIGNING KEY"
-1. <em>Add the key to</em> http://www.apache.org/dist/felix/KEYS: type the following command replacing the word e-mail with your Apache's one (<committer>@apache.org). </p>
-<div class="codehilite"><pre><span class="p">(</span><span class="n">gpg</span> <span class="o">--</span><span class="n">list</span><span class="o">-</span><span class="n">sigs</span> <span class="n">e</span><span class="o">-</span><span class="n">mail</span> <span class="o">&amp;&amp;</span> <span class="n">gpg</span> <span class="o">--</span><span class="n">export</span> <span class="o">--</span><span class="n">armor</span> <span class="n">e</span><span class="o">-</span><span class="n">mail</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">toadd</span><span class="o">.</span><span class="n">key</span>
-<span class="n">scp</span> <span class="n">toadd</span><span class="o">.</span><span class="n">key</span> <span class="n">people</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org:</span>
-<span class="n">ssh</span> <span class="n">people</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span> <span class="s">&quot;cat toadd.key &gt;&gt; /x1/www/www.apache.org/dist/felix/KEYS&quot;</span>
+<p>When gpg asks for e-mail linked the key you <em>MUST USE</em> the <committer>@apache.org one.
+When gpg asks for comment linked the key you <em>SHOULD USE</em> "CODE SIGNING KEY".</p>
+<p>Second, <em>Add the key to</em> (https://dist.apache.org/repos/dist/release/felix/KEYS): type the following command replacing the word e-mail with your Apache's one (<committer>@apache.org). To update you have to checkout the Felix
+dist release repository (you also need this to publish a release): </p>
+<div class="codehilite"><pre><span class="nv">$ </span><span class="o">(</span>gpg --list-sigs e-mail <span class="o">&amp;&amp;</span> gpg --export --armor e-mail<span class="o">)</span> &gt; toadd.key
+<span class="nv">$ </span>svn checkout https://dist.apache.org/repos/dist/release/felix felix-dist
+<span class="nv">$ </span>cat toadd.key &gt;&gt; felix-dist/KEYS
+<span class="nv">$ </span>scn commit -m<span class="s2">&quot;KEYS += &lt;committer&gt;&quot;</span> felix-dist/KEYS
 </pre></div>
 
 
-<ol>
-<li>You are now <em>DONE</em>, but to see the changes on http://www.apache.org/dist/felix/KEYS you must wait 2 hours</li>
-</ol>
+<p>You are now <em>DONE</em> and the changes are visible on http://www.apache.org/dist/felix/KEYS.</p>
 <h2 id="appendix-b-preparing-releases-on-mac-os-x">Appendix B: preparing releases on Mac OS X</h2>
 <p>When running the <code>mvn release:prepare</code> command on Mac OS X, you might see the following error:</p>
-<div class="codehilite"><pre><span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Working</span> <span class="n">directory:</span> <span class="sr">/homedir/</span><span class="n">dev</span><span class="sr">/felix/</span><span class="n">dependencymanager</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="o">------------------------------------------------------------------------</span>
-<span class="p">[</span><span class="n">ERROR</span><span class="p">]</span> <span class="n">BUILD</span> <span class="n">FAILURE</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="o">------------------------------------------------------------------------</span>
-<span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">commit</span> <span class="n">files</span>
-<span class="n">Provider</span> <span class="n">message:</span>
-<span class="n">The</span> <span class="n">svn</span> <span class="n">command</span> <span class="n">failed</span><span class="o">.</span>
-<span class="n">Command</span> <span class="n">output:</span>
-<span class="n">svn:</span> <span class="n">Commit</span> <span class="n">failed</span> <span class="p">(</span><span class="n">details</span> <span class="n">follow</span><span class="p">):</span>
-<span class="n">svn:</span> <span class="n">MKACTIVITY</span> <span class="n">of</span> <span class="s">&#39;/repos/asf/!svn/act/4f11ad5d-9161-0410-b4dd-cb727141ea8c&#39;</span><span class="p">:</span> <span class="n">authorization</span> <span class="n">failed</span> <span class="p">(</span><span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="p">){</span><span class="n">code</span><span class="p">}</span>
-
-<span class="n">This</span> <span class="n">is</span> <span class="n">due</span> <span class="n">to</span> <span class="n">a</span> <span class="n">bug</span> <span class="n">in</span> <span class="n">Subversion</span> <span class="n">on</span> <span class="n">the</span> <span class="n">Mac</span><span class="p">,</span> <span class="n">as</span> <span class="n">described</span> <span class="n">by</span> <span class="n">Brett</span> <span class="n">Porter</span> <span class="n">in</span> <span class="n">his</span> <span class="p">[</span><span class="n">blog</span><span class="o">|</span><span class="n">http:</span><span class="sr">//</span><span class="n">blogs</span><span class="o">.</span><span class="n">exist</span><span class="o">.</span><span class="n">com</span><span class="sr">/bporter/</span><span class="mi">2008</span><span class="sr">/02/</span><span class="mi">25</span><span class="sr">/working-around-non-interactive-problems-in-leopards-subversion/</span><span class="p">]</span><span class="o">.</span> <span class="n">He</span> <span class="n">proposes</span> <span class="n">putting</span> <span class="n">an</span> <span class="s">&quot;svn&quot;</span> <span class="n">script</span> <span class="n">at</span> <span class="n">the</span> <span class="n">head</span> <span class="n">of</span> <span class="n">your</span> <span class="n">path</span> <span class="n">to</span> <span class="n">fix</span> <span class="n">the</span> <span class="n">issue</span><span class="o">.</span>
-
-<span class="n">h2</span><span class="o">.</span> <span class="n">Appendix</span> <span class="n">C:</span> <span class="n">deploying</span> <span class="n">bundles</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Felix</span> <span class="n">OBR</span>
-
-<span class="n">If</span> <span class="n">you</span><span class="err">&#39;</span><span class="n">re</span> <span class="n">releasing</span> <span class="n">bundles</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">also</span> <span class="n">add</span> <span class="n">them</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Felix</span> <span class="n">Release</span> <span class="n">OBR</span><span class="o">.</span> <span class="n">To</span> <span class="k">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">execute</span> <span class="n">the</span> <span class="n">following</span> <span class="n">command:</span>
+<div class="codehilite"><pre>[INFO] Working directory: /homedir/dev/felix/dependencymanager
+[INFO] ------------------------------------------------------------------------
+[ERROR] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Unable to commit files
+Provider message:
+The svn command failed.
+Command output:
+svn: Commit failed (details follow):
+svn: MKACTIVITY of &#39;/repos/asf/!svn/act/4f11ad5d-9161-0410-b4dd-cb727141ea8c&#39;: authorization failed (https://svn.apache.org){code}
 </pre></div>
 
 
-<p>mvn clean install \
-    org.apache.felix:maven-bundle-plugin:deploy \
-    -DprefixUrl=http://repo1.maven.org/maven2 \
-    -DremoteOBR=releases.xml \
-    -DaltDeploymentRepository=apache.website::default::scp://people.apache.org/www/felix.apache.org/obr</p>
-<div class="codehilite"><pre><span class="n">The</span> <span class="p">[</span><span class="n">http:</span><span class="sr">//</span><span class="n">felix</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/obr/</span><span class="n">releases</span><span class="o">.</span><span class="n">xml</span><span class="p">]</span> <span class="n">page</span> <span class="n">is</span> <span class="n">automatically</span> <span class="n">updated</span> <span class="n">during</span> <span class="n">the</span> <span class="n">web</span> <span class="n">site</span> <span class="n">synchronization</span><span class="o">.</span>
-<span class="o">*</span><span class="n">Note</span><span class="o">*</span><span class="p">:</span> <span class="n">the</span> <span class="n">project</span> <span class="n">building</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">must</span> <span class="k">use</span> <span class="n">the</span> <span class="p">[</span><span class="n">maven</span><span class="o">-</span><span class="n">bundle</span><span class="o">-</span><span class="n">plugin</span><span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Maven</span> <span class="n">Bundle</span> <span class="n">Plugin</span> <span class="p">(</span><span class="n">BND</span><span class="p">)]</span> <span class="ow">and</span> <span class="k">use</span> <span class="n">a</span> <span class="n">version</span> <span class="n">superior</span> <span class="ow">or</span> <span class="n">equal</span> <span class="n">to</span> <span class="mf">1.4.2</span><span class="o">.</span>
-<span class="o">*</span><span class="n">Note</span><span class="o">*</span><span class="p">:</span> <span class="n">with</span> <span class="n">Maven</span> <span class="mi">3</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">add</span> <span class="n">an</span> <span class="n">extension</span> <span class="n">to</span> <span class="n">your</span>  <span class="n">providing</span> <span class="n">the</span> <span class="n">SCP</span><span class="o">/</span><span class="n">SSH</span> <span class="n">protocol:</span>
-</pre></div>
-
-
-<p><build>
-...
-  <extensions>
-   <extension>
-     <groupId>org.apache.maven.wagon</groupId>
-     <artifactId>wagon-ssh</artifactId>
-     <version>1.0-beta-6</version>
-   </extension>
-   </extensions><br />
-</build></p>
+<p>This is due to a bug in Subversion on the Mac, as described by Brett Porter in his [blog|http://blogs.exist.com/bporter/2008/02/25/working-around-non-interactive-problems-in-leopards-subversion/]. He proposes putting an "svn" script at the head of your path to fix the issue.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1432021 by fmeschbe on Fri, 11 Jan 2013 12:47:11 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
