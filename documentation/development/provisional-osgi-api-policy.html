@@ -67,15 +67,9 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/provisional-osgi-api-policy.html" target="felix_cwiki">/site/provisional-osgi-api-policy.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
       
       <h1>Provisional OSGi API Policy</h1>
-      <h1 id="provisional-osgi-api-policy">Provisional OSGi API policy</h1>
-<h2 id="overview">Overview</h2>
+      <h2 id="overview">Overview</h2>
 <p>The OSGi Alliance exposes provisional API through draft specification releases. Additionally, some Felix contributors work for OSGi Alliance member companies and have access to provisional OSGi API. Often, Felix subprojects want to experiment with and/or implement provisional OSGi API. In some cases, Felix subprojects may actually be the reference implementation for the specification in question. This creates potentially confusing or questionable situations.</p>
 <p>For example, if a Felix subproject is released with provisional OSGi API, downstream users may not be aware that the contained API is not final OSGi API. They may mistakenly confer "official" status on it, since it is contained in an "official" Apache release. Further, the ability to implement OSGi specifications is based on creating compliant implementations. Since it is not really possible to be compliant with a provisional specification, the status of such implementations is sort of a gray area.</p>
 <p>To deal with these situations, this document describes the policy for handling provisional OSGi API in Felix subprojects.</p>
@@ -88,11 +82,19 @@
 <li>All Felix provisional API must be marked as deprecated.</li>
 <li>All Felix provisional API exported from bundles should be exported with a mandatory attribute of <code>status="provisional"</code>.</li>
 </ol>
+<p>For example to provisionally export the <code>org.apache.felix.service.metatype</code> package, the
+<code>Export-Package</code> statement would look something like this:</p>
+<div class="codehilite"><pre><span class="nt">&lt;Export-Package&gt;</span>
+  org.apache.felix.service.metatype; version=&quot;0.1&quot;; mandatory=&quot;status&quot;; status=&quot;provisional&quot;
+<span class="nt">&lt;/Export-Package&gt;</span>
+</pre></div>
+
+
 <p>When working with new specifications, this will likely result in parallel package structures between the provisional OSGi and Felix APIs. When working with existing specifications, it may be necessary to create extensions to existing OSGi interfaces in the Felix package namespace.</p>
 <h2 id="policy-rationale">Policy rationale</h2>
 <p>The first goal of this policy is to completely avoid using provisional OSGi API given the potential confusion and questions by doing so. The second goal is to make the existence of any Felix provisional API completely obvious to downstream users and make it difficult for them to use it unknowingly. This latter goal gives us the ability to still "release early and often", but without being required to maintain backward compatibility on provisional APIs.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1432570 by fmeschbe on Sun, 13 Jan 2013 09:58:04 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
