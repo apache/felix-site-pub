@@ -67,19 +67,22 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/using-the-osgi-compliance-tests.html" target="felix_cwiki">/site/using-the-osgi-compliance-tests.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
       
       <h1>Using the OSGi Compliance Tests</h1>
-      <h1 id="using-the-osgi-complaince-tests">Using the OSGi Complaince Tests</h1>
-<p>The OSGi Alliance now provides Apache committers access to its Compliance Tests (CT). This page describes how to get access to the CTs and how to use them with Felix subprojects.</p>
+      <p>The OSGi Alliance now provides Apache committers access to its Compliance Tests (CT). This
+page describes how to get access to the CTs and how to use them with Felix subprojects.</p>
 <h2 id="gaining-access-to-osgi-cts">Gaining Access to OSGi CTs</h2>
-<p>The general process is to send a request to the jcp-open@apache.org mailing requesting access. Since redistributing the OSGi CTs is not allowed, you will need to submit an <a href="http://www.apache.org/jcp/ApacheNDA.pdf">NDA</a> to be granted access to the [SVN repo|https://svn.apache.org/repos/tck/osgi-cts] containing the binaries.</p>
+<p>The general process is to send a request to the jcp-open@apache.org mailing requesting
+access. Since redistributing the OSGi CTs is not allowed, you will need to submit an 
+<a href="http://www.apache.org/jcp/ApacheNDA.pdf">NDA</a> to be granted access to the 
+<a href="https://svn.apache.org/repos/tck/osgi-cts">SVN repo</a> containing the binaries.</p>
 <h2 id="osgi-ct-overview">OSGi CT Overview</h2>
-<p>The CT is delivered as two JAR files, one for the core CT and one for the compendium CT. Each JAR file is composed of several other JAR files, which are the actual compliance tests. Typically, there is one JAR per specification, except for the OSGi framework. The CT uses BND as its testing harness, which in turn uses the OSGi R4.2 framework launching and embedding API to configure, launch, and install test bundles. Each test JAR file has an associated BND file which supplies the configuration BND needs to run the associated tests.</p>
+<p>The CT is delivered as two JAR files, one for the core CT and one for the compendium CT.
+Each JAR file is composed of several other JAR files, which are the actual compliance
+tests. Typically, there is one JAR per specification, except for the OSGi framework. The
+CT uses BND as its testing harness, which in turn uses the OSGi R4.2 framework launching
+and embedding API to configure, launch, and install test bundles. Each test JAR file has
+an associated BND file which supplies the configuration BND needs to run the associated tests.</p>
 <h2 id="modifying-the-bnd-files">Modifying the BND files</h2>
 <p>Modifying the BND files is fairly straightforward. A typical BND file looks like this:</p>
 <div class="codehilite"><pre><span class="c1"># bnd pack for project org.osgi.test.cases.startlevel</span>
@@ -109,9 +112,11 @@
 <li><code>-runbundles</code> specifies the bundles to install for the tests.</li>
 <li><code>-runproperties</code> specifies configuration properties to pass into the framework.</li>
 </ul>
-<p>The following two examples show how to edit these files for the Felix framework and Felix bundle subprojects.</p>
+<p>The following two examples show how to edit these files for the Felix framework and Felix
+bundle subprojects.</p>
 <h2 id="testing-the-felix-framework">Testing the Felix framework</h2>
-<p>The Felix framework is tested against the core CT. The first thing to do is extract the core CT JAR file, which includes test suites for:</p>
+<p>The Felix framework is tested against the core CT. The first thing to do is extract the core
+CT JAR file, which includes test suites for:</p>
 <ul>
 <li>Framework core (mandatory)</li>
 <li>Framework security (optional)</li>
@@ -123,14 +128,19 @@
 <li>Permission Admin (optional)</li>
 <li>Conditional Permission Admin (optional)</li>
 </ul>
-<p>For each of the associated BND files, the <code>-runpath</code> needs to be edited to refer to the Felix framework; each one should look something like this after editing:</p>
+<p>For each of the associated BND files, the <code>-runpath</code> needs to be edited to refer to the Felix
+framework; each one should look something like this after editing:</p>
 <div class="codehilite"><pre><span class="o">-</span><span class="n">runpath</span> <span class="o">=</span> <span class="o">\</span>
     <span class="sr">/path/</span><span class="n">to</span><span class="sr">/felix/</span><span class="n">framework</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">-</span><span class="mf">2.0.2</span><span class="o">.</span><span class="n">jar</span><span class="p">;</span><span class="n">version</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="o">\</span>
     <span class="n">jar</span><span class="o">/</span><span class="n">com</span><span class="o">.</span><span class="n">springsource</span><span class="o">.</span><span class="n">junit</span><span class="o">-</span><span class="mf">3.8.2</span><span class="o">.</span><span class="n">jar</span><span class="p">;</span><span class="n">version</span><span class="o">=</span><span class="n">file</span><span class="p">;</span><span class="n">export</span><span class="o">=</span><span class="s">&quot;junit.framework;version=3.8&quot;</span>
 </pre></div>
 
 
-<p>Typically, it is not necessary to change anything else in the BND files and it is normal that the <code>-runbundles</code> setting is empty, since there are no additional bundles associated with testing the framework. The exception to this is for the framework test suites for security. To test with security enabled, you will need to add the framework security provider in <code>-runbundles</code> like this:</p>
+<p>Typically, it is not necessary to change anything else in the BND files and it is normal that
+the <code>-runbundles</code> setting is empty, since there are no additional bundles associated with
+testing the framework. The exception to this is for the framework test suites for security.
+To test with security enabled, you will need to add the framework security provider in
+<code>-runbundles</code> like this:</p>
 <div class="codehilite"><pre><span class="o">-</span><span class="n">runbundles</span> <span class="o">=</span> <span class="o">\</span>
     <span class="sr">/path/</span><span class="n">to</span><span class="sr">/felix/</span><span class="n">framework</span><span class="o">.</span><span class="n">security</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">security</span><span class="o">-</span><span class="mf">1.0.0</span><span class="o">.</span><span class="n">jar</span><span class="o">.</span><span class="n">jar</span><span class="p">;</span><span class="n">version</span><span class="o">=</span><span class="n">file</span>
 </pre></div>
@@ -142,21 +152,29 @@
 
 
 <p>This will run all test suites for all BND files. To run a specific test suite, do the following:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">jar</span><span class="o">/</span><span class="n">bnd</span><span class="o">.</span><span class="n">jar</span> <span class="n">runtests</span> <span class="o">-</span><span class="n">title</span> <span class="n">osgi</span><span class="o">.</span><span class="n">ct</span> <span class="sr">&lt;bnd-file&gt;</span>
+<div class="codehilite"><pre><span class="nv">$ </span>java -jar jar/bnd.jar runtests -title osgi.ct &lt;bnd-file&gt;
 </pre></div>
 
 
 <p>Where <code>&lt;bnd-file&gt;</code> specifies one or more BND files associated with the desired test suites.</p>
 <div class="note" markdown="1">
-**Be Aware**
-Tests for native code loading will fail on Java 6, so do not use this JDK for testing the framework.
+<b>Be Aware</b>
+Tests for native code loading will fail on Java 6, so do not use this JDK for testing the
+framework.
 </div>
 
-<p>Reports for the tests suites are generated in the <code>reports/</code> subdirectory and are named after the appropriate test suite.</p>
+<p>Reports for the tests suites are generated in the <code>reports/</code> subdirectory and are named
+after the appropriate test suite.</p>
 <h2 id="testing-a-felix-bundle">Testing a Felix bundle</h2>
-<p>The core CT tests the framework implementation and its related services. The compendium CT tests the various non-framework-related specifications, which are implemented as bundles. For the most part, testing a bundle is similar to testing the framework.</p>
-<p>Extract the compendium CT JAR file to access the individual test suites. Since most compendium service specification test suites require security, it is necessary to use a framework implementation that supports security. For the Felix framework, you will have to add the security provider to the <code>-runbundles</code> to enable security. </p>
-<p>For example, to test Felix' Event Admin bundle, edit the <code>-runbundles</code> setting in <code>org.osgi.test.cases.event.bnd</code> to look something like this:</p>
+<p>The core CT tests the framework implementation and its related services. The compendium CT
+tests the various non-framework-related specifications, which are implemented as bundles. For
+the most part, testing a bundle is similar to testing the framework.</p>
+<p>Extract the compendium CT JAR file to access the individual test suites. Since most compendium
+service specification test suites require security, it is necessary to use a framework
+implementation that supports security. For the Felix framework, you will have to add the
+security provider to the <code>-runbundles</code> to enable security. </p>
+<p>For example, to test Felix' Event Admin bundle, edit the <code>-runbundles</code> setting in
+<code>org.osgi.test.cases.event.bnd</code> to look something like this:</p>
 <div class="codehilite"><pre><span class="o">-</span><span class="n">runbundles</span> <span class="o">=</span> <span class="o">\</span>
     <span class="sr">/path/</span><span class="n">to</span><span class="sr">/felix/</span><span class="n">eventadmin</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">eventadmin</span><span class="o">-</span><span class="mf">1.0.0</span><span class="o">.</span><span class="n">jar</span><span class="p">;</span><span class="n">version</span><span class="o">=</span><span class="n">file</span><span class="p">,</span><span class="o">\</span>
     <span class="sr">/path/</span><span class="n">to</span><span class="sr">/felix/</span><span class="n">framework</span><span class="o">.</span><span class="n">security</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">security</span><span class="o">-</span><span class="mf">1.0.0</span><span class="o">.</span><span class="n">jar</span><span class="o">.</span><span class="n">jar</span><span class="p">;</span><span class="n">version</span><span class="o">=</span><span class="n">file</span>
@@ -169,15 +187,19 @@ Tests for native code loading will fail on Java 6, so do not use this JDK for te
 
 
 <p>This will run all test suites for all BND files. To run a specific test suite, do the following:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">jar</span><span class="o">/</span><span class="n">bnd</span><span class="o">.</span><span class="n">jar</span> <span class="n">runtests</span> <span class="o">-</span><span class="n">title</span> <span class="n">osgi</span><span class="o">.</span><span class="n">ct</span> <span class="sr">&lt;bnd-file&gt;</span>
+<div class="codehilite"><pre><span class="nv">$ </span>java -jar jar/bnd.jar runtests -title osgi.ct &lt;bnd-file&gt;
 </pre></div>
 
 
-<p>Where <code>&lt;bnd-file&gt;</code> specifies one or more BND files associated with the desired test suites. Reports for the tests suites are generated in the <code>reports/</code> subdirectory and are named after the appropriate test suite.</p>
+<p>Where <code>&lt;bnd-file&gt;</code> specifies one or more BND files associated with the desired test suites.
+Reports for the tests suites are generated in the <code>reports/</code> subdirectory and are named
+after the appropriate test suite.</p>
 <h2 id="feedback">Feedback</h2>
-<p>For any questions or feedback, subscribe to the Felix developers mailing list by sending a message to <a href="">dev-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [dev@felix.apache.org|mailto:dev@felix.apache.org].</p>
+<p>For any questions or feedback, subscribe to the Felix developers mailing list by sending a
+message to <a href="mailto:dev-subscribe@felix-apache-org">dev-subscribe@felix.apache.org</a>; after
+subscribing, email questions or feedback to <a href="mailto:dev@felix.apache.org">dev@felix.apache.org</a>.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1438131 by fmeschbe on Thu, 24 Jan 2013 19:20:38 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
