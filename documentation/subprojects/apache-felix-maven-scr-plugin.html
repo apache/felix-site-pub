@@ -67,15 +67,10 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/apache-felix-maven-scr-plugin.html" target="felix_cwiki">/site/apache-felix-maven-scr-plugin.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
       
       <h1>Apache Felix Maven SCR Plugin</h1>
       <p>The Apache Felix Maven SCR Plugin is a great tool to ease the development of OSGi components and services. Components and services are defined through annotations and the plugin creates the necessary descriptors for the OSGi Declarative Services, Config Admin and Metatype services. Starting with version 1.4.0 of the plugin, OSGi Declarative Services versions 1.0 and 1.1 are supported.</p>
-<p>Make sure to see the <a href="">FAQ</a> for known problems.</p>
+<p>Make sure to see the <a href="/documentation/faqs/apache-felix-scr-plugin-faq.html">FAQ</a> for known problems.</p>
 <h2 id="introduction">Introduction</h2>
 <p>In OSGi based systems functionality is mainly provided through services. Unlike traditional systems but comparable to Spring, a service is not reqiured to implement a framework defined interface. Instead services implement one or more interfaces, which stipulate the type of service provided. It is the lifetime of the bundle, which defines the lifetime of the service: A service object may be instantiated when the bundle is started and will automatically be removed when the bundle is stopped (and the service has not already been unregistered).</p>
 <p>Usually, the functionality of a bundle - be it the packages exported or be it the services provided - is made available to the rest of the system, when the bundle is started. To give the bundle a change to take action, a bundle may declare a <code>BundleActivator</code> class in the <code>Bundle-Activato</code> manifest header of the bundle. When the bundle is started, the <code>start(BundleContext)</code> method is called, while the <code>stop(BundleContext)</code> method is called when the bundle is stopped. These methods are one place to instantiate and register services with the service registry.</p>
@@ -84,25 +79,31 @@
 <p>Components are declared using XML configuration files contained in the respective bundle and listed in the <code>Service-Component</code> bundle manifest header. These configuration files may be handwritten and registered. To support automatic generation of the component descriptors, the Maven SCR Plugin helps in the generation of these files by means of JavaDoc tags embedded in the Java source code of the components.</p>
 <p>Related to declarative services is configuration support. To support configuration of services and components, OSGi provides the Configuration Admin Service Specification. This specification defines a service, which is the center of providing configuration to services and components. As such the Configuration Admin Service cares for storing configuration and deliver the configuration automatically or on-demand to clients. Configuration objects are identified by so-called Persistent Identifiers (PID) and are bound to bundles when used. For services implementing the special <code>ManagedService</code> or <code>ManagedServiceFactory</code> interfaces the PID has to be provided in the service properties as a property with the name <code>service.pid</code>. For Declarative Services, the name of the component is used as the PID to retrieve the configuration from the Configuration Admin Service.</p>
 <p>The Configuration Admin Service not only allows components to get or retrieve configuration, it also provides the entry point for Management Agents to retrieve and update configuration data. To help building Management Agents the OSGi Metatype Service Specification defines a descripton model which may be used to describe data used by components and services. The configuration properties and meta type description for a given PID together are used to build the user interface to configure the service and/or component.</p>
-<p>To summarize:
-1. <em>Declarative Services</em> provides a means to define components (and services) through one or more XML files. Each component may get default configuration from its own definition.
-1. The <em>Configuration Admin Service</em> provides functionality to provide configuration to components and services as well as to support management tools to update (and create) configuration data.
-1. The <em>Metatype Service</em> provides a description suitable for management tools to manage configurations provided by the Configuration Admin Service. The descriptions of the data is provided in one or more XML files and associated languag binding files.</p>
+<p>To summarize:</p>
+<ol>
+<li><em>Declarative Services</em> provides a means to define components (and services) through one or more XML files. Each component may get default configuration from its own definition.</li>
+<li>The <em>Configuration Admin Service</em> provides functionality to provide configuration to components and services as well as to support management tools to update (and create) configuration data.</li>
+<li>The <em>Metatype Service</em> provides a description suitable for management tools to manage configurations provided by the Configuration Admin Service. The descriptions of the data is provided in one or more XML files and associated languag binding files.</li>
+</ol>
 <h2 id="where-to-go-from-here">Where to go from here</h2>
 <ul>
-<li>[})</li>
-<li>[})</li>
-<li>[})</li>
-<li>[})</li>
-<li>[})</li>
+<li><a href="/documentation/subprojects/apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Using the Apache Felix Maven SCR Plugin to generate Declarative Services and Metatype Service descriptors during a Maven Build</a></li>
+<li><a href="/documentation/subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Using the Apache Felix SCR Ant Task to generate Declarative Services and Metatype Service descriptors during an Ant driven Build.</a></li>
+<li><a href="/documentation/subprojects/apache-felix-maven-scr-plugin/scr-annotations.html">Using Java 5 Annotations to describe the component or service.</a></li>
+<li><a href="/documentation/subprojects/apache-felix-maven-scr-plugin/scr-javadoc-tags.html">Using JavaDoc Tags to describe the component or service.</a></li>
+<li><a href="/documentation/subprojects/apache-felix-maven-scr-plugin/extending-scr-annotations.html">How add new Annotations extending the base Annotations</a></li>
 </ul>
 <h2 id="differences-between-javadoc-tags-and-annotations">Differences between JavaDoc tags and annotations</h2>
-<p>In general both mechanisms provide the same functionality. There are some subtle difference which are listed in this section:
-<em> While the <code>metatype</code> flag is turned on by default for the JavaDoc tags, the default for the annotations is to generate no metadata. The reason for this is, that it turned out that services with metadata are less often used.
-</em> The JavaDoc support adds properties and references from super classes if the source is in the same module to a component even if the super class does not have the <code>@scr.component</code> tag. With the annotations the super class is required to have the <code>Component</code> annotation.
-* Property values are handled differently. While the JavaDoc version has an auto detection of types together with an explicit type parameter, the annotations version has several attributes. Each type has its own attribute (like <code>shortValue</code>, <code>intValue</code> and so on). This is because of a limitation in the Java annotations which only allow typed parameters.</p>
+<p>In general both mechanisms provide the same functionality. There are some subtle difference which are listed in this section:</p>
+<ul>
+<li>JavaDoc tags are not supported in recent versions of the plugin. New features
+will only be implemented as annotations.</li>
+<li>While the <code>metatype</code> flag is turned on by default for the JavaDoc tags, the default for the annotations is to generate no metadata. The reason for this is, that it turned out that services with metadata are less often used.</li>
+<li>The JavaDoc support adds properties and references from super classes if the source is in the same module to a component even if the super class does not have the <code>@scr.component</code> tag. With the annotations the super class is required to have the <code>Component</code> annotation.</li>
+<li>Property values are handled differently. While the JavaDoc version has an auto detection of types together with an explicit type parameter, the annotations version has several attributes. Each type has its own attribute (like <code>shortValue</code>, <code>intValue</code> and so on). This is because of a limitation in the Java annotations which only allow typed parameters.</li>
+</ul>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1438983 by fmeschbe on Sat, 26 Jan 2013 22:54:42 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

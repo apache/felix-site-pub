@@ -67,105 +67,427 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/scr-javadoc-tags.html" target="felix_cwiki">/site/scr-javadoc-tags.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
       
       <h1>SCR JavaDoc Tags</h1>
-      <p>The <code>scr</code> goal of the <code>maven-scr-plugin</code> looks for the following JavaDoc tags when building component descriptors:
-<em> <code>[scr.component]()</code>
-</em> <code>[scr.property]()}}
-*</code><a href="">scr.service</a><code>*</code><a href="">scr.reference</a>`</p>
-<h3 id="scrcomponent">scr.component</h3>
+      <div class="note">
+JavaDoc tags are not supported since the Maven SCR Plugin 1.8.0 because
+annotations are a much more powerful instrument allowing
+for type safety or supporting JVM based languages such as Groovy and Scala.
+This page exists to define the support for JavaDoc tags upto Maven SCR
+Plugin version 1.7.4.
+</div>
+
+<p>The <code>scr</code> goal of the <code>maven-scr-plugin</code> looks for the following JavaDoc tags when building component descriptors:</p>
+<ul>
+<li><a href="#scrcomponent">scr.component</a></li>
+<li><a href="#scrproperty">scr.property</a></li>
+<li><a href="#scrservice">scr.service</a></li>
+<li><a href="#scrreference">scr.reference</a></li>
+</ul>
+<h2 id="scrcomponent">scr.component</h2>
 <p>The <code>scr.component</code> tag is the only required tag. If this tag is not declared in the Java class comment, the class is not declared as a component.</p>
 <p>This tag is used to declare the <code>&lt;component&gt;</code> element of the component declaration. See section 112.4.3, Component Element, in the OSGi Service Platform Service Compendium Specification for more information. The required <code>&lt;implementation&gt;</code> element is automatically generated with the fully qualified name of the class containing the <code>scr.component</code> tag.</p>
-<p>Supported parameters:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>SCR</em> | <em>Metatype</em> | <em>Description</em> |
-| name | Fully qualified name of the Java class | no | <code>component.name</code> | <code>OCD.id</code> | Defines the Component name also used as the PID for the Configuration Admin Service |
-| ds | <code>true</code> | no | --  | --  | Whether Declarative Services descriptor is generated or not. If this parameter is not set or set to <code>true</code> the Declarative Services descriptor is generated in the service descriptor file for this component. Otherwise no Declarative Services descriptor is generated for this component. |
-| abstract | see description | no | --  | --  | This marks an abstract service description which is not added to the descriptor but intended for reuse through inheritance. This attribute defaults to <code>true</code> for abstract classes and <code>false</code> for concrete classes. |
-| enabled | <code>true</code> | no | <code>component.enabled</code> | --  | Whether the component is enabled when the bundle starts |
-| factory | --  | no | <code>component.factory</code> | --  | Whether the component is a factory component |
-| immediate | --  | no | <code>component.immediate</code> | --  | Whether the component is immediately activated |
-| inherit | <code>true</code> | no | --  | --  | Whether any service, property and reference declarations from base classes should be inherited by this class. |
-| metatype | <code>true</code> | no | --  | --  | Whether Metatype Service data is generated or not. If this parameter is not set or set to <code>true</code> Metatype Service data is generated in the <code>metatype.xml</code> file for this component. Otherwise no Metatype Service data is generated for this component. |
-| label | <code>%&lt;name&gt;.name</code> | no | --  | <code>OCD.name</code> | This is generally used as a title for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name. |
-| description | <code>%&lt;name&gt;.name</code> | no | --  | <code>OCD.description</code> | This is generally used as a description for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name. |
-| create-pid | <code>true</code> | no | <code>service.pid</code> | --  | Generate the <code>service.pid</code> property if non is declared. |
-| configurationFactory | <code>false</code> | no | -- | <code>Designate.factoryPid</code> | Is this a configuration factory? (since 1.4.0) |</p>
-<p>The follwing attributes are supported since version 1.4.0 of the plugin and required a Declarative Service implementation 1.1:
-| policy | <code>OPTIONAL</code> | no | component.policy | -- | The configuration policy for this component: <code>optional</code>, <code>ignore</code>, or <code>require</code> (use lower case words) |
-| activate | <code>activate</code> | no | component.activate | -- | The name of the component activation method. |
-| deactivate | <code>deactivate</code> | no | component.deactivate | -- | The name of the component deactivation method. |
-| modified | -- | no | component.modified | -- | The name of the component modified method. |</p>
-<h4 id="abstract-service-descriptions">Abstract Service Descriptions</h4>
+<p>Supported parameters:</p>
+<table>
+<thead>
+<tr>
+<th><em>Name</em></th>
+<th><em>Default Value</em></th>
+<th><em>Required</em></th>
+<th><em>SCR</em></th>
+<th><em>Metatype</em></th>
+<th><em>Description</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>Fully qualified name of the Java class</td>
+<td>no</td>
+<td><code>component.name</code></td>
+<td><code>OCD.id</code></td>
+<td>Defines the Component name also used as the PID for the Configuration Admin Service</td>
+</tr>
+<tr>
+<td>ds</td>
+<td><code>true</code></td>
+<td>no</td>
+<td>--</td>
+<td>--</td>
+<td>Whether Declarative Services descriptor is generated or not. If this parameter is not set or set to <code>true</code> the Declarative Services descriptor is generated in the service descriptor file for this component. Otherwise no Declarative Services descriptor is generated for this component.</td>
+</tr>
+<tr>
+<td>abstract</td>
+<td>see description</td>
+<td>no</td>
+<td>--</td>
+<td>--</td>
+<td>This marks an abstract service description which is not added to the descriptor but intended for reuse through inheritance. This attribute defaults to <code>true</code> for abstract classes and <code>false</code> for concrete classes.</td>
+</tr>
+<tr>
+<td>enabled</td>
+<td><code>true</code></td>
+<td>no</td>
+<td><code>component.enabled</code></td>
+<td>--</td>
+<td>Whether the component is enabled when the bundle starts</td>
+</tr>
+<tr>
+<td>factory</td>
+<td>--</td>
+<td>no</td>
+<td><code>component.factory</code></td>
+<td>--</td>
+<td>Whether the component is a factory component</td>
+</tr>
+<tr>
+<td>immediate</td>
+<td>--</td>
+<td>no</td>
+<td><code>component.immediate</code></td>
+<td>--</td>
+<td>Whether the component is immediately activated</td>
+</tr>
+<tr>
+<td>inherit</td>
+<td><code>true</code></td>
+<td>no</td>
+<td>--</td>
+<td>--</td>
+<td>Whether any service, property and reference declarations from base classes should be inherited by this class.</td>
+</tr>
+<tr>
+<td>metatype</td>
+<td><code>true</code></td>
+<td>no</td>
+<td>--</td>
+<td>--</td>
+<td>Whether Metatype Service data is generated or not. If this parameter is not set or set to <code>true</code> Metatype Service data is generated in the <code>metatype.xml</code> file for this component. Otherwise no Metatype Service data is generated for this component.</td>
+</tr>
+<tr>
+<td>label</td>
+<td><code>%&lt;name&gt;.name</code></td>
+<td>no</td>
+<td>--</td>
+<td><code>OCD.name</code></td>
+<td>This is generally used as a title for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name.</td>
+</tr>
+<tr>
+<td>description</td>
+<td><code>%&lt;name&gt;.name</code></td>
+<td>no</td>
+<td>--</td>
+<td><code>OCD.description</code></td>
+<td>This is generally used as a description for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name.</td>
+</tr>
+<tr>
+<td>create-pid</td>
+<td><code>true</code></td>
+<td>no</td>
+<td><code>service.pid</code></td>
+<td>--</td>
+<td>Generate the <code>service.pid</code> property if non is declared.</td>
+</tr>
+<tr>
+<td>configurationFactory</td>
+<td><code>false</code></td>
+<td>no</td>
+<td>--</td>
+<td><code>Designate.factoryPid</code></td>
+<td>Is this a configuration factory? (since 1.4.0)</td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are supported since version 1.4.0 of the plugin and required a Declarative Service implementation 1.1:</p>
+<table>
+<thead>
+<tr>
+<th><em>Name</em></th>
+<th><em>Default Value</em></th>
+<th><em>Required</em></th>
+<th><em>SCR</em></th>
+<th><em>Metatype</em></th>
+<th><em>Description</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>policy</td>
+<td><code>OPTIONAL</code></td>
+<td>no</td>
+<td>component.policy</td>
+<td>--</td>
+<td>The configuration policy for this component: <code>optional</code>, <code>ignore</code>, or <code>require</code> (use lower case words)</td>
+</tr>
+<tr>
+<td>activate</td>
+<td><code>activate</code></td>
+<td>no</td>
+<td>component.activate</td>
+<td>--</td>
+<td>The name of the component activation method.</td>
+</tr>
+<tr>
+<td>deactivate</td>
+<td><code>deactivate</code></td>
+<td>no</td>
+<td>component.deactivate</td>
+<td>--</td>
+<td>The name of the component deactivation method.</td>
+</tr>
+<tr>
+<td>modified</td>
+<td>--</td>
+<td>no</td>
+<td>component.modified</td>
+<td>--</td>
+<td>The name of the component modified method.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="abstract-service-descriptions">Abstract Service Descriptions</h3>
 <p>If the <code>scr.component</code> tag contains the parameter <code>abstract</code> with a value of true, the containing class is regarded as an abstract class. It is not added to the service descriptor and the tags are not validated. The information about this class is added to the bundle. Classes from other bundles (or the same) can extends this abstract class and do not need to specify the references of the abstract class if they set the <code>inherit</code> parameter on the <code>scr.component</code> tag to true.</p>
 <p>This allows to create abstract classes which already provide some valuable functionality without having to deal with the details like reference definitions in each and every subclass.</p>
-<h3 id="scrproperty">scr.property</h3>
+<h2 id="scrproperty">scr.property</h2>
 <p>The <code>scr.property</code> tag defines properties which are made available to the component through the <code>ComponentContext.getProperties()</code> method. These tags are not strictly required but may be used by components to defined initial configuration. Additionally properties may be set here to identify the component if it is registered as a service, for example the <code>service.description</code> and <code>service.vendor</code> properties.</p>
 <p>This tag may be defined in the Java Class comment of the component or in a coment to a field defining a constant with the name of the property.</p>
 <p>This tag is used to declare <code>&lt;property&gt;</code> elements of the component declaration. See section 112.4.5, Properties and Property Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
-<p>Supported parameters:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>SCR</em> | <em>Metatype</em> | <em>Description</em> |
-| name | The name of constant | yes | <code>property.name</code> | <code>AD.id</code> | The name of the property. If this tag is defined on a field with an initialization expression, the value of that expression is used as the name if the field is of type <code>String</code>. |
-| value | --  | no | <code>property.value</code> | <code>AD.default</code> | The value of the property. If the property type is not <code>String</code>, parsing of the value is done using the <code>valueOf(String)</code> method of the class defined by the property type |
-| type | <code>String</code> | no | <code>property.type</code> | <code>AD.type</code> | The type of the property value. This must be one of <code>String</code>, <code>Long</code>, <code>Double</code>, <code>Float</code>, <code>Integer</code>, <code>Byte</code>, <code>Char</code>, <code>Boolean</code> and <code>Short</code>. |
-| label | <code>%&lt;name&gt;.name</code> | no | --  | <code>AD.name</code> | The label to display in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name. |
-| description | <code>%&lt;name&gt;.description</code> | no | --  | <code>AD.description</code> | A descriptive text to provide the client in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name. |
-| private | Depending on the name | no | --  | See description | Boolean flag defining whether a metatype descriptor entry should be generated for this property or not. By default a metatype descriptor entry, i.e. an <code>AD</code> element, is generated except for the properties <code>service.pid</code>, <code>service.description</code>, <code>service.id</code>, <code>service.ranking</code>, <code>service.vendor</code>, <code>service.bundlelocation</code> and <code>service.factoryPid</code>. If a property should not be available for display in a configuration user interface, this parameter should be set to <code>true</code>. |
-| cardinality | Depends on property value(s) | no | --  | <code>AD.cardinality</code> | Defines the cardinality of the property and its collection type. If the cardinality is negative, the property is expected to be stored in a <code>java.util.Vector</code> (primitive types such as <code>boolean</code> are boxed in the Wrapper class), if the cardinality is positive, the property is stored in an array (primitve types are unboxed, that is <code>Boolean</code> type values are stored in <code>boolean\[\]()</code>). The actual value defines the maximum number of elements in the vector or array, where <code>Integer.MIN*INT</code> describes an unbounded Vector and <code>Integer.MAX*INT</code> describes an unbounded array. If the cardinality is zero, the property is a scalar value. If the defined value of the property is set in the <code>value</code> attribute, the cardinality defaults to <code>0</code> (zero for scalar value). If the property is defined in one or more properties starting with <code>values</code>, the cardinality defaults to <code>Integer.MAX_INT</code>, that is an unbounded array. |
-| options | --  | no | --  | See below | See below for a description of the <code>options</code> parameter. |
-| values* | --  | no | --  | See below | See below for a description of parameters starting with <code>values</code>. |
-| valueRef | --  | no | --  | <code>AD.default</code> | A constant containing the value for this property. The constant can either be declared in the same class as this property or in any class that is imported. The type of the property is derived from the constant. |
-| valueRefs | --  | no | --  | See below | Same as the <code>values</code> attribute with the difference that it acts like the <code>valueRef</code> attribute and the value points to a constants defining the multi value for the property. |
-<em>Notes</em>:
-* Generating <code>&lt;properties&gt;</code> elements referring to bundle entries is not currently supported.</p>
-<h4 id="naming-the-property">Naming the property</h4>
+<p>Supported parameters:</p>
+<table>
+<thead>
+<tr>
+<th><em>Name</em></th>
+<th><em>Default Value</em></th>
+<th><em>Required</em></th>
+<th><em>SCR</em></th>
+<th><em>Metatype</em></th>
+<th><em>Description</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>The name of constant</td>
+<td>yes</td>
+<td><code>property.name</code></td>
+<td><code>AD.id</code></td>
+<td>The name of the property. If this tag is defined on a field with an initialization expression, the value of that expression is used as the name if the field is of type <code>String</code>.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>--</td>
+<td>no</td>
+<td><code>property.value</code></td>
+<td><code>AD.default</code></td>
+<td>The value of the property. If the property type is not <code>String</code>, parsing of the value is done using the <code>valueOf(String)</code> method of the class defined by the property type</td>
+</tr>
+<tr>
+<td>type</td>
+<td><code>String</code></td>
+<td>no</td>
+<td><code>property.type</code></td>
+<td><code>AD.type</code></td>
+<td>The type of the property value. This must be one of <code>String</code>, <code>Long</code>, <code>Double</code>, <code>Float</code>, <code>Integer</code>, <code>Byte</code>, <code>Char</code>, <code>Boolean</code> and <code>Short</code>.</td>
+</tr>
+<tr>
+<td>label</td>
+<td><code>%&lt;name&gt;.name</code></td>
+<td>no</td>
+<td>--</td>
+<td><code>AD.name</code></td>
+<td>The label to display in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name.</td>
+</tr>
+<tr>
+<td>description</td>
+<td><code>%&lt;name&gt;.description</code></td>
+<td>no</td>
+<td>--</td>
+<td><code>AD.description</code></td>
+<td>A descriptive text to provide the client in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name.</td>
+</tr>
+<tr>
+<td>private</td>
+<td>Depending on the name</td>
+<td>no</td>
+<td>--</td>
+<td>See description</td>
+<td>Boolean flag defining whether a metatype descriptor entry should be generated for this property or not. By default a metatype descriptor entry, i.e. an <code>AD</code> element, is generated except for the properties <code>service.pid</code>, <code>service.description</code>, <code>service.id</code>, <code>service.ranking</code>, <code>service.vendor</code>, <code>service.bundlelocation</code> and <code>service.factoryPid</code>. If a property should not be available for display in a configuration user interface, this parameter should be set to <code>true</code>.</td>
+</tr>
+<tr>
+<td>cardinality</td>
+<td>Depends on property value(s)</td>
+<td>no</td>
+<td>--</td>
+<td><code>AD.cardinality</code></td>
+<td>Defines the cardinality of the property and its collection type. If the cardinality is negative, the property is expected to be stored in a <code>java.util.Vector</code> (primitive types such as <code>boolean</code> are boxed in the Wrapper class), if the cardinality is positive, the property is stored in an array (primitve types are unboxed, that is <code>Boolean</code> type values are stored in <code>boolean\[\]()</code>). The actual value defines the maximum number of elements in the vector or array, where <code>Integer.MIN*INT</code> describes an unbounded Vector and <code>Integer.MAX*INT</code> describes an unbounded array. If the cardinality is zero, the property is a scalar value. If the defined value of the property is set in the <code>value</code> attribute, the cardinality defaults to <code>0</code> (zero for scalar value). If the property is defined in one or more properties starting with <code>values</code>, the cardinality defaults to <code>Integer.MAX_INT</code>, that is an unbounded array.</td>
+</tr>
+<tr>
+<td>options</td>
+<td>--</td>
+<td>no</td>
+<td>--</td>
+<td>See below</td>
+<td>See below for a description of the <code>options</code> parameter.</td>
+</tr>
+<tr>
+<td>values*</td>
+<td>--</td>
+<td>no</td>
+<td>--</td>
+<td>See below</td>
+<td>See below for a description of parameters starting with <code>values</code>.</td>
+</tr>
+<tr>
+<td>valueRef</td>
+<td>--</td>
+<td>no</td>
+<td>--</td>
+<td><code>AD.default</code></td>
+<td>A constant containing the value for this property. The constant can either be declared in the same class as this property or in any class that is imported. The type of the property is derived from the constant.</td>
+</tr>
+<tr>
+<td>valueRefs</td>
+<td>--</td>
+<td>no</td>
+<td>--</td>
+<td>See below</td>
+<td>Same as the <code>values</code> attribute with the difference that it acts like the <code>valueRef</code> attribute and the value points to a constants defining the multi value for the property.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em>:</p>
+<ul>
+<li>Generating <code>&lt;properties&gt;</code> elements referring to bundle entries is not currently supported.</li>
+</ul>
+<h3 id="naming-the-property">Naming the property</h3>
 <p>It is important to carefully define the name of properties. By using a constant of the form</p>
-<div class="codehilite"><pre><span class="sr">/** @scr.property value=&quot;default value&quot; */</span>
-<span class="n">static</span> <span class="n">final</span> <span class="n">String</span> <span class="n">CONSTANT_NAME</span> <span class="o">=</span> <span class="s">&quot;property.name&quot;</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="cm">/** @scr.property value=&quot;default value&quot; */</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">CONSTANT_NAME</span> <span class="o">=</span> <span class="s">&quot;property.name&quot;</span><span class="o">;</span>
 </pre></div>
 
 
 <p>and defining the <code>scr.property</code> tag on this constant, the name of the property is taken from the constant value. Thus it may easily be ensured, that both the property in the descriptor files and the property used by the implementation are actually the same.</p>
-<h4 id="the-options-parameter">The <code>options</code> parameter</h4>
+<h3 id="the-options-parameter">The <code>options</code> parameter</h3>
 <p>Some properties may only be set to a set of possible values. To support user interfaces which provide a selection list of values or a list of checkboxes the option values and labels may be defined as parameters to the <code>scr.property</code> tag. All parameters in the form of name-value pairs occurring <em>after</em> the <code>options</code> parameter are used to build the list of available value options. The parameter name is used as the value while the parameter value is used as the label in the user interface. This label may be prepended with a <code>%</code> sign to localize the string.</p>
 <p>The options are written to the <code>metatype.xml</code> file as <code>Option</code> elements inside the <code>AD</code> element defining the property. The name of the parameter will be used for the <code>Option.value</code> attribute while the value of the parameter defines the <code>Option.label</code> attribute.</p>
 <p>Please note, that all parameters of the <code>scr.property</code> tag occurring <em>after</em> the <code>options</code> parameter are used to build the options list. Hence no non-option value parameters should actually follow the <code>options</code> parameter.</p>
-<h4 id="multivalue-properties">Multivalue properties</h4>
+<h3 id="multivalue-properties">Multivalue properties</h3>
 <p>Generally the value of a property is scalar, that is a property has a single value such as <code>true</code>, <code>5</code> or <code>"This is a String"</code>. Such scalar values are defined with the <code>value</code> parameter of the <code>scr.property</code> tag. In the case of a scalar property value, the <code>cardinality</code> parameter value is assumed to be <code>0</code> (zero) unless of course set otherwise.</p>
 <p>There may be properties, which have a list of values, such as a list of possible URL mappings for an URL Mapper. Such multiple values are defined in one more parameters whose name starts with <code>values</code>. Each parameter must of course have a unique name which is not in any except to differentiate the parameters.</p>
 <p>If the cardinality of the property is not explicilty set with the <code>cardinality</code> property, it defaults to <code>Integer.MAX_INT</code>, i.e. unbound array, if multiple values with a series of <code>values</code> parameters are defined. Otherwise the <code>cardinality</code> parameter may be set for example to a negative value to store the values in a <code>java.util.Vector</code> instead.</p>
-<h3 id="scrservice">scr.service</h3>
+<h2 id="scrservice">scr.service</h2>
 <p>The <code>scr.service</code> tag defines whether and which service interfaces are provided by the component.</p>
 <p>This tag is expected in the Java Class comment of the component.</p>
 <p>This tag is used to declare <code>&lt;service&gt;</code> and <code>&lt;provide&gt;</code> elements of the component declaration. See section 112.4.6, Service Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
-<p>Supported parameters:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>Descriptor</em> | <em>Description</em> |
-| interface | All implemented interfaces | no | <code>provide.interface</code> | The name of the service interface provided by the component. This can either be the fully qualified  name or just the interface class name if the interface is either in the same package or is imported. If this property is not set <code>provide</code> elements will be generated for all interfaces generated by the class |
-| servicefactory | <code>false</code> | no | <code>service.servicefactory</code> | Whether the component is registered as a <code>ServiceFactory</code> or not |
-Omitting the <code>scr.service</code> tag will just define (and activate if required) the component but not register it as a service. Multiple <code>scr.service</code> tags may be declared each with its own <code>interface</code>. The component is registered as a <code>ServiceFactory</code> if at least on <code>scr.service</code> tag declares the <code>servicefactory</code> parameter as <code>true</code>.</p>
-<h3 id="scrreference">scr.reference</h3>
+<p>Supported parameters:</p>
+<table>
+<thead>
+<tr>
+<th><em>Name</em></th>
+<th><em>Default Value</em></th>
+<th><em>Required</em></th>
+<th><em>Descriptor</em></th>
+<th><em>Description</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>interface</td>
+<td>All implemented interfaces</td>
+<td>no</td>
+<td><code>provide.interface</code></td>
+<td>The name of the service interface provided by the component. This can either be the fully qualified  name or just the interface class name if the interface is either in the same package or is imported. If this property is not set <code>provide</code> elements will be generated for all interfaces generated by the class</td>
+</tr>
+<tr>
+<td>servicefactory</td>
+<td><code>false</code></td>
+<td>no</td>
+<td><code>service.servicefactory</code></td>
+<td>Whether the component is registered as a <code>ServiceFactory</code> or not</td>
+</tr>
+</tbody>
+</table>
+<p>Omitting the <code>scr.service</code> tag will just define (and activate if required) the component but not register it as a service. Multiple <code>scr.service</code> tags may be declared each with its own <code>interface</code>. The component is registered as a <code>ServiceFactory</code> if at least on <code>scr.service</code> tag declares the <code>servicefactory</code> parameter as <code>true</code>.</p>
+<h2 id="scrreference">scr.reference</h2>
 <p>The <code>scr.reference</code> tag defines references to other services made available to the component by the Service Component Runtime.</p>
 <p>This tag may be declared in the java Class comment or any Java Field to which it might apply. Depending on where the tag is declared, the parameters may have different default values.</p>
 <p>This tag is used to declare <code>&lt;reference&gt;</code> elements of the component declaration. See section 112.4.7, Reference Element, in the OSGi Service Platform Service Compendium Specification for more information.</p>
-<p>Supported parameters:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>Descriptor</em> | <em>Description</em> |
-| name | Name of the field | yes | <code>reference.name</code> | The local name of the reference. If the <code>scr.reference</code> tag is declared in the class comment, this parameter is required. If the tag is declared in the field comment, the default value for the <code>name</code> parameter is the name of the field |
-| interface | Type of the field | yes | <code>reference.interface</code> | The name of the service interface. This name is used by the Service Component Runtime to access the service on behalf of the component. If the <code>scr.reference</code> tag is declared in the class comment, this parameter is required. If the tag is declared in the field comment, the default value for the <code>interface</code> parameter is the type of the field |
-| cardinality | <code>1..1</code> | no | <code>reference.cardinality</code> | The cardinality of the service reference. This must be one of <code>0..1</code>, <code>1..1</code>, <code>0..n</code>, and <code>1..n</code> |
-| policy | <code>static</code> | no | <code>reference.policy</code> | The dynamicity policy of the reference. If <code>dynamic</code> the service will be made available to the component as it comes and goes. If <code>static</code> the component will be deactivated and re-activated if the service comes and/or goes away. This must be one of <code>static</code> and <code>dynamic</code> |
-| target | --  | no | <code>reference.target</code> | A service target filter to select specific services to be made available. In order to be able to overwrite the value of this value by a configuration property, this parameter must be declared. If the parameter is not declared, the respective declaration attribute will not be generated |
-| bind | See description | no | <code>reference.bind</code> | The name of the method to be called when the service is to be bound to the component. The default value is the name created by appending the reference <code>name</code> to the string <code>bind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type |
-| unbind | See description | no | <code>reference.unbind</code> | The name of the method to be called when the service is to be unbound from the component. The default value is the name created by appending the reference <code>name</code> to the string <code>unbind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type |
-| strategy | <code>event</code> | no | <code>reference.strategy</code> | The strategy used for this reference, one of <code>event</code> or <code>lookup</code> |
-|</p>
-<p><em>Notes</em>:
-* If you define a reference on a field with the strategy <code>event</code> and there is no bind or unbind method, the plugin will create the necessary methods.</p>
+<p>Supported parameters:</p>
+<table>
+<thead>
+<tr>
+<th><em>Name</em></th>
+<th><em>Default Value</em></th>
+<th><em>Required</em></th>
+<th><em>Descriptor</em></th>
+<th><em>Description</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>Name of the field</td>
+<td>yes</td>
+<td><code>reference.name</code></td>
+<td>The local name of the reference. If the <code>scr.reference</code> tag is declared in the class comment, this parameter is required. If the tag is declared in the field comment, the default value for the <code>name</code> parameter is the name of the field</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>Type of the field</td>
+<td>yes</td>
+<td><code>reference.interface</code></td>
+<td>The name of the service interface. This name is used by the Service Component Runtime to access the service on behalf of the component. If the <code>scr.reference</code> tag is declared in the class comment, this parameter is required. If the tag is declared in the field comment, the default value for the <code>interface</code> parameter is the type of the field</td>
+</tr>
+<tr>
+<td>cardinality</td>
+<td><code>1..1</code></td>
+<td>no</td>
+<td><code>reference.cardinality</code></td>
+<td>The cardinality of the service reference. This must be one of <code>0..1</code>, <code>1..1</code>, <code>0..n</code>, and <code>1..n</code></td>
+</tr>
+<tr>
+<td>policy</td>
+<td><code>static</code></td>
+<td>no</td>
+<td><code>reference.policy</code></td>
+<td>The dynamicity policy of the reference. If <code>dynamic</code> the service will be made available to the component as it comes and goes. If <code>static</code> the component will be deactivated and re-activated if the service comes and/or goes away. This must be one of <code>static</code> and <code>dynamic</code></td>
+</tr>
+<tr>
+<td>target</td>
+<td>--</td>
+<td>no</td>
+<td><code>reference.target</code></td>
+<td>A service target filter to select specific services to be made available. In order to be able to overwrite the value of this value by a configuration property, this parameter must be declared. If the parameter is not declared, the respective declaration attribute will not be generated</td>
+</tr>
+<tr>
+<td>bind</td>
+<td>See description</td>
+<td>no</td>
+<td><code>reference.bind</code></td>
+<td>The name of the method to be called when the service is to be bound to the component. The default value is the name created by appending the reference <code>name</code> to the string <code>bind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type</td>
+</tr>
+<tr>
+<td>unbind</td>
+<td>See description</td>
+<td>no</td>
+<td><code>reference.unbind</code></td>
+<td>The name of the method to be called when the service is to be unbound from the component. The default value is the name created by appending the reference <code>name</code> to the string <code>unbind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type</td>
+</tr>
+<tr>
+<td>strategy</td>
+<td><code>event</code></td>
+<td>no</td>
+<td><code>reference.strategy</code></td>
+<td>The strategy used for this reference, one of <code>event</code> or <code>lookup</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em>:</p>
+<ul>
+<li>If you define a reference on a field with the strategy <code>event</code> and there is no bind or unbind method, the plugin will create the necessary methods.</li>
+</ul>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1438983 by fmeschbe on Sat, 26 Jan 2013 22:54:42 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

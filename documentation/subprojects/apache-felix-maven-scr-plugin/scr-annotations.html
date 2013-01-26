@@ -67,11 +67,6 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/scr-annotations.html" target="felix_cwiki">/site/scr-annotations.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
       
       <h1>SCR Annotations</h1>
       <p>The <code>maven-scr-plugin</code> uses the <code>SCR</code> annotations from the corresponding subproject at Apache Felix. All annotations are in the <code>org.apache.felix.scr.annotations</code> package. If you want to use the annotations in your project, you have to use a <code>maven-scr-plugin</code> version &gt;= 1.2.0 and make sure that you add a dependency to the annotations to your <code>POM</code>:</p>
@@ -83,105 +78,305 @@
 </pre></div>
 
 
-<p>The following annotations are supported:
-<em> <code>[Component]()</code>
-</em> <code>[Activate]()</code>
-<em> <code>[Deactivate]()</code>
-</em> <code>[Modified]()</code>
-<em> <code>[Service]()</code>
-</em> <code>[Property]()</code>
-* <code>[Reference]()</code></p>
-<h3 id="component">Component</h3>
-<p>The <code>Component</code> annotation is the only required annotation. If this annotation is not declared for a Java class, the class is not declared as a component.</p>
-<p>This annotation is used to declare the <code>&lt;component&gt;</code> element of the component declaration. See section 112.4.3, Component Element, in the OSGi Service Platform Service Compendium Specification for more information. The required <code>&lt;implementation&gt;</code> element is automatically generated with the fully qualified name of the class containing the <code>Component</code> annotation.</p>
-<p>Supported attributes:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>SCR</em> | <em>Metatype</em> | <em>Description</em> |
-| name | Fully qualified name of the Java class | no | <code>component.name</code> | <code>OCD.id</code> | Defines the Component name also used as the PID for the Configuration Admin Service |
-| ds | <code>true</code> | no | --  | --  | Whether Declarative Services descriptor is generated or not. If this parameter is not set or set to <code>true</code> the Declarative Services descriptor is generated in the service descriptor file for this component. Otherwise no Declarative Services descriptor is generated for this component. |
-| specVersion | <code>1.0</code> | no | -- | -- | Defines what Declarative Services specification the component is written against. Though the Maven SCR Plugin is very good at detecting whether components are written against the original or a newer specification, there are some cases, where the plugin may fail. For these cases, the <code>specVersion</code> attribute may be set to the correct version. Currently supported values for this attribute are <code>1.0</code> and <code>1.1</code>. Since version 1.4.1 of the Maven SCR Plugin and version 1.0.1 of the SCR Annotations. |
-| componentAbstract | see description | no | --  | --  | This marks an abstract service description which is not added to the descriptor but intended for reuse through inheritance. This attribute defaults to <code>true</code> for abstract classes and <code>false</code> for concrete classes. |
-| enabled | <code>true</code> | no | <code>component.enabled</code> | --  | Whether the component is enabled when the bundle starts |
-| factory | --  | no | <code>component.factory</code> | --  | Whether the component is a factory component |
-| immediate | --  | no | <code>component.immediate</code> | --  | Whether the component is immediately activated |
-| inherit | <code>true</code> | no | --  | --  | Whether any service, property and reference declarations from base classes should be inherited by this class. |
-| metatype | <code>false</code> | no | --  | --  | Whether Metatype Service data is generated or not. If this parameter is set to <code>true</code> Metatype Service data is generated in the <code>metatype.xml</code> file for this component. Otherwise no Metatype Service data is generated for this component. |
-| label | <code>%&lt;name&gt;.name</code> | no | --  | <code>OCD.name</code> | This is generally used as a title for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name. |
-| description | <code>%&lt;name&gt;.name</code> | no | --  | <code>OCD.description</code> | This is generally used as a description for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name. |
-| createPid | <code>true</code> | no | <code>service.pid</code> | --  | Generate the <code>service.pid</code> property if non is declared. |
-| configurationFactory | <code>false</code> | no | -- | <code>Designate.factoryPid</code> | Is this a configuration factory? (since 1.4.0) |</p>
-<p>The follwing attributes are supported since version 1.4.0 of the plugin and required a Declarative Service implementation 1.1:
-| policy | <code>OPTIONAL</code> | no | component.policy | -- | The configuration policy for this component: <code>OPTIONAL</code>, <code>IGNORE</code>, or <code>REQUIRE</code> |</p>
-<h4 id="abstract-service-descriptions">Abstract Service Descriptions</h4>
-<p>If the <code>Component</code> annotations contains the attribute <code>componentAbstract</code> with a value of true, the containing class is regarded as an abstract class. It is not added to the service descriptor and the tags are not validated. The information about this class is added to the bundle. Classes from other bundles (or the same) can extends this abstract class and do not need to specify the references of the abstract class if they set the <code>inherit</code> parameter on the <code>scr.component</code> tag to true.</p>
+<p>The following annotations are supported:</p>
+<ul>
+<li><a href="#component">@Component</a></li>
+<li><a href="#activate-deactivate-and-modified">@Activate, @Deactivate, and @Modified</a></li>
+<li><a href="#service">@Service</a></li>
+<li><a href="#property">@Property</a></li>
+<li><a href="#reference">@Reference</a></li>
+</ul>
+<h2 id="component">@Component</h2>
+<p>The <code>@Component</code> annotation is the only required annotation. If this annotation is not declared for a Java class, the class is not declared as a component.</p>
+<p>This annotation is used to declare the <code>&lt;component&gt;</code> element of the component declaration. See section 112.4.3, Component Element, in the OSGi Service Platform Service Compendium Specification for more information. The required <code>&lt;implementation&gt;</code> element is automatically generated with the fully qualified name of the class containing the <code>@Component</code> annotation.</p>
+<p>Supported attributes:</p>
+<hr />
+<p><strong><code>ds</code></strong>  <br />
+<em>Defaut</em>: <code>true</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Whether Declarative Services descriptor is generated or not. If this parameter is not set or set to <code>true</code> the Declarative Services descriptor is generated in the service descriptor file for this component. Otherwise no Declarative Services descriptor is generated for this component.</p>
+<hr />
+<p><strong><code>specVersion</code></strong>  <br />
+<em>Defaut</em>: <code>1.0</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Defines what Declarative Services specification the component is written against. Though the Maven SCR Plugin is very good at detecting whether components are written against the original or a newer specification, there are some cases, where the plugin may fail. For these cases, the <code>specVersion</code> attribute may be set to the correct version. Currently supported values for this attribute are <code>1.0</code> and <code>1.1</code>. Since version 1.4.1 of the Maven SCR Plugin and version 1.0.1 of the SCR Annotations.</p>
+<hr />
+<p><strong><code>metatype</code></strong>  <br />
+<em>Defaut</em>: <code>false</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Whether Metatype Service data is generated or not. If this parameter is set to <code>true</code> Metatype Service data is generated in the <code>metatype.xml</code> file for this component. Otherwise no Metatype Service data is generated for this component.</p>
+<hr />
+<p><strong><code>componentAbstract</code></strong>  <br />
+<em>Defaut</em>: see <a href="#abstract-service-descriptions">description</a>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: --  <br />
+This marks an abstract service description which is not added to the descriptor but intended for reuse through inheritance. This attribute defaults to <code>true</code> for abstract classes and <code>false</code> for concrete classes.</p>
+<hr />
+<p><strong><code>inherit</code></strong>  <br />
+<em>Defaut</em>: <code>true</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Whether any service, property and reference declarations from base classes should be inherited by this class.</p>
+<hr />
+<p><strong><code>createPid</code></strong>  <br />
+<em>Defaut</em>: <code>true</code>  <br />
+<em>SCR Descriptor</em>: <code>service.pid</code>  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Generate the <code>service.pid</code> property if non is declared.</p>
+<hr />
+<p><strong><code>name</code></strong>  <br />
+<em>Defaut</em>: Fully qualified name of the Java class  <br />
+<em>SCR Descriptor</em>: <code>component.name</code>  <br />
+<em>Metatype Descriptor</em>: <code>OCD.id</code>  <br />
+Defines the Component name also used as the PID for the Configuration Admin Service</p>
+<hr />
+<p><strong><code>enabled</code></strong>  <br />
+<em>Defaut</em>: <code>true</code>  <br />
+<em>SCR Descriptor</em>: <code>component.enabled</code>  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Whether the component is enabled when the bundle starts</p>
+<hr />
+<p><strong><code>factory</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>component.factory</code>  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Whether the component is a factory component</p>
+<hr />
+<p><strong><code>immediate</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>component.immediate</code>  <br />
+<em>Metatype Descriptor</em>: --  <br />
+Whether the component is immediately activated</p>
+<hr />
+<p><strong><code>policy</code></strong>  <br />
+<em>Defaut</em>: <code>OPTIONAL</code>  <br />
+<em>SCR Descriptor</em>: <code>component.policy</code>  <br />
+<em>Metatype Descriptor</em>: --  <br />
+The configuration policy for this component: <code>OPTIONAL</code>, <code>IGNORE</code>, or <code>REQUIRE</code>. This attribute is supported since version 1.4.0 of the plugin and requires a Declarative Service implementation 1.1 or higher.</p>
+<hr />
+<p><strong><code>label</code></strong>  <br />
+<em>Defaut</em>: <code>%&lt;name&gt;.name</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: <code>OCD.name</code>  <br />
+This is generally used as a title for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name.</p>
+<hr />
+<p><strong><code>description</code></strong>  <br />
+<em>Defaut</em>: <code>%&lt;name&gt;.name</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: <code>OCD.description</code>  <br />
+This is generally used as a description for the object described by the meta type. This name may be localized by prepending a <code>%</code> sign to the name.</p>
+<hr />
+<p><strong><code>configurationFactory</code></strong>  <br />
+<em>Defaut</em>: <code>false</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: <code>Designate.factoryPid</code>  <br />
+Is this a configuration factory? (since 1.4.0)</p>
+<h3 id="abstract-service-descriptions">Abstract Service Descriptions</h3>
+<p>If the <code>@Component</code> annotations contains the attribute <code>componentAbstract</code> with a value of true, the containing class is regarded as an abstract class. It is not added to the service descriptor and the tags are not validated. The information about this class is added to the bundle. Classes from other bundles (or the same) can extends this abstract class and do not need to specify the references of the abstract class if they set the <code>inherit</code> parameter on the <code>scr.component</code> tag to true.</p>
 <p>This allows to create abstract classes which already provide some valuable functionality without having to deal with the details like reference definitions in each and every subclass.</p>
-<h3 id="activate-deactivate-and-modified"><code>Activate</code>, <code>Deactivate</code>, and <code>Modified</code></h3>
-<p>The Declarative Service version 1.1 allows to specify the name for the activate, deactivate and modified method (see the spec for more information). The <code>Activate</code>, <code>Deactivate</code>, and <code>Modified</code> annotation can be used to mark a method to be used for the specified purpose. However, as the DS specifies a method search algorithm, there are rare cases where the marked method is not used (if there is another method with the same name, but a different signature this might happen).</p>
-<h3 id="service">Service</h3>
-<p>The <code>Service</code> annotation defines whether and which service interfaces are provided by the component. This is a class annotation.</p>
-<p>This tag is used to declare <code>&lt;service&gt;</code> and <code>&lt;provide&gt;</code> elements of the component declaration. See section 112.4.6, Service Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
-<p>Supported attributes:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>Descriptor</em> | <em>Description</em> |
-| value | All implemented interfaces | no | <code>provide.interface</code> | The name of the service interface provided by the component. This can either be the fully qualified  name or just the interface class name if the interface is either in the same package or is imported. If this property is not set <code>provide</code> elements will be generated for all interfaces generated by the class |
-| serviceFactory | <code>false</code> | no | <code>service.servicefactory</code> | Whether the component is registered as a <code>ServiceFactory</code> or not |
-Omitting the <code>Service</code> annotation will just define (and activate if required) the component but not register it as a service. Multiple <code>Service</code> annotations may be declared each with its own <code>value</code>. These annotations need to be wrapped into a <code>Services</code> anotation. The component is registered as a <code>ServiceFactory</code> if at least on <code>Service</code> annotations declares the <code>serviceFactory</code> attribute as <code>true</code>.</p>
-<h3 id="property">Property</h3>
-<p>The <code>Property</code> annotation defines properties which are made available to the component through the <code>ComponentContext.getProperties()</code> method. These tags are not strictly required but may be used by components to defined initial configuration. Additionally properties may be set here to identify the component if it is registered as a service, for example the <code>service.description</code> and <code>service.vendor</code> properties.</p>
-<p>This tag may be defined in the Java Class comment of the component or in a coment to a field defining a constant with the name of the property.</p>
-<p>This tag is used to declare <code>&lt;property&gt;</code> elements of the component declaration. See section 112.4.5, Properties and Property Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
-<p>Supported parameters:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>SCR</em> | <em>Metatype</em> | <em>Description</em> |
-| name | The name of constant | yes | <code>property.name</code> | <code>AD.id</code> | The name of the property. If this tag is defined on a field with an initialization expression, the value of that expression is used as the name if the field is of type <code>String</code>. |
-| value | --  | no | <code>property.value</code> | <code>AD.default</code> | The string value of the property. This can either be a single value or an array. |
-| longValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The long value of the property. This can either be a single value or an array. |
-| doubleValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The double value of the property. This can either be a single value or an array. |
-| floatValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The float value of the property. This can either be a single value or an array. |
-| intValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The int value of the property. This can either be a single value or an array. |
-| byteValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The byte value of the property. This can either be a single value or an array. |
-| charValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The char value of the property. This can either be a single value or an array. |
-| boolValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The boolean value of the property. This can either be a single value or an array. |
-| shortValue | --  | no | <code>property.value</code> | <code>AD.default</code> | The short value of the property. This can either be a single value or an array. |
-| label | <code>%&lt;name&gt;.name</code> | no | --  | <code>AD.name</code> | The label to display in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name. |
-| description | <code>%&lt;name&gt;.description</code> | no | --  | <code>AD.description</code> | A descriptive text to provide the client in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name. |
-| propertyPrivate | Depending on the name | no | --  | See description | Boolean flag defining whether a metatype descriptor entry should be generated for this property or not. By default a metatype descriptor entry, i.e. an <code>AD</code> element, is generated except for the properties <code>service.pid</code>, <code>service.description</code>, <code>service.id</code>, <code>service.ranking</code>, <code>service.vendor</code>, <code>service.bundlelocation</code> and <code>service.factoryPid</code>. If a property should not be available for display in a configuration user interface, this parameter should be set to <code>true</code>. |
-| cardinality | Depends on property value(s) | no | --  | <code>AD.cardinality</code> | Defines the cardinality of the property and its collection type. If the cardinality is negative, the property is expected to be stored in a <code>java.util.Vector</code> (primitive types such as <code>boolean</code> are boxed in the Wrapper class), if the cardinality is positive, the property is stored in an array (primitve types are unboxed, that is <code>Boolean</code> type values are stored in <code>boolean\[\]()</code>). The actual value defines the maximum number of elements in the vector or array, where <code>Integer.MIN*INT</code> describes an unbounded Vector and <code>Integer.MAX*INT</code> describes an unbounded array. If the cardinality is zero, the property is a scalar value. If the defined value of the property is set in the <code>value</code> attribute, the cardinality defaults to <code>0</code> (zero for scalar value). If the property is defined in one or more properties starting with <code>values</code>, the cardinality defaults to <code>Integer.MAX_INT</code>, that is an unbounded array. |
-| options | --  | no | --  | See below | See below for a description of the <code>options</code> attribute. |
-<em> Generating <code>&lt;properties&gt;</code> elements referring to bundle entries is not currently supported.
-</em> Multiple property annotations can be embedded in the <code>Properties</code> annoation.</p>
-<h4 id="naming-the-property">Naming the Property</h4>
-<p>It is important to carefully define the name of properties. By using a constant of the form</p>
-<div class="codehilite"><pre><span class="nv">@Property</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;default value&quot;</span><span class="p">)</span>
-<span class="n">static</span> <span class="n">final</span> <span class="n">String</span> <span class="n">CONSTANT_NAME</span> <span class="o">=</span> <span class="s">&quot;property.name&quot;</span><span class="p">;</span>
+<h2 id="activate-deactivate-and-modified">@Activate, @Deactivate, and @Modified</h2>
+<p>The Declarative Service version 1.1 allows to specify the name for the activate, deactivate and modified method (see the spec for more information). The <code>@Activate</code>, <code>@Deactivate</code>, and <code>@Modified</code> annotation can be used to mark a method to be used for the specified purpose. However, as the DS specifies a method search algorithm, there are rare cases where the marked method is not used (if there is another method with the same name, but a different signature this might happen).</p>
+<p>These annoations have no attribues.</p>
+<h2 id="service">@Service</h2>
+<p>The <code>@Service</code> annotation defines whether and which service interfaces are provided by the component. This is a class annotation.</p>
+<p>This annotation is used to declare <code>&lt;service&gt;</code> and <code>&lt;provide&gt;</code> elements of the component declaration. See section 112.4.6, Service Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
+<p>Supported attributes:</p>
+<hr />
+<p><strong><code>value</code></strong>  <br />
+<em>Defaut</em>: All implemented interfaces  <br />
+<em>SCR Descriptor</em>: <code>provide.interface</code>  <br />
+The name of the service interface provided by the component. This can either be the fully qualified  name or just the interface class name if the interface is either in the same package or is imported. If this property is not set <code>provide</code> elements will be generated for all interfaces generated by the class</p>
+<hr />
+<p><strong><code>serviceFactory</code></strong>  <br />
+<em>Defaut</em>: <code>false</code>  <br />
+<em>SCR Descriptor</em>: <code>service.servicefactory</code>  <br />
+Whether the component is registered as a <code>ServiceFactory</code> or not</p>
+<p>Omitting the <code>Service</code> annotation will just define (and activate if required) the component but not register it as a service. Multiple <code>Service</code> annotations may be declared each with its own <code>value</code>. These annotations need to be wrapped into a <code>Services</code> anotation. The component is registered as a <code>ServiceFactory</code> if at least on <code>Service</code> annotations declares the <code>serviceFactory</code> attribute as <code>true</code>.</p>
+<h2 id="property">@Property</h2>
+<p>The <code>@Property</code> annotation defines properties which are made available to the component through the <code>ComponentContext.getProperties()</code> method. These tags are not strictly required but may be used by components to defined initial configuration. Additionally properties may be set here to identify the component if it is registered as a service, for example the <code>service.description</code> and <code>service.vendor</code> properties.</p>
+<p>This annotation can be applied on the component class level or on a field defining a constant with the name of the property.</p>
+<p>This annotation is used to declare <code>&lt;property&gt;</code> elements of the component declaration. See section 112.4.5, Properties and Property Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
+<p>Supported attributes:</p>
+<hr />
+<p><strong><code>name</code></strong>  <br />
+<em>Defaut</em>: The name of constant  <br />
+<em>SCR Descriptor</em>: <code>property.name</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.id</code>  <br />
+The name of the property. If this tag is defined on a field with an initialization expression, the value of that expression is used as the name if the field is of type <code>String</code>.</p>
+<hr />
+<p><strong><code>value</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The string value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>longValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The long value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>doubleValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The double value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>floatValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The float value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>intValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The int value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>byteValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The byte value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>charValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The char value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>boolValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The boolean value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>shortValue</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>property.value</code>  <br />
+<em>Metatype Descriptor</em>: <code>AD.default</code>  <br />
+The short value of the property. This can either be a single value or an array.</p>
+<hr />
+<p><strong><code>label</code></strong>  <br />
+<em>Defaut</em>: <code>%&lt;name&gt;.name</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: <code>AD.name</code>  <br />
+The label to display in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name.</p>
+<hr />
+<p><strong><code>description</code></strong>  <br />
+<em>Defaut</em>: <code>%&lt;name&gt;.description</code>  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: <code>AD.description</code>  <br />
+A descriptive text to provide the client in a form to configure this property. This name may be localized by prepending a <code>%</code> sign to the name.</p>
+<hr />
+<p><strong><code>propertyPrivate</code></strong>  <br />
+<em>Defaut</em>: Depending on the name  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: See description
+Boolean flag defining whether a metatype descriptor entry should be generated for this property or not. By default a metatype descriptor entry, i.e. an <code>AD</code> element, is generated except for the properties <code>service.pid</code>, <code>service.description</code>, <code>service.id</code>, <code>service.ranking</code>, <code>service.vendor</code>, <code>service.bundlelocation</code> and <code>service.factoryPid</code>. If a property should not be available for display in a configuration user interface, this parameter should be set to <code>true</code>.</p>
+<hr />
+<p><strong><code>cardinality</code></strong>  <br />
+<em>Defaut</em>: Depends on property value(s)  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: <code>AD.cardinality</code>  <br />
+Defines the cardinality of the property and its collection type. If the cardinality is negative, the property is expected to be stored in a <code>java.util.Vector</code> (primitive types such as <code>boolean</code> are boxed in the Wrapper class), if the cardinality is positive, the property is stored in an array (primitve types are unboxed, that is <code>Boolean</code> type values are stored in <code>boolean\[\]()</code>). The actual value defines the maximum number of elements in the vector or array, where <code>Integer.MIN*INT</code> describes an unbounded Vector and <code>Integer.MAX*INT</code> describes an unbounded array. If the cardinality is zero, the property is a scalar value. If the defined value of the property is set in the <code>value</code> attribute, the cardinality defaults to <code>0</code> (zero for scalar value). If the property is defined in one or more properties starting with <code>values</code>, the cardinality defaults to <code>Integer.MAX_INT</code>, that is an unbounded array.</p>
+<hr />
+<p><strong><code>options</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: --  <br />
+<em>Metatype Descriptor</em>: <a href="#the-options-attribute">See below</a>  <br />
+See below for a description of the <code>options</code> attribute.</p>
+<p>Generating <code>&lt;properties&gt;</code> elements referring to bundle entries is not currently supported.</p>
+<p>Multiple property annotations on the class level can be embedded in the <code>@Properties</code> annotation. For example:</p>
+<div class="codehilite"><pre><span class="nd">@Properties</span><span class="o">({</span>
+    <span class="nd">@Property</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;prop1&quot;</span><span class="o">,</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;value1&quot;</span><span class="o">),</span>
+    <span class="nd">@Property</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;prop2&quot;</span><span class="o">,</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;value2&quot;</span><span class="o">)</span>
+<span class="o">})</span>
 </pre></div>
 
 
-<p>and defining the <code>Property</code> annotation on this constant, the name of the property is taken from the constant value. Thus it may easily be ensured, that both the property in the descriptor files and the property used by the implementation are actually the same. In addition the value attribute can point to another constant.</p>
-<h4 id="the-options-parameter">The <code>options</code> Parameter</h4>
-<p>Some properties may only be set to a set of possible values. To support user interfaces which provide a selection list of values or a list of checkboxes the option values and labels may be defined as parameters to the <code>Property</code> annotation. All parameters in the form of name-value pairs occurring <em>after</em> the <code>options</code> attribute are used to build the list of available value options. The parameter name is used as the value while the parameter value is used as the label in the user interface. This label may be prepended with a <code>%</code> sign to localize the string.</p>
-<p>The options are written to the <code>metatype.xml</code> file as <code>Option</code> elements inside the <code>AD</code> element defining the property. The name of the parameter will be used for the <code>Option.value</code> attribute while the value of the parameter defines the <code>Option.label</code> attribute.</p>
-<p>Please note, that all parameters of the <code>Property</code> annotation occurring <em>after</em> the <code>options</code> parameter are used to build the options list. Hence no non-option value parameters should actually follow the <code>options</code> parameter.</p>
-<h4 id="multivalue-properties">Multivalue Properties</h4>
+<h4 id="naming-the-property">Naming the Property</h4>
+<p>It is important to carefully define the name of properties. By using a constant of the form</p>
+<div class="codehilite"><pre><span class="nd">@Property</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;default value&quot;</span><span class="o">)</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">CONSTANT_NAME</span> <span class="o">=</span> <span class="s">&quot;property.name&quot;</span><span class="o">;</span>
+</pre></div>
+
+
+<p>and defining the <code>@Property</code> annotation on this constant, the name of the property is taken from the constant value. Thus it may easily be ensured, that both the property in the descriptor files and the property used by the implementation are actually the same. In addition the value attribute can refer to another constant.</p>
+<h3 id="the-options-attribute">The <code>options</code> Attribute</h3>
+<p>Some properties may only be set to a set of possible values. To support user interfaces which provide a selection list of values or a list of checkboxes the option values and labels may be defined as parameters to the <code>@Property</code> annotation.</p>
+<p>The value of the <code>options</code> attribute is a list of <code>@Options</code> annotations:</p>
+<div class="codehilite"><pre><span class="nd">@Property</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;sample&quot;</span><span class="o">,</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="nd">@Option</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;option1&quot;</span><span class="o">,</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;&amp;option.label.1&quot;</span><span class="o">),</span>
+        <span class="nd">@Option</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;option2&quot;</span><span class="o">,</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;&amp;option.label.2&quot;</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">)</span>
+</pre></div>
+
+
+<p>The <code>@Option</code>'s name is used as the value while the parameter value is
+used as the label in the user interface. This label may be prepended with
+a <code>%</code> sign to localize the string.</p>
+<p>The options are written to the <code>metatype.xml</code> file as <code>Option</code> elements
+inside the <code>AD</code> element defining the property. The name of the parameter
+will be used for the <code>Option.value</code> attribute while the value of the
+parameter defines the <code>Option.label</code> attribute.</p>
+<h3 id="multivalue-properties">Multivalue Properties</h3>
 <p>Generally the value of a property is scalar, that is a property has a single value such as <code>true</code>, <code>5</code> or <code>"This is a String"</code>. Such scalar values are defined with the different <code>value</code> attributes of the <code>Property</code> annotation. In the case of a scalar property value, the <code>cardinality</code> parameter value is assumed to be <code>0</code> (zero) unless of course set otherwise.</p>
 <p>There may be properties, which have a list of values, such as a list of possible URL mappings for an URL Mapper. Such multiple values are defined just by comma separate as the value of the annotation parameter.</p>
 <p>If the cardinality of the property is not explicilty set with the <code>cardinality</code> property, it defaults to <code>Integer.MAX_INT</code>, i.e. unbound array, if multiple values are defined. Otherwise the <code>cardinality</code> parameter may be set for example to a negative value to store the values in a <code>java.util.Vector</code> instead.</p>
-<h3 id="reference">Reference</h3>
-<p>The <code>Reference</code> annotation defines references to other services made available to the component by the Service Component Runtime.</p>
+<h2 id="reference">@Reference</h2>
+<p>The <code>@Reference</code> annotation defines references to other services made available to the component by the Service Component Runtime.</p>
 <p>This annotation may be declared on a Class level or any Java field to which it might apply. Depending on where the annotation is declared, the parameters may have different default values.</p>
 <p>This annotation is used to declare <code>&lt;reference&gt;</code> elements of the component declaration. See section 112.4.7, Reference Element, in the OSGi Service Platform Service Compendium Specification for more information.</p>
-<p>Supported parameters:
-| <em>Name</em> | <em>Default Value</em> | <em>Required</em> | <em>Descriptor</em> | <em>Description</em> |
-| name | Name of the field | yes | <code>reference.name</code> | The local name of the reference. If the <code>Reference</code> annotation is declared in the class comment, this parameter is required. If the annotation is declared on a field, the default value for the <code>name</code> parameter is the name of the field |
-| interfaceReference | Type of the field | yes | <code>reference.interface</code> | The name of the service interface. This name is used by the Service Component Runtime to access the service on behalf of the component. If the <code>Reference</code> annotation is declared on a class level, this parameter is required. If the annoation is declared on a field, the default value for the <code>interfaceReference</code> parameter is the type of the field |
-| cardinality | <code>1..1</code> | no | <code>reference.cardinality</code> | The cardinality of the service reference. This must be one of value from the enumeration <code>ReferenceCardinality</code> |
-| policy | <code>static</code> | no | <code>reference.policy</code> | The dynamicity policy of the reference. If <code>dynamic</code> the service will be made available to the component as it comes and goes. If <code>static</code> the component will be deactivated and re-activated if the service comes and/or goes away. This must be one of <code>static</code> and <code>dynamic</code> |
-| target | --  | no | <code>reference.target</code> | A service target filter to select specific services to be made available. In order to be able to overwrite the value of this value by a configuration property, this parameter must be declared. If the parameter is not declared, the respective declaration attribute will not be generated |
-| bind | See description | no | <code>reference.bind</code> | The name of the method to be called when the service is to be bound to the component. The default value is the name created by appending the reference <code>name</code> to the string <code>bind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type |
-| unbind | See description | no | <code>reference.unbind</code> | The name of the method to be called when the service is to be unbound from the component. The default value is the name created by appending the reference <code>name</code> to the string <code>unbind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type |
-| strategy | <code>event</code> | no | <code>reference.strategy</code> | The strategy used for this reference, one of <code>event</code> or <code>lookup</code> |
-|
-<em>Notes</em>:
-* If you define a reference on a field with a strategy of <code>event</code> and there is no bind or unbind method, the plugin will create the necessary methods.</p>
+<p>Supported parameters:</p>
+<hr />
+<p><strong><code>name</code></strong>  <br />
+<em>Defaut</em>: Name of the field  <br />
+<em>SCR Descriptor</em>: <code>reference.name</code>  <br />
+The local name of the reference. If the <code>Reference</code> annotation is declared in the class comment, this parameter is required. If the annotation is declared on a field, the default value for the <code>name</code> parameter is the name of the field</p>
+<hr />
+<p><strong><code>interfaceReference</code></strong>  <br />
+<em>Defaut</em>: Type of the field  <br />
+<em>SCR Descriptor</em>: <code>reference.interface</code>  <br />
+The name of the service interface. This name is used by the Service Component Runtime to access the service on behalf of the component. If the <code>Reference</code> annotation is declared on a class level, this parameter is required. If the annoation is declared on a field, the default value for the <code>interfaceReference</code> parameter is the type of the field</p>
+<hr />
+<p><strong><code>cardinality</code></strong>  <br />
+<em>Defaut</em>: <code>1..1</code>  <br />
+<em>SCR Descriptor</em>: <code>reference.cardinality</code>  <br />
+The cardinality of the service reference. This must be one of value from the enumeration <code>ReferenceCardinality</code></p>
+<hr />
+<p><strong><code>policy</code></strong>  <br />
+<em>Defaut</em>: <code>static</code>  <br />
+<em>SCR Descriptor</em>: <code>reference.policy</code>  <br />
+The dynamicity policy of the reference. If <code>dynamic</code> the service will be made available to the component as it comes and goes. If <code>static</code> the component will be deactivated and re-activated if the service comes and/or goes away. This must be one of <code>static</code> and <code>dynamic</code></p>
+<hr />
+<p><strong><code>target</code></strong>  <br />
+<em>Defaut</em>: --  <br />
+<em>SCR Descriptor</em>: <code>reference.target</code>  <br />
+A service target filter to select specific services to be made available. In order to be able to overwrite the value of this value by a configuration property, this parameter must be declared. If the parameter is not declared, the respective declaration attribute will not be generated</p>
+<hr />
+<p><strong><code>bind</code></strong>  <br />
+<em>Defaut</em>: See description  <br />
+<em>SCR Descriptor</em>: <code>reference.bind</code>  <br />
+The name of the method to be called when the service is to be bound to the component. The default value is the name created by appending the reference <code>name</code> to the string <code>bind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type</p>
+<hr />
+<p><strong><code>unbind</code></strong>  <br />
+<em>Defaut</em>: See description  <br />
+<em>SCR Descriptor</em>: <code>reference.unbind</code>  <br />
+The name of the method to be called when the service is to be unbound from the component. The default value is the name created by appending the reference <code>name</code> to the string <code>unbind</code>. The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type</p>
+<hr />
+<p><strong><code>strategy</code></strong>  <br />
+<em>Defaut</em>: <code>event</code>  <br />
+<em>SCR Descriptor</em>: <code>reference.strategy</code>  <br />
+The strategy used for this reference, one of <code>event</code> or <code>lookup</code>. If the reference is defined on a field with a strategy of <code>event</code> and there is no bind or unbind method, the plugin will create the necessary methods.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1438983 by fmeschbe on Sat, 26 Jan 2013 22:54:42 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

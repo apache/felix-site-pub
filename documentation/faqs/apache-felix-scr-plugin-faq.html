@@ -18,7 +18,7 @@
     limitations under the License.
 -->
   <head>
-    <title>Apache Felix - Apache Felix SCR Plugin FAQ</title>
+    <title>Apache Felix - Apache Felix SCR Plugin Frequently Asked Questions</title>
     <link rel="icon" href="/res/favicon.ico">
     <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
     <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
@@ -67,41 +67,35 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/apache-felix-scr-plugin-faq.html" target="felix_cwiki">/site/apache-felix-scr-plugin-faq.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
       
-      
-      <h1>Apache Felix SCR Plugin FAQ</h1>
-      <h1 id="apache-felix-scr-plugin-frequently-asked-questions">Apache Felix SCR Plugin Frequently Asked Questions</h1>
-<div class="toc">
+      <h1>Apache Felix SCR Plugin Frequently Asked Questions</h1>
+      <div class="toc">
 <ul>
-<li><a href="#apache-felix-scr-plugin-frequently-asked-questions">Apache Felix SCR Plugin Frequently Asked Questions</a><ul>
 <li><a href="#syntax-error-when-enums-are-used">Syntax Error when Enums are used?</a></li>
 <li><a href="#noclassdeffounderror-during-build">NoClassDefFoundError during build</a></li>
 </ul>
-</li>
-</ul>
 </div>
+<p>This page provides answers to frequently asked questions using the Maven
+SCR Plugin. See <a href="/documentation/subprojects/apache-felix-maven-scr-plugin.html">Apache Felix Maven SCR Plugin</a>
+for documentation on that plugin.</p>
 <h2 id="syntax-error-when-enums-are-used">Syntax Error when Enums are used?</h2>
 <p>During a SCR plugin run, a syntax error might occur if enums are used in the source code. This is a know problem of the used QDox version that reads the Java source files. Usually this happens when an enum is used inline and does not end with a ";". So adding this character should solve the problem:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">MyTest</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MyTest</span> <span class="o">{</span>
 
-     <span class="sr">/** more error codes may be added */</span>
-     <span class="n">enum</span> <span class="n">Result</span> <span class="p">{</span>
-    <span class="n">OK</span><span class="p">,</span> <span class="n">UNKNOWN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">DENIED</span>
-     <span class="p">};</span>     <span class="sr">//</span> <span class="o">&lt;!--</span> <span class="n">HERE</span>
+    <span class="cm">/** more error codes may be added */</span>
+    <span class="kd">enum</span> <span class="n">Result</span> <span class="o">{</span>
+        <span class="n">OK</span><span class="o">,</span> <span class="n">UNKNOWN</span><span class="o">,</span> <span class="n">ERROR</span><span class="o">,</span> <span class="n">DENIED</span>
+    <span class="o">};</span>     <span class="c1">// &lt;!-- HERE</span>
 
-     <span class="sr">/** @return the result */</span>
-     <span class="n">public</span> <span class="n">void</span> <span class="n">getResult</span><span class="p">();</span> 
-  <span class="p">}</span>
+    <span class="cm">/** @return the result */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getResult</span><span class="o">();</span> 
+<span class="o">}</span>
 </pre></div>
 
 
 <h2 id="noclassdeffounderror-during-build">NoClassDefFoundError during build</h2>
 <p>If the javadoc tags are used (and not the annotations) then the QDox library is used to parse/introspect the java class. For this the classes have to be loaded and static fields have to be initialized. If you have have for example something like</p>
-<div class="codehilite"><pre>  <span class="n">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">org</span><span class="o">.</span><span class="n">slf4f</span><span class="o">.</span><span class="n">Logger</span> <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">slf4j</span><span class="o">.</span><span class="n">LoggerFactory</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">);</span>
+<div class="codehilite"><pre><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">org</span><span class="o">.</span><span class="na">slf4f</span><span class="o">.</span><span class="na">Logger</span> <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">slf4j</span><span class="o">.</span><span class="na">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">);</span>
 </pre></div>
 
 
@@ -111,21 +105,23 @@
 
 
 <p>is thrown - this often happens with slf4j but might also happen with other libraries.</p>
-<p>In these cases you should add a dependency to the missing class to the dependency list of the plugin, like:</p>
-<div class="codehilite"><pre>     <span class="nt">&lt;plugin&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>maven-scr-plugin<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="nt">&lt;version&gt;</span>1.4.2<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;dependencies&gt;</span>
-             <span class="nt">&lt;dependency&gt;</span>
-                 <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-                 <span class="nt">&lt;artifactId&gt;</span>slf4j-simple<span class="nt">&lt;/artifactId&gt;</span>
-                 <span class="nt">&lt;version&gt;</span>1.5.2<span class="nt">&lt;/version&gt;</span>
-             <span class="nt">&lt;/dependency&gt;</span>
-         <span class="nt">&lt;/dependencies&gt;</span>
+<p>In these cases you should add a dependency to the missing class to the dependency list of the plugin, for example:</p>
+<div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>maven-scr-plugin<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.9.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>slf4j-simple<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>1.5.2<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+    ...
+<span class="nt">&lt;/plugin&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1438983 by fmeschbe on Sat, 26 Jan 2013 22:54:42 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
