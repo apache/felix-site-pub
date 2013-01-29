@@ -67,17 +67,14 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/web-console-restful-api.html" target="felix_cwiki">/site/web-console-restful-api.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
       
       <h1>Web Console RESTful API</h1>
-      <h1 id="web-console-restful-api">Web Console RESTful API</h1>
+      <div class="warning" markdown="1">
+Please note that the APIs described on this page have not been standardized or stabilized yet. As such they cannot be relied upon. They are merely a description of the current code. In future releases these APIs will be fixed to be properly RESTful.
+</div>
+
 <div class="toc">
 <ul>
-<li><a href="#web-console-restful-api">Web Console RESTful API</a><ul>
 <li><a href="#url-space">URL Space</a></li>
 <li><a href="#request-methods">Request Methods</a></li>
 <li><a href="#bundles-plugin">Bundles Plugin</a><ul>
@@ -93,13 +90,7 @@
 <li><a href="#services-plugin">Services Plugin</a></li>
 <li><a href="#configuration-admin-plugin">Configuration Admin Plugin</a></li>
 </ul>
-</li>
-</ul>
 </div>
-<div class="warning" markdown="1">
-Please note that the APIs described on this page have not been standardized or stabilized yet. As such they cannot be relied upon. They are merely a description of the current code. In future releases these APIs will be fixed to be properly RESTful.
-</div>
-
 <h2 id="url-space">URL Space</h2>
 <p>The Web Console URL space is by default rooted at <code>/system/console</code> inside the Servlet Context used by the OSGi Http Service. This default can be reconfigured, though this is not really recommended.</p>
 <p>It is expected that the Web Console owns the complete URL space below the root path.</p>
@@ -108,13 +99,19 @@ Please note that the APIs described on this page have not been standardized or s
 <p>ALthough the HTTP RFC defines a number of request methods and the REST architectural style mandates to use these methods as intended by the specification, Web Browsers in general only support the GET and POST methods. Moreover, firewall administrators more often than not block all HTTP methods except GET and POST. For this reason the Web Console limits the used methods to just these two.</p>
 <h2 id="bundles-plugin">Bundles Plugin</h2>
 <h3 id="urls">URLs</h3>
-<p><code>.../bundles</code> -- addresses all bundles in the framework
-<code>.../bundles/*id*</code> -- addresses a single bundle in the framework. The <code>*id*</code> can in this case be the bundle's ID (as per <code>Bundle.getBundleId()</code>), the bundle's symbolic name (which actually may cause multiple bundles to be addressed), or the bundle's symbolic name and version separated by a colon. Examples are <code>.../bundles/0</code>, <code>.../bundles/org.apache.felix.webconsole</code>, and <code>.../bundles/org.apache.felix.webconsole:3.1.4</code>.</p>
+<dl>
+<dt><code>.../bundles</code></dt>
+<dd>addresses all bundles in the framework</dd>
+<dt><code>.../bundles/*id*</code></dt>
+<dd>addresses a single bundle in the framework. The <code>*id*</code> can in this case be the bundle's ID
+(as per <code>Bundle.getBundleId()</code>), the bundle's symbolic name (which actually may
+cause multiple bundles to be addressed), or the bundle's symbolic name and version separated by a colon. Examples are <code>.../bundles/0</code>, <code>.../bundles/org.apache.felix.webconsole</code>, and <code>.../bundles/org.apache.felix.webconsole:3.1.4</code>.</dd>
+</dl>
 <h3 id="get-requests">GET Requests</h3>
 <p>GET requests are used to retrieve information on the bundles (or bundle) available in the framework. To response formats are currently supported: regular HTML and JSON if requests are sent with the <code>.json</code> extension; e.g. <code>.../bundles/0.json</code>. The HTML response is destined at browsers and is not further described here.</p>
 <h4 id="get-bundlesjson">GET .../bundles.json</h4>
 <div class="note" markdown="1">
-Due to a bug ([FELIX-3132](https://issues.apache.org/jira/browse/FELIX-3132)) the form `.../bundles.json` only works in builds after SVN Revision 1175527. As a workaround request `.../bundles/.json`
+Due to a bug <a href="https://issues.apache.org/jira/browse/FELIX-3132">FELIX-3132</a> the form `.../bundles.json` only works in builds after SVN Revision 1175527. As a workaround request `.../bundles/.json`
 </div>
 
 <p>Request to this URL sends back an overview of all bundles along with an overview of all bundles (bundles existing, active, fragment, resolved, installed)</p>
@@ -311,73 +308,49 @@ Due to a bug ([FELIX-3132](https://issues.apache.org/jira/browse/FELIX-3132)) th
 
 
 <h3 id="post-requests">POST Requests</h3>
-<p>To update the bundles the <code>action</code> request method is used to indicate the action:</p>
-<table>
-<thead>
-<tr>
-<th>Action</th>
-<th>Requires a Bundle</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>refreshPackages</code></td>
-<td>no</td>
-<td>Calls <code>PackageAdmin.refreshPackages(Bundle[]())</code> with a <code>null</code> argument -- refreshing all pending bundles</td>
-</tr>
-<tr>
-<td><code>install</code></td>
-<td>no</td>
-<td>Installs (or updates) and optionally starts one or more bundles. Parameters:</td>
-</tr>
-<tr>
-<td>* <code>bundlestart</code> -- whether to start newly installed bundles or not. Has no influence on updated bundles.</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>* <code>bundlestartlevel</code> -- the start level to set on newly installed bundles. Has no influence on updated bundles.</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>* <code>bundlefile</code> -- one or more uploaded files being the bundles to install or update. The manifests in the bundles are inspected to see whether any bundle is an update or new install.</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>* <code>refreshPackages</code> -- whether to call <code>PackageAdmin.refreshPackages(Bundle[]())</code> with the installed/updated bundles after installation/update.</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><code>start</code></td>
-<td>yes</td>
-<td>Starts the bundle</td>
-</tr>
-<tr>
-<td><code>stop</code></td>
-<td>yes</td>
-<td>Stops the bundle</td>
-</tr>
-<tr>
-<td><code>refresh</code></td>
-<td>yes</td>
-<td>Calls <code>PackageAdmin.refreshPackages(Bundle[]())</code> with the bundle as its sole argument thus forcing the bundle to be rewired.</td>
-</tr>
-<tr>
-<td><code>update</code></td>
-<td>yes</td>
-<td>Calls <code>Bundle.update()</code> on the bundle or tries to update the bundle through the OBR.</td>
-</tr>
-<tr>
-<td><code>uninstall</code></td>
-<td>yes</td>
-<td>Calls <code>Bundle.uninstall()</code> on the bundle.</td>
-</tr>
-</tbody>
-</table>
+<p>To update the bundles the <code>action</code> request parameter is used to indicate the action:</p>
+<dl>
+<dt><code>install</code></dt>
+<dd>
+<p>Installs (or updates) and optionally starts one or more bundles. Parameters:</p>
+<ul>
+<li><code>bundlestart</code> -- whether to start newly installed bundles or not. Has no influence on updated bundles.</li>
+<li><code>bundlestartlevel</code> -- the start level to set on newly installed bundles. Has no influence on updated bundles.</li>
+<li><code>bundlefile</code> -- one or more uploaded files being the bundles to install or update. The manifests in the bundles are inspected to see whether any bundle is an update or new install.</li>
+<li><code>refreshPackages</code> -- whether to call <code>PackageAdmin.refreshPackages(Bundle[])</code> with the installed/updated bundles after installation/update.</li>
+</ul>
+</dd>
+<dt><code>start</code></dt>
+<dd>
+<p>Starts the bundle addressed by the request URL.</p>
+</dd>
+<dt><code>stop</code></dt>
+<dd>
+<p>Stops the bundle addressed by the request URL.</p>
+</dd>
+<dt><code>refresh</code></dt>
+<dd>
+<p>Calls <code>PackageAdmin.refreshPackages(Bundle[])</code> with the
+bundle as its sole argument thus forcing the bundle to be rewired. The bundle
+is required to be addressed by the request URL.</p>
+</dd>
+<dt><code>update</code></dt>
+<dd>
+<p>Calls <code>Bundle.update()</code> on the bundle addressed by the request URL or tries
+to update the bundle through the OBR.</p>
+</dd>
+<dt><code>uninstall</code></dt>
+<dd>
+<p>Calls <code>Bundle.uninstall()</code> on the bundle addressed by the request URL. After the
+installation the framework must be refreshed (see <code>refreshPackages</code> above).</p>
+</dd>
+<dt><code>refreshPackages</code></dt>
+<dd>
+<p>Calls <code>PackageAdmin.refreshPackages(Bundle[])</code> with a <code>null</code>
+argument thus refreshing all pending bundles. This action does not require a bundle
+in the URL and just ignores if one is provided.</p>
+</dd>
+</dl>
 <p>The response on those actions requiring a bundle is a simple JSON response:</p>
 <div class="codehilite"><pre><span class="p">{</span>
     <span class="s">&quot;fragment&quot;</span><span class="p">:</span> <span class="o">--</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">is</span> <span class="n">a</span> <span class="n">fragement</span>
@@ -393,7 +366,7 @@ Due to a bug ([FELIX-3132](https://issues.apache.org/jira/browse/FELIX-3132)) th
 <h2 id="configuration-admin-plugin">Configuration Admin Plugin</h2>
 <p>TBD</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1439944 by fmeschbe on Tue, 29 Jan 2013 15:32:39 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
