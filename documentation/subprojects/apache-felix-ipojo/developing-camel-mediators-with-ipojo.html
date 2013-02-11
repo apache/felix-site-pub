@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -17,244 +16,345 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-  <head>
+
+<head>
     <title>Apache Felix - Developing Camel mediators with iPOJO</title>
     <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="http://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="http://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
-      </div>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The most powerful component model for OSGi">
+
     
-    <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
-<iframe
-    src="http://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
+    <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/ipojo/web/style.css" rel="stylesheet">
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
     
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
-      </div>
+</head>
 
-      
-      <div class="tip">
-           This page is a translated version of <a href="/site/developing-camel-mediators-with-ipojo.html" target="felix_cwiki">/site/developing-camel-mediators-with-ipojo.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
-      
-      <h1>Developing Camel mediators with iPOJO</h1>
-      <p>{include:apache-felix-ipojo-header}</p>
-<div class="content">
+<body data-spy="scroll" data-target=".subnav">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+         
+                 <div class="nav-collapse" id="main-menu">
+                    <ul class="nav" id="main-menu-left">
+                        <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
+                        <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
+                    
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="tutorials-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.html">Why choose iPOJO</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.html">Success stories</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.html">Features</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
+                            </ul>
+                        </li>
 
-# Developing Camel mediators with iPOJO
-*The [Camel OSGi tutorial ]() provides a very simple and neat overview of Camel. This article mentions the usage of iPOJO to implement the mediator. This document provides this implementation.*
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Documentation <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="user-guide-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.html">Requiring a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.html">Providing a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle management</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">External <em>handlers</em></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">Asynchronous communication</a></li>
+                                        <li><a href="">JMX management</a></li>
+                                        <li><a href="">Extender pattern</a></li>
+                                        <li><a href="">Whiteboard pattern</a></li>
+                                        <li><a href="">Temporal dependencies</a></li>
+                                    </ul>
+                                </li>                                            
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Advanced topics</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="">Factories and Instances</a></li>
+                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="">API</a></li>
+                                        <li><a href="">Testing components</a></li>
+                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="">FAQ</a></li>
+                                        <li><a href="">Reference Card</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="">Manipulation Metadata </a></li>
+                                        <li><a href="">Dive into the iPOJO Manipulation depths</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-## Step 1 : Initial project setup
-Instead of using the 'spring-osgi-bundle-archetype' maven archetype, we will use the iPOJO one to create the iPOJO bundle.
-To create the simple iPOJO service project, execute the following command in your Unix/Dos console.
+                        <li class="dropdown" id="tools-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Ant Task</a></li>
+                                <li><a href="">Eclipse Plugin</a></li>
+                                <li><a href="">Maven Plugin</a></li>
+                                <li><a href="">`arch` shell command</a></li>
+                                <li><a href="">Online Manipulator</a></li>
+                                <li><a href="">Webconsole plugin</a></li>
+                            </ul>
+                        </li>
 
-    mvn archetype:create -DarchetypeGroupId=org.apache.felix -DarchetypeArtifactId=maven-ipojo-plugin -DarchetypeVersion=1.0.0 -DgroupId=demo -DartifactId=demo.service-ipojo-bundle -Dversion=0.1
+                        <li class="dropdown" id="community-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Support</a></li>
+                                <li><a href="http://www.apache.org/">ASF</a></li>
+                                <li><a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                <li><a href="http://www.apache.org/foundation/thanks.html">Sponsors</a></li>
+                            </ul>
+                        </li>
 
-## Step 2 : Develop the interface
-So now, it is time to create the interface that we will use in the project. Create a new folder "service" in `src/main/java/demo` tree. Add the interface `TransformService.java` and copy paste the code below:
+                        <li class="dropdown" id="misc-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Misc <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
+                                <li><a href="">Article & Presentations</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right" id="main-menu-right">
+                        <li><a rel="tooltip" target="_blank" href="http://felix.apache.org">Apache Felix <i class="icon-share-alt"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>    
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h1 id="developing-camel-mediators-with-ipojo">Developing Camel mediators with iPOJO</h1>
+<p><em>The <a href="">Camel OSGi tutorial </a> provides a very simple and neat overview of Camel. This article mentions the usage of iPOJO to implement the mediator. This document provides this implementation.</em></p>
+<h2 id="step-1-initial-project-setup">Step 1 : Initial project setup</h2>
+<p>Instead of using the 'spring-osgi-bundle-archetype' maven archetype, we will use the iPOJO one to create the iPOJO bundle.
+To create the simple iPOJO service project, execute the following command in your Unix/Dos console.</p>
+<div class="codehilite"><pre><span class="n">mvn</span> <span class="n">archetype:create</span> <span class="o">-</span><span class="n">DarchetypeGroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span> <span class="o">-</span><span class="n">DarchetypeArtifactId</span><span class="o">=</span><span class="n">maven</span><span class="o">-</span><span class="n">ipojo</span><span class="o">-</span><span class="n">plugin</span> <span class="o">-</span><span class="n">DarchetypeVersion</span><span class="o">=</span><span class="mf">1.0.0</span> <span class="o">-</span><span class="n">DgroupId</span><span class="o">=</span><span class="n">demo</span> <span class="o">-</span><span class="n">DartifactId</span><span class="o">=</span><span class="n">demo</span><span class="o">.</span><span class="n">service</span><span class="o">-</span><span class="n">ipojo</span><span class="o">-</span><span class="n">bundle</span> <span class="o">-</span><span class="n">Dversion</span><span class="o">=</span><span class="mf">0.1</span>
+</pre></div>
+
+
+<h2 id="step-2-develop-the-interface">Step 2 : Develop the interface</h2>
+<p>So now, it is time to create the interface that we will use in the project. Create a new folder "service" in <code>src/main/java/demo</code> tree. Add the interface <code>TransformService.java</code> and copy paste the code below:
 {code:java|title=TransformService.java}
 package demo.service;
 public interface TransformService {
     public Object transform(Object obj);
-}
+}</p>
+<div class="codehilite"><pre><span class="n">h2</span><span class="o">.</span> <span class="n">Step</span> <span class="mi">3</span> <span class="p">:</span> <span class="n">Create</span> <span class="n">the</span> <span class="n">class</span> <span class="n">implementing</span> <span class="n">the</span> <span class="n">interface</span>
+<span class="n">Next</span><span class="p">,</span> <span class="n">we</span> <span class="n">will</span> <span class="n">create</span> <span class="n">the</span> <span class="n">class</span>  <span class="n">implementing</span> <span class="n">the</span> <span class="n">interface</span> <span class="o">.</span>
+<span class="n">Create</span> <span class="n">the</span> <span class="n">class</span>  <span class="n">in</span> <span class="n">the</span> <span class="n">folder</span> 
+<span class="p">{</span><span class="n">code:java</span><span class="o">|</span><span class="n">title</span><span class="o">=</span><span class="n">TransformServiceImpl</span><span class="o">.</span><span class="n">java</span><span class="p">}</span>
+<span class="nb">package</span> <span class="n">demo</span><span class="o">.</span><span class="n">service</span><span class="p">;</span>
 
-    h2. Step 3 : Create the class implementing the interface
-    Next, we will create the class  implementing the interface .
-    Create the class  in the folder 
-    {code:java|title=TransformServiceImpl.java}
-    package demo.service;
+<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Date</span><span class="p">;</span>
 
-    import java.util.Date;
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">Log</span><span class="p">;</span>
+<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">LogFactory</span><span class="p">;</span>
 
-    import org.apache.commons.logging.Log;
-    import org.apache.commons.logging.LogFactory;
+<span class="n">public</span> <span class="n">class</span> <span class="n">TransformServiceImpl</span> <span class="n">implements</span> <span class="n">TransformService</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">transient</span> <span class="n">Log</span> <span class="n">LOG</span> <span class="o">=</span> <span class="n">LogFactory</span><span class="o">.</span><span class="n">getLog</span><span class="p">(</span><span class="n">TransformServiceImpl</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
+    <span class="n">private</span> <span class="n">boolean</span> <span class="n">verbose</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">String</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s">&quot;MyTransform&quot;</span><span class="p">;</span>
 
-    public class TransformServiceImpl implements TransformService {
-        private static final transient Log LOG = LogFactory.getLog(TransformServiceImpl.class);
-        private boolean verbose = true;
-        private String prefix = "MyTransform";
+    <span class="n">public</span> <span class="n">Object</span> <span class="n">transform</span><span class="p">(</span><span class="n">Object</span> <span class="n">body</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">String</span> <span class="n">answer</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot; set body:  &quot;</span> <span class="o">+</span> <span class="k">new</span> <span class="n">Date</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">verbose</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;&gt;&gt; call &gt;&gt; &quot;</span> <span class="o">+</span> <span class="n">answer</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;&gt;&gt; call &gt;&gt;&quot;</span> <span class="o">+</span> <span class="n">answer</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">answer</span><span class="p">;</span>
+    <span class="p">}</span>
 
-        public Object transform(Object body) {
-            String answer = prefix + " set body:  " + new Date();
-            if (verbose) {
-                System.out.println(">> call >> " + answer);
-            }
-            LOG.info(">> call >>" + answer);
-            return answer;
-        }
+    <span class="n">public</span> <span class="n">boolean</span> <span class="n">isVerbose</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">verbose</span><span class="p">;</span>
+    <span class="p">}</span>
 
-        public boolean isVerbose() {
-            return verbose;
-        }
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setVerbose</span><span class="p">(</span><span class="n">boolean</span> <span class="n">verbose</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span><span class="p">;</span>
+    <span class="p">}</span>
 
-        public void setVerbose(boolean verbose) {
-            this.verbose = verbose;
-        }
+    <span class="n">public</span> <span class="n">String</span> <span class="n">getPrefix</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">prefix</span><span class="p">;</span>
+    <span class="p">}</span>
 
-        public String getPrefix() {
-            return prefix;
-        }
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setPrefix</span><span class="p">(</span><span class="n">String</span> <span class="n">prefix</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 
-        public void setPrefix(String prefix) {
-            this.prefix = prefix;
-        }
-    }
 
-## Step 4 : Create the iPOJO configuration files
-The next step concerns the creation of the iPOJO configuration file who will allow the registration of the `TranformService` as an OSGi service.
+<h2 id="step-4-create-the-ipojo-configuration-files">Step 4 : Create the iPOJO configuration files</h2>
+<p>The next step concerns the creation of the iPOJO configuration file who will allow the registration of the <code>TranformService</code> as an OSGi service.
 Create or edit the file metadata.xml in the folder src/main/resources/
 {code:xml|title=metadata.xml}
-<?xml version="1.0" encoding="UTF-8"?>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 <ipojo>
     <component classname="demo.service.TransformServiceImpl" name="my-ipojo-transformer">
         <provides/>
     </component>
     <instance component="my-ipojo-transformer"/>
-</ipojo>
+</ipojo></p>
+<div class="codehilite"><pre>h2. Step 5 : Generate the bundle
+Before generating the bundle, we need to edit the  file to describe our bundle.
+{code:xml|title=pom.xml}
+<span class="nt">&lt;project&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>bundle<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>demo<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>demo.service-ipojo-bundle<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>0.1<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;name&gt;</span>demo.service-ipojo-bundle<span class="nt">&lt;/name&gt;</span>
 
-    h2. Step 5 : Generate the bundle
-    Before generating the bundle, we need to edit the  file to describe our bundle.
-    {code:xml|title=pom.xml}
-    <project>
-      <modelVersion>4.0.0</modelVersion>
-      <packaging>bundle</packaging>
-      <groupId>demo</groupId>
-      <artifactId>demo.service-ipojo-bundle</artifactId>
-      <version>0.1</version>
-      <name>demo.service-ipojo-bundle</name>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-bundle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>1.4.2<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;instructions&gt;</span>
+            <span class="nt">&lt;Bundle</span><span class="err">-SymbolicName</span><span class="nt">&gt;</span><span class="cp">${</span><span class="n">pom</span><span class="o">.</span><span class="n">artifactId</span><span class="cp">}</span><span class="nt">&lt;/Bundle-SymbolicName&gt;</span>
+            <span class="nt">&lt;Import</span><span class="err">-Package</span><span class="nt">&gt;</span>*<span class="nt">&lt;/Import-Package&gt;</span>
+            <span class="nt">&lt;Export</span><span class="err">-Package</span><span class="nt">&gt;</span>*<span class="nt">&lt;/Export-Package&gt;</span>
+          <span class="nt">&lt;/instructions&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>maven-ipojo-plugin<span class="nt">&lt;/artifactId&gt;</span>
+          <span class="nt">&lt;executions&gt;</span>
+            <span class="nt">&lt;execution&gt;</span>
+                <span class="nt">&lt;goals&gt;</span>
+                  <span class="nt">&lt;goal&gt;</span>ipojo-bundle<span class="nt">&lt;/goal&gt;</span>
+               <span class="nt">&lt;/goals&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+        <span class="nt">&lt;/executions&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
 
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <version>1.4.2</version>
-            <extensions>true</extensions>
-            <configuration>
-              <instructions>
-                <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-                <Import-Package>*</Import-Package>
-                <Export-Package>*</Export-Package>
-              </instructions>
-            </configuration>
-          </plugin>
-          <plugin>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>maven-ipojo-plugin</artifactId>
-              <executions>
-                <execution>
-                    <goals>
-                      <goal>ipojo-bundle</goal>
-                   </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
+  <span class="nt">&lt;dependencies&gt;</span>
+      <span class="nt">&lt;dependency&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>com.springsource.slf4j.org.apache.commons.logging<span class="nt">&lt;/artifactId&gt;</span>
+          <span class="nt">&lt;version&gt;</span>1.5.0<span class="nt">&lt;/version&gt;</span>
+          <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>com.springsource.slf4j.api<span class="nt">&lt;/artifactId&gt;</span>
+          <span class="nt">&lt;version&gt;</span>1.5.0<span class="nt">&lt;/version&gt;</span>
+          <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>com.springsource.slf4j.log4j<span class="nt">&lt;/artifactId&gt;</span>
+          <span class="nt">&lt;version&gt;</span>1.5.0<span class="nt">&lt;/version&gt;</span>
+          <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+          <span class="nt">&lt;exclusions&gt;</span>
+            <span class="nt">&lt;exclusion&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>log4j<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>log4j<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;/exclusion&gt;</span>
+            <span class="nt">&lt;exclusion&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>org.apache.log4j<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>com.springsource.org.apache.log4j<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;/exclusion&gt;</span>
+          <span class="nt">&lt;/exclusions&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
 
-      <dependencies>
-          <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
-              <version>1.5.0</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>com.springsource.slf4j.api</artifactId>
-              <version>1.5.0</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>com.springsource.slf4j.log4j</artifactId>
-              <version>1.5.0</version>
-              <scope>provided</scope>
-              <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.log4j</groupId>
-                    <artifactId>com.springsource.org.apache.log4j</artifactId>
-                </exclusion>
-              </exclusions>
-            </dependency>
-        </dependencies>
-    </project>
 
-## Step 6 & 7: Create the Camel context file and the bundle
-These steps are exactly the same as into the OSGi Camel Tutorial. So refer to the step 6 and 7 of the [article](http://activemq.apache.org/camel/tutorial-osgi-camel-part1.html).
-## Step 8: Deploy the bundles
-We will see how to execute the Canel route on ServiceMix Kernel.
-As mentioned in the documentation, [Apache ServiceMix Kernel]() is a small OSGi based runtime which provides a lightweight container onto which various components and applications can be deployed. Moreover, the server provides administration, security, logging and provisioning features that will help you during the deployment and administration steps.
-If this is not yet done, download ServiceMix Kernel 1.0.0 server and install it. Launch the server by executing the command in the bin folder:
+<h2 id="step-6-7-create-the-camel-context-file-and-the-bundle">Step 6 &amp; 7: Create the Camel context file and the bundle</h2>
+<p>These steps are exactly the same as into the OSGi Camel Tutorial. So refer to the step 6 and 7 of the <a href="http://activemq.apache.org/camel/tutorial-osgi-camel-part1.html">article</a>.</p>
+<h2 id="step-8-deploy-the-bundles">Step 8: Deploy the bundles</h2>
+<p>We will see how to execute the Canel route on ServiceMix Kernel.
+As mentioned in the documentation, <a href="">Apache ServiceMix Kernel</a> is a small OSGi based runtime which provides a lightweight container onto which various components and applications can be deployed. Moreover, the server provides administration, security, logging and provisioning features that will help you during the deployment and administration steps.
+If this is not yet done, download ServiceMix Kernel 1.0.0 server and install it. Launch the server by executing the command in the bin folder:</p>
+<div class="codehilite"><pre><span class="sr">/Users/c</span><span class="n">lement</span><span class="sr">/apache-servicemix-kernel-1.0.0/</span><span class="n">bin</span><span class="o">&gt;</span><span class="n">servicemix</span>
+</pre></div>
 
-    /Users/clement/apache-servicemix-kernel-1.0.0/bin>servicemix
 
-If this is the first time Servicemix is started, then you will see that a new data folder is created. Notes that this application requires Java 6.
-In order to allow our bundles to work with Camel, execute the following commands to download and install the 'Camel and iPOJO bundles':
+<p>If this is the first time Servicemix is started, then you will see that a new data folder is created. Notes that this application requires Java 6.
+In order to allow our bundles to work with Camel, execute the following commands to download and install the 'Camel and iPOJO bundles':</p>
+<div class="codehilite"><pre><span class="n">servicemix</span><span class="o">&gt;</span> <span class="n">osgi</span> <span class="n">install</span> <span class="o">-</span><span class="n">s</span> <span class="n">mvn:org</span><span class="o">.</span><span class="n">springframework</span><span class="sr">/spring-tx/</span><span class="mf">2.5.5</span>
+<span class="n">servicemix</span><span class="o">&gt;</span> <span class="n">osgi</span> <span class="n">install</span> <span class="o">-</span><span class="n">s</span> <span class="n">mvn:org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">camel</span><span class="sr">/camel-core/</span><span class="mf">1.5.0</span>
+<span class="n">servicemix</span><span class="o">&gt;</span> <span class="n">osgi</span> <span class="n">install</span> <span class="o">-</span><span class="n">s</span> <span class="n">mvn:org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">camel</span><span class="sr">/camel-spring/</span><span class="mf">1.5.0</span>
+<span class="n">servicemix</span><span class="o">&gt;</span> <span class="n">osgi</span> <span class="n">install</span> <span class="o">-</span><span class="n">s</span> <span class="n">mvn:org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">camel</span><span class="sr">/camel-osgi/</span><span class="mf">1.5.0</span>
+<span class="n">servicemix</span><span class="o">&gt;</span> <span class="n">osgi</span> <span class="n">install</span> <span class="o">-</span><span class="n">s</span> <span class="n">mvn:org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="sr">/org.apache.felix.ipojo/</span><span class="mf">1.0.0</span>
+</pre></div>
 
-    servicemix> osgi install -s mvn:org.springframework/spring-tx/2.5.5
-    servicemix> osgi install -s mvn:org.apache.camel/camel-core/1.5.0
-    servicemix> osgi install -s mvn:org.apache.camel/camel-spring/1.5.0
-    servicemix> osgi install -s mvn:org.apache.camel/camel-osgi/1.5.0
-    servicemix> osgi install -s mvn:org.apache.felix/org.apache.felix.ipojo/1.0.0
 
-Next, copy the two jar files into the deploy folder, first the iPOJO service and next the Camel bundle. After a few seconds, you should see on the Servicemix log console the following text:
+<p>Next, copy the two jar files into the deploy folder, first the iPOJO service and next the Camel bundle. After a few seconds, you should see on the Servicemix log console the following text:</p>
+<div class="codehilite"><pre><span class="n">servicemix</span><span class="o">&gt;</span> <span class="o">&gt;&gt;</span> <span class="n">call</span> <span class="o">&gt;&gt;</span> <span class="n">MyTransform</span> <span class="n">set</span> <span class="n">body:</span>  <span class="n">Sat</span> <span class="n">Dec</span> <span class="mi">27</span> <span class="mi">19</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">16</span> <span class="n">CET</span> <span class="mi">2008</span>
+</pre></div>
 
-    servicemix> >> call >> MyTransform set body:  Sat Dec 27 19:29:16 CET 2008
 
-Remarks :
+<p>Remarks :
     * In case of trouble, use the command: osgi list to see if all the deployed bundles are installed correctly and have their status equals to active
-    * To see the log of ServiceMix, use the command: log d
-
-{include:apache-felix-ipojo-footer}
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
+    * To see the log of ServiceMix, use the command: log d</p>
+        </div>
     </div>
-  </body>
+
+    <hr/>
+
+    <div class="container">
+        <footer id="footer">
+            <div class="row">
+                <div class="trademarkFooter span7"> 
+                Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+                logo are trademarks of The Apache Software Foundation. All other marks mentioned
+                may be trademarks or registered trademarks of their respective owners.
+                </div>
+                <div class="timestamp span3 offset2">
+                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                </div>
+            </div>
+        </footer>           
+    </div>
+</body>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+    try{
+        var pageTracker = _gat._getTracker("UA-1518442-4");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
 </html>

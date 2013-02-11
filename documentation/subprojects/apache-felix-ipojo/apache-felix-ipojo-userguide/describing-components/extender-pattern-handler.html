@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -17,156 +16,226 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-  <head>
+
+<head>
     <title>Apache Felix - Extender Pattern Handler</title>
     <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="http://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="http://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
-      </div>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The most powerful component model for OSGi">
+
     
-    <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
-<iframe
-    src="http://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
+    <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/ipojo/web/style.css" rel="stylesheet">
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
     
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components.html">Describing components</a>
-      </div>
+</head>
 
-      
-      <div class="tip">
-           This page is a translated version of <a href="/site/extender-pattern-handler.html" target="felix_cwiki">/site/extender-pattern-handler.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
-      
-      <h1>Extender Pattern Handler</h1>
-      <p>{include:apache-felix-ipojo-header}</p>
-<div class="content">
+<body data-spy="scroll" data-target=".subnav">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+         
+                 <div class="nav-collapse" id="main-menu">
+                    <ul class="nav" id="main-menu-left">
+                        <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
+                        <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
+                    
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="tutorials-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.html">Why choose iPOJO</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.html">Success stories</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.html">Features</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
+                            </ul>
+                        </li>
 
-#  The extender pattern handler
-*The objective of this handler is to simplify the development of extender-based architecture. This architecture-style is based on two different entities:*
-* *The extender (also called host)* 
-* *The extensions*
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Documentation <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="user-guide-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.html">Requiring a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.html">Providing a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle management</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">External <em>handlers</em></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">Asynchronous communication</a></li>
+                                        <li><a href="">JMX management</a></li>
+                                        <li><a href="">Extender pattern</a></li>
+                                        <li><a href="">Whiteboard pattern</a></li>
+                                        <li><a href="">Temporal dependencies</a></li>
+                                    </ul>
+                                </li>                                            
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Advanced topics</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="">Factories and Instances</a></li>
+                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="">API</a></li>
+                                        <li><a href="">Testing components</a></li>
+                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="">FAQ</a></li>
+                                        <li><a href="">Reference Card</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="">Manipulation Metadata </a></li>
+                                        <li><a href="">Dive into the iPOJO Manipulation depths</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-{div:class=toc}
+                        <li class="dropdown" id="tools-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Ant Task</a></li>
+                                <li><a href="">Eclipse Plugin</a></li>
+                                <li><a href="">Maven Plugin</a></li>
+                                <li><a href="">`arch` shell command</a></li>
+                                <li><a href="">Online Manipulator</a></li>
+                                <li><a href="">Webconsole plugin</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="community-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Support</a></li>
+                                <li><a href="http://www.apache.org/">ASF</a></li>
+                                <li><a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                <li><a href="http://www.apache.org/foundation/thanks.html">Sponsors</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="misc-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Misc <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
+                                <li><a href="">Article & Presentations</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right" id="main-menu-right">
+                        <li><a rel="tooltip" target="_blank" href="http://felix.apache.org">Apache Felix <i class="icon-share-alt"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>    
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h1 id="the-extender-pattern-handler">The extender pattern handler</h1>
+<p><em>The objective of this handler is to simplify the development of extender-based architecture. This architecture-style is based on two different entities:</em>
+<em> </em>The extender (also called host)<em> 
+</em> <em>The extensions</em></p>
+<p>{div:class=toc}
 [TOC]
-{div}
-
-## The Extender pattern
-
-This architecture-style is based on two different roles:
-* The extender 
-* The extension
-
-!extender.png!
-
-The relation is basically a 1..n relation. The extender tracks extensions. The particularity of this architecture-style is that extensions are packaged in different bundles. An extension is detected by analyzing the bundle. Indeed these bundles can have a special mark in their manifest of a special file...
+{div}</p>
+<h2 id="the-extender-pattern">The Extender pattern</h2>
+<p>This architecture-style is based on two different roles:
+<em> The extender 
+</em> The extension</p>
+<p>!extender.png!</p>
+<p>The relation is basically a 1..n relation. The extender tracks extensions. The particularity of this architecture-style is that extensions are packaged in different bundles. An extension is detected by analyzing the bundle. Indeed these bundles can have a special mark in their manifest of a special file...
 Implementing an extender pattern could be complex as the extender needs to track these marks dynamically. When a bundle starts, it needs to look at the mark. Then a bundle leave, the extender must release all object created from this bundle.
 This handler tracks bundle for you based on the specified required mark. At each time a matching bundle appears or disappears, a callback is invoked. The mark is currently a header in the bundle manifest.
-Nowadays, a lot of frameworks use this pattern such as iPOJO it-self (to find both bundles containing components and bundles adding a new implementation type), Spring-DM ...
+Nowadays, a lot of frameworks use this pattern such as iPOJO it-self (to find both bundles containing components and bundles adding a new implementation type), Spring-DM ...</p>
+<h2 id="using-the-handler">Using the handler</h2>
+<p>First of all, you need to configure the component type to use the handler such as:</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo</span> <span class="na">xmlns:extender=</span><span class="s">&quot;org.apache.felix.ipojo.extender&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;component</span>
+        <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.extender.MyExtender&quot;</span><span class="nt">&gt;</span>
 
-## Using the handler
-First of all, you need to configure the component type to use the handler such as:
+                <span class="c">&lt;!-- Extender Pattern handler configuration --&gt;</span>
+        <span class="nt">&lt;extender:extender</span> 
+                  <span class="na">extension=</span><span class="s">&quot;My-Extension&quot;</span>
+                  <span class="na">onArrival=</span><span class="s">&quot;onBundleArrival&quot;</span> 
+                  <span class="na">onDeparture=</span><span class="s">&quot;onBundleDeparture&quot;</span> 
+                <span class="nt">/&gt;</span>
 
-    <ipojo xmlns:extender="org.apache.felix.ipojo.extender">
-        <component
-            classname="org.apache.felix.ipojo.extender.MyExtender">
+        <span class="nt">&lt;callback</span> <span class="na">transition=</span><span class="s">&quot;invalidate&quot;</span> <span class="na">method=</span><span class="s">&quot;stopping&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;callback</span> <span class="na">transition=</span><span class="s">&quot;validate&quot;</span> <span class="na">method=</span><span class="s">&quot;starting&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;provides</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/component&gt;</span>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-                    <!-- Extender Pattern handler configuration -->
-            <extender:extender 
-                      extension="My-Extension"
-                      onArrival="onBundleArrival" 
-                      onDeparture="onBundleDeparture" 
-                    />
 
-            <callback transition="invalidate" method="stopping" />
-            <callback transition="validate" method="starting" />
-            <provides />
-        </component>
-    </ipojo>
+<p>Notice that, this handler is an external handler. So, it uses the "org.apache.felix.ipojo.extender" namespace.
+You can also use annotations:</p>
+<div class="codehilite"><pre><span class="nv">@Component</span>
+<span class="nv">@Extender</span><span class="p">(</span>
+    <span class="n">onArrival</span><span class="o">=</span><span class="s">&quot;onBundleArrival&quot;</span><span class="p">,</span>
+    <span class="n">onDeparture</span><span class="o">=</span><span class="s">&quot;onBundleDeparture&quot;</span><span class="p">,</span>
+    <span class="n">extension</span><span class="o">=</span><span class="s">&quot;My-Extension&quot;</span><span class="p">)</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">MyExtender</span> <span class="p">{</span>
 
-Notice that, this handler is an external handler. So, it uses the "org.apache.felix.ipojo.extender" namespace.
-You can also use annotations:
+    <span class="nv">@Validate</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">starting</span><span class="p">()</span> <span class="p">{</span>
+      <span class="sr">//</span> <span class="o">...</span>
+    <span class="p">}</span>
 
-    @Component
-    @Extender(
-        onArrival="onBundleArrival",
-        onDeparture="onBundleDeparture",
-        extension="My-Extension")
-    public class MyExtender {
+    <span class="nv">@Invalidate</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stopping</span> <span class="p">{</span>
+      <span class="sr">//</span> <span class="o">...</span>
+    <span class="p">}</span>
 
-        @Validate
-        public void starting() {
-          // ...
-        }
+    <span class="n">void</span> <span class="n">onBundleArrival</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">String</span> <span class="n">header</span><span class="p">)</span> <span class="p">{</span>
+             <span class="sr">//</span> <span class="n">Do</span> <span class="n">something</span>
+    <span class="p">}</span>
 
-        @Invalidate
-        public void stopping {
-          // ...
-        }
+    <span class="n">void</span> <span class="n">onBundleDeparture</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">)</span> <span class="p">{</span>
+            <span class="sr">//</span> <span class="n">Do</span> <span class="n">something</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 
-        void onBundleArrival(Bundle bundle, String header) {
-                 // Do something
-        }
 
-        void onBundleDeparture(Bundle bundle) {
-                // Do something
-        }
-    }
+<p>The methods specified methods will be called when a matching bundle arrives or leaves.
+In the previous example, these methods could be: </p>
+<div class="codehilite"><pre><span class="n">void</span> <span class="n">onBundleArrival</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">String</span> <span class="n">header</span><span class="p">)</span> <span class="p">{</span>
+         <span class="sr">//</span> <span class="n">Do</span> <span class="n">something</span>
+<span class="p">}</span>
 
-The methods specified methods will be called when a matching bundle arrives or leaves.
-In the previous example, these methods could be: 
+<span class="n">void</span> <span class="n">onBundleDeparture</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">)</span> <span class="p">{</span>
+        <span class="sr">//</span> <span class="n">Do</span> <span class="n">something</span>
+<span class="p">}</span>
+</pre></div>
 
-    void onBundleArrival(Bundle bundle, String header) {
-             // Do something
-    }
 
-    void onBundleDeparture(Bundle bundle) {
-            // Do something
-    }
-
-Notice the different signatures of the methods. The arrival method is called with the arriving bundle and the matching header value (i.e. the value of the My-Extension header of the bundle manifest). The departure method just receives the leaving bundle.
-
-## Configuration
-The handler has only three mandatory attributes:
-* Extension: declaring the looked manifest header.
-* onArrival: declaring the method to invoke when a matching bundle arrives
-* onDeparture: declaring the method to invoke when a matching bundle leaves
-
+<p>Notice the different signatures of the methods. The arrival method is called with the arriving bundle and the matching header value (i.e. the value of the My-Extension header of the bundle manifest). The departure method just receives the leaving bundle.</p>
+<h2 id="configuration">Configuration</h2>
+<p>The handler has only three mandatory attributes:
+<em> Extension: declaring the looked manifest header.
+</em> onArrival: declaring the method to invoke when a matching bundle arrives
+* onDeparture: declaring the method to invoke when a matching bundle leaves</p>
 <div class="box">
     <div class="box-yellow-header">
     <div class="box-yellow-title">
@@ -179,45 +248,66 @@ The handler has only three mandatory attributes:
     <div class="box-yellow-footer"></div>
 </div>
 
-## Download
-The handler is available on the [download](/documentation/subprojects/apache-felix-ipojo/download.html) page.
-Sources are available on the Felix trunk at the following location: [http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/extender/](http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/extender/)
-
-## Configuring the handler with annotations
-
-It is possible to configure the handler with a simple annotation available in the annotation pack ('annotation' project in the iPOJO trunk). Here is an example of usage:
+<h2 id="download">Download</h2>
+<p>The handler is available on the <a href="/documentation/subprojects/apache-felix-ipojo/download.html">download</a> page.
+Sources are available on the Felix trunk at the following location: <a href="http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/extender/">http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/extender/</a></p>
+<h2 id="configuring-the-handler-with-annotations">Configuring the handler with annotations</h2>
+<p>It is possible to configure the handler with a simple annotation available in the annotation pack ('annotation' project in the iPOJO trunk). Here is an example of usage:
 {code:java}
 import org.apache.felix.ipojo.annotations.Component;
-import org.osgi.framework.Bundle;
-
-@Component
+import org.osgi.framework.Bundle;</p>
+<p>@Component
 @org.apache.felix.ipojo.extender.Extender(extension="foo", onArrival="onArrival", onDeparture="onDeparture")
-public class Extender {
+public class Extender {</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">void</span> <span class="n">onArrival</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">String</span> <span class="n">foo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="sr">//</span> <span class="k">do</span> <span class="n">something</span>
+<span class="p">}</span>
 
-    public void onArrival(Bundle bundle, String foo) {
-        // do something
-    }
+<span class="n">public</span> <span class="n">void</span> <span class="n">onDeparture</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">)</span> <span class="p">{</span>
+    <span class="sr">//</span> <span class="k">do</span> <span class="n">something</span>
+<span class="p">}</span>
+</pre></div>
 
-    public void onDeparture(Bundle bundle) {
-        // do something
-    }
-}
 
-    The  attribute allows setting the bundle filter.
+<p>}</p>
+<div class="codehilite"><pre><span class="n">The</span>  <span class="n">attribute</span> <span class="n">allows</span> <span class="n">setting</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">filter</span><span class="o">.</span>
 
-    h2. A more realistic example
-    The Junit4OSGi framework, available [here|https://svn.apache.org/repos/asf/felix/trunk/ipojo/examples/junit4osgi] , uses this handler to track Junit Test Suite offered by the installed bundles. The Junit4Osgi bundle has a component using this handler to be notified when a bundle with the  header appears or leaves.
-    \\
-    \\
-    {include:apache-felix-ipojo-footer}
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
+<span class="n">h2</span><span class="o">.</span> <span class="n">A</span> <span class="n">more</span> <span class="n">realistic</span> <span class="n">example</span>
+<span class="n">The</span> <span class="n">Junit4OSGi</span> <span class="n">framework</span><span class="p">,</span> <span class="n">available</span> <span class="p">[</span><span class="n">here</span><span class="o">|</span><span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/felix/</span><span class="n">trunk</span><span class="sr">/ipojo/</span><span class="n">examples</span><span class="o">/</span><span class="n">junit4osgi</span><span class="p">]</span> <span class="p">,</span> <span class="n">uses</span> <span class="n">this</span> <span class="n">handler</span> <span class="n">to</span> <span class="n">track</span> <span class="n">Junit</span> <span class="n">Test</span> <span class="n">Suite</span> <span class="n">offered</span> <span class="n">by</span> <span class="n">the</span> <span class="n">installed</span> <span class="n">bundles</span><span class="o">.</span> <span class="n">The</span> <span class="n">Junit4Osgi</span> <span class="n">bundle</span> <span class="n">has</span> <span class="n">a</span> <span class="n">component</span> <span class="n">using</span> <span class="n">this</span> <span class="n">handler</span> <span class="n">to</span> <span class="n">be</span> <span class="n">notified</span> <span class="n">when</span> <span class="n">a</span> <span class="n">bundle</span> <span class="n">with</span> <span class="n">the</span>  <span class="n">header</span> <span class="n">appears</span> <span class="ow">or</span> <span class="n">leaves</span><span class="o">.</span>
+<span class="o">\\</span>
+<span class="o">\\</span>
+</pre></div>
+        </div>
     </div>
-  </body>
+
+    <hr/>
+
+    <div class="container">
+        <footer id="footer">
+            <div class="row">
+                <div class="trademarkFooter span7"> 
+                Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+                logo are trademarks of The Apache Software Foundation. All other marks mentioned
+                may be trademarks or registered trademarks of their respective owners.
+                </div>
+                <div class="timestamp span3 offset2">
+                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                </div>
+            </div>
+        </footer>           
+    </div>
+</body>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+    try{
+        var pageTracker = _gat._getTracker("UA-1518442-4");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
 </html>

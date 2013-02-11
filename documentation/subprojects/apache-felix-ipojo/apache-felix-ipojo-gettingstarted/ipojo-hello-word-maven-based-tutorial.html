@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -17,481 +16,556 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-  <head>
+
+<head>
     <title>Apache Felix - iPOJO Hello Word (Maven-Based) tutorial</title>
     <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="http://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="http://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
-      </div>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The most powerful component model for OSGi">
+
     
-    <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
-<iframe
-    src="http://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
+    <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/ipojo/web/style.css" rel="stylesheet">
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
     
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted.html">apache-felix-ipojo-gettingstarted</a>
-      </div>
-
-      
-      <div class="tip">
-           This page is a translated version of <a href="/site/ipojo-hello-word-maven-based-tutorial.html" target="felix_cwiki">/site/ipojo-hello-word-maven-based-tutorial.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
-      
-      <h1>iPOJO Hello Word (Maven-Based) tutorial</h1>
-      <p>{include:apache-felix-ipojo-header}</p>
-<div class="content">
-
-# iPOJO Hello World
-
-*This page presents how to use the iPOJO runtime and its associated service component model. The concepts of the service component model are introduced, followed by a simple example that demonstrates the features of iPOJO.*
-
-## Introduction
-
-iPOJO aims to simplify service-oriented programming on OSGi frameworks; the name iPOJO is an abbreviation for *injected POJO*. iPOJO provides a new way to develop OSGi service components with the main goal being to simplify service component implementation by transparently managing the dynamics of the environment as well as other non-functional requirements. The iPOJO framework allows developers to more clearly separate functional code (i.e., the POJO) from the non-functional code (i.e., dependency management, service provision, configuration, etc.). iPOJO combines the functional and non-functional aspects at run time. To achieve this, iPOJO provides a simple and extensible service component model based on POJOs.
-
-## The POJO concept
-
-POJO is an acronym for Plain Old Java Object, but it embodies a concept that the simpler and less intrusive the design of a given framework, the better. The name is used to emphasize that a given object is not somehow special, but is an ordinary Java Object. Martin Fowler, Rebecca Parsons and Josh Mackenzie coined the term POJO in September 2000: "We wondered why people were so against using regular objects in their systems and concluded that it was because simple objects lacked a fancy name. So we gave them one, and it's caught on very nicely." From the developer's perspective, the iPOJO framework strives to only require POJOs in as much as it is possible.
-
-## iPOJO service component overview
-
-A service component is able to provide and/or require services, where a service is an object that implements a given service interface embodied as a Java interface. In addition, iPOJO introduces a callback concept to notify a component about various state changes.
-
-The component is the central concept in iPOJO. In the core iPOJO model, a component describes service dependencies, provided services, and callbacks; this information is recorded in the component's metadata. Then, the second important concept in iPOJO is component instances. A component instances is a special *version* of the component. By merging component metadata and instance configuration, the iPOJO runtime is able to manage the component, i.e., manage its life cycle, inject required services, publish provided services, discover needed services.
-
-## A simple example
-
-The following is a simple example illustrating how to use the core iPOJO concepts. The example is comprised of two components, one providing a *Hello* service and one requiring any number of *Hello* services. The components are packaged into three different bundles using Maven. The *hello.service* bundle contains the service interface. The *hello.impl* bundle contains a component implementing the service. The *hello.client* bundle contains the consumer component.
-
-Download the tutorial archive [here](http://people.apache.org/~clement/ipojo/tutorials/maven/tutorial.zip). This archive contains a version of Felix (configured with iPOJO), and the projects explained below.
-
-### Preparing Maven & Installing the tutorial
-
-The first step is to download and install Maven; the example was created using Maven 2.1+. Once maven is installed on your machine, you can compile the tutorial by unzipping the archive, and by launching the '*mvn clean install*' command at the root of tutorial.
-
-*Be aware that Maven outputs a lot of information while it executes and often downloads a lot of required JAR files into its local repository.*
-
-### Hello Service
-
-The first project is the *hello.service* project. This project contains only the *hello* service interface. Look at the `src/main/java/ipojo/example/hello/Hello.java` file.
-{code:java}
-/**
- * Hello Interface.
- * @author <a href="mailto:dev@felix.apache.org">Felix Project Team</a>
- */
-public interface Hello {
-
-    /**
-     * Returns a message like: "Hello $user_name".
-     * @param name the name
-     * @return the hello message
-     */
-    String sayHello(String name);
-}
-
-    In the project directory, the pom.xml file contains the instructions to build the bundle. The bundle uses the _maven-bundle-plugin_ (see here for more information on this plug-in).
-    {div:class=pom}
-    <project>
-    &nbsp;&nbsp;&nbsp; <modelVersion>4.0.0</modelVersion>
-    &nbsp;&nbsp;&nbsp; <packaging>bundle</packaging>
-    &nbsp;&nbsp;&nbsp; {color:#ff0000}<groupId>ipojo.example</groupId>{color}
-    {color:#ff0000}&nbsp;&nbsp;&nbsp; <artifactId>hello.service</artifactId>{color}
-    {color:#ff0000}&nbsp;&nbsp;&nbsp; <version>1.0.0</version>{color}
-    {color:#ff0000}&nbsp;&nbsp;&nbsp; <name>Hello Service</name>{color}
-
-    <build>
-    &nbsp;&nbsp;&nbsp; <plugins>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <plugin>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <artifactId>maven-bundle-plugin</artifactId>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <version>2.0.1</version>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <extensions>true</extensions>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <configuration>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <instructions>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <Bundle-SymbolicName>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $\{pom.artifactId}
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </Bundle-SymbolicName>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {color:#ff0000}<Export-Package>{color}
-    {color:#ff0000}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ipojo.example.hello{color}
-    {color:#ff0000}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </Export-Package>{color}
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </instructions>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </configuration>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </plugin>
-    &nbsp;&nbsp;&nbsp; </plugins>
-    </build>
-
-    </project>
-    {div}
-    Then, the project is ready to be built issuing the following Maven command inside the project directory:
-
-mvn clean install
-
-    Maven should report that the build was a success; if an error was reported then verify the previous steps. Upon success the _Hello_ service component JAR file is installed into the local Maven repository. A copy of the bundle JAR file will also be present in the "target" directory inside the project directory.
-
-    h3. Hello Service Provider
-
-    The component implementation of the service is a simple Java class implementing the _Hello_ service interface. The implementation is in the _hello.impl_ project. The file  contains the following service implementation:
-    {code:java}
-    /**
-     * Component implementing the Hello service.
-     * @author <a href="mailto:dev@felix.apache.org">Felix Project Team</a>
-     */
-    public class HelloImpl implements Hello {
-
-        /**
-         * Returns an 'Hello' message.
-         * @param name : name
-         * @return Hello message
-         * @see ipojo.example.hello.Hello#sayHello(java.lang.String)
-         */
-        public String sayHello(String name) { return "hello " + name;  }
-    }
-
-To manage the component, iPOJO needs some metadata to understand that the component provides the *Hello* service. iPOJO metadata file is at the root of the *hello.impl* project ("metadata.xml"). It contains the following metadata (Note: iPOJO also supports a JAR manifest-based syntax):
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <ipojo 
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd" 
-        xmlns="org.apache.felix.ipojo">
-
-      <component classname="ipojo.example.hello.impl.HelloImpl"
-        name="HelloProvider">
-        <provides />
-      </component>
-
-      <instance component="HelloProvider" name="HelloService" />
-    </ipojo>
-
-In the above XML-based metadata, the *component* element has a mandatory '*classname'*attribute. This attribute tells iPOJO the implementation class of the component. Since the component in this example provides a service, the component element also specifies a child '*provides*' element. The '*provides*' element informs iPOJO that it must manage the publishing of a service. When the '*provides*' element does not contain an interface attribute, as is the case in this example, iPOJO will expose all implemented interfaces of the component as a service; it is also possible to specify the precise service interface. The '*instance*' element asks iPOJO to create an instance of your component when the bundle is started.
-
-Finally, the "pom.xml" file contains instructions to build the bundle:
-{div:class=pom}
-<project>
-&nbsp;&nbsp;<modelVersion>4.0.0</modelVersion>
-&nbsp; <packaging>bundle</packaging>
-&nbsp;&nbsp;{color:red}<groupId>ipojo.example</groupId>{color}
-{color:red}&nbsp;&nbsp;<artifactId>hello.impl</artifactId>{color}
-{color:red}&nbsp;&nbsp;<version>1.0.0</version>{color}
-
-&nbsp;&nbsp;{color:red}<name>Hello Service Provider</name>{color}
-
-{color:red}&nbsp; <dependencies>{color}
-{color:red}&nbsp;&nbsp; &nbsp;<dependency> <!--Compilation (i.e. class) dependency on the service interface -->{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<groupId>ipojo.example</groupId>{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<artifactId>hello.service</artifactId>{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<version>{color}{color:#ff0000}1.0.0{color}{color:red}</version>{color}
-{color:red}&nbsp;&nbsp; &nbsp;</dependency>{color}
-{color:red}&nbsp; </dependencies>{color}
-
-&nbsp;&nbsp;<build>
-&nbsp;&nbsp; <plugins>
-&nbsp;&nbsp;&nbsp;&nbsp; <plugin>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <artifactId>maven-bundle-plugin</artifactId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <version>2.0.1</version>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <extensions>true</extensions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <configuration>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <instructions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <Bundle-SymbolicName>$\{pom.artifactId}</Bundle-SymbolicName>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {color:red}<Private-Package>ipojo.example.hello.impl</Private-Package>{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </instructions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </configuration>
-&nbsp;&nbsp;&nbsp;&nbsp; </plugin>
-&nbsp;&nbsp;&nbsp;&nbsp; <plugin>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <artifactId>maven-ipojo-plugin</artifactId>
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <version>1.6.0</version>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<executions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <execution>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <goal>ipojo-bundle</goal>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</execution>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </executions>
-&nbsp;&nbsp;&nbsp;&nbsp; </plugin>
-&nbsp;&nbsp; </plugins>
-&nbsp;</build>
-</project>
-{div}
-The text highlighted in {color:red}{*}red{*}{color} above indicates the important information related to the project. The first part of the POM file indicates that the packaging format is an iPOJO bundle and also includes some information about the project (name, groupId, and artifactId). This information is not used by iPOJO, but is used by Maven. The rest of the POM file contains the bundle configuration. In the *instructions* element, you need to enter the bundle name, the bundle description, and the exported packages. The service provider bundle exports the package of *Hello* interface.
-
-Then, the project is ready to be built issuing the following Maven command inside the project directory:
-
-    mvn clean install
-
-Maven should report that the build was a success; if an error was reported then verify the previous steps. Upon success the *Hello* service component JAR file is installed into the local Maven repository. A copy of the bundle JAR file will also be present in the "target" directory inside the project directory.
-
-### Hello Service Client
-
-The Hello service consumer is inside the *hello.client* project. The file `src/main/java/ipojo/example/hello/client/HelloClient.java` contains the following *Hello* service client:
-{code:java}
-package ipojo.example.hello.client;
-
-import ipojo.example.hello.Hello;
-
-/**
- * Hello Service simple client.
- * @author <a href="mailto:dev@felix.apache.org">Felix Project Team</a>
- */
-public class HelloClient implements Runnable {
-
-    /**
-     *  Delay between two invocations.
-     */
-    private static final int DELAY = 10000;
-
-    /**
-     * Hello services.
-     * Injected by the container.
-     * */
-    private Hello[]() m_hello;
-
-    /**
-     * End flag.
-     *  */
-    private boolean m_end;
-
-    /**
-     * Run method.
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
-        while (!m_end) {
-            try {
-                invokeHelloServices();
-                Thread.sleep(DELAY);
-            } catch (InterruptedException ie) {
-                /* will recheck end */
-            }
-        }
-    }
-
-    /**
-     * Invoke hello services.
-     */
-    public void invokeHelloServices() {
-        for (int i = 0; i < m_hello.length; i++) {
-            // Update with your name.
-            System.out.println(m_hello[i]().sayHello("world"));
-        }
-    }
-
-    /**
-     * Starting.
-     */
-    public void starting() {
-        Thread thread = new Thread(this);
-        m_end = false;
-        thread.start();
-    }
-
-    /**
-     * Stopping.
-     */
-    public void stopping() {
-        m_end = true;
-    }
-}
-
-    The _Hello_ service client creates a thread that periodically invokes the available _Hello_ services. The thread starts when at least one _Hello_ service provider is present using iPOJO's call back mechanism. In the client code, to use the _hello_ the component implementation simply declares a field of the type of the service and then simply uses it directly in its code. In this example, it is the m_hello field is declared as the service field; notice that the field is an array of _Hello_. In iPOJO an array of services represents an aggregate or multiple cardinality dependency, whereas if a scalar value represents a singular or unary cardinality dependency. In other words, for a singular dependency simply remove the array brackets from the example (e.g., HelloService m_hello\[\]. After declaring a field for the service, the rest of the component code can simply assume that the service field will be initialized, e.g., m_hello\[i\].sayHello("world").
-
-    Notice that iPOJO manages service synchronization too. So, the service invocations do not require synchronization blocks. This synchronization is maintained on a per thread basis, where each method that accesses a service is instrumented to attach the given service instance to the thread so that the thread will continue to see the same service instances even across nested method invocations. The thread will not see different service instances until it completely exits from the first method it entered which used a services. Thus, you would not want to access services in the  method above, because the thread would always see the same service instance.
-
-    The component provides two callback methods for its activation and deactivation, starting() and stopping(), respectively. Callbacks are used when the component needs to be informed about a component state change. In iPOJO, the component state is either *INVALID* (i.e., not all of the component's constraints are satisfied) or *VALID* (i.e., all of the component's constraints are satisfied). In this example, the starting callback method creates and starts a thread; the stopping callback method stops the thread. The component metadata will instruct iPOJO to invoke these methods when the component's state changes to *VALID* or *INVALID* respectively.
-
-    The iPOJO metadata file describing the component is "metadata.xml" and contains the following metadata:
-    {code:xml}
-    <?xml version="1.0" encoding="UTF-8"?>
-    <ipojo 
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd" 
-        xmlns="org.apache.felix.ipojo">
-
-      <component classname="ipojo.example.hello.client.HelloClient">
-        <requires field="m_hello" />
-        <callback transition="validate" method="starting" />
-        <callback transition="invalidate" method="stopping" />
-        <properties>
-          <property field="m_name" name="hello.name" />
-        </properties>
-      </component>
-
-      <instance component="ipojo.example.hello.client.HelloClient">
-        <property name="hello.name" value="clement" />
-      </instance>
-    </ipojo>
-
-The component element again has the '*classname'* attribute that refers to the component implementation class. The '*requires*' element describes the *Hello* service dependency by simply specifying its associated component field. The '*callback'*elements describe which method to invoke when the component's state changes. Then the '*instance*' element asks iPOJO to create an instance of the component (notice that no instance name is provided here, iPOJO will give an instance name to the instance automatically).
-
-Finally, the "pom.xml" file contains instructions to build the bundle:
-{div:class=pom}
-<project>
-&nbsp;&nbsp;<modelVersion>4.0.0</modelVersion>
-&nbsp;&nbsp;<packaging>bundle</packaging>
-&nbsp;&nbsp;{color:red}<groupId>ipojo.example</groupId>{color}
-{color:red}&nbsp;&nbsp;<artifactId>hello.client</artifactId>{color}
-{color:red}&nbsp;&nbsp;<version>1.0.0</version>{color}
-{color:red}&nbsp;&nbsp;<name>Hello Client</name>{color}
-
-{color:red}&nbsp;&nbsp;<dependencies>{color}
-{color:red}&nbsp;&nbsp; &nbsp;<dependency> <\!-\-{color} {color:red}Compilation (i.e. class) dependency on the service interface \-\-{color}{color:red}>{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<groupId>ipojo.example</groupId>{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<artifactId>hello.service</artifactId>{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<version>{color}{color:#ff0000}1.0.0{color}{color:red}</version>{color}
-{color:red}&nbsp;&nbsp; &nbsp;</dependency>{color}
-{color:red}&nbsp; </dependencies>{color}
-
-&nbsp; <build>
-&nbsp;&nbsp;&nbsp;&nbsp; <plugins>
-&nbsp;&nbsp;&nbsp;&nbsp; <plugin>
-&nbsp;&nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp;&nbsp; <artifactId>maven-bundle-plugin</artifactId>
-&nbsp;&nbsp;&nbsp;&nbsp; <version>2.0.1</version>
-&nbsp;&nbsp;&nbsp;&nbsp; <extensions>true</extensions>
-&nbsp;&nbsp;&nbsp;&nbsp; <configuration>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <instructions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <Bundle-SymbolicName>$\{pom.artifactId}</Bundle-SymbolicName>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {color:red}<Private-Package>ipojo.example.hello.client</Private-Package>{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </instructions>
-&nbsp;&nbsp;&nbsp;&nbsp; </configuration>
-&nbsp;&nbsp; </plugin>
-&nbsp;&nbsp; <plugin>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <artifactId>maven-ipojo-plugin</artifactId>
-&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <version>1.6.0</version>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <executions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <execution>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <goal>ipojo-bundle</goal>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </goals>
-&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </execution>
-&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </executions>
-&nbsp;&nbsp; </plugin>
-&nbsp;</plugins>
-&nbsp; </build>
-</project>
-{div}
-The text highlighted in {color:red}{*}red{*}{color} above indicates the information related to the project. The *dependencies* element tells Maven that the client bundle has a compilation dependency on the service provider bundle. In this case, the client bundle needs the *Hello* service interface to compile. After building the service provider bundle JAR file, Maven installs it into a local repository on your machine. To resolve compilation dependencies, Maven looks in the local repository to find required JAR files.
-After the skeleton "pom.xml" file is modified, the project is ready to be built issuing the following Maven command inside the project directory:
-mvn clean install
-Maven should report that the build was a success; if an error was reported then verify the previous steps. Upon success the *Hello* service component JAR file is installed into the local Maven repository. A copy of the bundle JAR file will also be present in the "target" directory inside the project directory.
-
-## Running the example
-
-To run the example, start Felix. A distribution of Felix is provided in the felix-1.0.3 directory. This version is configured to launch iPOJO automatically. From the Felix directory, launch the following command to start the framework
-
-    java -jar bin/felix.jar
-
-You can check installed bundles by using the '*ps'* command:
-
-    -> ps
-    START LEVEL 1
-       ID   State         Level  Name
-    [   0] [Active     ] [    0] System Bundle (2.0.5)
-    [   1] [Active     ] [    1] Apache Felix Bundle Repository (1.4.3)
-    [   2] [Active     ] [    1] Apache Felix iPOJO (1.6.0)
-    [   3] [Active     ] [    1] Apache Felix iPOJO Arch Command (1.6.0)
-    [   4] [Active     ] [    1] Apache Felix Shell Service (1.4.2)
-    [   5] [Active     ] [    1] Apache Felix Shell TUI (1.4.1)
-    ->
-
-iPOJO runtime is the bundle 4. The bundle 5 is a Felix shell command allowing the introspection of iPOJO component instances (see herefor further information).
-
-Install the Hello service bundle, the *Hello* service provider and the client that were created above:
-{div:class=shell}
-start file:../hello.service/target/hello.service-1.0.0.jar
+</head>
+
+<body data-spy="scroll" data-target=".subnav">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+         
+                 <div class="nav-collapse" id="main-menu">
+                    <ul class="nav" id="main-menu-left">
+                        <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
+                        <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
+                    
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="tutorials-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.html">Why choose iPOJO</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.html">Success stories</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.html">Features</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Documentation <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="user-guide-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.html">Requiring a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.html">Providing a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle management</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">External <em>handlers</em></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">Asynchronous communication</a></li>
+                                        <li><a href="">JMX management</a></li>
+                                        <li><a href="">Extender pattern</a></li>
+                                        <li><a href="">Whiteboard pattern</a></li>
+                                        <li><a href="">Temporal dependencies</a></li>
+                                    </ul>
+                                </li>                                            
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Advanced topics</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="">Factories and Instances</a></li>
+                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="">API</a></li>
+                                        <li><a href="">Testing components</a></li>
+                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="">FAQ</a></li>
+                                        <li><a href="">Reference Card</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="">Manipulation Metadata </a></li>
+                                        <li><a href="">Dive into the iPOJO Manipulation depths</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="tools-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Ant Task</a></li>
+                                <li><a href="">Eclipse Plugin</a></li>
+                                <li><a href="">Maven Plugin</a></li>
+                                <li><a href="">`arch` shell command</a></li>
+                                <li><a href="">Online Manipulator</a></li>
+                                <li><a href="">Webconsole plugin</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="community-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Support</a></li>
+                                <li><a href="http://www.apache.org/">ASF</a></li>
+                                <li><a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                <li><a href="http://www.apache.org/foundation/thanks.html">Sponsors</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="misc-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Misc <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
+                                <li><a href="">Article & Presentations</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right" id="main-menu-right">
+                        <li><a rel="tooltip" target="_blank" href="http://felix.apache.org">Apache Felix <i class="icon-share-alt"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>    
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h1 id="ipojo-hello-world">iPOJO Hello World</h1>
+<p><em>This page presents how to use the iPOJO runtime and its associated service component model. The concepts of the service component model are introduced, followed by a simple example that demonstrates the features of iPOJO.</em></p>
+<h2 id="introduction">Introduction</h2>
+<p>iPOJO aims to simplify service-oriented programming on OSGi frameworks; the name iPOJO is an abbreviation for <em>injected POJO</em>. iPOJO provides a new way to develop OSGi service components with the main goal being to simplify service component implementation by transparently managing the dynamics of the environment as well as other non-functional requirements. The iPOJO framework allows developers to more clearly separate functional code (i.e., the POJO) from the non-functional code (i.e., dependency management, service provision, configuration, etc.). iPOJO combines the functional and non-functional aspects at run time. To achieve this, iPOJO provides a simple and extensible service component model based on POJOs.</p>
+<h2 id="the-pojo-concept">The POJO concept</h2>
+<p>POJO is an acronym for Plain Old Java Object, but it embodies a concept that the simpler and less intrusive the design of a given framework, the better. The name is used to emphasize that a given object is not somehow special, but is an ordinary Java Object. Martin Fowler, Rebecca Parsons and Josh Mackenzie coined the term POJO in September 2000: "We wondered why people were so against using regular objects in their systems and concluded that it was because simple objects lacked a fancy name. So we gave them one, and it's caught on very nicely." From the developer's perspective, the iPOJO framework strives to only require POJOs in as much as it is possible.</p>
+<h2 id="ipojo-service-component-overview">iPOJO service component overview</h2>
+<p>A service component is able to provide and/or require services, where a service is an object that implements a given service interface embodied as a Java interface. In addition, iPOJO introduces a callback concept to notify a component about various state changes.</p>
+<p>The component is the central concept in iPOJO. In the core iPOJO model, a component describes service dependencies, provided services, and callbacks; this information is recorded in the component's metadata. Then, the second important concept in iPOJO is component instances. A component instances is a special <em>version</em> of the component. By merging component metadata and instance configuration, the iPOJO runtime is able to manage the component, i.e., manage its life cycle, inject required services, publish provided services, discover needed services.</p>
+<h2 id="a-simple-example">A simple example</h2>
+<p>The following is a simple example illustrating how to use the core iPOJO concepts. The example is comprised of two components, one providing a <em>Hello</em> service and one requiring any number of <em>Hello</em> services. The components are packaged into three different bundles using Maven. The <em>hello.service</em> bundle contains the service interface. The <em>hello.impl</em> bundle contains a component implementing the service. The <em>hello.client</em> bundle contains the consumer component.</p>
+<p>Download the tutorial archive <a href="http://people.apache.org/~clement/ipojo/tutorials/maven/tutorial.zip">here</a>. This archive contains a version of Felix (configured with iPOJO), and the projects explained below.</p>
+<h3 id="preparing-maven-installing-the-tutorial">Preparing Maven &amp; Installing the tutorial</h3>
+<p>The first step is to download and install Maven; the example was created using Maven 2.1+. Once maven is installed on your machine, you can compile the tutorial by unzipping the archive, and by launching the <code>mvn clean install</code> command at the root of tutorial.</p>
+<p><em>Be aware that Maven outputs a lot of information while it executes and often downloads a lot of required JAR files into its local repository.</em></p>
+<h3 id="hello-service">Hello Service</h3>
+<p>The first project is the <em>hello.service</em> project. This project contains only the <em>hello</em> service interface. Look at the <code>src/main/java/ipojo/example/hello/Hello.java</code> file:</p>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * Hello Interface.</span>
+<span class="cm"> * @author &lt;a href=&quot;mailto:dev@felix.apache.org&quot;&gt;Felix Project Team&lt;/a&gt;</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Hello</span> <span class="o">{</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns a message like: &quot;Hello $user_name&quot;.</span>
+<span class="cm">     * @param name the name</span>
+<span class="cm">     * @return the hello message</span>
+<span class="cm">     */</span>
+    <span class="n">String</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>In the project directory, the pom.xml file contains the instructions to build the bundle. The bundle uses the <em>maven-bundle-plugin</em> (see here for more information on this plug-in).</p>
+<div class="pom"><p>&lt;project&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;packaging&gt;bundle&lt;/packaging&gt;<br>
+&nbsp;&nbsp;&nbsp; <font color="#ff0000">&lt;groupId&gt;ipojo.example&lt;/groupId&gt;</font><br>
+<font color="#ff0000">&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;hello.service&lt;/artifactId&gt;</font><br>
+<font color="#ff0000">&nbsp;&nbsp;&nbsp; &lt;version&gt;1.0.0&lt;/version&gt;</font><br>
+<font color="#ff0000">&nbsp;&nbsp;&nbsp; &lt;name&gt;Hello Service&lt;/name&gt;</font></p>
+
+<p>&lt;build&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;plugins&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;plugin&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;version&gt;2.0.1&lt;/version&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;extensions&gt;true&lt;/extensions&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;configuration&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;instructions&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;Bundle-SymbolicName&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ${pom.artifactId}<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/Bundle-SymbolicName&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <font color="#ff0000">&lt;Export-Package&gt;</font><br>
+<font color="#ff0000">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ipojo.example.hello</font><br>
+<font color="#ff0000">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/Export-Package&gt;</font><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/instructions&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/configuration&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/plugin&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/plugins&gt;<br>
+&lt;/build&gt;</p>
+
+<p>&lt;/project&gt;</p></div>
+
+<p>Then, the project is ready to be built issuing the following Maven command inside the project directory:</p>
+<div class="codehilite"><pre>mvn clean install
+</pre></div>
+
+
+<p>Maven should report that the build was a success; if an error was reported then verify the previous steps. Upon success the <em>Hello</em> service component JAR file is installed into the local Maven repository. A copy of the bundle JAR file will also be present in the "target" directory inside the project directory.</p>
+<h3 id="hello-service-provider">Hello Service Provider</h3>
+<p>The component implementation of the service is a simple Java class implementing the <em>Hello</em> service interface. The implementation is in the <em>hello.impl</em> project. The file <code>src/main/java/ipojo/example/hello/impl/HelloImpl.java</code> contains the following service implementation:</p>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * Component implementing the Hello service.</span>
+<span class="cm"> * @author &lt;a href=&quot;mailto:dev@felix.apache.org&quot;&gt;Felix Project Team&lt;/a&gt;</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloImpl</span> <span class="kd">implements</span> <span class="n">Hello</span> <span class="o">{</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns an &#39;Hello&#39; message.</span>
+<span class="cm">     * @param name : name</span>
+<span class="cm">     * @return Hello message</span>
+<span class="cm">     * @see ipojo.example.hello.Hello#sayHello(java.lang.String)</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="s">&quot;hello &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="o">;</span>  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>To manage the component, iPOJO needs some metadata to understand that the component provides the <em>Hello</em> service. iPOJO metadata file is at the root of the <em>hello.impl</em> project ("metadata.xml"). It contains the following metadata (Note: iPOJO also supports a JAR manifest-based syntax):</p>
+<div class="codehilite"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;ipojo</span> 
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd&quot;</span> 
+    <span class="na">xmlns=</span><span class="s">&quot;org.apache.felix.ipojo&quot;</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;ipojo.example.hello.impl.HelloImpl&quot;</span>
+    <span class="na">name=</span><span class="s">&quot;HelloProvider&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;provides</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/component&gt;</span>
+
+  <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;HelloProvider&quot;</span> <span class="na">name=</span><span class="s">&quot;HelloService&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
+
+
+<p>In the above XML-based metadata, the <em>component</em> element has a mandatory '<em>classname'</em>attribute. This attribute tells iPOJO the implementation class of the component. Since the component in this example provides a service, the component element also specifies a child '<em>provides</em>' element. The '<em>provides</em>' element informs iPOJO that it must manage the publishing of a service. When the '<em>provides</em>' element does not contain an interface attribute, as is the case in this example, iPOJO will expose all implemented interfaces of the component as a service; it is also possible to specify the precise service interface. The '<em>instance</em>' element asks iPOJO to create an instance of your component when the bundle is started.</p>
+<p>Finally, the <code>pom.xml</code> file contains instructions to build the bundle:</p>
+<div class="pom"><p>&lt;project&gt;<br>
+&nbsp;&nbsp;&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;<br>
+&nbsp; &lt;packaging&gt;bundle&lt;/packaging&gt;<br>
+&nbsp;&nbsp;<font color="red">&lt;groupId&gt;ipojo.example&lt;/groupId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&lt;artifactId&gt;hello.impl&lt;/artifactId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&lt;version&gt;1.0.0&lt;/version&gt;</font></p>
+
+<p>&nbsp;&nbsp;<font color="red">&lt;name&gt;Hello Service Provider&lt;/name&gt;</font></p>
+
+<p><font color="red">&nbsp; &lt;dependencies&gt;</font><br>
+<font color="red">&nbsp;&nbsp; &nbsp;&lt;dependency&gt; &lt;!--Compilation (i.e. class) dependency on the service interface --&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;groupId&gt;ipojo.example&lt;/groupId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;artifactId&gt;hello.service&lt;/artifactId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;version&gt;</font><font color="#ff0000">1.0.0</font><font color="red">&lt;/version&gt;</font><br>
+<font color="red">&nbsp;&nbsp; &nbsp;&lt;/dependency&gt;</font><br>
+<font color="red">&nbsp; &lt;/dependencies&gt;</font></p>
+
+<p>&nbsp;&nbsp;&lt;build&gt;<br>
+&nbsp;&nbsp; &lt;plugins&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;plugin&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;version&gt;2.0.1&lt;/version&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;extensions&gt;true&lt;/extensions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;configuration&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;instructions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Bundle-SymbolicName&gt;${pom.artifactId}&lt;/Bundle-SymbolicName&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="red">&lt;Private-Package&gt;ipojo.example.hello.impl&lt;/Private-Package&gt;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/instructions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/configuration&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;/plugin&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;plugin&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;maven-ipojo-plugin&lt;/artifactId&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &lt;version&gt;1.6.0&lt;/version&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;executions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;execution&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;goals&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;goal&gt;ipojo-bundle&lt;/goal&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/goals&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&lt;/execution&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/executions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;/plugin&gt;<br>
+&nbsp;&nbsp; &lt;/plugins&gt;<br>
+&nbsp;&lt;/build&gt;<br>
+&lt;/project&gt;</p></div>
+
+<p>The text highlighted in <span style="color:red">red</span> above indicates the important information related to the project. The first part of the POM file indicates that the packaging format is an iPOJO bundle and also includes some information about the project (name, groupId, and artifactId). This information is not used by iPOJO, but is used by Maven. The rest of the POM file contains the bundle configuration. In the <em>instructions</em> element, you need to enter the bundle name, the bundle description, and the exported packages. The service provider bundle exports the package of <em>Hello</em> interface.</p>
+<p>Then, the project is ready to be built issuing the following Maven command inside the project directory:</p>
+<div class="codehilite"><pre>mvn clean install
+</pre></div>
+
+
+<p>Maven should report that the build was a success; if an error was reported then verify the previous steps. Upon success the <em>Hello</em> service component JAR file is installed into the local Maven repository. A copy of the bundle JAR file will also be present in the "target" directory inside the project directory.</p>
+<h3 id="hello-service-client">Hello Service Client</h3>
+<p>The Hello service consumer is inside the <em>hello.client</em> project. The file <code>src/main/java/ipojo/example/hello/client/HelloClient.java</code> contains the following <em>Hello</em> service client:</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">ipojo</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">hello</span><span class="o">.</span><span class="na">client</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">ipojo.example.hello.Hello</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Hello Service simple client.</span>
+<span class="cm"> * @author &lt;a href=&quot;mailto:dev@felix.apache.org&quot;&gt;Felix Project Team&lt;/a&gt;</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloClient</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     *  Delay between two invocations.</span>
+<span class="cm">     */</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">DELAY</span> <span class="o">=</span> <span class="mi">10000</span><span class="o">;</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Hello services.</span>
+<span class="cm">     * Injected by the container.</span>
+<span class="cm">     * */</span>
+    <span class="kd">private</span> <span class="n">Hello</span><span class="o">[]()</span> <span class="n">m_hello</span><span class="o">;</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * End flag.</span>
+<span class="cm">     *  */</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">m_end</span><span class="o">;</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Run method.</span>
+<span class="cm">     * @see java.lang.Runnable#run()</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">m_end</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">invokeHelloServices</span><span class="o">();</span>
+                <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">DELAY</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span>
+                <span class="cm">/* will recheck end */</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Invoke hello services.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">invokeHelloServices</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_hello</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="c1">// Update with your name.</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">m_hello</span><span class="o">[</span><span class="n">i</span><span class="o">]().</span><span class="na">sayHello</span><span class="o">(</span><span class="s">&quot;world&quot;</span><span class="o">));</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Starting.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">starting</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Thread</span> <span class="n">thread</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="n">m_end</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="n">thread</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Stopping.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stopping</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">m_end</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>The <em>Hello</em> service client creates a thread that periodically invokes the available <em>Hello</em> services. The thread starts when at least one <em>Hello</em> service provider is present using iPOJO's call back mechanism. In the client code, to use the <em>hello</em> the component implementation simply declares a field of the type of the service and then simply uses it directly in its code. In this example, it is the m_hello field is declared as the service field; notice that the field is an array of <em>Hello</em>. In iPOJO an array of services represents an aggregate or multiple cardinality dependency, whereas if a scalar value represents a singular or unary cardinality dependency. In other words, for a singular dependency simply remove the array brackets from the example (e.g., HelloService m_hello[]. After declaring a field for the service, the rest of the component code can simply assume that the service field will be initialized, e.g., m_hello[i].sayHello("world").</p>
+<p>Notice that iPOJO manages service synchronization too. So, the service invocations do not require synchronization blocks. This synchronization is maintained on a per thread basis, where each method that accesses a service is instrumented to attach the given service instance to the thread so that the thread will continue to see the same service instances even across nested method invocations. The thread will not see different service instances until it completely exits from the first method it entered which used a services. Thus, you would not want to access services in the  method above, because the thread would always see the same service instance.</p>
+<p>The component provides two callback methods for its activation and deactivation, starting() and stopping(), respectively. Callbacks are used when the component needs to be informed about a component state change. In iPOJO, the component state is either <em>INVALID</em> (i.e., not all of the component's constraints are satisfied) or <em>VALID</em> (i.e., all of the component's constraints are satisfied). In this example, the starting callback method creates and starts a thread; the stopping callback method stops the thread. The component metadata will instruct iPOJO to invoke these methods when the component's state changes to <em>VALID</em> or <em>INVALID</em> respectively.</p>
+<p>The iPOJO metadata file describing the component is "metadata.xml" and contains the following metadata:</p>
+<div class="codehilite"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;ipojo</span> 
+    <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd&quot;</span> 
+    <span class="na">xmlns=</span><span class="s">&quot;org.apache.felix.ipojo&quot;</span><span class="nt">&gt;</span>
+
+  <span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;ipojo.example.hello.client.HelloClient&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;requires</span> <span class="na">field=</span><span class="s">&quot;m_hello&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;callback</span> <span class="na">transition=</span><span class="s">&quot;validate&quot;</span> <span class="na">method=</span><span class="s">&quot;starting&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;callback</span> <span class="na">transition=</span><span class="s">&quot;invalidate&quot;</span> <span class="na">method=</span><span class="s">&quot;stopping&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">field=</span><span class="s">&quot;m_name&quot;</span> <span class="na">name=</span><span class="s">&quot;hello.name&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+  <span class="nt">&lt;/component&gt;</span>
+
+  <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;ipojo.example.hello.client.HelloClient&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;hello.name&quot;</span> <span class="na">value=</span><span class="s">&quot;clement&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/instance&gt;</span>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
+
+
+<p>The component element again has the '<em>classname'</em> attribute that refers to the component implementation class. The '<em>requires</em>' element describes the <em>Hello</em> service dependency by simply specifying its associated component field. The '<em>callback'</em>elements describe which method to invoke when the component's state changes. Then the '<em>instance</em>' element asks iPOJO to create an instance of the component (notice that no instance name is provided here, iPOJO will give an instance name to the instance automatically).</p>
+<p>Finally, the <code>pom.xml</code> file contains instructions to build the bundle:</p>
+<div class="pom"><p>&lt;project&gt;<br>
+&nbsp;&nbsp;&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;<br>
+&nbsp;&nbsp;&lt;packaging&gt;bundle&lt;/packaging&gt;<br>
+&nbsp;&nbsp;<font color="red">&lt;groupId&gt;ipojo.example&lt;/groupId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&lt;artifactId&gt;hello.client&lt;/artifactId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&lt;version&gt;1.0.0&lt;/version&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&lt;name&gt;Hello Client&lt;/name&gt;</font></p>
+
+<p><font color="red">&nbsp;&nbsp;&lt;dependencies&gt;</font><br>
+<font color="red">&nbsp;&nbsp; &nbsp;&lt;dependency&gt; &lt;!--</font> <font color="red">Compilation (i.e. class) dependency on the service interface --</font><font color="red">&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;groupId&gt;ipojo.example&lt;/groupId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;artifactId&gt;hello.service&lt;/artifactId&gt;</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;version&gt;</font><font color="#ff0000">1.0.0</font><font color="red">&lt;/version&gt;</font><br>
+<font color="red">&nbsp;&nbsp; &nbsp;&lt;/dependency&gt;</font><br>
+<font color="red">&nbsp; &lt;/dependencies&gt;</font></p>
+
+<p>&nbsp; &lt;build&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;plugins&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;plugin&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;version&gt;2.0.1&lt;/version&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;extensions&gt;true&lt;/extensions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;configuration&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;instructions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Bundle-SymbolicName&gt;${pom.artifactId}&lt;/Bundle-SymbolicName&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="red">&lt;Private-Package&gt;ipojo.example.hello.client&lt;/Private-Package&gt;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/instructions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;/configuration&gt;<br>
+&nbsp;&nbsp; &lt;/plugin&gt;<br>
+&nbsp;&nbsp; &lt;plugin&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;maven-ipojo-plugin&lt;/artifactId&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &lt;version&gt;1.6.0&lt;/version&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;executions&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;execution&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;goals&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;goal&gt;ipojo-bundle&lt;/goal&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/goals&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/execution&gt;<br>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &lt;/executions&gt;<br>
+&nbsp;&nbsp; &lt;/plugin&gt;<br>
+&nbsp;&lt;/plugins&gt;<br>
+&nbsp; &lt;/build&gt;<br>
+&lt;/project&gt;</p></div>
+
+<p>The text highlighted in <span style="color:red">red</code> above indicates the information related to the project. The <em>dependencies</em> element tells Maven that the client bundle has a compilation dependency on the service provider bundle. In this case, the client bundle needs the <em>Hello</em> service interface to compile. After building the service provider bundle JAR file, Maven installs it into a local repository on your machine. To resolve compilation dependencies, Maven looks in the local repository to find required JAR files.
+After the skeleton "pom.xml" file is modified, the project is ready to be built issuing the following Maven command inside the project directory:</p>
+<div class="codehilite"><pre>mvn clean install
+</pre></div>
+
+
+<p>Maven should report that the build was a success; if an error was reported then verify the previous steps. Upon success the <em>Hello</em> service component JAR file is installed into the local Maven repository. A copy of the bundle JAR file will also be present in the "target" directory inside the project directory.</p>
+<h2 id="running-the-example">Running the example</h2>
+<p>To run the example, start Felix. A distribution of Felix is provided in the felix-1.0.3 directory. This version is configured to launch iPOJO automatically. From the Felix directory, launch the following command to start the framework</p>
+<div class="codehilite"><pre>java -jar bin/felix.jar
+</pre></div>
+
+
+<p>You can check installed bundles by using the '<em>ps'</em> command:</p>
+<div class="codehilite"><pre>-&gt; ps
+START LEVEL 1
+   ID   State         Level  Name
+<span class="o">[</span>   0<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    0<span class="o">]</span> System Bundle <span class="o">(</span>2.0.5<span class="o">)</span>
+<span class="o">[</span>   1<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix Bundle Repository <span class="o">(</span>1.4.3<span class="o">)</span>
+<span class="o">[</span>   2<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix iPOJO <span class="o">(</span>1.6.0<span class="o">)</span>
+<span class="o">[</span>   3<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix iPOJO Arch Command <span class="o">(</span>1.6.0<span class="o">)</span>
+<span class="o">[</span>   4<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix Shell Service <span class="o">(</span>1.4.2<span class="o">)</span>
+<span class="o">[</span>   5<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix Shell TUI <span class="o">(</span>1.4.1<span class="o">)</span>
+-&gt;
+</pre></div>
+
+
+<p>iPOJO runtime is the bundle 4. The bundle 5 is a Felix shell command allowing the introspection of iPOJO component instances (see herefor further information).</p>
+<p>Install the Hello service bundle, the <em>Hello</em> service provider and the client that were created above:</p>
+<div class="codehilite"><pre>start file:../hello.service/target/hello.service-1.0.0.jar
 start file:../hello.impl/target/hello.impl-1.0.0.jar
 start file:../hello.client/target/hello.client-1.0.0.jar
-{div}
-By starting the *Hello* service provider bundle, the client component will automatically be activated. So, the *'hello world'* messages are displayed.
-{div:class=shell}
-\-> hello world
+</pre></div>
+
+
+<p>By starting the <em>Hello</em> service provider bundle, the client component will automatically be activated. So, the <em>'hello world'</em> messages are displayed.</p>
+<div class="codehilite"><pre>-&gt; hello world
 hello world
-{div}
-Stop the provider (with the '*stop 7*' command) and the client will automatically be deactivated since its dependency is no longer valid. If multiple Hello services are deployed, the client will connect to all of them. If you restart the bundle (with the *start 7* command), the client becomes valid.
+</pre></div>
 
-During these operations, you can use the arch command to check the state of instances.
-{div:class=shell}
-\-> stop 7
-\-> arch
-Instance ArchCommand \-> valid
-{color:red}Instance ipojo.example.hello.client.HelloClient-0 \-> invalid{color}
-\-> arch \-instance ipojo.example.hello.client.HelloClient-0
-instance name="ipojo.example.hello.client.HelloClient-0" 
-&nbsp;component.type="ipojo.example.hello.client.HelloClient" 
-&nbsp;state="{color:red}invalid{color}" bundle="8"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object name="ipojo.example.hello.client.HelloClient@137c60d"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {color:red}handler name="org.apache.felix.ipojo.handlers.dependency.DependencyHandler" state="invalid"{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color}{color:red}requires aggregate="true" optional="false" state="resolved" specification="ipojo.example.hello.Hello"{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.lifecycle.callback.LifecycleCallbackHandler" state="valid"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.architecture.ArchitectureHandler" state="valid"
-\-> start 7
-hello world
-\-> arch
-Instance ArchCommand \-> valid
-{color:red}Instance ipojo.example.hello.client.HelloClient-0 \-> valid{color}
-Instance HelloService \-> valid
-\-> arch \-instance ipojo.example.hello.client.HelloClient-0
-instance name="ipojo.example.hello.client.HelloClient-0" 
-&nbsp;component.type="ipojo.example.hello.client.HelloClient"
-&nbsp; state="valid" bundle="8"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object name="ipojo.example.hello.client.HelloClient@137c60d"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {color:red}handler name="org.apache.felix.ipojo.handlers.dependency.DependencyHandler" state="valid"{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color}{color:red}requires aggregate="true" optional="false" state="resolved" specification="ipojo.example.hello.Hello"{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color} {color:red}uses service.id="38" instance.name="HelloService"{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.lifecycle.callback.LifecycleCallbackHandler" state="valid"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.architecture.ArchitectureHandler" state="valid"
-{div}
 
-## Conclusion
-We saw how to use easily iPOJO to build service-oriented components. Subscribe to the Felix users mailing list by sending a message to [mailto:users-subscribe@felix.apache.org](); after subscribing, email questions or feedback to [mailto:users@felix.apache.org].
+<p>Stop the provider (with the '<em>stop 7</em>' command) and the client will automatically be deactivated since its dependency is no longer valid. If multiple Hello services are deployed, the client will connect to all of them. If you restart the bundle (with the <em>start 7</em> command), the client becomes valid.</p>
+<p>During these operations, you can use the arch command to check the state of instances.</p>
+<div class="shell"><p>-&gt; stop 7<br>
+-&gt; arch<br>
+Instance ArchCommand -&gt; valid<br>
+<font color="red">Instance ipojo.example.hello.client.HelloClient-0 -&gt; invalid</font><br>
+-&gt; arch -instance ipojo.example.hello.client.HelloClient-0<br>
+instance name="ipojo.example.hello.client.HelloClient-0" <br>
+&nbsp;component.type="ipojo.example.hello.client.HelloClient" <br>
+&nbsp;state="<font color="red">invalid</font>" bundle="8"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object name="ipojo.example.hello.client.HelloClient@137c60d"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="red">handler name="org.apache.felix.ipojo.handlers.dependency.DependencyHandler" state="invalid"</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="red">requires aggregate="true" optional="false" state="resolved" specification="ipojo.example.hello.Hello"</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.lifecycle.callback.LifecycleCallbackHandler" state="valid"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.architecture.ArchitectureHandler" state="valid"<br>
+-&gt; start 7<br>
+hello world<br>
+-&gt; arch<br>
+Instance ArchCommand -&gt; valid<br>
+<font color="red">Instance ipojo.example.hello.client.HelloClient-0 -&gt; valid</font><br>
+Instance HelloService -&gt; valid<br>
+-&gt; arch -instance ipojo.example.hello.client.HelloClient-0<br>
+instance name="ipojo.example.hello.client.HelloClient-0" <br>
+&nbsp;component.type="ipojo.example.hello.client.HelloClient"<br>
+&nbsp; state="valid" bundle="8"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object name="ipojo.example.hello.client.HelloClient@137c60d"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="red">handler name="org.apache.felix.ipojo.handlers.dependency.DependencyHandler" state="valid"</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="red">requires aggregate="true" optional="false" state="resolved" specification="ipojo.example.hello.Hello"</font><br>
+<font color="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font> <font color="red">uses service.id="38" instance.name="HelloService"</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.lifecycle.callback.LifecycleCallbackHandler" state="valid"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler name="org.apache.felix.ipojo.handlers.architecture.ArchitectureHandler" state="valid"</p></div>
 
-{include:apache-felix-ipojo-footer}
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
+<h2 id="conclusion">Conclusion</h2>
+<p>We saw how to use easily iPOJO to build service-oriented components. Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to <a href="mailto:users@felix.apache.org">users@felix.apache.org</a>.</p>
+        </div>
     </div>
-  </body>
+
+    <hr/>
+
+    <div class="container">
+        <footer id="footer">
+            <div class="row">
+                <div class="trademarkFooter span7"> 
+                Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+                logo are trademarks of The Apache Software Foundation. All other marks mentioned
+                may be trademarks or registered trademarks of their respective owners.
+                </div>
+                <div class="timestamp span3 offset2">
+                Rev. 1443044 by clement on Wed, 6 Feb 2013 16:25:48 +0000
+                </div>
+            </div>
+        </footer>           
+    </div>
+</body>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+    try{
+        var pageTracker = _gat._getTracker("UA-1518442-4");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
 </html>

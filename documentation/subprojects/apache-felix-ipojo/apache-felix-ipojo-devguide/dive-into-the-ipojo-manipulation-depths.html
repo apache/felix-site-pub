@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -17,263 +16,351 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-  <head>
+
+<head>
     <title>Apache Felix - Dive into the iPOJO Manipulation depths</title>
     <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="http://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="http://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
-      </div>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The most powerful component model for OSGi">
+
     
-    <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
-<iframe
-    src="http://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
+    <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/ipojo/web/style.css" rel="stylesheet">
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
     
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide.html">apache-felix-ipojo-devguide</a>
-      </div>
+</head>
 
-      
-      <div class="tip">
-           This page is a translated version of <a href="/site/dive-into-the-ipojo-manipulation-depths.html" target="felix_cwiki">/site/dive-into-the-ipojo-manipulation-depths.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
-      
-      <h1>Dive into the iPOJO Manipulation depths</h1>
-      <p>{include:apache-felix-ipojo-header}</p>
-<div class="content">
+<body data-spy="scroll" data-target=".subnav">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+         
+                 <div class="nav-collapse" id="main-menu">
+                    <ul class="nav" id="main-menu-left">
+                        <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
+                        <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
+                    
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="tutorials-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.html">Why choose iPOJO</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.html">Success stories</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.html">Features</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
+                            </ul>
+                        </li>
 
-# Dive into the iPOJO Manipulation depths
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Documentation <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="user-guide-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.html">Requiring a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.html">Providing a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle management</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">External <em>handlers</em></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">Asynchronous communication</a></li>
+                                        <li><a href="">JMX management</a></li>
+                                        <li><a href="">Extender pattern</a></li>
+                                        <li><a href="">Whiteboard pattern</a></li>
+                                        <li><a href="">Temporal dependencies</a></li>
+                                    </ul>
+                                </li>                                            
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Advanced topics</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="">Factories and Instances</a></li>
+                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="">API</a></li>
+                                        <li><a href="">Testing components</a></li>
+                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="">FAQ</a></li>
+                                        <li><a href="">Reference Card</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="">Manipulation Metadata </a></li>
+                                        <li><a href="">Dive into the iPOJO Manipulation depths</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-iPOJO (primitive) components are managed using byte code manipulation. Don't be afraid, you don't have to be fluent in byte code to understand components ☺. This page explains how the manipulation works and how your class file is transformed. This manipulation takes care to *NOT* change the behavior of the manipulated class.
+                        <li class="dropdown" id="tools-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Ant Task</a></li>
+                                <li><a href="">Eclipse Plugin</a></li>
+                                <li><a href="">Maven Plugin</a></li>
+                                <li><a href="">`arch` shell command</a></li>
+                                <li><a href="">Online Manipulator</a></li>
+                                <li><a href="">Webconsole plugin</a></li>
+                            </ul>
+                        </li>
 
-{div:class=toc}
-[TOC]
-{div}
+                        <li class="dropdown" id="community-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Support</a></li>
+                                <li><a href="http://www.apache.org/">ASF</a></li>
+                                <li><a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                <li><a href="http://www.apache.org/foundation/thanks.html">Sponsors</a></li>
+                            </ul>
+                        </li>
 
-## Why manipulate bundle byte code?
+                        <li class="dropdown" id="misc-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Misc <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
+                                <li><a href="">Article & Presentations</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right" id="main-menu-right">
+                        <li><a rel="tooltip" target="_blank" href="http://felix.apache.org">Apache Felix <i class="icon-share-alt"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>    
+    </div>
 
-The iPOJO byte code manipulation goals are two-fold:
+    <div class="container">
+        <div class="content">
+            <h1 id="dive-into-the-ipojo-manipulation-depths">Dive into the iPOJO Manipulation depths</h1>
+<p>iPOJO (primitive) components are managed using byte code manipulation. Don't be afraid, you don't have to be fluent in byte code to understand components ☺. This page explains how the manipulation works and how your class file is transformed. This manipulation takes care to <em>NOT</em> change the behavior of the manipulated class.</p>
+<div class="toc">
+<ul>
+<li><a href="#dive-into-the-ipojo-manipulation-depths">Dive into the iPOJO Manipulation depths</a><ul>
+<li><a href="#why-manipulate-bundle-byte-code">Why manipulate bundle byte code?</a></li>
+<li><a href="#how-bundle-byte-code-is-manipulated">How bundle byte code is manipulated</a><ul>
+<li><a href="#the-annotation-special-case">The annotation special case</a></li>
+</ul>
+</li>
+<li><a href="#avoiding-xml-at-run-time">Avoiding XML at run time</a></li>
+<li><a href="#extending-manipulator">Extending manipulator</a><ul>
+<li><a href="#annotation-binding-module">Annotation Binding Module</a></li>
+<li><a href="#visitors">Visitors</a></li>
+<li><a href="#declaring-the-module">Declaring the Module</a></li>
+<li><a href="#finally">Finally</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="why-manipulate-bundle-byte-code">Why manipulate bundle byte code?</h2>
+<p>The iPOJO byte code manipulation goals are two-fold:</p>
+<ul>
+<li>Preparing classes to be managed at run time and</li>
+<li>Translating XML or annotation metadata into an internal format to avoid run-time XML and annotation parsing.</li>
+</ul>
+<p><img src="process.png"></p>
+<p>iPOJO follows a container approach and more specially employs <a href="http://en.wikipedia.org/wiki/Inversion*of*control">inversion of control</a> and [dependency injections|http://en.wikipedia.org/wiki/Dependency_injection]. The iPOJO container manages component instantiation and injection (service, properties and so on...). To inject values and supervise the execution inside component implementation class, iPOJO uses an interception and injection framework. To facilitate this, iPOJO uses class byte code manipulation. </p>
+<p><img src="injection.png"></p>
+<p>Besides manipulating byte code, iPOJO translates the XML or annotation metadata to an internal syntax. This eliminates any run-time dependencies on the particular metadata format. </p>
+<h2 id="how-bundle-byte-code-is-manipulated">How bundle byte code is manipulated</h2>
+<p>For each class used as a component implementation class, the manipulation process prepares the class to be managed at run time. This means providing the ability to intercept methods and field accesses. This manipulation is independent of the component metadata. A component class will always result in the same final manipulated class, regardless of its metadata. This means it is possible to use a class as the implementation of several component types. As illustrated in the following image, the manipulated class instance interacts with an instance manager that delegates to handlers. The metadata impacts the set of handlers; it does not impact the manipulated class, nor the instance manager (which is the iPOJO container foundation).</p>
+<p><img src="principles.png"></p>
+<p>The following image explains what happens during the manipulation.</p>
+<p><img src="manipulation.png"></p>
+<p>First, each manipulated class implements the <code>POJO</code> interface. This interface introduces a method to get a reference to the instance container. So, you can detect whether an object is managed by iPOJO by checking if the object implements this interface. A special field, named <code>\*\*IM</code> is injected, which contains a reference to the instance container object (<code>InstanceManager</code> at run time. </p>
+<p>For each field, getter and setter methods are generated. They are called <code>\*\*get$FIELD*NAME</code> and <code>\*\*set$FIELD*NAME</code>. A boolean field is injected named <code>\*\*F$FIELD_NAME</code>. This flag enables or disables the container delegation for this field. When delegation is disabled, the field is managed as a regular field: getter and setter methods just return and set the field value. When delegation is enabled, the field never receives a value, the container stores the field value. The getter method asks the container to get the value. The setter method asks to the container to update the stored value. All the field accesses (except ones from specific constructors) of the class are adapted to call the getter or the setter method.</p>
+<p>In order to intercept methods, each method is substituted by a generated method. Each method is renamed to <code>\*\*METHOD_NAME</code> and becomes private. The original method is replaced by iPOJO code. This code allows method interception. As with fields, method delegation is enabled or disabled by an injected boolean field. If the method is not to be intercepted, the iPOJO-generated method just calls the original method. Otherwise, the iPOJO-generated method notifies the container of method entries, exits, and potential errors.</p>
+<p>Finally, the constructors are also manipulated. Empty constructors and constructors receiving a <code>BundleContext</code> object are manipulated as others methods. However, they receive another argument: the <code>InstanceManager</code>. This instance manager is set just after the call to the super constructor. While setting the instance manager, all flags enabling/disabling delegation are set. This allows the component to use injected values inside the constructor code itself. Constructors receiving other kind of arguments are not manipulated, and so can be used to create non-managed instance. In this case, fields won't be delegated, and methods won't be intercepted.</p>
+<h3 id="the-annotation-special-case">The annotation special case</h3>
+<p>The manipulation has a special behavior when a visible (at run time) method or constructor annotation is detected. As the methods are replaced by private methods, the annotations are moved to the iPOJO-generated methods, such as in:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
+  <span class="nd">@MyAnnotation</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">myMethod</span><span class="o">()</span> <span class="o">{</span>
+     <span class="c1">//my code here</span>
+ <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
 
-• Preparing classes to be managed at run time and
-• Translating XML or annotation metadata into an internal format to avoid run-time XML and annotation parsing.
 
-!process.png!
+<p>is transformed into:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
+  <span class="nd">@MyAnnotation</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">myMethod</span><span class="o">()</span> <span class="o">{</span>
+     <span class="c1">// iPojo code here</span>
+ <span class="o">}</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">_myMethod</span><span class="o">()</span> <span class="o">{</span>
+   <span class="c1">// my code here</span>
+ <span class="o">}</span>
+</pre></div>
 
-iPOJO follows a container approach and more specially employs [inversion of control](http://en.wikipedia.org/wiki/Inversion*of*control) and [dependency injections|http://en.wikipedia.org/wiki/Dependency_injection]. The iPOJO container manages component instantiation and injection (service, properties and so on...). To inject values and supervise the execution inside component implementation class, iPOJO uses an interception and injection framework. To facilitate this, iPOJO uses class byte code manipulation. 
 
-!injection.png!
-
-Besides manipulating byte code, iPOJO translates the XML or annotation metadata to an internal syntax. This eliminates any run-time dependencies on the particular metadata format. 
-
-## How bundle byte code is manipulated
-
-For each class used as a component implementation class, the manipulation process prepares the class to be managed at run time. This means providing the ability to intercept methods and field accesses. This manipulation is independent of the component metadata. A component class will always result in the same final manipulated class, regardless of its metadata. This means it is possible to use a class as the implementation of several component types. As illustrated in the following image, the manipulated class instance interacts with an instance manager that delegates to handlers. The metadata impacts the set of handlers; it does not impact the manipulated class, nor the instance manager (which is the iPOJO container foundation).
-
-!principles.png!
-
-The following image explains what happens during the manipulation.
-
-!manipulation.png!
-
-First, each manipulated class implements the `POJO` interface. This interface introduces a method to get a reference to the instance container. So, you can detect whether an object is managed by iPOJO by checking if the object implements this interface. A special field, named `\*\*IM` is injected, which contains a reference to the instance container object (`InstanceManager` at run time. 
-
-For each field, getter and setter methods are generated. They are called `\*\*get$FIELD*NAME` and `\*\*set$FIELD*NAME`. A boolean field is injected named `\*\*F$FIELD_NAME`. This flag enables or disables the container delegation for this field. When delegation is disabled, the field is managed as a regular field: getter and setter methods just return and set the field value. When delegation is enabled, the field never receives a value, the container stores the field value. The getter method asks the container to get the value. The setter method asks to the container to update the stored value. All the field accesses (except ones from specific constructors) of the class are adapted to call the getter or the setter method.
-
-In order to intercept methods, each method is substituted by a generated method. Each method is renamed to `\*\*METHOD_NAME` and becomes private. The original method is replaced by iPOJO code. This code allows method interception. As with fields, method delegation is enabled or disabled by an injected boolean field. If the method is not to be intercepted, the iPOJO-generated method just calls the original method. Otherwise, the iPOJO-generated method notifies the container of method entries, exits, and potential errors.
-
-Finally, the constructors are also manipulated. Empty constructors and constructors receiving a `BundleContext` object are manipulated as others methods. However, they receive another argument: the `InstanceManager`. This instance manager is set just after the call to the super constructor. While setting the instance manager, all flags enabling/disabling delegation are set. This allows the component to use injected values inside the constructor code itself. Constructors receiving other kind of arguments are not manipulated, and so can be used to create non-managed instance. In this case, fields won't be delegated, and methods won't be intercepted.
-
-### The annotation special case
-
-The manipulation has a special behavior when a visible (at run time) method or constructor annotation is detected. As the methods are replaced by private methods, the annotations are moved to the iPOJO-generated methods, such as in:
-
-    public class MyClass {
-      @MyAnnotation
-      public void myMethod() {
-         //my code here
-     }
-    }
-
-is transformed into:
-
-    public class MyClass {
-      @MyAnnotation
-      public void myMethod() {
-         // iPojo code here
-     }
-      private void _myMethod() {
-       // my code here
-     } 
-
-## Avoiding XML at run time
-
-iPOJO does not use XML or annotations at run time. The manipulation process replaces the XML or annotation metadata by an internal format (between LISP and XML). The XML or annotation metadata are translated and written into the bundle manifest. Additionally, various type information in the component metadata is computed during the byte code manipulation phase to avoid having to use reflection at run time (which would require loading the class) to get class elements (such as available fields, methods, implemented interfaces, and so on).
-
-If you want to see how XML or annotation metadata are *tortured*, just open the manifest file of a manipulated bundle, and look at the `iPOJO-COMPONENTS` entry (and appreciate the Lisp-like syntax :-))...
-
-## Extending manipulator
-<div class="warning" markdown="1">
+<h2 id="avoiding-xml-at-run-time">Avoiding XML at run time</h2>
+<p>iPOJO does not use XML or annotations at run time. The manipulation process replaces the XML or annotation metadata by an internal format (between LISP and XML). The XML or annotation metadata are translated and written into the bundle manifest. Additionally, various type information in the component metadata is computed during the byte code manipulation phase to avoid having to use reflection at run time (which would require loading the class) to get class elements (such as available fields, methods, implemented interfaces, and so on).</p>
+<p>If you want to see how XML or annotation metadata are <em>tortured</em>, just open the manifest file of a manipulated bundle, and look at the <code>iPOJO-COMPONENTS</code> entry (and appreciate the Lisp-like syntax :-))...</p>
+<h2 id="extending-manipulator">Extending manipulator</h2>
+<div class="alert alert-warning">
 This feature is only available in trunk at the moment (version 1.9.0-SNAPSHOT).
 It will be part of the upcoming Manipulator release (version 1.8.8)
 </div>
 
-Annotations are more and more used to provide a simple and elegant programming model. iPOJO had supported generic annotations (`@Component`, `@Handler`, ...) for a long time.
-But supporting your own annotations and bind them to a particular handler in iPOJO was awkward (naming conventions, id and parent resolution, ...).
+<p>Annotations are more and more used to provide a simple and elegant programming model. iPOJO had supported generic annotations (<code>@Component</code>, <code>@Handler</code>, ...) for a long time.
+But supporting your own annotations and bind them to a particular handler in iPOJO was awkward (naming conventions, id and parent resolution, ...).</p>
+<p>For example, how to re-use an external annotation (let's say <code>@javax.inject.Inject</code>) that do not respect the iPOJO naming convention ?
+Or how can you contribute information to the component's metadata when an annotation is found ?</p>
+<p>The solution is to extend the manipulator with new annotation' support.</p>
+<h3 id="annotation-binding-module">Annotation Binding Module</h3>
+<p>That can be done through the implementation of a <code>Module</code>:</p>
+<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.manipulator.spi.AbsBindingModule</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.manipulator.spi.AnnotationVisitorFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.manipulator.spi.BindingContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.objectweb.asm.AnnotationVisitor</span><span class="o">;</span>
 
-For example, how to re-use an external annotation (let's say `@javax.inject.Inject`) that do not respect the iPOJO naming convention ?
-Or how can you contribute information to the component's metadata when an annotation is found ?
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleBindingModule</span> <span class="kd">extends</span> <span class="n">AbsBindingModule</span> <span class="o">{</span>
 
-The solution is to extend the manipulator with new annotation' support.
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// When @Hello is found, execute the provided AnnotationVisitor</span>
+        <span class="n">bind</span><span class="o">(</span><span class="n">Hello</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">to</span><span class="o">(</span><span class="k">new</span> <span class="n">AnnotationVisitorFactory</span><span class="o">()</span> <span class="o">{</span>
+                <span class="kd">public</span> <span class="n">AnnotationVisitor</span> <span class="nf">newAnnotationVisitor</span><span class="o">(</span><span class="n">BindingContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="k">new</span> <span class="nf">HelloVisitor</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getWorkbench</span><span class="o">());</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
 
-### Annotation Binding Module
 
-That can be done through the implementation of a `Module`:
+<p>The <code>AbsBindingModule.configure()</code> method has to be implemented by each new Module. It contains the annotation binding specification(s).
+An annotation binding simply declares what to do when a given annotation is found.</p>
+<p>In the example case, when the <code>@Hello</code> annotation is encountered in a class' bytecode, the manipulator will find an annotation binding for <code>@Hello</code> and call it's <code>AnnotationVisitorFactory.newAnnotationVisitor()</code> method to obtain a dedicated <code>AnnotationVisitor</code> (here <code>HelloVisitor</code>).</p>
+<h3 id="visitors">Visitors</h3>
+<p>Here are the <code>@Hello</code> annotation and <code>HelloVisitor</code> class for better understanding:</p>
+<div class="codehilite"><pre><span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Hello</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></div>
 
-    import org.apache.felix.ipojo.manipulator.spi.AbsBindingModule;
-    import org.apache.felix.ipojo.manipulator.spi.AnnotationVisitorFactory;
-    import org.apache.felix.ipojo.manipulator.spi.BindingContext;
-    import org.objectweb.asm.AnnotationVisitor;
 
-    public class SampleBindingModule extends AbsBindingModule {
+<p>The <code>@Hello</code> annotation has a mandatory <code>name</code> attribute.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloVisitor</span> <span class="kd">extends</span> <span class="n">EmptyVisitor</span> <span class="kd">implements</span> <span class="n">AnnotationVisitor</span> <span class="o">{</span>
 
-        public void configure() {
-            // When @Hello is found, execute the provided AnnotationVisitor
-            bind(Hello.class)
-                .to(new AnnotationVisitorFactory() {
-                    public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
-                        return new HelloVisitor(context.getWorkbench());
-                    }
-                });
-       }
-    }
+    <span class="kd">private</span> <span class="n">Element</span> <span class="n">hello</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Element</span><span class="o">(</span><span class="s">&quot;hello&quot;</span><span class="o">,</span> <span class="s">&quot;org.apache.felix.ipojo.sample&quot;</span><span class="o">);</span>
 
-The `AbsBindingModule.configure()` method has to be implemented by each new Module. It contains the annotation binding specification(s).
-An annotation binding simply declares what to do when a given annotation is found.
+    <span class="kd">private</span> <span class="n">ComponentWorkbench</span> <span class="n">workbench</span><span class="o">;</span>
 
-In the example case, when the `@Hello` annotation is encountered in a class' bytecode, the manipulator will find an annotation binding for `@Hello` and call it's `AnnotationVisitorFactory.newAnnotationVisitor()` method to obtain a dedicated `AnnotationVisitor` (here `HelloVisitor`).
+    <span class="kd">public</span> <span class="nf">HelloVisitor</span><span class="o">(</span><span class="n">ComponentWorkbench</span> <span class="n">workbench</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">workbench</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">;</span>
+    <span class="o">}</span>
 
-### Visitors
+    <span class="cm">/**</span>
+<span class="cm">     * Visit @Hello annotation attributes.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">visit</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">hello</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
 
-Here are the `@Hello` annotation and `HelloVisitor` class for better understanding:
+    <span class="cm">/**</span>
+<span class="cm">     * Append to the &quot;component&quot; element computed attribute.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">visitEnd</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">workbench</span><span class="o">.</span><span class="na">getElements</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="n">hello</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
 
-    @Target(ElementType.TYPE)
-    public @interface Hello {
-        String name();
-    }
 
-The `@Hello` annotation has a mandatory `name` attribute.
+<p>The <code>HelloVisitor</code> is an ASM <code>AnnotationVisitor</code>. <code>AnnotationVisitor.visit(String, Object)</code> is called for each declared attribute of the annotation. Declared means that if an attribute is non-mandatory and was not part of the annotation declaration, it will not be visible by the <code>AnnotationVisitor</code>. Each attribute is visited only once.
+In HelloVisitor we only react to the <code>name</code> attribute, and store its value as an Attribute in the Element.</p>
+<p>Finally, in <code>visitEnd()</code>, we contribute our Element to the workbench.</p>
+<h3 id="declaring-the-module">Declaring the Module</h3>
+<p>Last work to do: declare the new <code>Module</code> in a <code>META-INF/services/org.apache.felix.ipojo.manipulator.spi.Module</code> file:</p>
+<div class="codehilite"><pre>org.apache.felix.ipojo.sample.SampleBindingModule
+</pre></div>
 
-    public class HelloVisitor extends EmptyVisitor implements AnnotationVisitor {
 
-        private Element hello = new Element("hello", "org.apache.felix.ipojo.sample");
+<p>At this point, we can use the jar file that contains the extension within the manipulator.
+In maven, it's as simple as adding a plugin dependency to the <code>maven-bundle-plugin</code> (in addition of the <code>bnd-ipojo-plugin</code>).
+In ant, It's probably a matter of changing the classpath.</p>
+<h3 id="finally">Finally</h3>
+<p>At the end, all this mechanics will help you to simply your code from:</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo</span> <span class="na">xmlns:s=</span><span class="s">&quot;org.apache.felix.ipojo.sample&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;component</span> <span class="err">...</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;s:hello</span> <span class="na">name=</span><span class="s">&quot;Guillaume&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/component&gt;</span>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-        private ComponentWorkbench workbench;
 
-        public HelloVisitor(ComponentWorkbench workbench) {
-            this.workbench = workbench;
-        }
+<p>with a non-annotated component's class:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
 
-        /**
-         * Visit @Hello annotation attributes.
-         */
-        public void visit(String name, Object value) {
-            if (name.equals("name")) {
-                hello.addAttribute(new Attribute("name", value.toString()));
-                return;
-            }
-        }
 
-        /**
-         * Append to the "component" element computed attribute.
-         */
-        public void visitEnd() {
-            workbench.getElements().put(hello, null);
-        }
-    }
-
-The `HelloVisitor` is an ASM `AnnotationVisitor`. `AnnotationVisitor.visit(String, Object)` is called for each declared attribute of the annotation. Declared means that if an attribute is non-mandatory and was not part of the annotation declaration, it will not be visible by the `AnnotationVisitor`. Each attribute is visited only once.
-In HelloVisitor we only react to the `name` attribute, and store its value as an Attribute in the Element.
-
-Finally, in `visitEnd()`, we contribute our Element to the workbench.
-
-### Declaring the Module
-
-Last work to do: declare the new `Module` in a `META-INF/services/org.apache.felix.ipojo.manipulator.spi.Module` file:
-
-    org.apache.felix.ipojo.sample.SampleBindingModule
-
-At this point, we can use the jar file that contains the extension within the manipulator.
-In maven, it's as simple as adding a plugin dependency to the `maven-bundle-plugin` (in addition of the `bnd-ipojo-plugin`).
-In ant, It's probably a matter of changing the classpath.
-
-### Finally
-
-At the end, all this mechanics will help you to simply your code from:
-
-    <ipojo xmlns:s="org.apache.felix.ipojo.sample">
-      <component ...>
-        <s:hello name="Guillaume" />
-      </component>
-    </ipojo>
-
-with a non-annotated component's class:
-
-    public class MyComponent {
-        // ...
-    }
-
-to a more elegant (and concise), with no XML:
-
-    @Component
-    @Hello(name = "Guillaume")
-    public class MyComponent {
-        // ...
-    }
-
-{include:apache-felix-ipojo-footer}
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
+<p>to a more elegant (and concise), with no XML:</p>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Hello</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Guillaume&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+        </div>
     </div>
-  </body>
+
+    <hr/>
+
+    <div class="container">
+        <footer id="footer">
+            <div class="row">
+                <div class="trademarkFooter span7"> 
+                Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+                logo are trademarks of The Apache Software Foundation. All other marks mentioned
+                may be trademarks or registered trademarks of their respective owners.
+                </div>
+                <div class="timestamp span3 offset2">
+                Rev. 1443046 by clement on Wed, 6 Feb 2013 16:27:48 +0000
+                </div>
+            </div>
+        </footer>           
+    </div>
+</body>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+    try{
+        var pageTracker = _gat._getTracker("UA-1518442-4");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
 </html>

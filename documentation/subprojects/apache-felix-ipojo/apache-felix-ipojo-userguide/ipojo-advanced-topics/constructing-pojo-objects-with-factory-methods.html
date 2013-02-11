@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -17,112 +16,205 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-  <head>
+
+<head>
     <title>Apache Felix - Constructing POJO objects with factory methods</title>
     <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="http://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="http://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
-      </div>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The most powerful component model for OSGi">
+
     
-    <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
-<iframe
-    src="http://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
+    <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/ipojo/web/style.css" rel="stylesheet">
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
     
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide.html">apache-felix-ipojo-userguide</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics.html">iPOJO Advanced Topics</a>
-      </div>
+</head>
 
-      
-      <div class="tip">
-           This page is a translated version of <a href="/site/constructing-pojo-objects-with-factory-methods.html" target="felix_cwiki">/site/constructing-pojo-objects-with-factory-methods.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
-      
-      <h1>Constructing POJO objects with factory methods</h1>
-      <p>{include:apache-felix-ipojo-header}</p>
-<div class="content">
+<body data-spy="scroll" data-target=".subnav">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+         
+                 <div class="nav-collapse" id="main-menu">
+                    <ul class="nav" id="main-menu-left">
+                        <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
+                        <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
+                    
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="tutorials-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.html">Why choose iPOJO</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.html">Success stories</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.html">Features</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
+                            </ul>
+                        </li>
 
-# Using a factory method to create POJO object
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Documentation <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="user-guide-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.html">Requiring a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.html">Providing a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle management</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">External <em>handlers</em></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">Asynchronous communication</a></li>
+                                        <li><a href="">JMX management</a></li>
+                                        <li><a href="">Extender pattern</a></li>
+                                        <li><a href="">Whiteboard pattern</a></li>
+                                        <li><a href="">Temporal dependencies</a></li>
+                                    </ul>
+                                </li>                                            
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Advanced topics</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="">Factories and Instances</a></li>
+                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="">API</a></li>
+                                        <li><a href="">Testing components</a></li>
+                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="">FAQ</a></li>
+                                        <li><a href="">Reference Card</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="">Manipulation Metadata </a></li>
+                                        <li><a href="">Dive into the iPOJO Manipulation depths</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-*By default, iPOJO calls the POJO constructor to create objects. This constructor can either has no argument or receive the bundle context. However sometimes, you may want a more sophisticated object creation policy.*
+                        <li class="dropdown" id="tools-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Ant Task</a></li>
+                                <li><a href="">Eclipse Plugin</a></li>
+                                <li><a href="">Maven Plugin</a></li>
+                                <li><a href="">`arch` shell command</a></li>
+                                <li><a href="">Online Manipulator</a></li>
+                                <li><a href="">Webconsole plugin</a></li>
+                            </ul>
+                        </li>
 
-iPOJO allows you describing a factory method called to create POJO objects instead of the  constructor. So, every time that iPOJO needs to create an instance of your POJO class, this method will be called to obtain the object.
+                        <li class="dropdown" id="community-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Support</a></li>
+                                <li><a href="http://www.apache.org/">ASF</a></li>
+                                <li><a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                <li><a href="http://www.apache.org/foundation/thanks.html">Sponsors</a></li>
+                            </ul>
+                        </li>
 
-To use this feature you need to add the `factory-method` attribute in the Component element as illustrated below:
-
-    <component
-        className="org.apache.felix.ipojo.test.scenarios.component.FooProvider"
-            factory-method="createProvider"
-    >
-        ...
-    </component>
-
-The specified method must be a *static* method of the implementation class returning an *instance of this implementation class*. The following code shows an example of usage:
-
-        public static FooProvider createProvider() {
-            if (singleton == null) {
-                singleton = new FooProvider();
-            }
-            return singleton;
-        }
-
-This method must then call any valid constructor (potentially private) of the implementation class. 
-
-However, be aware that if you create an instance by using a `factory-method`, the called constructor hasn't access to values injected by the iPOJO container. So, the called constructor must not try accessing to services, properties... These objects will be accessible when the constructor returns.
-
-As for "normal" constructor, the method-factory can receive the bundle context in argument, such as in:
-
-        public static FooProvider createProvider (BundleContext bc) {
-            if (singleton == null) {
-                singleton = new FooProvider(bc);
-            }
-            return singleton;
-        }
-
-{include:apache-felix-ipojo-footer}
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
+                        <li class="dropdown" id="misc-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Misc <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
+                                <li><a href="">Article & Presentations</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right" id="main-menu-right">
+                        <li><a rel="tooltip" target="_blank" href="http://felix.apache.org">Apache Felix <i class="icon-share-alt"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>    
     </div>
-  </body>
+
+    <div class="container">
+        <div class="content">
+            <h1 id="using-a-factory-method-to-create-pojo-object">Using a factory method to create POJO object</h1>
+<p><em>By default, iPOJO calls the POJO constructor to create objects. This constructor can either has no argument or receive the bundle context. However sometimes, you may want a more sophisticated object creation policy.</em></p>
+<p>iPOJO allows you describing a factory method called to create POJO objects instead of the  constructor. So, every time that iPOJO needs to create an instance of your POJO class, this method will be called to obtain the object.</p>
+<p>To use this feature you need to add the <code>factory-method</code> attribute in the Component element as illustrated below:</p>
+<div class="codehilite"><pre><span class="nt">&lt;component</span>
+    <span class="na">className=</span><span class="s">&quot;org.apache.felix.ipojo.test.scenarios.component.FooProvider&quot;</span>
+        <span class="na">factory-method=</span><span class="s">&quot;createProvider&quot;</span>
+<span class="nt">&gt;</span>
+    ...
+<span class="nt">&lt;/component&gt;</span>
+</pre></div>
+
+
+<p>The specified method must be a <em>static</em> method of the implementation class returning an <em>instance of this implementation class</em>. The following code shows an example of usage:</p>
+<div class="codehilite"><pre>    <span class="n">public</span> <span class="n">static</span> <span class="n">FooProvider</span> <span class="n">createProvider</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">singleton</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">singleton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FooProvider</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">singleton</span><span class="p">;</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>This method must then call any valid constructor (potentially private) of the implementation class. </p>
+<p>However, be aware that if you create an instance by using a <code>factory-method</code>, the called constructor hasn't access to values injected by the iPOJO container. So, the called constructor must not try accessing to services, properties... These objects will be accessible when the constructor returns.</p>
+<p>As for "normal" constructor, the method-factory can receive the bundle context in argument, such as in:</p>
+<div class="codehilite"><pre>    <span class="n">public</span> <span class="n">static</span> <span class="n">FooProvider</span> <span class="n">createProvider</span> <span class="p">(</span><span class="n">BundleContext</span> <span class="n">bc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">singleton</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">singleton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FooProvider</span><span class="p">(</span><span class="n">bc</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">singleton</span><span class="p">;</span>
+    <span class="p">}</span>
+</pre></div>
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="container">
+        <footer id="footer">
+            <div class="row">
+                <div class="trademarkFooter span7"> 
+                Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+                logo are trademarks of The Apache Software Foundation. All other marks mentioned
+                may be trademarks or registered trademarks of their respective owners.
+                </div>
+                <div class="timestamp span3 offset2">
+                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                </div>
+            </div>
+        </footer>           
+    </div>
+</body>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+    try{
+        var pageTracker = _gat._getTracker("UA-1518442-4");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
 </html>

@@ -1,7 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -17,521 +16,653 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-  <head>
+
+<head>
     <title>Apache Felix - iPOJO Composition Tutorial</title>
     <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="http://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="http://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
-      </div>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The most powerful component model for OSGi">
+
     
-    <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
-<iframe
-    src="http://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
+    <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/ipojo/web/style.css" rel="stylesheet">
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
     
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted.html">apache-felix-ipojo-gettingstarted</a>
-      </div>
+</head>
 
-      
-      <div class="tip">
-           This page is a translated version of <a href="/site/ipojo-composition-tutorial.html" target="felix_cwiki">/site/ipojo-composition-tutorial.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
-      
-      
-      <h1>iPOJO Composition Tutorial</h1>
-      <p>{include:apache-felix-ipojo-header}</p>
-<div class="content">
+<body data-spy="scroll" data-target=".subnav">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
+         
+                 <div class="nav-collapse" id="main-menu">
+                    <ul class="nav" id="main-menu-left">
+                        <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
+                        <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
+                    
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="tutorials-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.html">Why choose iPOJO</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.html">Success stories</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.html">Features</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
+                            </ul>
+                        </li>
 
-# iPOJO Composition Tutorial
-*This page describes how works the composition mechanisms provided by iPOJO and how to use it. this feature allows you to design applications that will natively support the dynamism and the evolution.*
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Documentation <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="user-guide-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.html">Requiring a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.html">Providing a service</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle management</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">External <em>handlers</em></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">Asynchronous communication</a></li>
+                                        <li><a href="">JMX management</a></li>
+                                        <li><a href="">Extender pattern</a></li>
+                                        <li><a href="">Whiteboard pattern</a></li>
+                                        <li><a href="">Temporal dependencies</a></li>
+                                    </ul>
+                                </li>                                            
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Advanced topics</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="">Factories and Instances</a></li>
+                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="">API</a></li>
+                                        <li><a href="">Testing components</a></li>
+                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="">FAQ</a></li>
+                                        <li><a href="">Reference Card</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="">Manipulation Metadata </a></li>
+                                        <li><a href="">Dive into the iPOJO Manipulation depths</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-{div:class=toc}
-[TOC]
-{div}
+                        <li class="dropdown" id="tools-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Ant Task</a></li>
+                                <li><a href="">Eclipse Plugin</a></li>
+                                <li><a href="">Maven Plugin</a></li>
+                                <li><a href="">`arch` shell command</a></li>
+                                <li><a href="">Online Manipulator</a></li>
+                                <li><a href="">Webconsole plugin</a></li>
+                            </ul>
+                        </li>
 
-## Why providing a composition layer?
-iPOJO aims to simplify the creation of OSGi (dynamic) applications. Creating such as applications is basically a two steps process:
-* Developing services and components
-* Assembling them together to create the application
+                        <li class="dropdown" id="community-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="">Support</a></li>
+                                <li><a href="http://www.apache.org/">ASF</a></li>
+                                <li><a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
+                                <li><a href="http://www.apache.org/foundation/thanks.html">Sponsors</a></li>
+                            </ul>
+                        </li>
 
-To tackle the first step, iPOJO provides an easy-to-use development model. But, this does not help to design the application. To conduct the second step, iPOJO provides a composition language allowing to:
-* Assemble components and services together
-* Assert service isolation inside a composition
-* Hide/Abstract implementations 
+                        <li class="dropdown" id="misc-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Misc <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="swatch-menu">
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
+                                <li><a href="">Article & Presentations</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right" id="main-menu-right">
+                        <li><a rel="tooltip" target="_blank" href="http://felix.apache.org">Apache Felix <i class="icon-share-alt"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>    
+    </div>
 
-### What about privacy?
-Service or component composition has a stringent requirement. How to isolate components and services of an application to avoid side effects as an unexpected access to a used service ...iPOJO composites just provide an isolation mechanism. Services provided inside a composite ARE NOT published globally (inside the OSGi service registry). So, only the component instances living in the same composite can access to those services.
-However, it is also possible to import a service from the parent/global service registry, as well as to export a service to the parent (i.e. superior) composite.
+    <div class="container">
+        <div class="content">
+            <h1 id="ipojo-composition-tutorial">iPOJO Composition Tutorial</h1>
+<p><em>This page describes how works the composition mechanisms provided by iPOJO and how to use it. this feature allows you to design applications that will natively support the dynamism and the evolution.</em></p>
+<div class="toc">
+<ul>
+<li><a href="#ipojo-composition-tutorial">iPOJO Composition Tutorial</a><ul>
+<li><a href="#why-providing-a-composition-layer">Why providing a composition layer?</a><ul>
+<li><a href="#what-about-privacy">What about privacy?</a></li>
+</ul>
+</li>
+<li><a href="#the-different-types-of-composition-in-the-osgi-world">The different types of composition in the OSGi world</a><ul>
+<li><a href="#intra-bundle-composition">Intra-bundle composition</a></li>
+<li><a href="#service-based-composition">Service-based composition</a></li>
+</ul>
+</li>
+<li><a href="#the-ipojo-composition-theory-for-the-dummies">The iPOJO composition theory for the dummies</a></li>
+<li><a href="#the-service-context-concept">The service context concept</a></li>
+<li><a href="#downloads">Downloads</a></li>
+<li><a href="#lets-start-with-a-first-composition">Let's start with a first composition</a></li>
+<li><a href="#importing-a-service-inside-a-composite">Importing a service inside a composite</a></li>
+<li><a href="#abstracting-implementation-composing-services">Abstracting implementation... Composing services</a></li>
+<li><a href="#publishing-services">Publishing services</a></li>
+<li><a href="#hierarchical-composites">Hierarchical composites</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="why-providing-a-composition-layer">Why providing a composition layer?</h2>
+<p>iPOJO aims to simplify the creation of OSGi (dynamic) applications. Creating such as applications is basically a two steps process:</p>
+<ul>
+<li>Developing services and components</li>
+<li>Assembling them together to create the application</li>
+</ul>
+<p>To tackle the first step, iPOJO provides an easy-to-use development model. But, this does not help to design the application. To conduct the second step, iPOJO provides a composition language allowing to:</p>
+<ul>
+<li>Assemble components and services together</li>
+<li>Assert service isolation inside a composition</li>
+<li>Hide/Abstract implementations </li>
+</ul>
+<h3 id="what-about-privacy">What about privacy?</h3>
+<p>Service or component composition has a stringent requirement. How to isolate components and services of an application to avoid side effects as an unexpected access to a used service ...iPOJO composites just provide an isolation mechanism. Services provided inside a composite ARE NOT published globally (inside the OSGi service registry). So, only the component instances living in the same composite can access to those services.
+However, it is also possible to import a service from the parent/global service registry, as well as to export a service to the parent (i.e. superior) composite.</p>
+<h2 id="the-different-types-of-composition-in-the-osgi-world">The different types of composition in the OSGi world</h2>
+<p>Basically there is two types of composition in OSGi:</p>
+<ul>
+<li>The intra-bundle composition</li>
+<li>The service-based composition</li>
+</ul>
+<h3 id="intra-bundle-composition">Intra-bundle composition</h3>
+<p>The intra-bundle composition is the policy followed by Spring-DM. Each bundle contains components. These components can require and provide services from the global (OSGi) registry. Moreover, these components can collaborate together inside the bundle without providing/requiring services. So the isolation scope of intra-bundle composition is the <em>bundle</em>. This type of composition allows providing coarse-grain services provided by the collaboration of several components. However, it is not possible to update one of those components, as the update unity is the bundle.</p>
+<h3 id="service-based-composition">Service-based composition</h3>
+<p>There are two types of service composition. The behavioral service composition is like <a href="http://www.ibm.com/developerworks/library/specification/ws-bpel/">BPEL</a> for the web services. An orchestrator supervises the execution and the collaboration of services like:</p>
+<ol>
+<li>Call service A</li>
+<li>Call service B </li>
+<li>...</li>
+</ol>
+<p>The second type of service composition is the structural service composition. This aims to provide a kind of Architecture Description Language for service-based applications. iPOJO follows this trend. This way as several advantages:</p>
+<ul>
+<li>Avoids coupling a composition to specific implementation, and so it supports the dynamic substitution</li>
+<li>Allows the evolution of used services and components at runtime</li>
+</ul>
+<p>This is also the way followed by <a href="http://www.ibm.com/developerworks/library/specification/ws-sca/">SCA</a>. However, SCA does not specify how the dynamism should be handled.</p>
+<h2 id="the-ipojo-composition-theory-for-the-dummies">The iPOJO composition theory for the dummies</h2>
+<p>The distinction between component types and instances
+When you declare a <code>&lt;component&gt;</code> (or a <code>&lt;composite&gt;</code>) in your metadata, you're declaring a component type. Then you declare instances from these component types. This mechanism is critic for the iPOJO composition. Indeed, inside a composite, you're able to create instances from any (public) component types (Refer to the <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factory</a> web page for further details). 
+On the top of this mechanism, we can define the concept of service implementation. A service implementation is just a component type where the instances provide a service. For example, if the instance from a component type provides the service S, the component type is a service implementation of S, and so can be used to create a provider of S. </p>
+<h2 id="the-service-context-concept">The service context concept</h2>
+<p>The service context is the concept allowing service isolation. OSGi bundle context allows accessing both to bundle-based functionality (like <code>loadClass</code>) and to the service registry. However, OSGi defines only one service registry, accessible by any bundles. iPOJO splits these two interaction types. Instances receive an iPOJO Bundle Context delegating bundle-related methods to the "regular" bundle context, and service-related methods to a service context. This service context can access to the OSGi service registry or to a new one. Each composition instances have a service registry. Instances creates inside the composition used this service registry through received the iPOJO Bundle Context. </p>
+<h2 id="downloads">Downloads</h2>
+<p>Download the <a href="http://people.apache.org/~clement/ipojo/tutorials/composite/composite-tutorial.zip">archive</a>. This archive contains:</p>
+<ul>
+<li>The different applications and component types implemented in this tutorial</li>
+<li>A preconfigured version of Felix</li>
+<li>Deployment scripts</li>
+</ul>
+<p>Launch <code>ant</code> from the base directory of the unzipped archive to create every bundles. Then, you can test the different examples by copying and pasting commands from the <code>script.txt</code> file (in the felix folder) in the Felix shell.</p>
+<h2 id="lets-start-with-a-first-composition">Let's start with a first composition</h2>
+<p>In the <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a> tutorial, we created an application checking a sentence against dictionaries. We'll reuse this simple application in this tutorial. 
+So first, we need to implements several component types:</p>
+<ul>
+<li>The dictionary service implementation, containing words</li>
+<li>The Check service implementation, providing methods to check words against dictionaries</li>
+<li>And the client GUI, using a Check Service to indicate misspelled words.</li>
+</ul>
+<p>We will reuse the same implementation than in the previous tutorial. The current application is designed as follow:</p>
+<p><img src="app1.png"></p>
+<p>However, imagine that you want to isolate services provided and required by your application. For example, you want to isolate a stateful service or a critical (private) resource. </p>
+<p>So, let's imagine a second version of our spellchecker application. In this application, the dictionary service, and the checker service are isolated inside a composite. So, those services will be accessible only from instances living in the composite. The GUI will also be instantiated inside the composite. The composition will be something like:</p>
+<p><img src="app2.png"></p>
+<p>The descriptor of this application is:</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 
-## The different types of composition in the OSGi world
-Basically there is two types of composition in OSGi:
-* The intra-bundle composition
-* The service-based composition
+<span class="c">&lt;!--  Declares a composition --&gt;</span>
+<span class="nt">&lt;composite</span> <span class="na">name=</span><span class="s">&quot;composition1&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--  Instantiates an instance of the English dictionary --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.english.EnglishDictionary&quot;</span><span class="nt">/&gt;</span>
 
-### Intra-bundle composition
-The intra-bundle composition is the policy followed by Spring-DM. Each bundle contains components. These components can require and provide services from the global (OSGi) registry. Moreover, these components can collaborate together inside the bundle without providing/requiring services. So the isolation scope of intra-bundle composition is the *bundle*. This type of composition allows providing coarse-grain services provided by the collaboration of several components. However, it is not possible to update one of those components, as the update unity is the bundle.
+    <span class="c">&lt;!--  Instantiates an instance of the Checker --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.checker.SpellCheck&quot;</span><span class="nt">/&gt;</span>
 
-### Service-based composition
-There are two types of service composition. The behavioral service composition is like [BPEL](http://www.ibm.com/developerworks/library/specification/ws-bpel/) for the web services. An orchestrator supervises the execution and the collaboration of services like:
-1. Call service A
-1. Call service B 
-1. ...
+    <span class="c">&lt;!--  Instantiates an instance of the GUI --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.gui.SpellCheckerGui&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/composite&gt;</span>
 
-The second type of service composition is the structural service composition. This aims to provide a kind of Architecture Description Language for service-based applications. iPOJO follows this trend. This way as several advantages:
-* Avoids coupling a composition to specific implementation, and so it supports the dynamic substitution
-* Allows the evolution of used services and components at runtime
-This is also the way followed by [SCA](http://www.ibm.com/developerworks/library/specification/ws-sca/). However, SCA does not specify how the dynamism should be handled.
+<span class="c">&lt;!--  Instantiates an instance of our composition --&gt;</span>
+<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;composition1&quot;</span><span class="nt">/&gt;</span>
 
-## The iPOJO composition theory for the dummies
-The distinction between component types and instances
-When you declare a `<component>` (or a `<composite>`) in your metadata, you're declaring a component type. Then you declare instances from these component types. This mechanism is critic for the iPOJO composition. Indeed, inside a composite, you're able to create instances from any (public) component types (Refer to the [Factory](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html) web page for further details). 
-On the top of this mechanism, we can define the concept of service implementation. A service implementation is just a component type where the instances provide a service. For example, if the instance from a component type provides the service S, the component type is a service implementation of S, and so can be used to create a provider of S. 
-The service context concept
-The service context is the concept allowing service isolation. OSGi bundle context allows accessing both to bundle-based functionality (like `loadClass`) and to the service registry. However, OSGi defines only one service registry, accessible by any bundles. iPOJO splits these two interaction types. Instances receive an iPOJO Bundle Context delegating bundle-related methods to the "regular" bundle context, and service-related methods to a service context. This service context can access to the OSGi service registry or to a new one. Each composition instances have a service registry. Instances creates inside the composition used this service registry through received the iPOJO Bundle Context. 
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-## Downloads
-Download the [archive](http://people.apache.org/~clement/ipojo/tutorials/composite/composite-tutorial.zip). This archive contains:
-* The different applications and component types implemented in this tutorial
-* A preconfigured version of Felix
-* Deployment scripts
 
-Launch `ant` from the base directory of the unzipped archive to create every bundles. Then, you can test the different examples by copying and pasting commands from the `script.txt` file (in the felix folder) in the Felix shell.
+<p>First, a composite type is declared inside an iPOJO descriptor. A composite contain always a <code>name</code> attribute, which is the component type name. Inside the <code>&lt;composite&gt;&lt;/composite&gt;</code>, three instances are declared: the three instances used by our application. Remark that these instances are declared as 'regular' instances. The <code>component</code> attribute indicates the component type to use. Instances can be configured as regular iPOJO instances. Finally, an instance of our type is also declared. </p>
+<p>To execute our composition, go in the felix directory and launch the following command:</p>
+<div class="codehilite"><pre>java -jar bin/felix.jar
+</pre></div>
 
-## Let's start with a first composition
-In the [iPOJO in 10 minutes](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html) tutorial, we created an application checking a sentence against dictionaries. We'll reuse this simple application in this tutorial. 
-So first, we need to implements several component types:
-* The dictionary service implementation, containing words
-* The Check service implementation, providing methods to check words against dictionaries
-* And the client GUI, using a Check Service to indicate misspelled words.
 
-We will reuse the same implementation than in the previous tutorial. The current application is designed as follow:
-!app1.png!
-However, imagine that you want to isolate services provided and required by your application. For example, you want to isolate a stateful service or a critical (private) resource. 
-So, let's imagine a second version of our spellchecker application. In this application, the dictionary service, and the checker service are isolated inside a composite. So, those services will be accessible only from instances living in the composite. The GUI will also be instantiated inside the composite. The composition will be something like:
-!app2.png!
-The descriptor of this application is:
+<p>This version of Felix starts with the iPOJO framework, the iPOJO Arch command and the composite support. So, we just need to install our component types and the composition.</p>
+<p>In the Felix prompt, launch the following commands:</p>
+<div class="codehilite"><pre>start file:../spell.services/output/spell.services.jar
+start file:../spell.english/output/spell.english.jar
+start file:../spell.checker/output/spell.checker.jar
+start file:../spell.checker.gui/output/spell.checker.gui.jar
+</pre></div>
 
-    <ipojo>
 
-    <!--  Declares a composition -->
-    <composite name="composition1">
-        <!--  Instantiates an instance of the English dictionary -->
-        <instance component="spell.english.EnglishDictionary"/>
-
-        <!--  Instantiates an instance of the Checker -->
-        <instance component="spell.checker.SpellCheck"/>
-
-        <!--  Instantiates an instance of the GUI -->
-        <instance component="spell.gui.SpellCheckerGui"/>
-    </composite>
-
-    <!--  Instantiates an instance of our composition -->
-    <instance component="composition1"/>
-
-    </ipojo>
-
-First, a composite type is declared inside an iPOJO descriptor. A composite contain always a `name` attribute, which is the component type name. Inside the `<composite></composite>`, three instances are declared: the three instances used by our application. Remark that these instances are declared as 'regular' instances. The `component` attribute indicates the component type to use. Instances can be configured as regular iPOJO instances. Finally, an instance of our type is also declared. 
-To execute our composition, go in the felix directory and launch the following command:
-{code:none}
-java -jar bin/felix.jar
-
-    This version of Felix starts with the iPOJO framework, the iPOJO Arch command and the composite support. So, we just need to install our component types and the composition.
-    In the Felix prompt, launch the following commands:
-    {code:none}
-    start file:../spell.services/output/spell.services.jar
-    start file:../spell.english/output/spell.english.jar
-    start file:../spell.checker/output/spell.checker.jar
-    start file:../spell.checker.gui/output/spell.checker.gui.jar
-
-Those commands deploy the component types. Remark that no 'functional'  (i.e. neither Check service, nor Dictionary service) services are provided. Deployed bundles provide only iPOJO Factory services:
-{code:none}
--> inspect s c
-System Bundle (0) provides:
+<p>Those commands deploy the component types. Remark that no 'functional'  (i.e. neither Check service, nor Dictionary service) services are provided. Deployed bundles provide only iPOJO Factory services:</p>
+<div class="codehilite"><pre>-&gt; inspect s c
+System Bundle <span class="o">(</span>0<span class="o">)</span> provides:
 ---------------------------
 org.osgi.service.startlevel.StartLevel
 org.osgi.service.packageadmin.PackageAdmin
-Apache Felix Shell Service (1) provides:
+Apache Felix Shell Service <span class="o">(</span>1<span class="o">)</span> provides:
 ----------------------------------------
 ...
-Apache Felix Bundle Repository (3) provides:
+Apache Felix Bundle Repository <span class="o">(</span>3<span class="o">)</span> provides:
 --------------------------------------------
 org.osgi.service.obr.RepositoryAdmin
-iPOJO (4) provides:
+iPOJO <span class="o">(</span>4<span class="o">)</span> provides:
 -------------------
 ...
-iPOJO Composite (6) provides:
+iPOJO Composite <span class="o">(</span>6<span class="o">)</span> provides:
 -----------------------------
 ...
-spell.english (8) provides:
+spell.english <span class="o">(</span>8<span class="o">)</span> provides:
 ---------------------------
 org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
-spell.checker (9) provides:
+spell.checker <span class="o">(</span>9<span class="o">)</span> provides:
 ---------------------------
 org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
-spell.checker.gui (10) provides:
+spell.checker.gui <span class="o">(</span>10<span class="o">)</span> provides:
 -------------------------------
 org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
+</pre></div>
 
-    Now, when can deploy our composition:
 
-start file:../example1/output/composition1.jar
+<p>Now, when can deploy our composition:</p>
+<div class="codehilite"><pre>start file:../example1/output/composition1.jar
+</pre></div>
 
-    Once deployed and started, the fancy GUI appears:
-    !ss.png!
-    Now, you can check that the functional services are not unavailable outside the composite:
-    {code:none}
-    -> inspect s c
-    System Bundle (0) provides:
-    ---------------------------
-    org.osgi.service.startlevel.StartLevel
-    org.osgi.service.packageadmin.PackageAdmin
-    Apache Felix Shell Service (1) provides:
-    ----------------------------------------
-    ...
-    Apache Felix Bundle Repository (3) provides:
-    --------------------------------------------
-    org.osgi.service.obr.RepositoryAdmin
-    iPOJO (4) provides:
-    -------------------
-    ...
-    iPOJO Composite (6) provides:
-    -----------------------------
-    ...
-    spell.english (8) provides:
-    ---------------------------
-    org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
-    spell.checker (9) provides:
-    ---------------------------
-    org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
-    spell.checker.gui (10) provides:
-    -------------------------------
-    org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
-    Bundle 11 provides:
-    -------------------
-    org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
 
-Of course, if you stop a bundle providing a required service type, the application is stopped:
+<p>Once deployed and started, the fancy GUI appears:</p>
+<p><img src="ss-comp.png"></p>
+<p>Now, you can check that the functional services are not unavailable outside the composite:</p>
+<div class="codehilite"><pre>-&gt; inspect s c
+System Bundle <span class="o">(</span>0<span class="o">)</span> provides:
+---------------------------
+org.osgi.service.startlevel.StartLevel
+org.osgi.service.packageadmin.PackageAdmin
+Apache Felix Shell Service <span class="o">(</span>1<span class="o">)</span> provides:
+----------------------------------------
+...
+Apache Felix Bundle Repository <span class="o">(</span>3<span class="o">)</span> provides:
+--------------------------------------------
+org.osgi.service.obr.RepositoryAdmin
+iPOJO <span class="o">(</span>4<span class="o">)</span> provides:
+-------------------
+...
+iPOJO Composite <span class="o">(</span>6<span class="o">)</span> provides:
+-----------------------------
+...
+spell.english <span class="o">(</span>8<span class="o">)</span> provides:
+---------------------------
+org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
+spell.checker <span class="o">(</span>9<span class="o">)</span> provides:
+---------------------------
+org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
+spell.checker.gui <span class="o">(</span>10<span class="o">)</span> provides:
+-------------------------------
+org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
+Bundle 11 provides:
+-------------------
+org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
+</pre></div>
 
-    -> stop 8
-    -> start 8
 
-Then, the application also supports component type update. However the component type name must not change. We will see later how we can avoid this issue by abstracting implementations.
+<p>Of course, if you stop a bundle providing a required service type, the application is stopped:</p>
+<div class="codehilite"><pre>-&gt; stop 8
+-&gt; start 8
+</pre></div>
 
-## Importing a service inside a composite
-Let's imagine a second version of the checker service implementation (spell.checker-v2). This implementation removes the trace when wrong words are detected. Indeed, this implementation uses a log service to store such kind of errors. 
-If we use this implementation, we need to make a log service available inside the composite. Else, the checker will not be valid. To achieve this, use the following composite:
 
-    <ipojo>
+<p>Then, the application also supports component type update. However the component type name must not change. We will see later how we can avoid this issue by abstracting implementations.</p>
+<h2 id="importing-a-service-inside-a-composite">Importing a service inside a composite</h2>
+<p>Let's imagine a second version of the checker service implementation (spell.checker-v2). This implementation removes the trace when wrong words are detected. Indeed, this implementation uses a log service to store such kind of errors. </p>
+<p>If we use this implementation, we need to make a log service available inside the composite. Else, the checker will not be valid. To achieve this, use the following composite:</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 
-    <!--  Declares a composition -->
-    <composite name="composition2">
-        <!--  Instantiates an instance of the English dictionary -->
-        <instance component="spell.english.EnglishDictionary"/>
+<span class="c">&lt;!--  Declares a composition --&gt;</span>
+<span class="nt">&lt;composite</span> <span class="na">name=</span><span class="s">&quot;composition2&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--  Instantiates an instance of the English dictionary --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.english.EnglishDictionary&quot;</span><span class="nt">/&gt;</span>
 
-        <!--  Instantiates an instance of the Checker -->
-        <instance component="spell.checker.SpellCheck"/>
+    <span class="c">&lt;!--  Instantiates an instance of the Checker --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.checker.SpellCheck&quot;</span><span class="nt">/&gt;</span>
 
-        <!--  Instantiates an instance of the GUI -->
-        <instance component="spell.gui.SpellCheckerGui"/>
+    <span class="c">&lt;!--  Instantiates an instance of the GUI --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.gui.SpellCheckerGui&quot;</span><span class="nt">/&gt;</span>
 
-        <!-- Imports the log service -->
-        <subservice action="import" 
-                 specification="org.osgi.service.log.LogService"/>
-    </composite>
+    <span class="c">&lt;!-- Imports the log service --&gt;</span>
+    <span class="nt">&lt;subservice</span> <span class="na">action=</span><span class="s">&quot;import&quot;</span> 
+             <span class="na">specification=</span><span class="s">&quot;org.osgi.service.log.LogService&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/composite&gt;</span>
 
-    <!--  Instantiates an instance of our composition -->
-    <instance component="composition2"/>
+<span class="c">&lt;!--  Instantiates an instance of our composition --&gt;</span>
+<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;composition2&quot;</span><span class="nt">/&gt;</span>
 
-    </ipojo>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-This composite just adds a `subservice` nested element. This subservice allows importing a service inside the composite. The `action` attribute specifies that we want to import the service from the parent scope (i.e. superior).   The `specification` attribute indicates the required service. 
-!app3.png!
-Now, relaunch Felix and enter another profile name (`composition2` for example). Once started, executes the following commands:
 
-    start file:../spell.services/output/spell.services.jar
-    start file:../spell.english/output/spell.english.jar
-    start file:../spell.checker-v2/output/spell.checker-v2.jar
-    start file:../spell.checker.gui/output/spell.checker.gui.jar
-    start file:../example2/output/composition2.jar
+<p>This composite just adds a <code>subservice</code> nested element. This subservice allows importing a service inside the composite. The <code>action</code> attribute specifies that we want to import the service from the parent scope (i.e. superior).   The <code>specification</code> attribute indicates the required service. </p>
+<p><img src="app3.png"></p>
+<p>Now, relaunch Felix and enter another profile name (<code>composition2</code> for example). Once started, executes the following commands:</p>
+<div class="codehilite"><pre>start file:../spell.services/output/spell.services.jar
+start file:../spell.english/output/spell.english.jar
+start file:../spell.checker-v2/output/spell.checker-v2.jar
+start file:../spell.checker.gui/output/spell.checker.gui.jar
+start file:../example2/output/composition2.jar
+</pre></div>
 
-Those commands deploy required component type (note that we deploy spell.checker-v2) and an implementation of the OSGi Log Service.  When you execute the last command, the fancy interface re-appears. 
-Try to enter a wrong word (as `composite`), and click on the check button. The trace does no more appear... the message is logged inside the log service. 
-Of course, such composite support dynamism. Try the following scenario
 
-    stop 9
-    start 9
-    stop 10
-    start 10
+<p>Those commands deploy required component type (note that we deploy spell.checker-v2) and an implementation of the OSGi Log Service.  When you execute the last command, the fancy interface re-appears. </p>
+<p>Try to enter a wrong word (as <code>composite</code>), and click on the check button. The trace does no more appear... the message is logged inside the log service. 
+Of course, such composite support dynamism. Try the following scenario</p>
+<div class="codehilite"><pre>stop 9
+start 9
+stop 10
+start 10
+</pre></div>
 
-When the log service is stopped, the GUI disappears. In fact, the service can no more be imported, and so, the composition becomes invalid. When you stop a bundle containing a used component type, the same behavior occurs.
-Like in the previous example, you can check that only the log service is globally available. Other services are isolated inside the composite.
-In this case the parent scope is the OSGi service registry, but composite can also contain other composite. In such context, the import tracks services from the superior composite. An example of hierarchical composition is described later in this tutorial.
 
-<div class="box">
-    <div class="box-blue-header">
-    <div class="box-blue-title">
-        <img src="http://people.apache.org/~clement/ipojo/site/information.gif"> <b>Service Resolution</b>
-    </div>
-    </div>
-    <div class="box-blue-content">
+<p>When the log service is stopped, the GUI disappears. In fact, the service can no more be imported, and so, the composition becomes invalid. When you stop a bundle containing a used component type, the same behavior occurs.</p>
+<p>Like in the previous example, you can check that only the log service is globally available. Other services are isolated inside the composite.
+In this case the parent scope is the OSGi service registry, but composite can also contain other composite. In such context, the import tracks services from the superior composite. An example of hierarchical composition is described later in this tutorial.</p>
+<div class="alert aert-success">
+    <strong>Service Resolution</strong>
+    <p>
 To tackle implementation service dependency resolution issues, iPOJO instances track services inside the composite but also in the global service context (OSGi service registry).  This feature allows avoiding the declaration of common service import published in the OSGi service registry.
-    </div>
-    <div class="box-blue-footer"></div>
+    </p>
 </div>
 
-## Abstracting implementation... Composing services
-We saw in the first composition that we depend on specific component types. This can be avoided by specifying the composition in term of services instead of component types. So, every available service implementation can be used. Moreover, if the used one disappears, another one can be immediately used to replace the missing service. Let's illustrate this.
-In the first composition, we create an instance of the English dictionary service implementation. We can remove this coupling to this specific implementation. To do this, we will target any implementation of the dictionary service regardless the language. 
+<h2 id="abstracting-implementation-composing-services">Abstracting implementation... Composing services</h2>
+<p>We saw in the first composition that we depend on specific component types. This can be avoided by specifying the composition in term of services instead of component types. So, every available service implementation can be used. Moreover, if the used one disappears, another one can be immediately used to replace the missing service. Let's illustrate this.</p>
+<p>In the first composition, we create an instance of the English dictionary service implementation. We can remove this coupling to this specific implementation. To do this, we will target any implementation of the dictionary service regardless the language. </p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 
-    <ipojo>
+<span class="c">&lt;!--  Declares a composition --&gt;</span>
+<span class="nt">&lt;composite</span> <span class="na">name=</span><span class="s">&quot;composition3&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--  Instantiates an instance of the English dictionary --&gt;</span>
+    <span class="nt">&lt;subservice</span> <span class="na">action=</span><span class="s">&quot;instantiate&quot;</span> 
+             <span class="na">specification=</span><span class="s">&quot;spell.services.DictionaryService&quot;</span><span class="nt">/&gt;</span>
 
-    <!--  Declares a composition -->
-    <composite name="composition3">
-        <!--  Instantiates an instance of the English dictionary -->
-        <subservice action="instantiate" 
-                 specification="spell.services.DictionaryService"/>
+    <span class="c">&lt;!--  Instantiates an instance of the Checker --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.checker.SpellCheck&quot;</span><span class="nt">/&gt;</span>
 
-        <!--  Instantiates an instance of the Checker -->
-        <instance component="spell.checker.SpellCheck"/>
+    <span class="c">&lt;!--  Instantiates an instance of the GUI --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.gui.SpellCheckerGui&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/composite&gt;</span>
 
-        <!--  Instantiates an instance of the GUI -->
-        <instance component="spell.gui.SpellCheckerGui"/>
-    </composite>
+<span class="c">&lt;!--  Instantiates an instance of our composition --&gt;</span>
+<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;composition3&quot;</span><span class="nt">/&gt;</span>
 
-    <!--  Instantiates an instance of our composition -->
-    <instance component="composition3"/>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-    </ipojo>
 
-The previous composition instantiates a dictionary service.  This means that the composite looks for an implementation of the Dictionary service and creates an instance of this implementation (i.e. component type) inside the composition. 
-If several implementations are available, the composite chooses one, and switches to another one if the used implementation becomes unavailable.
-!app4.png!
-To execute this composition, launch Felix and execute the following command:
+<p>The previous composition instantiates a dictionary service.  This means that the composite looks for an implementation of the Dictionary service and creates an instance of this implementation (i.e. component type) inside the composition. 
+If several implementations are available, the composite chooses one, and switches to another one if the used implementation becomes unavailable.</p>
+<p><img src="app4.png"></p>
+<p>To execute this composition, launch Felix and execute the following command:</p>
+<div class="codehilite"><pre>start file:../spell.services/output/spell.services.jar
+start file:../spell.english/output/spell.english.jar
+start file:../spell.checker/output/spell.checker.jar
+start file:../spell.checker.gui/output/spell.checker.gui.jar
+start file:../example3/output/composition3.jar
+</pre></div>
 
-    start file:../spell.services/output/spell.services.jar
-    start file:../spell.english/output/spell.english.jar
-    start file:../spell.checker/output/spell.checker.jar
-    start file:../spell.checker.gui/output/spell.checker.gui.jar
-    start file:../example3/output/composition3.jar
 
-These commands deploy component types and the composition. Only one implementation of the dictionary service is available (English). You can check this by executing the `service 8` command.
+<p>These commands deploy component types and the composition. Only one implementation of the dictionary service is available (English). You can check this by executing the <code>service 8</code> command.</p>
+<div class="codehilite"><pre>-&gt; inspect s c 9
+spell.english <span class="o">(</span>9<span class="o">)</span> provides:
+---------------------------
+component.class <span class="o">=</span> spell.english.EnglishDictionary
+component.description <span class="o">=</span> &lt;unknown value <span class="nb">type</span>&gt;
+component.properties <span class="o">=</span> &lt;unknown value <span class="nb">type</span>&gt;
+component.providedServiceSpecifications <span class="o">=</span> spell.services.DictionaryService
+factory.name <span class="o">=</span> spell.english.EnglishDictionary
+factory.state <span class="o">=</span> 1
+<span class="nv">objectClass</span> <span class="o">=</span> org.apache.felix.ipojo.Factory, 
+              org.osgi.service.cm.ManagedServiceFactory
+service.id <span class="o">=</span> 39
+service.pid <span class="o">=</span> spell.english.EnglishDictionary
+</pre></div>
 
-    -> inspect s c 9
-    spell.english (9) provides:
-    ---------------------------
-    component.class = spell.english.EnglishDictionary
-    component.description = <unknown value type>
-    component.properties = <unknown value type>
-    component.providedServiceSpecifications = spell.services.DictionaryService
-    factory.name = spell.english.EnglishDictionary
-    factory.state = 1
-    objectClass = org.apache.felix.ipojo.Factory, 
-                  org.osgi.service.cm.ManagedServiceFactory
-    service.id = 39
-    service.pid = spell.english.EnglishDictionary
 
-Note the `component.providedServiceSpecifications` property indicating provided services. 
-Now deploy another implementation of the dictionary service, such as the French dictionary service ☺
+<p>Note the <code>component.providedServiceSpecifications</code> property indicating provided services. 
+Now deploy another implementation of the dictionary service, such as the French dictionary service ☺</p>
+<div class="codehilite"><pre>start file:../spell.french/output/spell.french.jar
+</pre></div>
 
-    start file:../spell.french/output/spell.french.jar
 
-Write  `welcome` in the GUI and then check. The word is correctly spelled. Then, stop the bundle providing the English dictionary.
+<p>Write  <code>welcome</code> in the GUI and then check. The word is correctly spelled. Then, stop the bundle providing the English dictionary.</p>
+<div class="codehilite"><pre>stop 9
+</pre></div>
 
-    stop 9
 
-Write `welcome` in the GUI, and check. The word is misspelled! Try to write `bienvenue` and check. The word is correctly spelled. This means that the composite has substitutes the previous English dictionary by the French one. This one will be use until it disappears. If you stop the bundle containing this implementation, the composite becomes invalid.
+<p>Write <code>welcome</code> in the GUI, and check. The word is misspelled! Try to write <code>bienvenue</code> and check. The word is correctly spelled. This means that the composite has substitutes the previous English dictionary by the French one. This one will be use until it disappears. If you stop the bundle containing this implementation, the composite becomes invalid.</p>
+<h2 id="publishing-services">Publishing services</h2>
+<p>A composition can also provide services. iPOJO composites support two methods to provide services :</p>
+<ul>
+<li>The service export: re-export a service from the composite to the parent context</li>
+<li>The service implementation: the composite computes a delegation scheme to delegate every method of the provided service on internal entities (services and instances)</li>
+</ul>
+<p>This section addresses the export. Exporting a service is the opposite of the service import. It tracks services from the composites to publish it in the parent (superior) context.
+So, let's imagine a fourth version of our application. In this application, the GUI is externalized and lives in the global context (i.e. OSGi). So, the composition exports the spell checker service. </p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 
-## Publishing services
-A composition can also provide services. iPOJO composites support two methods to provide services :
-* The service export: re-export a service from the composite to the parent context
-* The service implementation: the composite computes a delegation scheme to delegate every method of the provided service on internal entities (services and instances)
+<span class="c">&lt;!--  Declares a composition --&gt;</span>
+<span class="nt">&lt;composite</span> <span class="na">name=</span><span class="s">&quot;composition4&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--  Instantiates an instance of the English dictionary --&gt;</span>
+    <span class="nt">&lt;subservice</span> <span class="na">action=</span><span class="s">&quot;instantiate&quot;</span> 
+          <span class="na">specification=</span><span class="s">&quot;spell.services.DictionaryService&quot;</span><span class="nt">/&gt;</span>
 
-This section addresses the export. Exporting a service is the opposite of the service import. It tracks services from the composites to publish it in the parent (superior) context.
-So, let's imagine a fourth version of our application. In this application, the GUI is externalized and lives in the global context (i.e. OSGi). So, the composition exports the spell checker service. 
+    <span class="c">&lt;!--  Instantiates an instance of the Checker --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.checker.SpellCheck&quot;</span><span class="nt">/&gt;</span>
 
-    <ipojo>
+    <span class="c">&lt;!-- Export the SpellChecker service --&gt;</span>
+    <span class="nt">&lt;provides</span> <span class="na">action=</span><span class="s">&quot;export&quot;</span> 
+            <span class="na">specification=</span><span class="s">&quot;spell.services.SpellChecker&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/composite&gt;</span>
 
-    <!--  Declares a composition -->
-    <composite name="composition4">
-        <!--  Instantiates an instance of the English dictionary -->
-        <subservice action="instantiate" 
-              specification="spell.services.DictionaryService"/>
+<span class="c">&lt;!--  Instantiates an instance of our composition --&gt;</span>
+<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;composition4&quot;</span><span class="nt">/&gt;</span>
 
-        <!--  Instantiates an instance of the Checker -->
-        <instance component="spell.checker.SpellCheck"/>
+<span class="c">&lt;!--  Instantiates an instance of the GUI in the global context --&gt;</span>
+<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.gui.SpellCheckerGui&quot;</span><span class="nt">/&gt;</span>
 
-        <!-- Export the SpellChecker service -->
-        <provides action="export" 
-                specification="spell.services.SpellChecker"/>
-    </composite>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-    <!--  Instantiates an instance of our composition -->
-    <instance component="composition4"/>
 
-    <!--  Instantiates an instance of the GUI in the global context -->
-    <instance component="spell.gui.SpellCheckerGui"/>
+<p>In the previous composition, the composite exports the spell checker service. Moreover, the GUI is also created but in the global context. At runtime, the result will be as following:</p>
+<p><img src="app5.png"></p>
+<p>The composite published the spell checker service in the OSGi service registry. The GUI tracks this service in the OSGi service registry too.
+To execute this composition, launch Felix and execute following the commands:</p>
+<div class="codehilite"><pre>start file:../spell.services/output/spell.services.jar
+start file:../spell.english/output/spell.english.jar
+start file:../spell.checker/output/spell.checker.jar
+start file:../spell.checker.gui/output/spell.checker.gui.jar
+start file:../example4/output/composition4.jar
+</pre></div>
 
-    </ipojo>
 
-In the previous composition, the composite exports the spell checker service. Moreover, the GUI is also created but in the global context. At runtime, the result will be as following:
-!app5.png!
-The composite published the spell checker service in the OSGi service registry. The GUI tracks this service in the OSGi service registry too.
-To execute this composition, launch Felix and execute following the commands:
+<p>You can check that the composition exports the service with the following command:</p>
+<div class="codehilite"><pre>-&gt; services 12
+Bundle 12 provides:
+-------------------
+component.description <span class="o">=</span> &lt;unknown value <span class="nb">type</span>&gt;
+component.properties <span class="o">=</span> &lt;unknown value <span class="nb">type</span>&gt;
+component.providedServiceSpecifications <span class="o">=</span> spell.services.SpellChecker
+factory.name <span class="o">=</span> composition4
+factory.state <span class="o">=</span> 1
+<span class="nv">objectClass</span> <span class="o">=</span> org.apache.felix.ipojo.Factory, 
+              org.osgi.service.cm.ManagedServiceFactory
+service.id <span class="o">=</span> 36
+service.pid <span class="o">=</span> composition4
+----
+factory.name <span class="o">=</span> composition4
+instance.name <span class="o">=</span> composition4-0
+<span class="nv">objectClass</span> <span class="o">=</span> spell.services.SpellChecker
+service.id <span class="o">=</span> 37
+</pre></div>
 
-    start file:../spell.services/output/spell.services.jar
-    start file:../spell.english/output/spell.english.jar
-    start file:../spell.checker/output/spell.checker.jar
-    start file:../spell.checker.gui/output/spell.checker.gui.jar
-    start file:../example4/output/composition4.jar
 
-You can check that the composition exports the service with the following command:
+<p>So, now you can play with dynamism. Stop the bundle containing the Check service implementation. The GUI disappears. Restart it. The GUI reappears. Now, stop the bundle containing the GUI implementation. The checker service stills available. Indeed, the GUI is no more inside the composition, and so stills valid despite the unavailability of the GUI:</p>
+<div class="codehilite"><pre>-&gt; stop 9
+-&gt; start 9
+-&gt; stop 11
+-&gt; inspect s c 12
+Bundle 12 provides:
+-------------------
+component.description <span class="o">=</span> &lt;unknown value <span class="nb">type</span>&gt;
+component.properties <span class="o">=</span> &lt;unknown value <span class="nb">type</span>&gt;
+component.providedServiceSpecifications <span class="o">=</span> spell.services.SpellChecker
+factory.name <span class="o">=</span> composition4
+factory.state <span class="o">=</span> 1
+<span class="nv">objectClass</span> <span class="o">=</span> org.apache.felix.ipojo.Factory, 
+              org.osgi.service.cm.ManagedServiceFactory
+service.id <span class="o">=</span> 36
+service.pid <span class="o">=</span> composition4
+----
+factory.name <span class="o">=</span> composition4
+instance.name <span class="o">=</span> composition4-0
+<span class="nv">objectClass</span> <span class="o">=</span> spell.services.SpellChecker
+service.id <span class="o">=</span> 41
+-&gt;
+</pre></div>
 
-    -> services 12
-    Bundle 12 provides:
-    -------------------
-    component.description = <unknown value type>
-    component.properties = <unknown value type>
-    component.providedServiceSpecifications = spell.services.SpellChecker
-    factory.name = composition4
-    factory.state = 1
-    objectClass = org.apache.felix.ipojo.Factory, 
-                  org.osgi.service.cm.ManagedServiceFactory
-    service.id = 36
-    service.pid = composition4
-    ----
-    factory.name = composition4
-    instance.name = composition4-0
-    objectClass = spell.services.SpellChecker
-    service.id = 37
 
-So, now you can play with dynamism. Stop the bundle containing the Check service implementation. The GUI disappears. Restart it. The GUI reappears. Now, stop the bundle containing the GUI implementation. The checker service stills available. Indeed, the GUI is no more inside the composition, and so stills valid despite the unavailability of the GUI:
+<h2 id="hierarchical-composites">Hierarchical composites</h2>
+<p>A composition can also contain others compositions. Let's imagine a variation of the latest application. In this case, we define a composite containing the GUI and the previous composite.</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 
-    -> stop 9
-    -> start 9
-    -> stop 11
-    -> inspect s c 12
-    Bundle 12 provides:
-    -------------------
-    component.description = <unknown value type>
-    component.properties = <unknown value type>
-    component.providedServiceSpecifications = spell.services.SpellChecker
-    factory.name = composition4
-    factory.state = 1
-    objectClass = org.apache.felix.ipojo.Factory, 
-                  org.osgi.service.cm.ManagedServiceFactory
-    service.id = 36
-    service.pid = composition4
-    ----
-    factory.name = composition4
-    instance.name = composition4-0
-    objectClass = spell.services.SpellChecker
-    service.id = 41
-    -> 
+<span class="c">&lt;!--  Declares the same composition than the latest one --&gt;</span>
+<span class="nt">&lt;composite</span> <span class="na">name=</span><span class="s">&quot;composition4&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--  Instantiates an instance of the English dictionary --&gt;</span>
+    <span class="nt">&lt;subservice</span> <span class="na">action=</span><span class="s">&quot;instantiate&quot;</span> 
+            <span class="na">specification=</span><span class="s">&quot;spell.services.DictionaryService&quot;</span><span class="nt">/&gt;</span>
 
-## Hierarchical composites
-A composition can also contain others compositions. Let's imagine a variation of the latest application. In this case, we define a composite containing the GUI and the previous composite.
+    <span class="c">&lt;!--  Instantiates an instance of the Checker --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.checker.SpellCheck&quot;</span><span class="nt">/&gt;</span>
 
-    <ipojo>
+    <span class="c">&lt;!-- Exports the SpellChecker service --&gt;</span>
+    <span class="nt">&lt;provides</span> <span class="na">action=</span><span class="s">&quot;export&quot;</span> 
+            <span class="na">specification=</span><span class="s">&quot;spell.services.SpellChecker&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/composite&gt;</span>
 
-    <!--  Declares the same composition than the latest one -->
-    <composite name="composition4">
-        <!--  Instantiates an instance of the English dictionary -->
-        <subservice action="instantiate" 
-                specification="spell.services.DictionaryService"/>
+<span class="c">&lt;!--  Declares another composition containing an instance of the previous </span>
+<span class="c">      composition and an instance of the GUI</span>
+<span class="c"> --&gt;</span>
+<span class="nt">&lt;composite</span> <span class="na">name=</span><span class="s">&quot;composition5&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Instantiates the previous composition</span>
+<span class="c">         You can access to composition by following the</span>
+<span class="c">         same way as for other types</span>
+<span class="c">     --&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;composition4&quot;</span><span class="nt">/&gt;</span>
 
-        <!--  Instantiates an instance of the Checker -->
-        <instance component="spell.checker.SpellCheck"/>
+    <span class="c">&lt;!--  Instantiates an instance of the GUI in the composite --&gt;</span>
+<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.gui.SpellCheckerGui&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/composite&gt;</span>
 
-        <!-- Exports the SpellChecker service -->
-        <provides action="export" 
-                specification="spell.services.SpellChecker"/>
-    </composite>
+<span class="c">&lt;!--  Instantiates an instance of our composition --&gt;</span>
+<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;composition5&quot;</span><span class="nt">/&gt;</span>
 
-    <!--  Declares another composition containing an instance of the previous 
-          composition and an instance of the GUI
-     -->
-    <composite name="composition5">
-        <!-- Instantiates the previous composition
-             You can access to composition by following the
-             same way as for other types
-         -->
-        <instance component="composition4"/>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-        <!--  Instantiates an instance of the GUI in the composite -->
-    <instance component="spell.gui.SpellCheckerGui"/>
-    </composite>
 
-    <!--  Instantiates an instance of our composition -->
-    <instance component="composition5"/>
+<p>The <code>composition5</code> contains an instance of the <code>composition4</code> and of the GUI. So the spell checker service exported by the composition4 is published inside the service context of the <code>composite 5</code> (the parent context). The GUI instance lives in this service context, and so can access to the exported Spell checker service.</p>
+<p><img src="app6.png"></p>
+<p>To execute this composition, restart Felix and launch the following commands:</p>
+<div class="codehilite"><pre>start file:../spell.services/output/spell.services.jar
+start file:../spell.english/output/spell.english.jar
+start file:../spell.checker/output/spell.checker.jar
+start file:../spell.checker.gui/output/spell.checker.gui.jar
+start file:../example5/output/composition5.jar
+</pre></div>
 
-    </ipojo>
 
-The `composition5` contains an instance of the `composition4` and of the GUI. So the spell checker service exported by the composition4 is published inside the service context of the `composite 5` (the parent context). The GUI instance lives in this service context, and so can access to the exported Spell checker service.
-!app6.png!
-To execute this composition, restart Felix and launch the following commands:
-
-    start file:../spell.services/output/spell.services.jar
-    start file:../spell.english/output/spell.english.jar
-    start file:../spell.checker/output/spell.checker.jar
-    start file:../spell.checker.gui/output/spell.checker.gui.jar
-    start file:../example5/output/composition5.jar
-
-You can check that the composite does no more publish the spell checker service in the OSGi service registry.
-
-## Conclusion
-
-This page has presented how to use iPOJO composition model. Several topics were not addressed and will be added shortly:
-* Dynamic service implementation
-* The dependency model
-* *Composable* services and composition consistency
-* Context-awareness
-
-Subscribe to the Felix users mailing list by sending a message to [mailto:users-subscribe@felix.apache.org](); after subscribing, email questions or feedback to [mailto:users@felix.apache.org].
-
-{include:apache-felix-ipojo-footer}
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
+<p>You can check that the composite does no more publish the spell checker service in the OSGi service registry.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This page has presented how to use iPOJO composition model. Several topics were not addressed and will be added shortly:</p>
+<ul>
+<li>Dynamic service implementation</li>
+<li>The dependency model</li>
+<li><em>Composable</em> services and composition consistency</li>
+<li>Context-awareness</li>
+</ul>
+<p>Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to <a href="mailto:users@felix.apache.org">users@felix.apache.org</a>.</p>
+        </div>
     </div>
-  </body>
+
+    <hr/>
+
+    <div class="container">
+        <footer id="footer">
+            <div class="row">
+                <div class="trademarkFooter span7"> 
+                Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+                logo are trademarks of The Apache Software Foundation. All other marks mentioned
+                may be trademarks or registered trademarks of their respective owners.
+                </div>
+                <div class="timestamp span3 offset2">
+                Rev. 1443557 by clement on Thu, 7 Feb 2013 15:34:03 +0000
+                </div>
+            </div>
+        </footer>           
+    </div>
+</body>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+    try{
+        var pageTracker = _gat._getTracker("UA-1518442-4");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
 </html>

@@ -200,9 +200,20 @@ get high lighted code using the given <code>&lt;lexer&gt;</code> or <code>#!&lt;
 lighted code with line numbers using the given <code>&lt;lexer&gt;</code>. See
 <a href="http://www.apache.org/dev/cmsref.html#code-hilighter">http://www.apache.org/dev/cmsref.html#code-hilighter</a> for main info and
 <a href="http://pygments.org/docs/lexers/">http://pygments.org/docs/lexers/</a> for supported lexers</p>
+<h3 id="html-and-markdown">HTML and Markdown</h3>
+<p>Markdown supports embedding HTML. But be aware that contents of HTML elements
+are not further handled by the Markdown converter. Thus it is not possible
+to embed Markdown syntax inside of HTML elements to have them converted.</p>
 <h3 id="manual-generation">Manual Generation</h3>
 <p>When commiting changes to pages into SVN the pages are automatically
 generated in <a href="http://felix.staging.apache.org">the staging site</a>.</p>
+<div class="info">
+<p>To generate the site locally, you must have checked out the complete SVN to access the tools:</p>
+    :::sh
+    svn https://svn.apache.org/repos/asf/felix/site/ felix-site
+
+</div>
+
 <p>To manually generate the site or single pages the <a href="http://svn.apache.org/repos/asf/felix/site">site</a>
 can be checked out from SVN. In addition Perl and Python must be installed
 for the build tools to work.</p>
@@ -229,8 +240,39 @@ and <code>build_file.pl</code> scripts to connect to the Markdown daemon.</p>
 
 
 <p>The argument to the <code>--source</code> parameter is relative to the <code>--source-base</code> folder.</p>
+<h3 id="configuring-site-generation-on-mac">Configuring site generation on Mac</h3>
+<div class="info">
+Those instructions were computed on Mountain Lion.
+</div>
+
+<p>A couple of Python and Perl libraries are required and need to be installed</p>
+<div class="codehilite"><pre><span class="nv">$ </span>sudo easy_install Pygments
+<span class="nv">$ </span>sudo easy_install Markdown
+</pre></div>
+
+
+<p>And for the Perl modules:</p>
+<div class="codehilite"><pre><span class="nv">$ </span>sudo cpan install XML::Atom::Feed
+<span class="nv">$ </span>sudo cpan install XML::Atom::Parser
+<span class="nv">$ </span>sudo cpan install XML::Parser::Lite
+<span class="nv">$ </span>sudo cpan install XML::RSS::Parser::Lite
+<span class="nv">$ </span>sudo cpan install Net::Twitter
+<span class="nv">$ </span>sudo cpan install SVN::Client
+</pre></div>
+
+
+<p>Be careful that some of those commands require time... Once done, launch the mardown daemon with the following command from the SVN root:</p>
+<div class="codehilite"><pre><span class="nv">$ </span><span class="nb">export </span><span class="nv">MARKDOWN_SOCKET</span><span class="o">=</span><span class="s2">&quot;$PWD/tools/build/../markdown.socket&quot;</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;$PWD/tools/build&quot;</span>
+<span class="nv">$ </span>python <span class="s2">&quot;$PWD/tools/build/markdownd.py&quot;</span>
+</pre></div>
+
+
+<p>And finally, generate the web site from the svn root with:</p>
+<div class="codehilite"><pre>tools/build/build_site.pl --source-base <span class="nv">$PWD</span>/trunk     --target-base <span class="nv">$PWD</span>/trunk/target
+</pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1442173 by clement on Mon, 4 Feb 2013 16:54:33 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
