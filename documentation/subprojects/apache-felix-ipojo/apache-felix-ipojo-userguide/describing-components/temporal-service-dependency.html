@@ -31,6 +31,8 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
+
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
@@ -63,7 +65,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
-                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html">Advanced tutorial</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
                             </ul>
@@ -82,18 +84,18 @@
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">External <em>handlers</em></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">Asynchronous communication</a></li>
-                                        <li><a href="">JMX management</a></li>
-                                        <li><a href="">Extender pattern</a></li>
-                                        <li><a href="">Whiteboard pattern</a></li>
-                                        <li><a href="">Temporal dependencies</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/event-admin-handlers.html">Asynchronous communication</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/ipojo-jmx-handler.html">JMX management</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.html">Extender pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html">Whiteboard pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html">Temporal dependencies</a></li>
                                     </ul>
                                 </li>                                            
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
                                         <li><a href="">Factories and Instances</a></li>
                                         <li><a href="">XML Schemas</a></li>
                                         <li><a href="">API</a></li>
@@ -153,9 +155,18 @@
         <div class="content">
             <h1 id="the-temporal-dependency-handler">The temporal dependency handler</h1>
 <p><em>Regular service dependencies participate to the instance lifecycle. Moreover, the injected service object is either available or not available. A temporal dependency handler is a little different and provides a different resolution pattern. Indeed, the temporal dependency does not invalidate the instance. Moreover, if not available, the temporal dependency waits (and so blocks the current thread) for a provider. Of course, the maximum waiting time can be specified. If a timeout occurs, the handler throws a Runtime Exception.</em></p>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
+<div class="toc">
+<ul>
+<li><a href="#the-temporal-dependency-handler">The temporal dependency handler</a><ul>
+<li><a href="#using-the-handler">Using the handler</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#ontimeout-actions">OnTimeout actions</a></li>
+<li><a href="#collection-injection">Collection injection</a></li>
+<li><a href="#proxy-injection">Proxy injection</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="using-the-handler">Using the handler</h2>
 <p>First of all, you need to configure the component type to use the handler such as:</p>
 <div class="codehilite"><pre><span class="nt">&lt;iPOJO</span> <span class="na">xmlns:temporal=</span><span class="s">&quot;org.apache.felix.ipojo.handler.temporal&quot;</span><span class="nt">&gt;</span>
@@ -176,51 +187,58 @@
 Once described, you can implement your component. The specified field will be mapped to the temporal dependency. As for regular field injection, aggregation, targeted service specification (i.e. interface) is discovered automatically. Filter, comparator and binding policy are also supported. However, the optional attribute is not supported. In fact, this attribute is meaningless in the case of a temporal dependency.
 Using the field in your code will try to find a matching service provider. If a provider is available, the field receives the service object immediately. Else, the thread is stopped and waits for a provider. The default wait time is 3s (you can also specify this time). If no provider is available after this time, the thread throws a RuntimeException. If a provider becomes available during this time, the field receives immediately the value and the execution can continue.</p>
 <p>You can also use annotations:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">Temporal</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UseTemporal</span> <span class="o">{</span>
 
-    <span class="nv">@Temporal</span> <span class="sr">//</span> <span class="n">was</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">ipojo</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">temporal</span><span class="o">.</span><span class="n">Requires</span> <span class="n">before</span> <span class="n">the</span> <span class="mf">1.7.0</span>
-    <span class="n">private</span> <span class="n">FooService</span> <span class="n">mytemporal</span><span class="p">;</span>
+    <span class="nd">@Temporal</span> <span class="c1">// was org.apache.felix.ipojo.handler.temporal.Requires before the 1.7.0</span>
+    <span class="kd">private</span> <span class="n">FooService</span> <span class="n">mytemporal</span><span class="o">;</span>
 
-<span class="p">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <h2 id="configuration">Configuration</h2>
-<p>The handler has only one mandatory attributes:
-* Field: the implementation field supporting the dependency (not needed with annotations)</p>
-<p>The handler supports on specific optional attributes:
-<em> Timeout: the maximum time waited in order to find a provider (default: 3s). For an infinite timeout, the timeout value is either "infinite" or "-1".
-</em> OnTimeout: specifies the action to do when the timeout occurs. Four actions are supported: null, nullable, empty-array, default-implementation. By default, no action is specified, and an exception occurs when the timeout is reached.</p>
-<p>The attributes from "regular" dependencies are also supported (like filter).
-OnTimeout actions</p>
-<p>When a timeout occurs, you can specify what the handler must do. By default, it throws a runtime exception. However, four others actions can be set in the 'onTimeout' attribute.
-<em> The null action (onTimeout="null") will return "null" instead of the service object.
-</em> The "nullable" action (onTimeout="nullable") will return a "Nullable" object instead of the service object. This object is a fake but can be used a regular service object. However, invoking actions on this object will do nothing. In the case of aggregate dependency, an array containing a "nullable" object is returned.
-<em> The empty action is only supported for aggregate dependency (the field must be an array). In this case, an empty-array is returned. (In the 1.2.0 version, the <code>empty-array</code> attribute became <code>empty</code>)
-</em> The default-implementation action is a little different. Instead of specifying the action, you need to specify the default-implementation (the qualified class name) that you want to use. For example onTimeout="o.a.f.i.MyDefaultLogServiceImpl". In this case, the handler will inject an instance of this object instead of a real service object. On aggregate dependency, an array with one default-implementation object is returned.</p>
-<div class="codehilite"><pre><span class="nt">&lt;iPOJO</span> <span class="na">xmlns:temporal=</span><span class="s">&quot;org.apache.felix.ipojo.handler.temporal&quot;</span><span class="nt">&gt;</span>
-<span class="nt">&lt;component</span>
-    <span class="na">className=</span><span class="s">&quot;org.apache.felix.ipojo.example.Temporal&quot;</span><span class="nt">&gt;</span>
+<p>The handler has only one mandatory attributes:</p>
+<ul>
+<li>Field: the implementation field supporting the dependency (not needed with annotations)</li>
+</ul>
+<p>The handler supports on specific optional attributes:</p>
+<ul>
+<li>Timeout: the maximum time waited in order to find a provider (default: 3s). For an infinite timeout, the timeout value is either <code>infinite</code> or <code>-1</code>.</li>
+<li>OnTimeout: specifies the action to do when the timeout occurs. Four actions are supported: <code>null</code>, <code>nullable</code>, <code>empty-array</code>, <code>default-implementation</code>. By default, no action is specified, and an exception occurs when the timeout is reached.</li>
+</ul>
+<p>The attributes from "regular" dependencies are also supported (like filter).</p>
+<h2 id="ontimeout-actions">OnTimeout actions</h2>
+<p>When a timeout occurs, you can specify what the handler must do. By default, it throws a runtime exception. However, four others actions can be set in the 'onTimeout' attribute.</p>
+<ul>
+<li>The null action (<code>onTimeout="null"</code>) will return <code>null</code> instead of the service object.</li>
+<li>The nullable action (<code>onTimeout="nullable"</code>) will return a "Nullable" object instead of the service object. This object is a fake but can be used a regular service object. However, invoking actions on this object will do nothing. In the case of aggregate dependency, an array containing a "nullable" object is returned.</li>
+<li>The empty action is only supported for aggregate dependency (the field must be an array). In this case, an empty array is returned. (In the 1.2.0 version, the <code>empty-array</code> attribute became <code>empty</code>)</li>
+<li>
+<p>The default-implementation action is a little different. Instead of specifying the action, you need to specify the default-implementation (the qualified class name) that you want to use. For example <code>onTimeout="o.a.f.i.MyDefaultLogServiceImpl"</code>. In this case, the handler will inject an instance of this object instead of a real service object. On aggregate dependency, an array with one default-implementation object is returned.</p>
+<p>:::xml
+<iPOJO xmlns:temporal="org.apache.felix.ipojo.handler.temporal">
+<component
+    className="org.apache.felix.ipojo.example.Temporal"></p>
+<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="n">Temporal</span> <span class="n">dependency</span> <span class="n">configuration</span> <span class="o">--&gt;</span>
+<span class="o">&lt;</span><span class="n">temporal:requires</span> <span class="n">field</span><span class="o">=</span><span class="s">&quot;fs&quot;</span> <span class="n">timeout</span><span class="o">=</span><span class="s">&quot;300&quot;</span> <span class="n">ontimeout</span><span class="o">=</span><span class="s">&quot;nullable&quot;</span><span class="o">/&gt;</span>
 
-    <span class="c">&lt;!-- Temporal dependency configuration --&gt;</span>
-    <span class="nt">&lt;temporal:requires</span> <span class="na">field=</span><span class="s">&quot;fs&quot;</span> <span class="na">timeout=</span><span class="s">&quot;300&quot;</span> <span class="na">ontimeout=</span><span class="s">&quot;nullable&quot;</span><span class="nt">/&gt;</span>
-
-    <span class="nt">&lt;provides/&gt;</span>
-
-<span class="nt">&lt;/component&gt;</span>
-<span class="nt">&lt;/iPOJO&gt;</span>
+<span class="sr">&lt;provides/&gt;</span>
 </pre></div>
 
 
+<p></component>
+</iPOJO></p>
+</li>
+</ul>
 <p>This is equivalent to:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">Temporal</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Temporal</span> <span class="o">{</span>
 
-    <span class="nv">@Temporal</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ontimeout</span><span class="o">=</span><span class="s">&quot;nullable&quot;</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">FooService</span> <span class="n">mytemporal</span><span class="p">;</span>
+    <span class="nd">@Temporal</span><span class="o">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="o">,</span> <span class="n">ontimeout</span><span class="o">=</span><span class="s">&quot;nullable&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">FooService</span> <span class="n">mytemporal</span><span class="o">;</span>
 
-<span class="p">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -241,21 +259,20 @@ OnTimeout actions</p>
 
 
 <p>This is equivalent to:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">Temporal</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Temporal</span> <span class="o">{</span>
 
-    <span class="nv">@Temporal</span><span class="p">(</span><span class="n">specification</span><span class="o">=</span><span class="s">&quot;my.service.specification&quot;</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">List</span><span class="sr">&lt;FooService&gt;</span> <span class="n">mycollection</span><span class="p">;</span>
+    <span class="nd">@Temporal</span><span class="o">(</span><span class="n">specification</span><span class="o">=</span><span class="s">&quot;my.service.specification&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">FooService</span><span class="o">&gt;</span> <span class="n">mycollection</span><span class="o">;</span>
 
-<span class="p">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <h2 id="proxy-injection">Proxy injection</h2>
 <p>Temporal dependencies can also be injected as proxies. So it is possible to give the temporal dependency to helper object.
 On 'scalar' dependencies, the service lookup is executed during an operation invocation. Timeout policies are also executed is the lookup failed.
-On aggregate dependencies (necessary Collection), the service lookup is executed when the iterator(), and toArray(...) methods are invoked. Timeout policies 
-are also executed if the lookup failed. Proxies are enabled by default since the 1.7.0 version.</p>
+On aggregate dependencies (necessary Collection), the service lookup is executed when the iterator(), and toArray(...) methods are invoked. Timeout policies are also executed if the lookup failed. Proxies are enabled by default since the 1.7.0 version.</p>
 <p>To set a temporal dependency as a proxy, just add the <code>proxy</code> attribute as follows:</p>
 <div class="codehilite"><pre><span class="nt">&lt;iPOJO</span> <span class="na">xmlns:temporal=</span><span class="s">&quot;org.apache.felix.ipojo.handler.temporal&quot;</span><span class="nt">&gt;</span>
 <span class="nt">&lt;component</span>
@@ -272,10 +289,7 @@ are also executed if the lookup failed. Proxies are enabled by default since the
 </pre></div>
 
 
-<p>By default, proxies are <em>enabled</em>. Setting proxy to <code>false</code> disables them.</p>
-<h2 id="download">Download</h2>
-<p>The handler is available on the <a href="/documentation/subprojects/apache-felix-ipojo/download.html">download</a> page.
-Sources are available on the Felix trunk at the following location: <a href="http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/temporal">http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/temporal</a>.</p>
+<p>By default, proxies are <strong>enabled</strong>. Setting proxy to <code>false</code> disables them.</p>
         </div>
     </div>
 
@@ -290,7 +304,7 @@ Sources are available on the Felix trunk at the following location: <a href="htt
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1445489 by clement on Wed, 13 Feb 2013 07:25:24 +0000
                 </div>
             </div>
         </footer>           

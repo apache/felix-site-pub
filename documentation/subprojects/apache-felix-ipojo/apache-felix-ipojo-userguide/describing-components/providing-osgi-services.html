@@ -31,6 +31,8 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
+
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
@@ -63,7 +65,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
-                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html">Advanced tutorial</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
                             </ul>
@@ -82,18 +84,18 @@
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">External <em>handlers</em></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">Asynchronous communication</a></li>
-                                        <li><a href="">JMX management</a></li>
-                                        <li><a href="">Extender pattern</a></li>
-                                        <li><a href="">Whiteboard pattern</a></li>
-                                        <li><a href="">Temporal dependencies</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/event-admin-handlers.html">Asynchronous communication</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/ipojo-jmx-handler.html">JMX management</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.html">Extender pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html">Whiteboard pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html">Temporal dependencies</a></li>
                                     </ul>
                                 </li>                                            
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
                                         <li><a href="">Factories and Instances</a></li>
                                         <li><a href="">XML Schemas</a></li>
                                         <li><a href="">API</a></li>
@@ -152,28 +154,47 @@
     <div class="container">
         <div class="content">
             <h1 id="providing-osgi-services">Providing OSGi services</h1>
-<p><em>This pages explains how to publish OSGi services with iPOJO. It presents:</em>
-<em> </em>service publication<em>
-</em> <em>service properties publication and management</em>
-<em> </em>service object creation and creation strategies<em>
-</em> <em>service un-registration</em>
-<em> </em>configuration property propagation<em>
-</em> <em>the management of the exposition from the implementation class</em></p>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
+<p><em>This pages explains how to publish OSGi services with iPOJO. It presents:</em></p>
+<ul>
+<li><em>service publication</em></li>
+<li><em>service properties publication and management</em></li>
+<li><em>service object creation and creation strategies</em></li>
+<li><em>service un-registration</em></li>
+<li><em>configuration property propagation</em></li>
+<li><em>the management of the exposition from the implementation class</em></li>
+</ul>
+<div class="toc">
+<ul>
+<li><a href="#providing-osgi-services">Providing OSGi services</a><ul>
+<li><a href="#a-simple-example">A simple example</a></li>
+<li><a href="#service-publication">Service Publication</a></li>
+<li><a href="#service-properties">Service Properties</a></li>
+<li><a href="#advanced-features">Advanced features</a><ul>
+<li><a href="#service-serving-object-creation">Service Serving &amp; Object Creation</a></li>
+<li><a href="#providing-several-services-xml-only">Providing Several Services (XML only)</a></li>
+<li><a href="#service-property-propagation">Service Property Propagation</a></li>
+<li><a href="#instance-reconfiguration">Instance reconfiguration</a></li>
+<li><a href="#publishing-an-abstract-or-concrete-class-as-a-service">Publishing an abstract or concrete class as a Service</a></li>
+<li><a href="#controlling-the-service-exposition-from-the-implementation-class">Controlling the service exposition from the implementation class</a></li>
+<li><a href="#being-notified-of-the-service-registration-and-unregistration">Being notified of the service registration and unregistration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="a-simple-example">A simple example</h2>
 <p>The following code snippet shows a simple class implementing the <code>FooService</code> interface:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">FooProviderType1</span> <span class="n">implements</span> <span class="n">FooService</span> <span class="p">{</span>
-            <span class="n">private</span> <span class="n">String</span> <span class="n">m_foo</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooProviderType1</span> <span class="kd">implements</span> <span class="n">FooService</span> <span class="o">{</span>
+            <span class="kd">private</span> <span class="n">String</span> <span class="n">m_foo</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="o">;</span>
 
-            <span class="n">public</span> <span class="n">void</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-                        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;foo  &quot;</span> <span class="o">+</span> <span class="n">m_foo</span><span class="p">);</span>
-            <span class="p">}</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;foo  &quot;</span> <span class="o">+</span> <span class="n">m_foo</span><span class="o">);</span>
+            <span class="o">}</span>
 
-<span class="p">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -185,49 +206,44 @@
 </pre></div>
 
 
-<p>!ps-foo.png!</p>
+<p><img src="ps-foo.png"></p>
 <p>The <code>&lt;provides/&gt;</code> or <code>@Provides</code> suffice to declare that each instance of this type will provide the FooService (for more info about instances see <a href="">FELIX:How-to use iPOJO factories</a>). The provided specifications can be discovered by analyzing the implementation class. By default, all implemented interface are published in the same service registration. iPOJO looks down the entire inheritance tree.</p>
 <h2 id="service-publication">Service Publication</h2>
 <p>The provided service handler manages service publication. For each declared <code>&lt;provides/&gt;</code>, the handler registers a service. Since the <code>@Provides</code> annotation can be used only once, only one service is registered that provides all interfaces. The service is published as long as the instance is valid. If the instance becomes invalid, the service is removed from the service registry.</p>
 <p>By default, it publishes all interfaces implemented by the implementation class of the component class. It collects all super-interfaces (interfaces implemented by implemented interfaces and by the super class). However, it is possible to explicitly declare which service specifications are published with the <code>specifications</code> attribute, such as:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span><span class="p">(</span><span class="n">specifications</span><span class="o">=</span><span class="p">{</span><span class="n">FooService</span><span class="o">.</span><span class="n">class</span><span class="p">})</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">FooProviderType1</span> <span class="n">implements</span> <span class="n">FooService</span><span class="p">,</span> <span class="n">Runnable</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="o">...</span>
-<span class="p">}</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span><span class="o">(</span><span class="n">specifications</span><span class="o">={</span><span class="n">FooService</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooProviderType1</span> <span class="kd">implements</span> <span class="n">FooService</span><span class="o">,</span> <span class="n">Runnable</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
 </pre></div>
 
 
-<div class="info" markdown="1">
-**Change in the 1.2.0**
-In the 1.0.0 version and before, the `specifications` attribute was named `interface`.
+<div class="alert alert-warning info">
+<h4>Specification checking</h4>
+<p>If you use the <code>specifications</code> attribute, the handler checks that all declared interfaces are really implemented by the implementation class. If an interface is not implemented, the handler logs a warning.</p>
 </div>
 
-<div class="info" markdown="1">
-**Specification checking**
-If you use the `specifications` attribute, the handler checks that all declared interfaces are really implemented by the implementation class. If an interface is not implemented, the handler logs a warning.
-</div>
-
-<div class="info" markdown="1">
-**No service**
-If the implementation class does not implement any interface, you cannot provide a service. In this case, the handler throws an error.
+<div class="alert alert-warning info">
+<h4>No service</h4>
+<p>If the implementation class does not implement any interface, you cannot provide a service. In this case, the handler throws an error.</p>
 </div>
 
 <h2 id="service-properties">Service Properties</h2>
 <p>You can also attach properties to a service registration. Service properties are attached to published service and allow consumer filtering/selecting providers. A property can be attached to a field (contained in the component implementation class), and so can be handle dynamically.</p>
 <p>Let's take a new example very closed of the last one:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">FooProviderType1</span> <span class="n">implements</span> <span class="n">FooService</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooProviderType1</span> <span class="kd">implements</span> <span class="n">FooService</span> <span class="o">{</span>
 
-    <span class="nv">@ServiceProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;Foo&quot;</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">String</span> <span class="n">m_foo</span><span class="p">;</span>
+    <span class="nd">@ServiceProperty</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;foo&quot;</span><span class="o">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;Foo&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">m_foo</span><span class="o">;</span>
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;foo  &quot;</span> <span class="o">+</span> <span class="n">m_foo</span><span class="p">);</span>
-        <span class="n">m_foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;foo  &quot;</span> <span class="o">+</span> <span class="n">m_foo</span><span class="o">);</span>
+        <span class="n">m_foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -240,23 +256,23 @@ If the implementation class does not implement any interface, you cannot provide
 </pre></div>
 
 
-<p>The declared property is attached to the <code>m*foo</code> field. This property is published with the name <code>foo</code>. This property has a default value "Foo". This value will be injected into the <code>m*foo</code> field, when this field asks for a value. A property with a field attribute does not need to declare a type (the type can be discovered by analyzing the implementation class).</p>
+<p>The declared property is attached to the <code>m_foo</code> field. This property is published with the name <code>foo</code>. This property has a default value "Foo". This value will be injected into the <code>m*foo</code> field, when this field asks for a value. A property with a field attribute does not need to declare a type (the type can be discovered by analyzing the implementation class).</p>
 <p>The implementation class set a new value to the <code>m_foo</code> field in the code. When this action occurs, the service publication is updated. If a published property value becomes <code>null</code>, the property is unpublished since it has a new value.</p>
 <p>You can also publish 'static' properties (not attached to a field):</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span> <span class="p">{</span>
-            <span class="nv">@StaticServiceProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;static&quot;</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;java.lang.String&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;this is a static property&quot;</span><span class="p">)</span>
-    <span class="p">})</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">FooProviderType1</span> <span class="n">implements</span> <span class="n">FooService</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span><span class="o">(</span><span class="n">properties</span><span class="o">=</span> <span class="o">{</span>
+            <span class="nd">@StaticServiceProperty</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;static&quot;</span><span class="o">,</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;java.lang.String&quot;</span><span class="o">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;this is a static property&quot;</span><span class="o">)</span>
+    <span class="o">})</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooProviderType1</span> <span class="kd">implements</span> <span class="n">FooService</span> <span class="o">{</span>
 
-    <span class="nv">@ServiceProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;Foo&quot;</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">String</span> <span class="n">m_foo</span><span class="p">;</span>
+    <span class="nd">@ServiceProperty</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;foo&quot;</span><span class="o">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;Foo&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">m_foo</span><span class="o">;</span>
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;foo  &quot;</span> <span class="o">+</span> <span class="n">m_foo</span><span class="p">);</span>
-        <span class="n">m_foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;foo  &quot;</span> <span class="o">+</span> <span class="n">m_foo</span><span class="o">);</span>
+        <span class="n">m_foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -280,49 +296,51 @@ If the implementation class does not implement any interface, you cannot provide
 
 
 <p>Properties can also be 'mandatory'. Mandatories properties must receive a value from the instance configuration. If the instance configuration <em>forgets</em> a mandatory properties, the configuration is rejected. Mandatory attribute let you be sure to receive the complete set of initialization values:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">MyComponent</span> <span class="n">implements</span> <span class="n">MyService</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
 
-    <span class="nv">@ServiceProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;username&quot;</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">String</span> <span class="n">m_username</span><span class="p">;</span>
+    <span class="nd">@ServiceProperty</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;username&quot;</span><span class="o">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">m_username</span><span class="o">;</span>
 
-    <span class="nv">@Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;password&quot;</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">String</span> <span class="n">m_password</span><span class="p">;</span>
+    <span class="nd">@Property</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;password&quot;</span><span class="o">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">m_password</span><span class="o">;</span>
 
-    <span class="sr">//</span><span class="o">...</span>
-<span class="p">}</span>
+    <span class="c1">//...</span>
+<span class="o">}</span>
 </pre></div>
 
 
-<p>For the previous components:
-<em> <code>(name=myname, password=****)</code> is a valid configuration
-</em> <code>(password=****)</code> is an invalid configuration that will be rejected by iPOJO</p>
+<p>For the previous components:</p>
+<ul>
+<li><code>(name=myname, password=****)</code> is a valid configuration</li>
+<li><code>(password=****)</code> is an invalid configuration that will be rejected by iPOJO</li>
+</ul>
 <h2 id="advanced-features">Advanced features</h2>
 <h3 id="service-serving-object-creation">Service Serving &amp; Object Creation</h3>
 <p>When a consumer requires the published service, the handler sends an object (from the component class) of the implementation class. By default, it is always the same POJO object. If no objects already exists, an instance is created.</p>
 <p>However, the handler supports the OSGi <em>Service Factory</em>. In this case, for each requester bundle, the handler sends a new object. To activate this policy, add the <code>strategy</code> attribute in the <code>provides</code> element:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">&quot;SERVICE&quot;</span><span class="p">)</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">MyComponent</span> <span class="n">implements</span> <span class="n">MyService</span> <span class="p">{</span>
-    <span class="sr">//</span><span class="o">...</span>
-<span class="p">}</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span><span class="o">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">&quot;SERVICE&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
+    <span class="c1">//...</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <p>or:</p>
-<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">provides</span> <span class="n">strategy</span><span class="o">=</span><span class="s">&quot;SERVICE&quot;</span><span class="o">/&gt;</span>
+<div class="codehilite"><pre><span class="nt">&lt;provides</span> <span class="na">strategy=</span><span class="s">&quot;SERVICE&quot;</span><span class="nt">/&gt;</span>
 </pre></div>
 
 
 <p>Other strategies are available:
  * <code>strategy="instance"</code> allows creating one service object per iPOJO instance using the service
  * it is possible to create your own creation strategy by extending the <code>org.apache.felix.ipojo.handlers.providedservice.CreationStrategy</code> class and by indicating the qualified class name in the <code>strategy</code> attribute:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">&quot;org.acme.foo.MyCreationStrategy&quot;</span><span class="p">)</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">MyComponent</span> <span class="n">implements</span> <span class="n">MyService</span> <span class="p">{</span>
-    <span class="sr">//</span><span class="o">...</span>
-<span class="p">}</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span><span class="o">(</span><span class="n">strategy</span><span class="o">=</span><span class="s">&quot;org.acme.foo.MyCreationStrategy&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
+    <span class="c1">//...</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -337,10 +355,10 @@ If the implementation class does not implement any interface, you cannot provide
 </pre></div>
 
 
-<p>!ps-foobar2.png!</p>
+<p><img src="ps-foobar2.png"></p>
 <h3 id="service-property-propagation">Service Property Propagation</h3>
 <p>The configuration handler has the possibility to propagate received properties to service publication. So, when the propagation is activated (on the <code>properties</code> element or on the <code>@Component</code> annotation), all properties received by the configuration handler will be propagated to all published services. If some properties are mapped on methods, these methods are invoked with the new value in argument.</p>
-<p>!ps-propagation.png!</p>
+<p><img src="ps-propagation.png"></p>
 <p>If an instance configuration contains properties starting with <code>service.</code>, they are automatically propagated. In the following example, the <code>service.pid</code> is automatically propagated.</p>
 <div class="codehilite"><pre><span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;service.pid&quot;</span> <span class="na">value=</span><span class="s">&quot;my.pid&quot;</span><span class="nt">/&gt;</span>
@@ -350,35 +368,33 @@ If the implementation class does not implement any interface, you cannot provide
 
 <h3 id="instance-reconfiguration">Instance reconfiguration</h3>
 <p>iPOJO supports instance reconfiguration. When an instance is dynamically reconfigured and if the instance published service properties, the values are updated with the new configuration. For example, let's take the following component.</p>
-<p>{code:java}
-@Component
-@Instantiate
-@Provides
-public class MyComponent implements MyService {</p>
-<div class="codehilite"><pre><span class="nv">@ServiceProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;prop&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;initial&quot;</span><span class="p">)</span>
-<span class="n">private</span> <span class="n">String</span> <span class="n">myProp</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Instantiate</span>
+<span class="nd">@Provides</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
 
-<span class="sr">//</span><span class="o">...</span>
+    <span class="nd">@ServiceProperty</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;prop&quot;</span><span class="o">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&quot;initial&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">myProp</span><span class="o">;</span>
+
+    <span class="c1">//...</span>
+
+<span class="o">}</span>
 </pre></div>
 
 
-<p>}</p>
-<div class="codehilite"><pre><span class="n">The</span> <span class="n">previous</span> <span class="n">code</span> <span class="n">also</span> <span class="n">declares</span> <span class="n">an</span> <span class="n">instance</span> <span class="p">(</span><span class="n">created</span> <span class="n">without</span> <span class="n">any</span> <span class="n">configuration</span><span class="p">)</span><span class="o">.</span> <span class="n">This</span> <span class="n">instance</span> <span class="n">registers</span>  <span class="n">with</span> <span class="n">the</span> <span class="n">service</span> <span class="n">property</span> <span class="o">=.</span> <span class="n">If</span> <span class="n">this</span> <span class="n">instance</span> <span class="n">is</span> <span class="n">reconfigured</span> <span class="n">using</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">like:</span> <span class="p">},</span> <span class="n">the</span> <span class="n">published</span> <span class="n">properties</span> <span class="n">will</span> <span class="n">be</span> <span class="n">updated</span> <span class="n">with</span> <span class="n">the</span> <span class="k">new</span> <span class="n">value</span><span class="p">,</span> <span class="n">so</span> <span class="o">=.</span>
-
-<span class="n">h3</span><span class="o">.</span> <span class="n">Publishing</span> <span class="n">an</span> <span class="n">abstract</span> <span class="ow">or</span> <span class="n">concrete</span> <span class="n">class</span> <span class="n">as</span> <span class="n">a</span> <span class="n">Service</span>
-
-<span class="n">It</span> <span class="n">is</span> <span class="n">also</span> <span class="n">possible</span> <span class="n">to</span> <span class="n">expose</span> <span class="n">an</span> <span class="n">abstract</span> <span class="ow">or</span> <span class="n">concrete</span> <span class="n">class</span> <span class="n">as</span> <span class="n">a</span> <span class="n">service</span><span class="o">.</span> <span class="n">To</span> <span class="n">to</span> <span class="n">this</span><span class="p">,</span> <span class="n">just</span> <span class="n">specify</span> <span class="n">the</span> <span class="n">published</span> <span class="n">class</span> <span class="n">in</span> <span class="n">the</span>  <span class="n">attribute:</span>
+<p>The previous code also declares an instance (created without any configuration). This instance registers <code>MyService</code> with the service property <code>prop=initial</code>. If this instance is reconfigured using a configuration like: <code>{prop="my value"}</code>, the published properties will be updated with the new value, so <code>prop=my value</code>.</p>
+<h3 id="publishing-an-abstract-or-concrete-class-as-a-service">Publishing an abstract or concrete class as a Service</h3>
+<p>It is also possible to expose an abstract or concrete class as a service. To to this, just specify the published class in the <code>specifications</code> attribute:</p>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span><span class="o">(</span><span class="n">specifications</span><span class="o">=</span><span class="n">MyComponent</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
 </pre></div>
 
 
-<p>@Component
-@Provides(specifications=MyComponent.class)
-public class MyComponent {
-    // ...
-}</p>
-<div class="codehilite"><pre>or in XML:
-{code:xml}
-<span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...FooProviderType1&quot;</span><span class="nt">&gt;</span>
+<p>or in XML:</p>
+<div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...FooProviderType1&quot;</span><span class="nt">&gt;</span>
                 <span class="nt">&lt;provides</span> <span class="na">specifications=</span><span class="s">&quot;...AbstractFoo&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/component&gt;</span>
 <span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...FooBarProviderType1&quot;</span><span class="nt">&gt;</span>
@@ -390,91 +406,90 @@ public class MyComponent {
 <p>As illustrated with the example using annotation, the component can also publish itself as a service. However, such practice is not recommended.</p>
 <h3 id="controlling-the-service-exposition-from-the-implementation-class">Controlling the service exposition from the implementation class</h3>
 <p>To control the exposition of the published service, you can use a <code>service controller</code>. A service controller is a boolean field of the component class. The injected boolean field allows the code to impact the service publication. Setting the field to <code>false</code> unregisters the service from the service registry. Setting it back to <code>true</code> re-publishes the service.</p>
-<p>{code:java}
-@Component
-@Provides
-public class ControllerCheckService implements FooService, CheckService {</p>
-<div class="codehilite"><pre><span class="nv">@ServiceController</span>
-<span class="n">private</span> <span class="n">boolean</span> <span class="n">controller</span><span class="p">;</span> <span class="sr">//</span> <span class="n">Service</span> <span class="n">Controller</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ControllerCheckService</span> <span class="kd">implements</span> <span class="n">FooService</span><span class="o">,</span> <span class="n">CheckService</span> <span class="o">{</span>
 
-<span class="n">public</span> <span class="n">boolean</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">controller</span><span class="p">;</span>
-<span class="p">}</span>
+    <span class="nd">@ServiceController</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">controller</span><span class="o">;</span> <span class="c1">// Service Controller</span>
 
-<span class="n">public</span> <span class="n">boolean</span> <span class="n">check</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Before : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="p">);</span>
-    <span class="n">controller</span> <span class="o">=</span> <span class="o">!</span> <span class="n">controller</span><span class="p">;</span> <span class="sr">//</span> <span class="n">Change</span> <span class="n">the</span> <span class="n">publication</span>
-    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;After : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="p">);</span>
-    <span class="k">return</span> <span class="n">controller</span><span class="p">;</span>
-<span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">controller</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">check</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Before : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="o">);</span>
+        <span class="n">controller</span> <span class="o">=</span> <span class="o">!</span> <span class="n">controller</span><span class="o">;</span> <span class="c1">// Change the publication</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;After : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">controller</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
-<p>}</p>
-<div class="codehilite"><pre>Using XML, the previous component description is:
-{code:xml}
-  <span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.test.scenarios.component.controller.ControllerCheckService&quot;</span>
+<p>Using XML, the previous component description is:</p>
+<div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.test.scenarios.component.controller.ControllerCheckService&quot;</span>
     <span class="na">name=</span><span class="s">&quot;PS-Controller-1-default&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;provides&gt;</span>
-      <span class="nt">&lt;controller</span> <span class="na">field=</span><span class="s">&quot;controller&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;controller</span> <span class="na">field=</span><span class="s">&quot;controller&quot;</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/provides&gt;</span>
-  <span class="nt">&lt;/component&gt;</span>
+<span class="nt">&lt;/component&gt;</span>
 </pre></div>
 
 
 <p>The <code>controller</code> may have a value attribute setting the initial value. Setting this value to <code>false</code> disables the initial service registration:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">ControllerCheckService</span> <span class="n">implements</span> <span class="n">FooService</span><span class="p">,</span> <span class="n">CheckService</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ControllerCheckService</span> <span class="kd">implements</span> <span class="n">FooService</span><span class="o">,</span> <span class="n">CheckService</span> <span class="o">{</span>
 
-    <span class="nv">@ServiceController</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">false</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">boolean</span> <span class="n">controller</span><span class="p">;</span> <span class="sr">//</span> <span class="n">Service</span> <span class="n">Controller</span>
+    <span class="nd">@ServiceController</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">controller</span><span class="o">;</span> <span class="c1">// Service Controller</span>
 
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">controller</span><span class="p">;</span>
-    <span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">controller</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">check</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Before : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="p">);</span>
-        <span class="n">controller</span> <span class="o">=</span> <span class="o">!</span> <span class="n">controller</span><span class="p">;</span> <span class="sr">//</span> <span class="n">Change</span> <span class="n">the</span> <span class="n">publication</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;After : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="p">);</span>
-        <span class="k">return</span> <span class="n">controller</span><span class="p">;</span>
-    <span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">check</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Before : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="o">);</span>
+        <span class="n">controller</span> <span class="o">=</span> <span class="o">!</span> <span class="n">controller</span><span class="o">;</span> <span class="c1">// Change the publication</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;After : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">controller</span><span class="o">;</span>
+    <span class="o">}</span>
 
-<span class="p">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <p>If several interfaces are exposed, the controller may have a <code>specification</code> attribute indicating the impacted service:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Provides</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">ControllerCheckService</span> <span class="n">implements</span> <span class="n">FooService</span><span class="p">,</span> <span class="n">CheckService</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Provides</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ControllerCheckService</span> <span class="kd">implements</span> <span class="n">FooService</span><span class="o">,</span> <span class="n">CheckService</span> <span class="o">{</span>
 
-    <span class="nv">@ServiceController</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">false</span><span class="p">,</span> <span class="n">specification</span><span class="o">=</span><span class="n">FooService</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-    <span class="n">private</span> <span class="n">boolean</span> <span class="n">controller</span><span class="p">;</span> <span class="sr">//</span> <span class="n">Service</span> <span class="n">Controller</span>
+    <span class="nd">@ServiceController</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">specification</span><span class="o">=</span><span class="n">FooService</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">controller</span><span class="o">;</span> <span class="c1">// Service Controller</span>
 
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">controller</span><span class="p">;</span>
-    <span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">controller</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">check</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Before : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="p">);</span>
-        <span class="n">controller</span> <span class="o">=</span> <span class="o">!</span> <span class="n">controller</span><span class="p">;</span> <span class="sr">//</span> <span class="n">Change</span> <span class="n">the</span> <span class="n">publication</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;After : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="p">);</span>
-        <span class="k">return</span> <span class="n">controller</span><span class="p">;</span>
-    <span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">check</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Before : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="o">);</span>
+        <span class="n">controller</span> <span class="o">=</span> <span class="o">!</span> <span class="n">controller</span><span class="o">;</span> <span class="c1">// Change the publication</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;After : &quot;</span> <span class="o">+</span> <span class="n">controller</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">controller</span><span class="o">;</span>
+    <span class="o">}</span>
 
-<span class="p">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <p>In XML, each <code>provides</code> can have one <code>controller</code> element.</p>
-<div class="codehilite"><pre>  <span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.test.scenarios.component.controller.ControllerCheckService&quot;</span>
+<div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.test.scenarios.component.controller.ControllerCheckService&quot;</span>
     <span class="na">name=</span><span class="s">&quot;PS-Controller-1-false&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;provides&gt;</span>
-      <span class="nt">&lt;controller</span> <span class="na">field=</span><span class="s">&quot;controller&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;controller</span> <span class="na">field=</span><span class="s">&quot;controller&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/provides&gt;</span>
-  <span class="nt">&lt;/component&gt;</span>
+<span class="nt">&lt;/component&gt;</span>}
 </pre></div>
 
 
@@ -493,25 +508,24 @@ public class ControllerCheckService implements FooService, CheckService {</p>
 </pre></div>
 
 
-<p>Or by using the @PostRegistration and @PostUnregistration annotations:
-{code:java}
-    @PostRegistration
-    public void registered(ServiceReference ref) {
-        System.out.println("Registered");
-    }</p>
-<div class="codehilite"><pre>    <span class="nv">@PostUnregistration</span>
-<span class="n">public</span> <span class="n">void</span> <span class="n">unregistered</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Unregistered&quot;</span><span class="p">);</span>
-<span class="p">}</span>
+<p>Or by using the <code>@PostRegistration</code> and <code>@PostUnregistration</code> annotations:</p>
+<div class="codehilite"><pre><span class="nd">@PostRegistration</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">registered</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Registered&quot;</span><span class="o">);</span>
+<span class="o">}</span>
 
-<span class="o">*</span> <span class="n">The</span>  <span class="n">callback</span> <span class="n">is</span> <span class="n">called</span> <span class="n">after</span> <span class="n">the</span> <span class="n">service</span> <span class="n">publication</span>
-<span class="o">*</span> <span class="n">The</span>  <span class="n">callback</span> <span class="n">is</span> <span class="n">called</span> <span class="n">after</span> <span class="n">the</span> <span class="n">service</span> <span class="n">unpublication</span>
-
-<span class="n">Those</span> <span class="n">callback</span> <span class="n">methods</span> <span class="n">must</span> <span class="n">have</span> <span class="n">the</span> <span class="n">following</span> <span class="n">signature:</span> <span class="o">.</span> <span class="n">So</span> <span class="n">they</span> <span class="n">receive</span> <span class="n">the</span> <span class="n">published</span> <span class="sr">/ unpublished service reference. The callbacks are called in the *same thread* as the publication /</span> <span class="n">unpublication</span> <span class="n">itself</span><span class="o">.</span>
-
-<span class="o">\\</span>
-<span class="o">\\</span>
+<span class="nd">@PostUnregistration</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">unregistered</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Unregistered&quot;</span><span class="o">);</span>
+<span class="o">}</span>
 </pre></div>
+
+
+<ul>
+<li>The <code>post-registration</code> callback is called after the service publication</li>
+<li>The <code>post-unregistration</code> callback is called after the service unpublication</li>
+</ul>
+<p>Those callback methods must have the following signature: <code>public void name(ServiceReference ref)</code>. So they receive the published / unpublished service reference. The callbacks are called in the <em>same thread</em> as the publication / unpublication itself. </p>
         </div>
     </div>
 
@@ -526,7 +540,7 @@ public class ControllerCheckService implements FooService, CheckService {</p>
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1444686 by clement on Mon, 11 Feb 2013 09:16:09 +0000
                 </div>
             </div>
         </footer>           

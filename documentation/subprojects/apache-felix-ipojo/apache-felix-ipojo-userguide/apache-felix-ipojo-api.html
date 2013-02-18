@@ -31,6 +31,8 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
+
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
@@ -63,7 +65,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
-                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html">Advanced tutorial</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
                             </ul>
@@ -82,18 +84,18 @@
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">External <em>handlers</em></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">Asynchronous communication</a></li>
-                                        <li><a href="">JMX management</a></li>
-                                        <li><a href="">Extender pattern</a></li>
-                                        <li><a href="">Whiteboard pattern</a></li>
-                                        <li><a href="">Temporal dependencies</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/event-admin-handlers.html">Asynchronous communication</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/ipojo-jmx-handler.html">JMX management</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.html">Extender pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html">Whiteboard pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html">Temporal dependencies</a></li>
                                     </ul>
                                 </li>                                            
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
                                         <li><a href="">Factories and Instances</a></li>
                                         <li><a href="">XML Schemas</a></li>
                                         <li><a href="">API</a></li>
@@ -153,66 +155,94 @@
         <div class="content">
             <h1 id="ipojo-api">iPOJO API</h1>
 <p><em>The iPOJO API provides a third way to describe iPOJO components and instances. With the API, you can dynamically create new components types and create instances from them. Your component types are described with a Java API. To use the API, deploy and start the iPOJO-API bundle and the iPOJO core bundle.</em></p>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
+<div class="toc">
+<ul>
+<li><a href="#ipojo-api">iPOJO API</a><ul>
+<li><a href="#a-simple-example">A simple example</a></li>
+<li><a href="#deploying-the-api">Deploying the API</a></li>
+<li><a href="#primitive-component-type-basics">Primitive Component Type basics</a></li>
+<li><a href="#immediate-component-validate-and-invalidate-method">Immediate Component, Validate and Invalidate Method</a></li>
+<li><a href="#declaring-services">Declaring services</a></li>
+<li><a href="#service-dependencies">Service Dependencies</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#temporal-dependencies">Temporal Dependencies</a></li>
+<li><a href="#instance-creation">Instance creation</a></li>
+<li><a href="#managed-service-and-propagation">Managed Service and Propagation</a></li>
+<li><a href="#managing-ipojo-factory">Managing iPOJO Factory</a></li>
+<li><a href="#access-to-the-introspection-api">Access to the introspection API</a></li>
+<li><a href="#singleton-component-type">Singleton Component Type</a></li>
+<li><a href="#using-external-handlers">Using external handlers</a></li>
+<li><a href="#creating-compositions-with-the-api">Creating compositions with the API</a><ul>
+<li><a href="#creating-instances-inside-a-composite">Creating instances inside a composite:</a><ul>
+<li><a href="#importing-a-service">Importing a service</a></li>
+<li><a href="#instantiating-a-service">Instantiating a service</a></li>
+<li><a href="#exporting-a-service">Exporting a service</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="a-simple-example">A simple example</h2>
-<p>Let's imagine a simple component providing a service Foo. The following code is the implementation class of our component:
-{code:java}
-package org.example.service.impl;</p>
-<p>import org.example.service.Foo;</p>
-<p>public class FooImpl implements Foo {</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">void</span> <span class="n">doSomething</span><span class="p">()</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">Do</span> <span class="n">something</span><span class="o">...</span>
-<span class="p">}</span>
+<p>Let's imagine a simple component providing a service Foo. The following code is the implementation class of our component:</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">impl</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.example.service.Foo</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooImpl</span> <span class="kd">implements</span> <span class="n">Foo</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doSomething</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Do something...</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
 </pre></div>
 
 
-<p>}</p>
-<div class="codehilite"><pre><span class="n">To</span> <span class="n">create</span> <span class="n">the</span> <span class="n">component</span> <span class="n">type</span> <span class="ow">and</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">component</span> <span class="n">type</span> <span class="n">just</span> <span class="n">create</span> <span class="n">a</span> <span class="n">class</span><span class="p">,</span> <span class="n">get</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span> <span class="p">(</span><span class="n">either</span> <span class="n">from</span> <span class="n">a</span> <span class="n">Bundle</span><span class="o">-</span><span class="n">Activator</span><span class="p">,</span> <span class="ow">or</span> <span class="n">from</span> <span class="n">an</span> <span class="n">iPOJO</span> <span class="n">component</span><span class="p">),</span> <span class="ow">and</span> <span class="nb">write</span> <span class="n">the</span> <span class="n">following</span> <span class="n">code:</span>
-<span class="p">{</span><span class="n">code:java</span><span class="p">}</span>
-<span class="k">new</span> <span class="n">PrimitiveComponentType</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">setBundleContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">setClassName</span><span class="p">(</span><span class="n">FooImpl</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
-    <span class="o">.</span><span class="n">addService</span><span class="p">(</span><span class="k">new</span> <span class="n">Service</span><span class="p">())</span> <span class="sr">//</span> <span class="n">Provide</span> <span class="n">the</span> <span class="n">Foo</span> <span class="n">service</span>
-    <span class="o">.</span><span class="n">createInstance</span><span class="p">();</span> <span class="sr">//</span> <span class="n">Create</span> <span class="n">the</span> <span class="n">instance</span>
+<p>To create the component type and an instance of the component type just create a class, get the bundle context (either from a Bundle-Activator, or from an iPOJO component), and write the following code:</p>
+<div class="codehilite"><pre><span class="k">new</span> <span class="nf">PrimitiveComponentType</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">FooImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">addService</span><span class="o">(</span><span class="k">new</span> <span class="n">Service</span><span class="o">())</span> <span class="c1">// Provide the Foo service</span>
+    <span class="o">.</span><span class="na">createInstance</span><span class="o">();</span> <span class="c1">// Create the instance</span>
 </pre></div>
 
 
-<p>So, now let's imagine another component using this service. The following code is the implementation class of this component type:
-{code:java}
-package org.example.service.impl;</p>
-<p>import org.example.service.Foo;</p>
-<p>public class MyComponentImpl {
-    private Foo myFoo;</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">myFoo</span><span class="o">.</span><span class="n">doSomething</span><span class="p">();</span>
-<span class="p">}</span>
+<p>So, now let's imagine another component using this service. The following code is the implementation class of this component type:</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">impl</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.example.service.Foo</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponentImpl</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Foo</span> <span class="n">myFoo</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">myFoo</span><span class="o">.</span><span class="na">doSomething</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
 </pre></div>
 
 
-<p>}</p>
-<div class="codehilite"><pre><span class="n">It</span> <span class="n">is</span> <span class="n">a</span> <span class="n">regular</span> <span class="n">iPOJO</span> <span class="n">component</span> <span class="n">expecting</span> <span class="n">to</span> <span class="n">get</span> <span class="n">a</span> <span class="n">Foo</span> <span class="n">service</span> <span class="n">in</span> <span class="n">the</span>  <span class="n">field</span><span class="o">.</span> <span class="n">It</span> <span class="n">also</span> <span class="n">has</span> <span class="n">a</span> <span class="n">method</span> <span class="n">executed</span> <span class="n">when</span> <span class="n">the</span> <span class="n">instance</span> <span class="n">is</span> <span class="n">valid</span> <span class="n">using</span> <span class="n">the</span> <span class="n">Foo</span> <span class="n">service</span><span class="o">.</span> <span class="n">To</span> <span class="n">describe</span> <span class="n">this</span> <span class="n">component</span><span class="p">,</span> <span class="n">just</span> <span class="nb">write</span> <span class="n">the</span> <span class="n">following</span> <span class="n">lines:</span>
-<span class="p">{</span><span class="n">code:java</span><span class="p">}</span>
-<span class="k">new</span> <span class="n">PrimitiveComponentType</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">setBundleContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">setClassName</span><span class="p">(</span><span class="n">MyComponentImpl</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
-    <span class="o">.</span><span class="n">addDependency</span><span class="p">(</span><span class="k">new</span> <span class="n">Dependency</span><span class="p">()</span><span class="o">.</span><span class="n">setField</span><span class="p">(</span><span class="s">&quot;myFoo&quot;</span><span class="p">))</span>
-    <span class="o">.</span><span class="n">setValidateMethod</span><span class="p">(</span><span class="s">&quot;start&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">createInstance</span><span class="p">();</span>
+<p>It is a regular iPOJO component expecting to get a Foo service in the <code>myFoo</code> field. It also has a method executed when the instance is valid using the Foo service. To describe this component, just write the following lines:</p>
+<div class="codehilite"><pre><span class="k">new</span> <span class="nf">PrimitiveComponentType</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">MyComponentImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">addDependency</span><span class="o">(</span><span class="k">new</span> <span class="n">Dependency</span><span class="o">().</span><span class="na">setField</span><span class="o">(</span><span class="s">&quot;myFoo&quot;</span><span class="o">))</span>
+    <span class="o">.</span><span class="na">setValidateMethod</span><span class="o">(</span><span class="s">&quot;start&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">createInstance</span><span class="o">();</span>
 </pre></div>
 
 
 <h2 id="deploying-the-api">Deploying the API</h2>
-<p>Before being able to create component types at runtime, you need to deploy 3 bundles:
-<em> iPOJO (core)
-</em> iPOJO Composite
-* iPOJO API</p>
-<p>You can deploy all these bundles in one step thanks to OBR:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">start</span> <span class="s">&quot;Apache Felix iPOJO API&quot;</span>
-</pre></div>
-
-
+<p>Before being able to create component types at runtime, you need to deploy 3 bundles:</p>
+<ul>
+<li>iPOJO (core)</li>
+<li>iPOJO Composite</li>
+<li>iPOJO API</li>
+</ul>
 <h2 id="primitive-component-type-basics">Primitive Component Type basics</h2>
 <p>When you create a new Primitive component type (so, using a Java class as implementation), you must set the bundle context and the class name. Everything else is optional. </p>
 <p>Note about inner classes: iPOJO is based on a bytecode manipulation. The API embeds the manipulator. So, when you initialize the component type, the specified class name is manipulated (if not already manipulated). So, as this force using a customized classloader, inner classes cannot be manipulated. So, inner class injection is not supported with the API.</p>
@@ -221,63 +251,65 @@ package org.example.service.impl;</p>
 To set validate and invalidate methods, just call the <code>setValidate(method)</code> and <code>setInvalidate(method)</code>. Specify the method name that you want to call in argument. </p>
 <h2 id="declaring-services">Declaring services</h2>
 <p>To declare that a component provides a service, add a new service to your primitive component type.
-The Service object can be configured. By default, it exposed every implemented interface (regular iPOJO behavior). So, you can:
- * Add service property
- * Set the creation strategy
- * Set the exposed service specifications</p>
-<p>{code:java}
-new PrimitiveComponentType()
-    .setBundleContext(context)
-    .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
-    .addService(new Service()
-        .addProperty(new ServiceProperty()
-            .setField("myServiceProperty")
-            .setName("sample.myProperty"))
-        .setCreationStrategy(Service.INSTANCE_STRATEGY))
-    .createInstance();</p>
-<div class="codehilite"><pre><span class="n">h2</span><span class="o">.</span> <span class="n">Service</span> <span class="n">Dependencies</span>
-<span class="n">To</span> <span class="n">declare</span> <span class="n">a</span> <span class="n">service</span> <span class="n">dependency</span><span class="p">,</span> <span class="n">create</span> <span class="ow">and</span> <span class="n">add</span> <span class="n">a</span> <span class="n">Dependency</span> <span class="n">object</span><span class="o">.</span> <span class="n">The</span> <span class="n">dependency</span> <span class="n">object</span> <span class="n">offers</span> <span class="n">all</span> <span class="n">the</span> <span class="n">iPOJO</span> <span class="n">service</span> <span class="n">dependency</span> <span class="n">features</span><span class="o">.</span> <span class="n">You</span> <span class="n">can</span> <span class="n">set</span> <span class="n">the</span> <span class="n">injected</span> <span class="n">field</span> <span class="ow">and</span><span class="sr">/or bind/</span><span class="n">unbind</span> <span class="n">methods</span><span class="o">.</span> <span class="n">Here</span> <span class="n">is</span> <span class="n">an</span> <span class="n">example:</span>
-<span class="p">{</span><span class="n">code:java</span><span class="p">}</span>
-<span class="k">new</span> <span class="n">PrimitiveComponentType</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">setBundleContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">setClassName</span><span class="p">(</span><span class="n">org</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">impl</span><span class="o">.</span><span class="n">MyComponentImpl</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
-    <span class="o">.</span><span class="n">addDependency</span><span class="p">(</span>
-        <span class="k">new</span> <span class="n">Dependency</span><span class="p">()</span><span class="o">.</span><span class="n">setField</span><span class="p">(</span><span class="s">&quot;myFoo&quot;</span><span class="p">)</span>
-       <span class="o">.</span><span class="n">setOptional</span><span class="p">(</span><span class="n">true</span><span class="p">)</span>
-       <span class="o">.</span><span class="n">setDefaultImplementation</span><span class="p">(</span><span class="s">&quot;org.sample.FooDefaultImplementation&quot;</span><span class="p">)</span>
-       <span class="p">)</span>
-    <span class="o">.</span><span class="n">createInstance</span><span class="p">();</span>
+The Service object can be configured. By default, it exposed every implemented interface (regular iPOJO behavior). So, you can:</p>
+<ul>
+<li>Add service property</li>
+<li>Set the creation strategy</li>
+<li>Set the exposed service specifications</li>
+</ul>
+<p>:::java
+    new PrimitiveComponentType()
+        .setBundleContext(context)
+        .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
+        .addService(new Service()
+            .addProperty(new ServiceProperty()
+                .setField("myServiceProperty")
+                .setName("sample.myProperty"))
+            .setCreationStrategy(Service.INSTANCE_STRATEGY))
+        .createInstance();</p>
+<h2 id="service-dependencies">Service Dependencies</h2>
+<p>To declare a service dependency, create and add a Dependency object. The dependency object offers all the iPOJO service dependency features. You can set the injected field and/or bind/unbind methods. Here is an example:</p>
+<div class="codehilite"><pre><span class="k">new</span> <span class="nf">PrimitiveComponentType</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">MyComponentImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">addDependency</span><span class="o">(</span>
+        <span class="k">new</span> <span class="nf">Dependency</span><span class="o">().</span><span class="na">setField</span><span class="o">(</span><span class="s">&quot;myFoo&quot;</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">setOptional</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">setDefaultImplementation</span><span class="o">(</span><span class="s">&quot;org.sample.FooDefaultImplementation&quot;</span><span class="o">)</span>
+       <span class="o">)</span>
+    <span class="o">.</span><span class="na">createInstance</span><span class="o">();</span>
 </pre></div>
 
 
 <h2 id="properties">Properties</h2>
-<p>Thanks to the <code>addProperty</code> method, you can create component properties. Here is some example of properties:
-{code:java}
-new PrimitiveComponentType()
-    .setBundleContext(context)
-    .setClassName(MyComponentImpl.class.getName())
-    .addProperty(new Property()
-        .setField("myProperty")
-        .setValue("default-value")
-        )
-    .addProperty(new Property()
-        .setMethod("setMethod")
-        .setName("prop")
-    )
-    .createInstance();</p>
-<div class="codehilite"><pre><span class="n">h2</span><span class="o">.</span> <span class="n">Temporal</span> <span class="n">Dependencies</span>
-<span class="n">Temporal</span> <span class="n">dependencies</span> <span class="n">are</span> <span class="n">also</span> <span class="n">supported:</span> 
-<span class="p">{</span><span class="n">code:java</span><span class="p">}</span>
-<span class="k">new</span> <span class="n">PrimitiveComponentType</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">setBundleContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setClassName</span><span class="p">(</span><span class="n">MyComponentImpl</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
-        <span class="o">.</span><span class="n">addDependency</span><span class="p">(</span>
-             <span class="k">new</span> <span class="n">TemporalDependency</span><span class="p">()</span><span class="o">.</span><span class="n">setField</span><span class="p">(</span><span class="s">&quot;myFoo&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">setOnTimeoutPolicy</span><span class="p">(</span><span class="n">TemporalDependency</span><span class="o">.</span><span class="n">NULLABLE</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">3000</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">setProxy</span><span class="p">(</span><span class="n">true</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="o">.</span><span class="n">createInstance</span><span class="p">();</span>
+<p>Thanks to the <code>addProperty</code> method, you can create component properties. Here is some example of properties:</p>
+<div class="codehilite"><pre><span class="k">new</span> <span class="nf">PrimitiveComponentType</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">MyComponentImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="k">new</span> <span class="n">Property</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">setField</span><span class="o">(</span><span class="s">&quot;myProperty&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="s">&quot;default-value&quot;</span><span class="o">)</span>
+        <span class="o">)</span>
+    <span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="k">new</span> <span class="n">Property</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">setMethod</span><span class="o">(</span><span class="s">&quot;setMethod&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;prop&quot;</span><span class="o">)</span>
+    <span class="o">)</span>
+    <span class="o">.</span><span class="na">createInstance</span><span class="o">();</span>
+</pre></div>
+
+
+<h2 id="temporal-dependencies">Temporal Dependencies</h2>
+<p>Temporal dependencies are also supported: </p>
+<div class="codehilite"><pre><span class="k">new</span> <span class="nf">PrimitiveComponentType</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">MyComponentImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">addDependency</span><span class="o">(</span>
+             <span class="k">new</span> <span class="nf">TemporalDependency</span><span class="o">().</span><span class="na">setField</span><span class="o">(</span><span class="s">&quot;myFoo&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setOnTimeoutPolicy</span><span class="o">(</span><span class="n">TemporalDependency</span><span class="o">.</span><span class="na">NULLABLE</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setTimeout</span><span class="o">(</span><span class="mi">3000</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setProxy</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">)</span>
+        <span class="o">.</span><span class="na">createInstance</span><span class="o">();</span>
 </pre></div>
 
 
@@ -293,150 +325,153 @@ You can also set the the managed service PID with the <code>setManagedServicePID
 <h2 id="access-to-the-introspection-api">Access to the introspection API</h2>
 <p>The API provides bridge to get access to the iPOJO introspection API. The introspection API allows reconfiguring at runtime an instance (properties, service dependencies...). From Service and Dependency, Property and ServiceProperty objects, call the <code>getXXXDescription</code> method. You must give the instance that you want to introspect in argument. If the lookup success, you get an object allowing reconfiguring the service, dependency or property. </p>
 <h2 id="singleton-component-type">Singleton Component Type</h2>
-<p>If you are sure to create only one instance of your component type, you can use the singleton component type class. This is a kind of primitive component type, but when you start it (with the <code>create</code> method), it will automatically create an instance.
-{code:java}
- PrimitiveComponentType type = new SingletonComponentType()
-            .setBundleContext(context)
-            .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
-            .addDependency(new Dependency().setField("myFoo"))
-            .setValidateMethod("start");</p>
-<div class="codehilite"><pre>    <span class="p">((</span><span class="n">SingletonComponentType</span><span class="p">)</span> <span class="n">type</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setObject</span><span class="p">(</span><span class="k">new</span> <span class="n">MyComponentImpl</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="sr">//</span> <span class="n">Inject</span> <span class="n">a</span> <span class="n">pojo</span> <span class="n">object</span>
-        <span class="o">.</span><span class="n">create</span><span class="p">();</span><span class="sr">//</span> <span class="n">Create</span> <span class="n">an</span> <span class="n">instance</span>
+<p>If you are sure to create only one instance of your component type, you can use the singleton component type class. This is a kind of primitive component type, but when you start it (with the <code>create</code> method), it will automatically create an instance.</p>
+<div class="codehilite"><pre> <span class="n">PrimitiveComponentType</span> <span class="n">type</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SingletonComponentType</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">MyComponentImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addDependency</span><span class="o">(</span><span class="k">new</span> <span class="n">Dependency</span><span class="o">().</span><span class="na">setField</span><span class="o">(</span><span class="s">&quot;myFoo&quot;</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">setValidateMethod</span><span class="o">(</span><span class="s">&quot;start&quot;</span><span class="o">);</span>
 
-<span class="n">The</span> <span class="n">type</span> <span class="n">created</span> <span class="n">with</span> <span class="n">the</span> <span class="n">singleton</span> <span class="n">component</span> <span class="n">type</span> <span class="n">are</span> <span class="n">set</span> <span class="n">to</span>  <span class="n">by</span> <span class="n">default</span><span class="o">.</span> <span class="n">Instead</span> <span class="n">of</span> <span class="n">calling</span> <span class="n">the</span>  <span class="n">method</span><span class="p">,</span> <span class="n">you</span> <span class="n">have</span> <span class="n">to</span> <span class="n">call</span> <span class="n">one</span> <span class="n">of</span> <span class="n">the</span>  <span class="n">methods</span> <span class="n">to</span> <span class="n">start</span> <span class="n">the</span> <span class="n">type</span> <span class="ow">and</span> <span class="n">create</span> <span class="n">the</span> <span class="n">instance</span><span class="o">.</span>
-
-<span class="n">You</span> <span class="n">can</span> <span class="n">also</span> <span class="n">set</span> <span class="n">the</span> <span class="n">contained</span> <span class="n">POJO</span> <span class="n">object</span> <span class="n">by</span> <span class="n">using</span> <span class="n">the</span>  <span class="n">method</span><span class="o">.</span> <span class="n">The</span> <span class="n">given</span> <span class="n">object</span> <span class="n">MUST</span> <span class="n">be</span> <span class="n">compatible</span> <span class="n">with</span> <span class="n">the</span> <span class="n">component</span> <span class="n">implementation</span> <span class="n">class</span><span class="o">.</span>
-
-<span class="n">h2</span><span class="o">.</span> <span class="n">Using</span> <span class="n">external</span> <span class="n">handlers</span>
-<span class="n">iPOJO</span> <span class="n">is</span> <span class="n">extensible</span><span class="o">...</span> <span class="n">So</span><span class="p">,</span> <span class="n">it</span> <span class="n">makes</span> <span class="n">sense</span> <span class="n">that</span> <span class="n">the</span> <span class="n">API</span> <span class="n">is</span> <span class="n">also</span> <span class="n">extensible</span><span class="o">.</span> <span class="n">So</span> <span class="n">component</span> <span class="n">type</span> <span class="n">provides</span> <span class="n">a</span> <span class="n">method</span> <span class="n">allowing</span> <span class="n">to</span> <span class="n">add</span> <span class="n">external</span> <span class="n">handler</span> <span class="n">configuration:</span>
-<span class="p">{</span><span class="n">code:java</span><span class="p">}</span>
-<span class="k">return</span> <span class="k">new</span> <span class="n">PrimitiveComponentType</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">setBundleContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setClassName</span><span class="p">(</span><span class="n">HostImpl</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
-        <span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="k">new</span> <span class="n">Whiteboard</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">onArrival</span><span class="p">(</span><span class="s">&quot;arrival&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">onDeparture</span><span class="p">(</span><span class="s">&quot;departure&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s">&quot;(foo=foo)&quot;</span><span class="p">)</span>
-         <span class="p">);</span>
+        <span class="o">((</span><span class="n">SingletonComponentType</span><span class="o">)</span> <span class="n">type</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setObject</span><span class="o">(</span><span class="k">new</span> <span class="n">MyComponentImpl</span><span class="o">(</span><span class="mi">5</span><span class="o">))</span> <span class="c1">// Inject a pojo object</span>
+            <span class="o">.</span><span class="na">create</span><span class="o">();</span><span class="c1">// Create an instance</span>
 </pre></div>
 
 
-<p>The <code>addHandler</code> method allows you to add any handler description. A handler description is an object of a class implementing <code>org.apache.felix.ipojo.api.HandlerConfiguration</code>. Handler provider willing to support the API have to provide this class. For example, the example above uses <code>Whiteboard</code> that is the Whiteboard pattern handler description. This class is very simple, and is shown below:
-{code:java}
-public class Whiteboard implements HandlerConfiguration {</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">String</span> <span class="n">NAME</span> <span class="o">=</span> <span class="s">&quot;wbp&quot;</span><span class="p">;</span>
-
-<span class="n">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">String</span> <span class="n">NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;org.apache.felix.ipojo.whiteboard&quot;</span><span class="p">;</span>
-
-<span class="n">private</span> <span class="n">String</span> <span class="n">arrival</span><span class="p">;</span>
-
-<span class="n">private</span> <span class="n">String</span> <span class="n">departure</span><span class="p">;</span>
-
-<span class="n">private</span> <span class="n">String</span> <span class="n">modification</span><span class="p">;</span>
-
-<span class="n">private</span> <span class="n">String</span> <span class="n">filter</span><span class="p">;</span>
-
-<span class="n">public</span> <span class="n">Whiteboard</span> <span class="n">onArrival</span><span class="p">(</span><span class="n">String</span> <span class="n">method</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">arrival</span> <span class="o">=</span> <span class="n">method</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">this</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">public</span> <span class="n">Whiteboard</span> <span class="n">onDeparture</span><span class="p">(</span><span class="n">String</span> <span class="n">method</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">departure</span> <span class="o">=</span> <span class="n">method</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">this</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">public</span> <span class="n">Whiteboard</span> <span class="n">onModification</span><span class="p">(</span><span class="n">String</span> <span class="n">method</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">modification</span> <span class="o">=</span> <span class="n">method</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">this</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">public</span> <span class="n">Whiteboard</span> <span class="n">setFilter</span><span class="p">(</span><span class="n">String</span> <span class="n">fil</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">filter</span> <span class="o">=</span> <span class="n">fil</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">this</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">public</span> <span class="n">Element</span> <span class="n">getElement</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">ensureValidity</span><span class="p">();</span>
-    <span class="sr">//</span> <span class="n">Create</span> <span class="n">the</span> <span class="n">root</span> <span class="n">element</span><span class="o">.</span>
-    <span class="n">Element</span> <span class="n">element</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Element</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="n">NAMESPACE</span><span class="p">);</span>
-    <span class="sr">//</span> <span class="n">Mandatory</span> <span class="n">attributes</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">addAttribute</span><span class="p">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="p">(</span><span class="s">&quot;onArrival&quot;</span><span class="p">,</span> <span class="n">arrival</span><span class="p">));</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">addAttribute</span><span class="p">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="p">(</span><span class="s">&quot;onDeparture&quot;</span><span class="p">,</span> <span class="n">departure</span><span class="p">));</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">addAttribute</span><span class="p">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="p">(</span><span class="s">&quot;filter&quot;</span><span class="p">,</span> <span class="n">filter</span><span class="p">));</span>
-
-    <span class="sr">//</span> <span class="n">Optional</span> <span class="n">attribute</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">modification</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">element</span><span class="o">.</span><span class="n">addAttribute</span><span class="p">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="p">(</span><span class="s">&quot;onModification&quot;</span><span class="p">,</span> <span class="n">modification</span><span class="p">));</span>
-    <span class="p">}</span>
-
-    <span class="k">return</span> <span class="n">element</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">private</span> <span class="n">void</span> <span class="n">ensureValidity</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">arrival</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="p">(</span><span class="s">&quot;The whiteboard pattern configuration must have a onArrival method&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">departure</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="p">(</span><span class="s">&quot;The whiteboard pattern configuration must have a onDeparture method&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">filter</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="p">(</span><span class="s">&quot;The whiteboard pattern configuration must have a filter&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-
-<span class="p">}</span>
-
-<span class="n">The</span> <span class="n">only</span> <span class="n">required</span> <span class="n">method</span> <span class="n">is</span>  <span class="n">returning</span> <span class="n">the</span> <span class="n">Element</span><span class="o">-</span><span class="n">Attribute</span> <span class="n">structure</span> <span class="n">representing</span> <span class="n">the</span> <span class="n">handler</span> <span class="n">configuration</span> <span class="p">(</span><span class="n">this</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">internal</span> <span class="n">iPOJO</span> <span class="n">data</span> <span class="nb">format</span><span class="p">)</span><span class="o">.</span> <span class="n">If</span> <span class="n">the</span> <span class="n">metadata</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">generated</span><span class="p">,</span> <span class="n">the</span> <span class="n">class</span> <span class="n">throws</span> <span class="n">IllegalStateExceptions</span><span class="o">.</span>
-
-<span class="n">h2</span><span class="o">.</span> <span class="n">Creating</span> <span class="n">composition</span> <span class="n">with</span> <span class="n">the</span> <span class="n">API</span>
-<span class="n">The</span> <span class="n">API</span> <span class="n">also</span> <span class="n">allows</span> <span class="n">you</span> <span class="n">to</span> <span class="n">create</span> <span class="n">iPOJO</span> <span class="n">compositions</span> <span class="n">in</span> <span class="n">a</span> <span class="n">pretty</span> <span class="n">simple</span> <span class="n">way</span><span class="o">.</span> <span class="n">So</span> <span class="n">you</span> <span class="n">can</span> <span class="n">create</span> <span class="n">compositions:</span>
-<span class="o">*</span> <span class="n">containing</span> <span class="n">internal</span> <span class="n">instances</span>
-<span class="o">*</span> <span class="n">importing</span> <span class="n">services</span>
-<span class="o">*</span> <span class="n">instantiating</span> <span class="n">sub</span><span class="o">-</span><span class="n">services</span>
-<span class="o">*</span> <span class="n">exporting</span> <span class="n">services</span>
-<span class="o">*</span> <span class="n">providing</span> <span class="n">services</span> <span class="p">(</span><span class="n">by</span> <span class="n">delegation</span><span class="p">)</span>
-
-<span class="n">Here</span> <span class="n">are</span> <span class="n">some</span> <span class="n">examples:</span>
-<span class="p">{</span><span class="n">code:java</span><span class="o">|</span><span class="n">title</span><span class="o">=</span><span class="n">Contained</span> <span class="n">instances</span><span class="p">}</span>
- <span class="n">PrimitiveComponentType</span> <span class="n">prov</span> <span class="o">=</span> <span class="n">createAProvider</span><span class="p">();</span> <span class="sr">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">primitive</span> <span class="n">type</span>
- <span class="n">PrimitiveComponentType</span> <span class="n">cons</span> <span class="o">=</span> <span class="n">createAConsumer</span><span class="p">();</span> <span class="sr">//</span> <span class="n">Create</span> <span class="n">another</span> <span class="n">primitive</span> <span class="n">type</span>
-
-       <span class="n">CompositeComponentType</span> <span class="n">type</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompositeComponentType</span><span class="p">()</span>
-           <span class="o">.</span><span class="n">setBundleContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-           <span class="o">.</span><span class="n">setComponentTypeName</span><span class="p">(</span><span class="s">&quot;comp1&quot;</span><span class="p">)</span>
-           <span class="o">.</span><span class="n">addInstance</span><span class="p">(</span><span class="k">new</span> <span class="n">Instance</span><span class="p">(</span><span class="n">prov</span><span class="o">.</span><span class="n">getFactory</span><span class="p">()</span><span class="o">.</span><span class="n">getName</span><span class="p">()))</span> <span class="sr">//</span> <span class="n">Create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">in</span> <span class="n">the</span> <span class="n">composite</span>
-           <span class="o">.</span><span class="n">addInstance</span><span class="p">(</span><span class="k">new</span> <span class="n">Instance</span><span class="p">(</span><span class="n">cons</span><span class="o">.</span><span class="n">getFactory</span><span class="p">()</span><span class="o">.</span><span class="n">getName</span><span class="p">()));</span>
-
-       <span class="n">ComponentInstance</span> <span class="n">ci</span> <span class="o">=</span> <span class="n">type</span><span class="o">.</span><span class="n">createInstance</span><span class="p">();</span>
+<p>The type created with the singleton component type are set to <code>private</code> by default. Instead of calling the <code>start</code> method, you have to call one of the <code>create</code> methods to start the type and create the instance.</p>
+<p>You can also set the contained POJO object by using the <code>setObject</code> method. The given object MUST be compatible with the component implementation class.</p>
+<h2 id="using-external-handlers">Using external handlers</h2>
+<p>iPOJO is extensible... So, it makes sense that the API is also extensible. So component type provides a method allowing to add external handler configuration:</p>
+<div class="codehilite"><pre><span class="k">return</span> <span class="k">new</span> <span class="nf">PrimitiveComponentType</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">setClassName</span><span class="o">(</span><span class="n">HostImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">addHandler</span><span class="o">(</span><span class="k">new</span> <span class="n">Whiteboard</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">onArrival</span><span class="o">(</span><span class="s">&quot;arrival&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">onDeparture</span><span class="o">(</span><span class="s">&quot;departure&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setFilter</span><span class="o">(</span><span class="s">&quot;(foo=foo)&quot;</span><span class="o">)</span>
+         <span class="o">);</span>
 </pre></div>
 
 
-<p>{code:java|title=Importing services}
- CompositeComponentType type = new CompositeComponentType()
-           .setBundleContext(context)
-           .setComponentTypeName("comp3")
-           .addSubService(new InstantiatedService() // Importation
-              .setSpecification(Foo.class.getName())
-              .setOptional(true));</p>
-<div class="codehilite"><pre><span class="p">{</span><span class="n">code:java</span><span class="o">|</span><span class="n">title</span><span class="o">=</span><span class="n">Instantiated</span> <span class="n">sub</span><span class="o">-</span><span class="n">services</span><span class="p">}</span>
-  <span class="n">CompositeComponentType</span> <span class="n">type</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompositeComponentType</span><span class="p">()</span>
-           <span class="o">.</span><span class="n">setBundleContext</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-           <span class="o">.</span><span class="n">setComponentTypeName</span><span class="p">(</span><span class="s">&quot;comp2&quot;</span><span class="p">)</span>
-           <span class="o">.</span><span class="n">addSubService</span><span class="p">(</span><span class="k">new</span> <span class="n">InstantiatedService</span><span class="p">()</span>  <span class="sr">//</span> <span class="n">Instantiated</span> <span class="n">service</span>
-              <span class="o">.</span><span class="n">setSpecification</span><span class="p">(</span><span class="n">Foo</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">()))</span>
-           <span class="o">.</span><span class="n">addInstance</span><span class="p">(</span><span class="k">new</span> <span class="n">Instance</span><span class="p">(</span><span class="n">cons</span><span class="o">.</span><span class="n">getFactory</span><span class="p">()</span><span class="o">.</span><span class="n">getName</span><span class="p">()));</span>
+<p>The <code>addHandler</code> method allows you to add any handler description. A handler description is an object of a class implementing <code>org.apache.felix.ipojo.api.HandlerConfiguration</code>. Handler provider willing to support the API have to provide this class. For example, the example above uses <code>Whiteboard</code> that is the Whiteboard pattern handler description. This class is very simple, and is shown below:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Whiteboard</span> <span class="kd">implements</span> <span class="n">HandlerConfiguration</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">NAME</span> <span class="o">=</span> <span class="s">&quot;wbp&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;org.apache.felix.ipojo.whiteboard&quot;</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">arrival</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">departure</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">modification</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">filter</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">Whiteboard</span> <span class="nf">onArrival</span><span class="o">(</span><span class="n">String</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">arrival</span> <span class="o">=</span> <span class="n">method</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Whiteboard</span> <span class="nf">onDeparture</span><span class="o">(</span><span class="n">String</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">departure</span> <span class="o">=</span> <span class="n">method</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Whiteboard</span> <span class="nf">onModification</span><span class="o">(</span><span class="n">String</span> <span class="n">method</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">modification</span> <span class="o">=</span> <span class="n">method</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Whiteboard</span> <span class="nf">setFilter</span><span class="o">(</span><span class="n">String</span> <span class="n">fil</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">filter</span> <span class="o">=</span> <span class="n">fil</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Element</span> <span class="nf">getElement</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">ensureValidity</span><span class="o">();</span>
+        <span class="c1">// Create the root element.</span>
+        <span class="n">Element</span> <span class="n">element</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Element</span><span class="o">(</span><span class="n">NAME</span><span class="o">,</span> <span class="n">NAMESPACE</span><span class="o">);</span>
+        <span class="c1">// Mandatory attributes</span>
+        <span class="n">element</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="o">(</span><span class="s">&quot;onArrival&quot;</span><span class="o">,</span> <span class="n">arrival</span><span class="o">));</span>
+        <span class="n">element</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="o">(</span><span class="s">&quot;onDeparture&quot;</span><span class="o">,</span> <span class="n">departure</span><span class="o">));</span>
+        <span class="n">element</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="o">(</span><span class="s">&quot;filter&quot;</span><span class="o">,</span> <span class="n">filter</span><span class="o">));</span>
+
+        <span class="c1">// Optional attribute</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">modification</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">element</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="o">(</span><span class="s">&quot;onModification&quot;</span><span class="o">,</span> <span class="n">modification</span><span class="o">));</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">element</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">ensureValidity</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">arrival</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalStateException</span><span class="o">(</span><span class="s">&quot;The whiteboard pattern configuration must have a onArrival method&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">departure</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalStateException</span><span class="o">(</span><span class="s">&quot;The whiteboard pattern configuration must have a onDeparture method&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">filter</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalStateException</span><span class="o">(</span><span class="s">&quot;The whiteboard pattern configuration must have a filter&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
 </pre></div>
 
 
-<p>{code:java|title=Exported Services}
-CompositeComponentType type = new CompositeComponentType()
-           .setBundleContext(context)
-           .setComponentTypeName("compExport")
-           .addSubService(new InstantiatedService().setSpecification(Foo.class.getName()))
-           .addService(new ExportedService()
-                .setSpecification(Foo.class.getName())); // Exports a service</p>
-<div class="codehilite"><pre><span class="o">\\</span>
+<p>The only required method is <code>getElement</code> returning the <code>Element-Attribute</code> structure representing the handler configuration (this uses the internal iPOJO data format). If the metadata cannot be generated, the class throws IllegalStateExceptions.</p>
+<h2 id="creating-compositions-with-the-api">Creating compositions with the API</h2>
+<p>The API also allows you to create iPOJO compositions in a pretty simple way. So you can create compositions:</p>
+<ul>
+<li>containing internal instances</li>
+<li>importing services</li>
+<li>instantiating sub-services</li>
+<li>exporting services</li>
+<li>providing services (by delegation)</li>
+</ul>
+<p>Here are some examples:</p>
+<h4 id="creating-instances-inside-a-composite">Creating instances inside a composite:</h4>
+<div class="codehilite"><pre><span class="n">PrimitiveComponentType</span> <span class="n">prov</span> <span class="o">=</span> <span class="n">createAProvider</span><span class="o">();</span> <span class="c1">// Create a primitive type</span>
+<span class="n">PrimitiveComponentType</span> <span class="n">cons</span> <span class="o">=</span> <span class="n">createAConsumer</span><span class="o">();</span> <span class="c1">// Create another primitive type</span>
+
+<span class="n">CompositeComponentType</span> <span class="n">type</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompositeComponentType</span><span class="o">()</span>
+       <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">setComponentTypeName</span><span class="o">(</span><span class="s">&quot;comp1&quot;</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">addInstance</span><span class="o">(</span><span class="k">new</span> <span class="n">Instance</span><span class="o">(</span><span class="n">prov</span><span class="o">.</span><span class="na">getFactory</span><span class="o">().</span><span class="na">getName</span><span class="o">()))</span> <span class="c1">// Create an instance in the composite</span>
+       <span class="o">.</span><span class="na">addInstance</span><span class="o">(</span><span class="k">new</span> <span class="n">Instance</span><span class="o">(</span><span class="n">cons</span><span class="o">.</span><span class="na">getFactory</span><span class="o">().</span><span class="na">getName</span><span class="o">()));</span>
+
+<span class="n">ComponentInstance</span> <span class="n">ci</span> <span class="o">=</span> <span class="n">type</span><span class="o">.</span><span class="na">createInstance</span><span class="o">();</span>
+</pre></div>
+
+
+<h4 id="importing-a-service">Importing a service</h4>
+<div class="codehilite"><pre><span class="n">CompositeComponentType</span> <span class="n">type</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompositeComponentType</span><span class="o">()</span>
+       <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">setComponentTypeName</span><span class="o">(</span><span class="s">&quot;comp3&quot;</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">addSubService</span><span class="o">(</span><span class="k">new</span> <span class="n">ImportedService</span><span class="o">()</span> <span class="c1">// Importation</span>
+        <span class="o">.</span><span class="na">setSpecification</span><span class="o">(</span><span class="n">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">setOptional</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+</pre></div>
+
+
+<h4 id="instantiating-a-service">Instantiating a service</h4>
+<div class="codehilite"><pre><span class="n">CompositeComponentType</span> <span class="n">type</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompositeComponentType</span><span class="o">()</span>
+       <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">setComponentTypeName</span><span class="o">(</span><span class="s">&quot;comp2&quot;</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">addSubService</span><span class="o">(</span><span class="k">new</span> <span class="n">InstantiatedService</span><span class="o">()</span>  <span class="c1">// Instantiated service</span>
+       <span class="o">.</span><span class="na">setSpecification</span><span class="o">(</span><span class="n">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()))</span>
+       <span class="o">.</span><span class="na">addInstance</span><span class="o">(</span><span class="k">new</span> <span class="n">Instance</span><span class="o">(</span><span class="n">cons</span><span class="o">.</span><span class="na">getFactory</span><span class="o">().</span><span class="na">getName</span><span class="o">()));</span>
+</pre></div>
+
+
+<h4 id="exporting-a-service">Exporting a service</h4>
+<div class="codehilite"><pre><span class="n">CompositeComponentType</span> <span class="n">type</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompositeComponentType</span><span class="o">()</span>
+       <span class="o">.</span><span class="na">setBundleContext</span><span class="o">(</span><span class="n">context</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">setComponentTypeName</span><span class="o">(</span><span class="s">&quot;compExport&quot;</span><span class="o">)</span>
+       <span class="o">.</span><span class="na">addSubService</span><span class="o">(</span><span class="k">new</span> <span class="n">InstantiatedService</span><span class="o">().</span><span class="na">setSpecification</span><span class="o">(</span><span class="n">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()))</span>
+       <span class="o">.</span><span class="na">addService</span><span class="o">(</span><span class="k">new</span> <span class="n">ExportedService</span><span class="o">()</span>
+       <span class="o">.</span><span class="na">setSpecification</span><span class="o">(</span><span class="n">Foo</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()));</span> <span class="c1">// Exports a service</span>
 </pre></div>
         </div>
     </div>
@@ -452,7 +487,7 @@ CompositeComponentType type = new CompositeComponentType()
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1445514 by clement on Wed, 13 Feb 2013 09:20:49 +0000
                 </div>
             </div>
         </footer>           

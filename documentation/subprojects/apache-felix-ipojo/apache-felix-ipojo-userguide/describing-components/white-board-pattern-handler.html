@@ -31,6 +31,8 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
+
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
@@ -63,7 +65,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">Using Annotations</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.html">Maven tutorial</a></li>
-                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html ">Advanced tutorial</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.html">Advanced tutorial</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.html">Using Distributed OSGi</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.html">Application Composition</a></li>
                             </ul>
@@ -82,18 +84,18 @@
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">External <em>handlers</em></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">Asynchronous communication</a></li>
-                                        <li><a href="">JMX management</a></li>
-                                        <li><a href="">Extender pattern</a></li>
-                                        <li><a href="">Whiteboard pattern</a></li>
-                                        <li><a href="">Temporal dependencies</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/event-admin-handlers.html">Asynchronous communication</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/ipojo-jmx-handler.html">JMX management</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.html">Extender pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html">Whiteboard pattern</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html">Temporal dependencies</a></li>
                                     </ul>
                                 </li>                                            
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="">iPOJO and config admin</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
                                         <li><a href="">Factories and Instances</a></li>
                                         <li><a href="">XML Schemas</a></li>
                                         <li><a href="">API</a></li>
@@ -153,145 +155,151 @@
         <div class="content">
             <h1 id="the-white-board-pattern-handler">The white board pattern handler</h1>
 <p>The objective of this handler is to simplify the development of white-board architecture. This architecture-style is based is very close to the extender architecture style but relies on services instead of bundles.</p>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
-<div class="info" markdown="1">
-**Change in the 1.2.0**
-The 1.2.0 uses the namespace `org.apache.felix.ipojo.whiteboard` instead of `org.apache.felix.ipojo.white-board-pattern`
+<div class="toc">
+<ul>
+<li><a href="#the-white-board-pattern-handler">The white board pattern handler</a><ul>
+<li><a href="#the-whiteboard-pattern">The whiteboard pattern</a></li>
+<li><a href="#using-the-handler">Using the handler</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#configuring-the-handler-with-annotations">Configuring the handler with annotations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="alert alert-info info" markdown="1">
+<h4>Change in the 1.2.0</h4>
+<p>The 1.2.0 uses the namespace <code>org.apache.felix.ipojo.whiteboard</code> instead of <code>org.apache.felix.ipojo.white-board-pattern</code></p>
 </div>
 
-<div class="info" markdown="1">
-** Change in the 1.7.0**
-The 1.7.0 has introduced a new annotations allowing to declare several whiteboard patterns in the same class. The ``@Whiteboards}} annotation is not available in previous version.
+<div class="alert alert-info info" markdown="1">
+<h4>Change in the 1.7.0</h4>
+<p>The 1.7.0 has introduced a new annotations allowing to declare several whiteboard patterns in the same class. The <code>@Whiteboards</code> annotation is not available in previous version.</p>
 </div>
 
 <h2 id="the-whiteboard-pattern">The whiteboard pattern</h2>
-<p>A whiteboard is based on two different roles:
-<em> A consumer looking to special services or a services published with a special mark
-</em> Looked services</p>
+<p>A whiteboard is based on two different roles:</p>
+<ul>
+<li>A consumer looking to special services or a services published with a special mark</li>
+<li>Looked services</li>
+</ul>
 <p>More information on this pattern is available in this <a href="http://www.osgi.org/wiki/uploads/Links/whiteboard.pdf">document</a>
 Implementing a white board pattern could be complex as the extender needs to track these services dynamically. Indeed looked services can be highly dynamic; they can arrive, leave or be modified at runtime. Several services specified in the OSGi specification use white board pattern such as the Device Access Manager.</p>
 <h2 id="using-the-handler">Using the handler</h2>
 <p>First of all, you need to configure the component type to use the handler such as:</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo</span> <span class="na">xmlns:wbp=</span><span class="s">&quot;org.apache.felix.ipojo.whiteboard&quot;</span><span class="nt">&gt;</span>
-     <span class="nt">&lt;component</span> 
-          <span class="na">className=</span><span class="s">&quot;org.apache.felix.ipojo.test.FooWhiteBoardPattern&quot;</span>
-      <span class="nt">&gt;</span>
-        <span class="nt">&lt;wbp:wbp</span> 
+<span class="nt">&lt;component</span> 
+          <span class="na">className=</span><span class="s">&quot;org.apache.felix.ipojo.test.FooWhiteBoardPattern&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;wbp:wbp</span> 
           <span class="na">filter=</span><span class="s">&quot;(my.property=1)&quot;</span> 
-              <span class="na">onArrival=</span><span class="s">&quot;onArrival&quot;</span> 
-              <span class="na">onDeparture=</span><span class="s">&quot;onDeparture&quot;</span> 
-              <span class="na">onModification=</span><span class="s">&quot;onModification&quot;</span>
-         <span class="nt">/&gt;</span>
-
-      <span class="nt">&lt;/component&gt;</span>
+        <span class="na">onArrival=</span><span class="s">&quot;onArrival&quot;</span> 
+        <span class="na">onDeparture=</span><span class="s">&quot;onDeparture&quot;</span> 
+        <span class="na">onModification=</span><span class="s">&quot;onModification&quot;</span>
+      <span class="nt">/&gt;</span>
+<span class="nt">&lt;/component&gt;</span>
 </pre></div>
 
 
 <p>Notice that, this handler is an external handler. So, it uses the "org.apache.felix.ipojo.whiteboard" namespace.
-Once described, you can implement your component. The methods specified methods will be called when a matching services arrives or leaves or are modified. The modification callback is optional. A matching service is detected by confronting the service reference against the specified filter.
+Once described, you can implement your component. The methods specified methods will be called when a matching services arrives or leaves or are modified.The modification callback is optional. A matching service is detected by confronting the service reference against the specified filter.
 The filter can target specific service interface (with the objectclass property) or property values.
 In the previous example, these methods could be: </p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">FooWhiteBoardPattern</span> <span class="p">{</span>
-    <span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-    <span class="nb">int</span> <span class="n">modifications</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>    
-    <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">onArrival</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">ref</span><span class="p">);</span>
-    <span class="p">}</span>    
-    <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">onDeparture</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">ref</span><span class="p">);</span>
-    <span class="p">}</span>    
-    <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">onModification</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-        <span class="sr">//</span> <span class="o">...</span>
-    <span class="p">}</span>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooWhiteBoardPattern</span> <span class="o">{</span>
+    <span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+    <span class="kt">int</span> <span class="n">modifications</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>    
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">onArrival</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ref</span><span class="o">);</span>
+    <span class="o">}</span>    
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">onDeparture</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">ref</span><span class="o">);</span>
+    <span class="o">}</span>    
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">onModification</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
 </pre></div>
 
 
 <p>All methods received the arriving, leaving or modified service reference.</p>
 <p>You can also use annotation to declare the same component:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Wbp</span><span class="p">(</span>
-  <span class="n">filter</span><span class="o">=</span><span class="s">&quot;my.property=1&quot;</span><span class="p">,</span> 
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Wbp</span><span class="o">(</span>
+  <span class="n">filter</span><span class="o">=</span><span class="s">&quot;my.property=1&quot;</span><span class="o">,</span> 
   <span class="n">onArrival</span><span class="o">=</span><span class="s">&quot;onArrival&quot;</span> 
   <span class="n">onDeparture</span><span class="o">=</span><span class="s">&quot;onDeparture&quot;</span> 
-  <span class="n">onModification</span><span class="o">=</span><span class="s">&quot;onModification&quot;</span><span class="p">)</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">FooWhiteBoardPattern</span> <span class="p">{</span>
-    <span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+  <span class="n">onModification</span><span class="o">=</span><span class="s">&quot;onModification&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooWhiteBoardPattern</span> <span class="o">{</span>
+    <span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
 
-    <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">onArrival</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">ref</span><span class="p">);</span>
-    <span class="p">}</span>    
-    <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">onDeparture</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">ref</span><span class="p">);</span>
-    <span class="p">}</span>    
-    <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">onModification</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-       <span class="sr">//</span><span class="o">...</span>
-    <span class="p">}</span>
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">onArrival</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ref</span><span class="o">);</span>
+    <span class="o">}</span>    
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">onDeparture</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">ref</span><span class="o">);</span>
+    <span class="o">}</span>    
+    <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">onModification</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+       <span class="c1">//...</span>
+    <span class="o">}</span>
 </pre></div>
 
 
 <h2 id="configuration">Configuration</h2>
-<p>The handler has only three mandatory attributes:
-<em> Filter: filter use to discover matching filter.
-</em> onArrival: declaring the method to invoke when a matching service arrives
-* onDeparture: declaring the method to invoke when a matching service leaves</p>
-<p>The onModification attribute is optional. This method is called when an injected service reference is modified but stills valid against the filter.
-<div class="note" markdown="1">
-<strong>Notifications</strong>
+<p>The handler has only three mandatory attributes:</p>
+<ul>
+<li>Filter: filter use to discover matching filter.</li>
+<li>onArrival: declaring the method to invoke when a matching service arrives</li>
+<li>onDeparture: declaring the method to invoke when a matching service leaves</li>
+</ul>
+<p>The onModification attribute is optional. This method is called when an injected service reference is modified but stills valid against the filter.</p>
+<div class="alert alert-info info" markdown="1">
+<h4>Notifications</h4>
 The implementation will be notified of arrivals, modifications and departures, despite the instance is invalid. Indeed, the implementation must release all objects created from another bundle as soon it leaves.
-</div></p>
+</div>
+
 <h2 id="configuring-the-handler-with-annotations">Configuring the handler with annotations</h2>
-<p>It is possible to configure the handler with a simple annotation available in the annotation pack ('annotation' project in the iPOJO trunk). Here is an example of usage:
-{code:java}
-import org.apache.felix.ipojo.annotations.Component;
-import org.osgi.framework.ServiceReference;</p>
-<p>@Component
-@org.apache.felix.ipojo.whiteboard.Wbp(filter="(foo=true)", 
-        onArrival="onArrival", 
-        onDeparture="onDeparture",
-        onModification="onModification")
-public class WhiteBoardExemple {</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">void</span> <span class="n">onArrival</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="k">do</span> <span class="n">something</span>
-<span class="p">}</span>
+<p>It is possible to configure the handler with a simple annotation available in the annotation pack ('annotation' project in the iPOJO trunk). Here is an example of usage:</p>
+<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Component</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.osgi.framework.ServiceReference</span><span class="o">;</span>
 
-<span class="n">public</span> <span class="n">void</span> <span class="n">onDeparture</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="k">do</span> <span class="n">something</span>
-<span class="p">}</span>
+<span class="nd">@Component</span>
+<span class="nd">@org.apache.felix.ipojo.whiteboard.Wbp</span><span class="o">(</span><span class="n">filter</span><span class="o">=</span><span class="s">&quot;(foo=true)&quot;</span><span class="o">,</span> 
+        <span class="n">onArrival</span><span class="o">=</span><span class="s">&quot;onArrival&quot;</span><span class="o">,</span> 
+        <span class="n">onDeparture</span><span class="o">=</span><span class="s">&quot;onDeparture&quot;</span><span class="o">,</span>
+        <span class="n">onModification</span><span class="o">=</span><span class="s">&quot;onModification&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">WhiteBoardExemple</span> <span class="o">{</span>
 
-<span class="n">public</span> <span class="n">void</span> <span class="n">onModification</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">)</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="k">do</span> <span class="n">something</span>
-<span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onArrival</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// do something</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onDeparture</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// do something</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onModification</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// do something</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
 </pre></div>
 
 
-<p>}</p>
-<div class="codehilite"><pre><span class="n">The</span>  <span class="n">attribute</span> <span class="n">is</span> <span class="n">optional</span><span class="o">.</span><span class="n">The</span>  <span class="n">attribute</span> <span class="n">allows</span> <span class="n">setting</span> <span class="n">the</span> <span class="n">service</span> <span class="n">filter</span><span class="o">.</span>
+<p>The <code>onModification</code> attribute is optional.The <code>filter</code> attribute allows setting the service filter.</p>
+<p>In the 1.7.0, a new annotation was introduced to support the declaration of several whiteboard patterns in the same component:</p>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Whiteboards</span><span class="o">(</span><span class="n">whiteboards</span><span class="o">={</span>
+     <span class="nd">@Wbp</span><span class="o">(</span><span class="n">filter</span><span class="o">=</span><span class="s">&quot;(foo=true)&quot;</span><span class="o">,</span> 
+        <span class="n">onArrival</span><span class="o">=</span><span class="s">&quot;onArrival&quot;</span><span class="o">,</span> 
+        <span class="n">onDeparture</span><span class="o">=</span><span class="s">&quot;onDeparture&quot;</span><span class="o">,</span>
+        <span class="n">onModification</span><span class="o">=</span><span class="s">&quot;onModification&quot;</span><span class="o">),</span>
+     <span class="nd">@Wbp</span><span class="o">(</span><span class="n">filter</span><span class="o">=</span><span class="s">&quot;(bar=true)&quot;</span><span class="o">,</span> 
+        <span class="n">onArrival</span><span class="o">=</span><span class="s">&quot;onArrival2&quot;</span><span class="o">,</span> 
+        <span class="n">onDeparture</span><span class="o">=</span><span class="s">&quot;onDeparture2&quot;</span><span class="o">)}</span>
+<span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">WhiteBoardExemple</span> <span class="o">{</span>
 
-<span class="n">In</span> <span class="n">the</span> <span class="mf">1.7.0</span><span class="p">,</span> <span class="n">a</span> <span class="k">new</span> <span class="n">annotation</span> <span class="n">was</span> <span class="n">introduced</span> <span class="n">to</span> <span class="n">support</span> <span class="n">the</span> <span class="n">declaration</span> <span class="n">of</span> <span class="n">several</span> <span class="n">whiteboard</span> <span class="n">patterns</span> <span class="n">in</span> <span class="n">the</span> <span class="n">same</span> <span class="n">component:</span>
+    <span class="c1">// ...</span>
+
+<span class="o">}</span>
 </pre></div>
-
-
-<p>@Component
-@Whiteboards(whiteboards={
-     @Wbp(filter="(foo=true)", 
-        onArrival="onArrival", 
-        onDeparture="onDeparture",
-        onModification="onModification"),
-     @Wbp(filter="(bar=true)", 
-        onArrival="onArrival2", 
-        onDeparture="onDeparture2")}
-)
-public class WhiteBoardExemple {</p>
-<div class="codehilite"><pre><span class="sr">//</span> <span class="o">...</span>
-</pre></div>
-
-
-<p>}</p>
-<h2 id="download">Download</h2>
-<p>The handler is available on the <a href="/documentation/subprojects/apache-felix-ipojo/download.html">download</a> page.
-Sources are available on the Felix trunk at the following location: <a href="http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/whiteboard">http://svn.apache.org/repos/asf/felix/trunk/ipojo/handler/whiteboard</a>.</p>
         </div>
     </div>
 
@@ -306,7 +314,7 @@ Sources are available on the Felix trunk at the following location: <a href="htt
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1445489 by clement on Wed, 13 Feb 2013 07:25:24 +0000
                 </div>
             </div>
         </footer>           
