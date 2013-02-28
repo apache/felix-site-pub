@@ -88,7 +88,16 @@ Please note that the APIs described on this page have not been standardized or s
 </ul>
 </li>
 <li><a href="#services-plugin">Services Plugin</a></li>
-<li><a href="#configuration-admin-plugin">Configuration Admin Plugin</a></li>
+<li><a href="#configuration-admin-plugin">Configuration Admin Plugin</a><ul>
+<li><a href="#post-requests_1">POST Requests</a><ul>
+<li><a href="#create">Create</a></li>
+<li><a href="#apply">Apply</a></li>
+<li><a href="#delete">Delete</a></li>
+<li><a href="#unbind">Unbind</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 <h2 id="url-space">URL Space</h2>
@@ -365,8 +374,21 @@ in the URL and just ignores if one is provided.</p>
 <p>TBD</p>
 <h2 id="configuration-admin-plugin">Configuration Admin Plugin</h2>
 <p>TBD</p>
+<h3 id="post-requests_1">POST Requests</h3>
+<p>Configuration handling is done based on the PID of the configuration. Each POST can either contain the PID as a suffix like <code>../PID</code>or with the parameter <code>pid</code>. The parameter <code>pidFilter</code> might contain an additional filter expression.
+For the action to execute, the following options are tested, one after the other. As soon as one is executed, the request is processed.</p>
+<h4 id="create">Create</h4>
+<p>If the parameter <code>create</code>is sent, a new configuration with the PID is created. The value of the parameter is not evaluated.</p>
+<h4 id="apply">Apply</h4>
+<p>If the parameter <code>apply</code> is sent, the configuration is changed. The value of the parameter is not evaluated.
+The parameter <code>factoryPid</code> might contain the factory pid.
+The parameter <code>propertyList</code> contains a comma-separated list of all configuration property names that will be changed by this POST. For each name, the value of the corresponding request parameter is used to set the value. If such a parameter is missing, the property is not changed.</p>
+<h4 id="delete">Delete</h4>
+<p>If the parameters <code>apply</code> and <code>delete</code> are sent, the configuration is removed. The values of the parameters is not evaluated.</p>
+<h4 id="unbind">Unbind</h4>
+<p>If the parameter <code>unbind</code> is sent, the configuration is unbind.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1439944 by fmeschbe on Tue, 29 Jan 2013 15:32:39 +0000
+        Rev. 1448643 by cziegeler on Thu, 21 Feb 2013 14:05:39 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
