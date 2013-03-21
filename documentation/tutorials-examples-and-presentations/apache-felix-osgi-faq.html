@@ -18,7 +18,7 @@
     limitations under the License.
 -->
   <head>
-    <title>Apache Felix - Apache Felix OSGi FAQ</title>
+    <title>Apache Felix - OSGi Frequently Asked Questions</title>
     <link rel="icon" href="/res/favicon.ico">
     <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
     <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
@@ -67,24 +67,16 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/apache-felix-osgi-faq.html" target="felix_cwiki">/site/apache-felix-osgi-faq.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
       
-      
-      <h1>Apache Felix OSGi FAQ</h1>
-      <h1 id="apache-felix-osgi-frequently-asked-questions">Apache Felix OSGi Frequently Asked Questions</h1>
-<div class="toc">
+      <h1>OSGi Frequently Asked Questions</h1>
+      <div class="toc">
 <ul>
-<li><a href="#apache-felix-osgi-frequently-asked-questions">Apache Felix OSGi Frequently Asked Questions</a><ul>
 <li><a href="#if-i-use-bundles-from-felix-will-my-application-be-tied-to-the-felix-framework">If I use bundles from Felix, will my application be tied to the Felix framework?</a></li>
 <li><a href="#when-i-update-my-bundle-why-are-my-bundles-old-classes-still-being-used">When I update my bundle, why are my bundle's old classes still being used?</a></li>
 <li><a href="#should-a-service-providerconsumer-bundle-be-packaged-with-its-service-api-packages">Should a service provider/consumer bundle be packaged with its service API packages?</a></li>
 <li><a href="#should-a-bundle-import-its-own-exported-packages">Should a bundle import its own exported packages?</a></li>
 <li><a href="#why-is-my-bundle-not-able-to-see-annotations-at-run-time">Why is my bundle not able to see annotations at run time?</a></li>
-</ul>
-</li>
+<li><a href="#how-to-provide-optional-services">How to provide optional services?</a></li>
 </ul>
 </div>
 <h2 id="if-i-use-bundles-from-felix-will-my-application-be-tied-to-the-felix-framework">If I use bundles from Felix, will my application be tied to the Felix framework?</h2>
@@ -98,11 +90,11 @@
 </ol>
 <p>Regarding (1), if the classes come from a private package (i.e., it is <strong>not</strong> exported), then the new classes will become available immediately. However, if they are from an exported package, then their visibility depends on whether any other bundles are using the exported packages.</p>
 <p>If no other bundles are using the exported packages, then the new classes will become available immediately since the old version of the classes are no longer needed. On the other hand, if any other bundles are using the exported packages, then the new classes will <strong>not</strong> become available immediately since the old version is still required by any dependent bundles. In this case, the new classes will not be made available until <code>PackageAdmin.refreshPackages()</code> is called (this can be invoked in the Felix shell using the <code>refresh</code> command). </p>
-<p>There is one partial exception to this latter case, it occurs when the exporting bundle does <strong>not</strong> also import its own exported packages (see "<a href="">Should a bundle import its own exported packages?</a>" below for more information on this topic). In this case, the new classes become immediately accessible to the updated exporting bundle, but not to the dependent bundles; the dependent bundles continue to see the old version of the classes. This situation generally requires <code>PackageAdmin.refreshPackages()</code> to be invoked to bring the bundles back to a useful state.</p>
+<p>There is one partial exception to this latter case, it occurs when the exporting bundle does <strong>not</strong> also import its own exported packages (see "<a href="#should-a-bundle-import-its-own-exported-packages">Should a bundle import its own exported packages?</a>" below for more information on this topic). In this case, the new classes become immediately accessible to the updated exporting bundle, but not to the dependent bundles; the dependent bundles continue to see the old version of the classes. This situation generally requires <code>PackageAdmin.refreshPackages()</code> to be invoked to bring the bundles back to a useful state.</p>
 <p>This is the normal update process as defined by the OSGi specification. Updating a bundle is a two-step process, where older versions of exported packages are kept around until explicitly refreshed. This is done to reduce disruption when performing several updates.</p>
 <h2 id="should-a-service-providerconsumer-bundle-be-packaged-with-its-service-api-packages">Should a service provider/consumer bundle be packaged with its service API packages?</h2>
-<p>There is no easy answer to this question and it largely depends on the specific usage scenario. The OSGi specification had originally suggested that it was good practice to embed service API packages in the service provider bundle. In this case in OSGi R4, the service provider should both <a href="">export and import</a> the service API packages, which was the default for previous versions of the OSGi specification.</p>
-<p>The OSGi specification never had an explicit stance on whether or not a consumer bundle should embed its dependent service API packages; although, it would not appear to be a best practice. Logically, there is some sense to this approach, since it potentially allows the consumer bundle to gracefully handle broken service dependencies. Of course, this depends on whether there is anything the bundle can do in the face of broken dependencies. If service API packages are embedded in the consumer bundle, then it should <a href="">export and import</a> the packages. An alternative approach in this case is to dynamically import the service API (or even use optional imports if the dependency should only be considered once).</p>
+<p>There is no easy answer to this question and it largely depends on the specific usage scenario. The OSGi specification had originally suggested that it was good practice to embed service API packages in the service provider bundle. In this case in OSGi R4, the service provider should both <a href="#should-a-bundle-import-its-own-exported-packages">export and import</a> the service API packages, which was the default for previous versions of the OSGi specification.</p>
+<p>The OSGi specification never had an explicit stance on whether or not a consumer bundle should embed its dependent service API packages; although, it would not appear to be a best practice. Logically, there is some sense to this approach, since it potentially allows the consumer bundle to gracefully handle broken service dependencies. Of course, this depends on whether there is anything the bundle can do in the face of broken dependencies. If service API packages are embedded in the consumer bundle, then it should <a href="#should-a-bundle-import-its-own-exported-packages">export and import</a> the packages. An alternative approach in this case is to dynamically import the service API (or even use optional imports if the dependency should only be considered once).</p>
 <p>The main advantages of embedding service API packages in bundles are that the dependencies can always be resolved and it does not require installing a lot of other bundles to resolve the dependencies. There are disadvantages, however. One disadvantage is resource consumption caused by potential code duplication. Probably a more serious disadvantage is that it makes it harder to dynamically swap out providers.</p>
 <p>For example, assume a provider bundle is used to export service API packages and all consumers are wired to that bundle. If the provider bundle is updated or uninstalled and then refreshed, then all consumer bundles will be stopped and refreshed as well. Even without a refresh, such a configuration would potentially inhibit garbage collection of the class loader of the service provider, since consumers would be using it for the API package.</p>
 <p>This situation would be different if the service API were package in a separate bundle. In this situation, all consumer bundles would be wired to the API bundle, not to the provider bundle. Thus, if the provider were updated or uninstalled and then refreshed, the consumer bundles would only be minimally impacted (i.e., they would either switch to the new version of the provider or to a different provider).</p>
@@ -116,8 +108,59 @@
 <p>This is typically a class loading issue. At runtime the JVM will only return annotations that are visible to the current class loader, so if your bundle doesn't import the appropriate package(s) then you won't see them.</p>
 <p>This is not a bug, as such, it is simply how OSGi class loading works - your bundle cannot see classes that its hasn't imported (or acquired via <code>Require-Bundle</code>). It is also part of the design of annotations, since annotated classes are supposed to continue to load and resolve even if their annotation types aren't available on the class path. This lets you annotate a class with EJB3 annotations, for example, but also use it in a non-EJB container where you won't then see the EJB3 annotations.</p>
 <p>Try importing the annotation package inside your bundle to resolve the visibility issue.</p>
+<h2 id="how-to-provide-optional-services">How to provide optional services?</h2>
+<p>Imagine a bundle wants to provide a service only if a consumer is actually
+using the service. To increase the complexity lets assume the API for the
+optional service may not always be available. So assuming there is no
+service consumer, the bundle should not fail to start if the API is not
+available.</p>
+<p>Lets illustrate with a concrete example: Consider a bundle executes some
+business logic. Optionally the bundle provides information through the
+<a href="/documentation/subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>. The
+bundle should resolve and be active regardless of whether the web console is
+present or not.</p>
+<p>The OSGi Core specification has two helpful mechanism at hand for these
+situations: <code>ServiceFactory</code> and <code>DynamicImport-Package</code>. With the <code>ServiceFactory</code>
+a place holder object is registered with the Service Registry instead of
+the actual service object. Only when the service is actually requested, will
+the <code>ServiceFactory</code> create the service object.</p>
+<p>The second mechanism is a bit frowned upon in the OSGi community because it
+has the potential to be overused and thus break the promise of OSGi to be
+explicit with the requirements of a bundle. In the specific context we are
+using the <code>DynamicImport-Package</code>, though, I think it is worth using. This
+mechanism allows deferring to wire a particular package to the moment, the
+respective API is actually used.</p>
+<p>Here's how to implement the the example from above:</p>
+<ol>
+<li>Create a <code>ServiceFactory</code>
+    :::java
+    private class PluginServiceFactory {
+        private final BusinessObject bo;
+        public Object getService(Bundle bundle, ServiceRegistration registration) {
+            return new BusinessObjectPlugin(bo);
+        }
+        public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+            // no cleanup required, have GC do the rest
+        }
+    }</li>
+<li>Register the service
+    :::java
+    Hashtable props = new Hashtable();
+    props.put("", "Business Object");
+    props.put("", "bo");
+    bundleContext.registerService("javax.servlet.Servlet",
+        new PluginServiceFactory(bo),
+        props);</li>
+<li>Dynamically import the API
+    :::text
+    DynamicImport-Package: javax.servlet;javax.servlet.http;version=2.3</li>
+</ol>
+<p>For an example of using this pattern, you might want to look at the
+<a href="http://svn.apache.org/repos/asf/felix/trunk/jaas">Apache Felix JAAS bundle</a>,
+particularly the <a href="http://svn.apache.org/repos/asf/felix/trunk/jaas/pom.xml">POM File</a>
+and the <a href="http://svn.apache.org/repos/asf/felix/trunk/jaas/src/main/java/org/apache/felix/jaas/internal/Activator.java">Activator class</a> with the <code>ServiceFactory</code>.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1456978 by fmeschbe on Fri, 15 Mar 2013 14:57:02 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
