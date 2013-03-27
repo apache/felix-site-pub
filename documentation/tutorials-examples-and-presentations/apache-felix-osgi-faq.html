@@ -131,36 +131,40 @@ using the <code>DynamicImport-Package</code>, though, I think it is worth using.
 mechanism allows deferring to wire a particular package to the moment, the
 respective API is actually used.</p>
 <p>Here's how to implement the the example from above:</p>
-<ol>
-<li>Create a <code>ServiceFactory</code>
-    :::java
-    private class PluginServiceFactory {
-        private final BusinessObject bo;
-        public Object getService(Bundle bundle, ServiceRegistration registration) {
-            return new BusinessObjectPlugin(bo);
-        }
-        public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
-            // no cleanup required, have GC do the rest
-        }
-    }</li>
-<li>Register the service
-    :::java
-    Hashtable props = new Hashtable();
-    props.put("", "Business Object");
-    props.put("", "bo");
-    bundleContext.registerService("javax.servlet.Servlet",
-        new PluginServiceFactory(bo),
-        props);</li>
-<li>Dynamically import the API
-    :::text
-    DynamicImport-Package: javax.servlet;javax.servlet.http;version=2.3</li>
-</ol>
+<p>(1) Create a <code>ServiceFactory</code></p>
+<div class="codehilite"><pre><span class="kd">private</span> <span class="kd">class</span> <span class="nc">PluginServiceFactory</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">BusinessObject</span> <span class="n">bo</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getService</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="o">,</span> <span class="n">ServiceRegistration</span> <span class="n">registration</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BusinessObjectPlugin</span><span class="o">(</span><span class="n">bo</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ungetService</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="o">,</span> <span class="n">ServiceRegistration</span> <span class="n">registration</span><span class="o">,</span> <span class="n">Object</span> <span class="n">service</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// no cleanup required, have GC do the rest</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>(2) Register the service</p>
+<div class="codehilite"><pre><span class="n">Hashtable</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">();</span>
+<span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;Business Object&quot;</span><span class="o">);</span>
+<span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;bo&quot;</span><span class="o">);</span>
+<span class="n">bundleContext</span><span class="o">.</span><span class="na">registerService</span><span class="o">(</span><span class="s">&quot;javax.servlet.Servlet&quot;</span><span class="o">,</span>
+    <span class="k">new</span> <span class="nf">PluginServiceFactory</span><span class="o">(</span><span class="n">bo</span><span class="o">),</span>
+    <span class="n">props</span><span class="o">);</span>
+</pre></div>
+
+
+<p>(3) Dynamically import the API</p>
+<div class="codehilite"><pre>DynamicImport-Package: javax.servlet;javax.servlet.http;version=2.3
+</pre></div>
+
+
 <p>For an example of using this pattern, you might want to look at the
 <a href="http://svn.apache.org/repos/asf/felix/trunk/jaas">Apache Felix JAAS bundle</a>,
 particularly the <a href="http://svn.apache.org/repos/asf/felix/trunk/jaas/pom.xml">POM File</a>
 and the <a href="http://svn.apache.org/repos/asf/felix/trunk/jaas/src/main/java/org/apache/felix/jaas/internal/Activator.java">Activator class</a> with the <code>ServiceFactory</code>.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1456978 by fmeschbe on Fri, 15 Mar 2013 14:57:02 +0000
+        Rev. 1461645 by fmeschbe on Wed, 27 Mar 2013 15:22:53 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

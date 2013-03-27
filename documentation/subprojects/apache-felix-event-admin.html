@@ -208,7 +208,7 @@
 <h2 id="configuration">Configuration</h2>
 <p>The Apache Felix Event Admin implementation is trying the deliver the events as fast as possible. Events sent from different threads are sent in parallel. Events from the same thread are sent in the order they are received (this is according to the spec).
 A timeout can be configured which is used for event handlers. If an event handler takes longer than the configured timeout to process an event, it is blacklisted. Once a handler is in a blacklist, it doesn't get sent any events anymore.
-The Felix Event Admin can be configured either through framework properties or through the configuration admin. This is a list of configuration properties:
+The Felix Event Admin can be configured either through framework properties or through the configuration admin using PID <code>org.apache.felix.eventadmin.impl.EventAdmin</code>. This is a list of configuration properties:
 |Function|Property Name|Type and Default|Description|
 |--|--|--|
 |Cache Size|org.apache.felix.eventadmin.CacheSize|Integer, 30|The size of various internal caches. The default value is 30. Increase in case of a large number (more then 100) of services. A value less then 10 triggers the default value.|
@@ -217,7 +217,7 @@ The Felix Event Admin can be configured either through framework properties or t
 |Require Topic|org.apache.felix.eventadmin.RequireTopic|Boolean, true|Are event handlers required to be registered with a topic? This is enabled by default. The specification says that event handlers must register with a list of topics they are interested in. Disabling this setting will enable that handlers without a topic are receiving all events (i.e., they are treated the same as with a topic=*).|
 |Ignore Timeouts|org.apache.felix.eventadmin.IgnoreTimeout|String, empty|Configure event handlers to be called without a timeout. If a timeout is configured by default all event handlers are called using the timeout. For performance optimization it is possible to configure event handlers where the timeout handling is not used - this reduces the thread usage from the thread pools as the timout handling requires an additional thread to call the event handler. However, the application should work without this configuration property. It is a pure optimization! The value is a list of strings. If a string ends with a dot, all handlers in exactly this package are ignored. If the string ends with a star, all handlers in this package and all subpackages are ignored. If the string neither ends with a dot nor with a start, this is assumed to define an exact class name.|</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1461588 by fmeschbe on Wed, 27 Mar 2013 14:09:59 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
