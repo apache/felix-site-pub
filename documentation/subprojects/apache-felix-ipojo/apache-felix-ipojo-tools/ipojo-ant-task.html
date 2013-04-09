@@ -98,15 +98,15 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
                                         <li><a href="">Factories and Instances</a></li>
                                         <li><a href="">XML Schemas</a></li>
-                                        <li><a href="">API</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
                                         <li><a href="">Testing components</a></li>
                                         <li><a href="">Eclipse Integration</a></li>
-                                        <li><a href="">FAQ</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
                                         <li><a href="">Handler development</a></li>
-                                        <li><a href="">Manipulation Metadata </a></li>
-                                        <li><a href="">Dive into the iPOJO Manipulation depths</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.html">Dive into the iPOJO Manipulation depths</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -115,7 +115,7 @@
                         <li class="dropdown" id="tools-menu">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="swatch-menu">
-                                <li><a href="">Ant Task</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-ant-task.html">Ant Task</a></li>
                                 <li><a href="">Eclipse Plugin</a></li>
                                 <li><a href="">Maven Plugin</a></li>
                                 <li><a href="">`arch` shell command</a></li>
@@ -127,7 +127,7 @@
                         <li class="dropdown" id="community-menu">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="swatch-menu">
-                                <li><a href="">Support</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-support.html">Support</a></li>
                                 <li><a href="http://www.apache.org/">ASF</a></li>
                                 <li><a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li>
                                 <li><a href="http://www.apache.org/foundation/thanks.html">Sponsors</a></li>
@@ -155,27 +155,38 @@
         <div class="content">
             <h1 id="ipojo-ant-task">iPOJO Ant Task</h1>
 <p><em>iPOJO Ant Task allows automating the iPOJO manipulation process within an Ant build process. This page explains how to use the iPOJO Ant Task and how to combine them with the BND Tasks.</em></p>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
+<div class="toc">
+<ul>
+<li><a href="#ipojo-ant-task">iPOJO Ant Task</a><ul>
+<li><a href="#downloading-the-ipojo-ant-task">Downloading the iPOJO Ant Task</a></li>
+<li><a href="#how-to-use-the-ant-task">How to use the Ant Task</a></li>
+<li><a href="#ant-task-arguments">Ant Task Arguments</a></li>
+<li><a href="#combining-the-ipojo-ant-task-and-bnd">Combining the iPOJO Ant Task and BND</a></li>
+<li><a href="#directory-manipulation">Directory manipulation</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="downloading-the-ipojo-ant-task">Downloading the iPOJO Ant Task</h2>
-<p>The iPOJO Ant Task can ben downloaded from <a href="/documentation/subprojects/apache-felix-ipojo/download.html">here</a>.</p>
+<p>The iPOJO Ant Task can ben downloaded from <a href="http://felix.apache.org/downloads.cgi">here</a>.</p>
 <h2 id="how-to-use-the-ant-task">How to use the Ant Task</h2>
 <p>The iPOJO Ant task take an input bundle and a metadata file and create the final (i.e. manipulated) bundle.
-To use the task declare a target in your build.xml as:
-{div:class=pom}
-<target name="main">
-&nbsp;&nbsp;&nbsp;&nbsp;{color:red}<!-- Change the path to point on the iPOJO Ant task jar-->{color}
-&nbsp;&nbsp;&nbsp;&nbsp;<taskdef name="ipojo"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classname="org.apache.felix.ipojo.task.IPojoTask"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}classpath="org.apache.felix.ipojo.ant-1.6.0.jar"{color}/></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;<ipojo
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input="foo.jar"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;metadata = "meta.xml"
-&nbsp;&nbsp;&nbsp;&nbsp;/>
-</target>
-{div}
-First, define the new task. Then simply use it. The input argument describe the input bundle (must exists) and the metadata argument describes the metadata file (must exist too). The input bundle must be a well-formed bundle.</p>
+To use the task declare a target in your build.xml as:</p>
+<div class="codehilite"><pre><span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Change the path to point on the iPOJO Ant task jar--&gt;</span>
+    <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">&quot;ipojo&quot;</span>
+            <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.task.IPojoTask&quot;</span>
+            <span class="na">classpath=</span><span class="s">&quot;org.apache.felix.ipojo.ant-1.8.6.jar&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;ipojo</span>
+            <span class="na">input=</span><span class="s">&quot;foo.jar&quot;</span>
+            <span class="na">metadata =</span> <span class="s">&quot;meta.xml&quot;</span>
+    <span class="nt">/&gt;</span>
+<span class="nt">&lt;/target&gt;</span>
+</pre></div>
+
+
+<p>First, define the new task. Then simply use it. The input argument describe the input bundle (must exists) and the metadata argument describes the metadata file (must exist too). The input bundle must be a well-formed bundle.</p>
 <h2 id="ant-task-arguments">Ant Task Arguments</h2>
 <p>The iPOJO Ant Task as three different arguments:
 <em> Input: describes the input bundle. This argument is mandatory.
@@ -184,76 +195,82 @@ First, define the new task. Then simply use it. The input argument describe the 
 </em> IgnoreAnnotations: if set to <code>true</code>, the manipulator skips annotations processing (can reduce significantly the processing time on huge bundle).
 * IgnoreEmbeddedSchemas: if set to <code>true</code>, the manipulator doesn't use embedded XML-Schemas</p>
 <h2 id="combining-the-ipojo-ant-task-and-bnd">Combining the iPOJO Ant Task and BND</h2>
-<p>The iPOJO Ant Task requires an input bundle. BND is a tools simplifying bundle creation. So, it is possible to combine the two tools to create your bundle automatically. The following build.xml shows you an example of combination.
-{div:class=pom}
-<project default="main" basedir=".">
-&nbsp;&nbsp;&nbsp;&nbsp;<target name="bnd">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}&lt;!-- Change to use the latest BND version --{color}{color:red}&gt;{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<taskdef resource="aQute/bnd/ant/taskdef.properties"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}classpath="bnd-0.0.178.jar"{color}/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<bnd
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classpath="src"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eclipse="true"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failok="false"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exceptions="true"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}files="foo.bnd"{color}/>
-&nbsp;&nbsp;&nbsp;&nbsp;</target></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;<target name="main" depends="bnd">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <echo message="Call main"/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}<!-- Change the path to point on the iPOJO Ant task jar -->{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<taskdef name="ipojo"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classname="org.apache.felix.ipojo.task.IPojoTask"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}classpath="org.apache.felix.ipojo.ant-1.6.0.jar"{color} />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ipojo
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}input="foo.jar"{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;metadata = "meta.xml"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; />
-&nbsp;&nbsp;&nbsp;&nbsp;</target>
-</project>
-{div}
-The first target creates the bundle with BND. More details on the BND Ant Task are available here. To combine the BND output and the iPOJO input, the iPOJO input need to be the same as the BND file but with the ".jar" extension. For instance, the BND file is foo.bnd, so the input jar must be foo.jar.
+<p>The iPOJO Ant Task requires an input bundle. BND is a tools simplifying bundle creation. So, it is possible to combine the two tools to create your bundle automatically. The following build.xml shows you an example of combination.</p>
+<div class="codehilite"><pre><span class="nt">&lt;project</span> <span class="na">default=</span><span class="s">&quot;main&quot;</span> <span class="na">basedir=</span><span class="s">&quot;.&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;bnd&quot;</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- Change to use the latest BND version --&gt;</span>
+        <span class="nt">&lt;taskdef</span> <span class="na">resource=</span><span class="s">&quot;aQute/bnd/ant/taskdef.properties&quot;</span>
+            <span class="na">classpath=</span><span class="s">&quot;bnd-0.0.178.jar&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;bnd</span>
+            <span class="na">classpath=</span><span class="s">&quot;src&quot;</span>
+            <span class="na">eclipse=</span><span class="s">&quot;true&quot;</span>
+            <span class="na">failok=</span><span class="s">&quot;false&quot;</span>
+            <span class="na">exceptions=</span><span class="s">&quot;true&quot;</span>
+            <span class="na">files=</span><span class="s">&quot;foo.bnd&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/target&gt;</span>
+
+    <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span> <span class="na">depends=</span><span class="s">&quot;bnd&quot;</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;echo</span> <span class="na">message=</span><span class="s">&quot;Call main&quot;</span><span class="nt">/&gt;</span>
+        <span class="c">&lt;!-- Change the path to point on the iPOJO Ant task jar --&gt;</span>
+        <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">&quot;ipojo&quot;</span>
+            <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.task.IPojoTask&quot;</span>
+            <span class="na">classpath=</span><span class="s">&quot;org.apache.felix.ipojo.ant-1.8.6.jar&quot;</span> <span class="nt">/&gt;</span>
+
+        <span class="c">&lt;!-- the input attribute must fit the .bnd file name --&gt;</span>                
+        <span class="nt">&lt;ipojo</span>
+            <span class="na">input=</span><span class="s">&quot;foo.jar&quot;</span>
+            <span class="na">metadata =</span> <span class="s">&quot;meta.xml&quot;</span>
+         <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/target&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>The first target creates the bundle with BND. More details on the BND Ant Task are available here. To combine the BND output and the iPOJO input, the iPOJO input need to be the same as the BND file but with the ".jar" extension. For instance, the BND file is foo.bnd, so the input jar must be foo.jar.
 To be sure that the BND bundle is already created, you can add the "<em>depends</em>" clause in the target using the iPOJO task to the target creating the bundle.</p>
-<p>However, it is possible to create only one target doing the two operations as:
-{div:class=pom}
-<target name="main">
-&nbsp;&nbsp;&nbsp;&nbsp;{color:red}<!-- Change to use the latest BND version -->{color}
-&nbsp;&nbsp;&nbsp;&nbsp;<taskdef
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resource="aQute/bnd/ant/taskdef.properties"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}classpath="bnd-0.0.178.jar"/>{color}</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}<!-- Change the path to point on the iPOJO Ant task jar -->{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<taskdef name="ipojo"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classname="org.apache.felix.ipojo.task.IPojoTask"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}classpath="org.apache.felix.ipojo.ant-1.6.0.jar"{color}/></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;<bnd
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classpath="src"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eclipse="true"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failok="false"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exceptions="true"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;files="{color:red}foo.bnd{color}"/></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;<ipojo
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input="{color:red}foo.jar{color}"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;metadata = "meta.xml"/>
-</target>
-{div}</p>
-<h2 id="directory-manipulation">Directory manipulation</h2>
-<p>The manipulator can take a directory in input. In this case, classes from this folder is manipulated. You can also set the manifest file location too. Here in an example of configuration using this mode:</p>
-<div class="codehilite"><pre><span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;manipulate&quot;</span><span class="nt">&gt;</span>      
-     <span class="nt">&lt;ipojo</span>
-    <span class="na">dir=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">output</span><span class="o">..</span><span class="cp">}</span><span class="s">&quot;</span> <span class="err">&lt;!--</span> <span class="err">Manipulated</span> <span class="err">directory</span> <span class="err">--</span><span class="nt">&gt;</span>
-    metadata=&quot;metadata.xml&quot;
-    manifest=&quot;META-INF/MANIFEST.MF&quot;  <span class="c">&lt;!-- Manifest location --&gt;</span>
-    /&gt;
+<p>However, it is possible to create only one target doing the two operations as:</p>
+<div class="codehilite"><pre><span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Change to use the latest BND version --&gt;</span>
+    <span class="nt">&lt;taskdef</span>
+        <span class="na">resource=</span><span class="s">&quot;aQute/bnd/ant/taskdef.properties&quot;</span>
+        <span class="na">classpath=</span><span class="s">&quot;bnd-0.0.178.jar&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="c">&lt;!-- Change the path to point on the iPOJO Ant task jar --&gt;</span>
+    <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">&quot;ipojo&quot;</span>
+        <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.task.IPojoTask&quot;</span>
+        <span class="na">classpath=</span><span class="s">&quot;org.apache.felix.ipojo.ant-1.8.6.jar&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;bnd</span>
+            <span class="na">classpath=</span><span class="s">&quot;src&quot;</span>
+            <span class="na">eclipse=</span><span class="s">&quot;true&quot;</span>
+            <span class="na">failok=</span><span class="s">&quot;false&quot;</span>
+            <span class="na">exceptions=</span><span class="s">&quot;true&quot;</span>
+            <span class="na">files=</span><span class="s">&quot;foo.bnd&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;ipojo</span>
+        <span class="na">input=</span><span class="s">&quot;foo.jar&quot;</span>
+        <span class="na">metadata =</span> <span class="s">&quot;meta.xml&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/target&gt;</span>
 </pre></div>
 
 
-<div class="info" markdown="1">
-**Manifest location**
-If not set, the manifest is searched in the given `directory/META-INF` folder (*i.e.* `$dir/META-INF/MANIFEST.MF`).
-</div>
+<h2 id="directory-manipulation">Directory manipulation</h2>
+<p>The manipulator can take a directory in input. In this case, classes from this folder is manipulated. You can also set the manifest file location too. Here in an example of configuration using this mode:</p>
+<div class="codehilite"><pre><span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;manipulate&quot;</span><span class="nt">&gt;</span>      
+    <span class="c">&lt;!-- Set the manipulated directory and manifest location --&gt;</span> 
+    <span class="nt">&lt;ipojo</span>
+      <span class="na">dir=</span><span class="s">&quot;${output..}&quot;</span>
+      <span class="na">metadata=</span><span class="s">&quot;metadata.xml&quot;</span>
+      <span class="na">manifest=</span><span class="s">&quot;META-INF/MANIFEST.MF&quot;</span>
+    <span class="nt">/&gt;</span>
+<span class="nt">&lt;/target&gt;</span>
+</pre></div>
 
-<h2 id="conclusion">Conclusion</h2>
-<p>Subscribe to the Felix users mailing list by sending a message to <a href="">mailto:users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [mailto:users@felix.apache.org].</p>
+
+<div class="alert alert-info" markdown="1">
+<h4>Manifest location</h4>
+If not set, the manifest is searched in the given <code>directory/META-INF</code> folder (<em>i.e.</em> <code>$dir/META-INF/MANIFEST.MF</code>).
+</div>
         </div>
     </div>
 
@@ -268,7 +285,7 @@ If not set, the manifest is searched in the given `directory/META-INF` folder (*
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1464894 by clement on Fri, 5 Apr 2013 08:54:50 +0000
                 </div>
             </div>
         </footer>           

@@ -18,7 +18,7 @@
     limitations under the License.
 -->
   <head>
-    <title>Apache Felix - Apache Felix Service Component Runtime</title>
+    <title>Apache Felix - Apache Felix Service Component Runtime (SCR)</title>
     <link rel="icon" href="/res/favicon.ico">
     <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
     <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
@@ -67,13 +67,8 @@
       </div>
 
       
-      <div class="tip">
-           This page is a translated version of <a href="/site/apache-felix-service-component-runtime.html" target="felix_cwiki">/site/apache-felix-service-component-runtime.html</a>. In case of
-           doubt you might want to refer to the old page.
-      </div>
       
-      
-      <h1>Apache Felix Service Component Runtime</h1>
+      <h1>Apache Felix Service Component Runtime (SCR)</h1>
       <div class="toc">
 <ul>
 <li><a href="#example">Example</a></li>
@@ -104,31 +99,35 @@
 <h2 id="component">Component</h2>
 <p>First of all the component must be implemented in a simple Java class. The Declarative Services Specification basically places no restrictions on the contents of this class. If you make use of advanced functionality such as providing an <code>activate()</code> or <code>deactivate()</code> method or using service loopup by <em>event strategy</em> (see 112.3.1 Accessing Services) you will of course have to provide the respective methods.</p>
 <p>For the sake of example, lets define a very simple class, which implements a <code>java.util.Comparator</code> service:</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>sample/SampleComparator.java</B></DIV><DIV class="codeContent panelContent">
-    package sample;
-    import java.util.Comparator;
-    public class SampleComparator implements Comparator
-    {
-        public int compare( Object o1, Object o2 )
-        {
-            // TODO: calculate the result
-            return o1.equals( o2 ) ? 0 : -1;
-        }
-    }</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">sample</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Comparator</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleComparator</span> <span class="kd">implements</span> <span class="n">Comparator</span>
+<span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compare</span><span class="o">(</span> <span class="n">Object</span> <span class="n">o1</span><span class="o">,</span> <span class="n">Object</span> <span class="n">o2</span> <span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">// TODO: calculate the result</span>
+        <span class="k">return</span> <span class="n">o1</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span> <span class="n">o2</span> <span class="o">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
 <p>This is of course a very simple and not very intelligently implemented comparator...</p>
 <h2 id="declaration">Declaration</h2>
 <p>The next step consists of writing the declaration. I usually put these files in the <code>OSGI-INF</code> folder of the bundle, but the files may be placed anywhere within the bundle or any of the bundle's fragments as long as its path is listed in the <code>Service-Component</code> bundle manifest header.</p>
-<p>So here we go with the file:</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>OSGI-INF/sample.xml</B></DIV><DIV class="codeContent panelContent">
-    &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-    <component name="sample.component" immediate="true">
-      <implementation class="sample.SampleComparator" />
-      <property name="service.description" value="Sample Comparator Service" />
-      <property name="service.vendor" value="Apache Software Foundation" />
-      <service>
-        <provide interface="java.util.Comparator" />
-      </service>
-    </component></p>
+<p>So here we go with the <code>OSGI-INF/sample.xml</code> file:</p>
+<div class="codehilite"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;component</span> <span class="na">name=</span><span class="s">&quot;sample.component&quot;</span> <span class="na">immediate=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;implementation</span> <span class="na">class=</span><span class="s">&quot;sample.SampleComparator&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;service.description&quot;</span> <span class="na">value=</span><span class="s">&quot;Sample Comparator Service&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;service.vendor&quot;</span> <span class="na">value=</span><span class="s">&quot;Apache Software Foundation&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;service&gt;</span>
+    <span class="nt">&lt;provide</span> <span class="na">interface=</span><span class="s">&quot;java.util.Comparator&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/service&gt;</span>
+<span class="nt">&lt;/component&gt;</span>
+</pre></div>
+
+
 <p>There are some noteworthy settings in this descriptor already:</p>
 <ul>
 <li><em>name</em> - Uniquely identifies this component and is also used to retrieve optional configuration from the Configuration Admin Service (if available).</li>
@@ -145,27 +144,27 @@
 <h2 id="activation">Activation</h2>
 <p>It may well be that the component needs to be notified, when it is activated and deactivated. For this, the component may implement an <code>activate</code> method and a <code>deactivate</code> method. Both methods must be <code>public</code> or <code>protected</code> and take a single argument, the <code>org.osgi.service.ComponentContext</code>. It is recommended for this method to the <code>protected</code> as it is only used by the Service Component Runtime and should of course not be part of the public API of the component.</p>
 <p>Here is the initial class extended with activation and deactivation methods:</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>sample/SampleComparator.java</B></DIV><DIV class="codeContent panelContent">
-    package sample;
-    import java.util.Comparator;
-    import org.osgi.service.component.ComponentContext;
-    public class SampleComparator implements Comparator
-    {
-        public int compare( Object o1, Object o2 )
-        {
-            // TODO: calculate the result
-            return o1.equals( o2 ) ? 0 : -1;
-        }</p>
-<div class="codehilite"><pre>    <span class="n">protected</span> <span class="n">void</span> <span class="n">activate</span><span class="p">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">TODO:</span> <span class="n">Do</span> <span class="n">something</span> <span class="n">on</span> <span class="n">activation</span>
-    <span class="p">}</span>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">sample</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Comparator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.osgi.service.component.ComponentContext</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleComparator</span> <span class="kd">implements</span> <span class="n">Comparator</span>
+<span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compare</span><span class="o">(</span> <span class="n">Object</span> <span class="n">o1</span><span class="o">,</span> <span class="n">Object</span> <span class="n">o2</span> <span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">// TODO: calculate the result</span>
+        <span class="k">return</span> <span class="n">o1</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span> <span class="n">o2</span> <span class="o">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
 
-    <span class="n">protected</span> <span class="n">void</span> <span class="n">deactivate</span><span class="p">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">TODO:</span> <span class="n">Do</span> <span class="n">something</span> <span class="n">on</span> <span class="n">deactivation</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">activate</span><span class="o">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">// TODO: Do something on activation</span>
+    <span class="o">}</span>
+
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">deactivate</span><span class="o">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="c1">// TODO: Do something on deactivation</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -174,21 +173,23 @@
 <p>The next step would probably be to do some service binding. This is somewhat more overhead, as the referred to services must be declared. On the other hand, you do not have to care to listen for these services. As examples of these strategies we will first use the lookup strategy to access an OSGi <code>HttpService</code> and then we will use the event strategy to access an OSGi <code>LogService</code> (I personally prefer the event strategy, but your mileage may vary).</p>
 <h3 id="looking-up-the-service">Looking up the Service</h3>
 <p>To use the service, the reference must be declared in the service declaration in an <em>reference</em> element. Here is the respective declaration for a log service to lookup:</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>LogService Reference</B></DIV><DIV class="codeContent panelContent">
-    <component...>
-       ...
-        <reference name="http"
-            interface="org.osgi.service.http.HttpService"
-            cardinality="1..1" 
-            policy="static"
-        />
-       ...
-    </component></p>
+<div class="codehilite"><pre><span class="nt">&lt;component...&gt;</span>
+   ...
+    <span class="nt">&lt;reference</span> <span class="na">name=</span><span class="s">&quot;http&quot;</span>
+        <span class="na">interface=</span><span class="s">&quot;org.osgi.service.http.HttpService&quot;</span>
+        <span class="na">cardinality=</span><span class="s">&quot;1..1&quot;</span> 
+        <span class="na">policy=</span><span class="s">&quot;static&quot;</span>
+    <span class="nt">/&gt;</span>
+   ...
+<span class="nt">&lt;/component&gt;</span>
+</pre></div>
+
+
 <p>To use this service you call the <code>ComponentContext.getService(String)</code> method, for example in the <code>activate</code> method:</p>
-<div class="codehilite"><pre><span class="n">protected</span> <span class="n">void</span> <span class="n">activate</span><span class="p">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">HttpService</span> <span class="n">http</span> <span class="o">=</span> <span class="p">(</span> <span class="n">HttpService</span> <span class="p">)</span> <span class="n">context</span><span class="o">.</span><span class="n">locateService</span><span class="p">(</span> <span class="s">&quot;http&quot;</span> <span class="p">);</span>
-<span class="p">}</span>
+<div class="codehilite"><pre><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">activate</span><span class="o">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="o">)</span>
+<span class="o">{</span>
+    <span class="n">HttpService</span> <span class="n">http</span> <span class="o">=</span> <span class="o">(</span> <span class="n">HttpService</span> <span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">locateService</span><span class="o">(</span> <span class="s">&quot;http&quot;</span> <span class="o">);</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -196,35 +197,37 @@
 <p>The event strategy works by declaring bind and unbind methods in the component descriptor. These methods take a single parameter of the type defined in the <em>reference.interface</em> attribute and must be declared <code>public</code> or <code>protected</code>. As with the <code>activate</code> and <code>deactive</code> it is recommended for the bind and unbind methods to be declared <code>protected</code> as they are generally not part of the public API of the component.</p>
 <p>When using the event strategy, you will want to store the service in a private field of the component for later use.</p>
 <p>First here is the reference declaration:</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>LogService Reference</B></DIV><DIV class="codeContent panelContent">
-    <component...>
-       ...
-       <reference name="log"
-             interface="org.osgi.service.log.LogService"
-             cardinality="1..1"
-             policy="static"
-             bind="bindLog"
-             unbind="unbindLog"
-       />
-       ...
-    </component></p>
+<div class="codehilite"><pre><span class="nt">&lt;component...&gt;</span>
+   ...
+   <span class="nt">&lt;reference</span> <span class="na">name=</span><span class="s">&quot;log&quot;</span>
+         <span class="na">interface=</span><span class="s">&quot;org.osgi.service.log.LogService&quot;</span>
+         <span class="na">cardinality=</span><span class="s">&quot;1..1&quot;</span>
+         <span class="na">policy=</span><span class="s">&quot;static&quot;</span>
+         <span class="na">bind=</span><span class="s">&quot;bindLog&quot;</span>
+         <span class="na">unbind=</span><span class="s">&quot;unbindLog&quot;</span>
+   <span class="nt">/&gt;</span>
+   ...
+<span class="nt">&lt;/component&gt;</span>
+</pre></div>
+
+
 <p>And here is some code:</p>
-<div class="codehilite"><pre><span class="n">private</span> <span class="n">LogService</span> <span class="nb">log</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="kd">private</span> <span class="n">LogService</span> <span class="n">log</span><span class="o">;</span>
 
-<span class="n">protected</span> <span class="n">void</span> <span class="n">activate</span><span class="p">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="nb">log</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="n">LogService</span><span class="o">.</span><span class="n">LOG_INFO</span><span class="p">,</span> <span class="s">&quot;Hello Components!&quot;</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">activate</span><span class="o">(</span><span class="n">ComponentContext</span> <span class="n">context</span><span class="o">)</span>
+<span class="o">{</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">,</span> <span class="s">&quot;Hello Components!&quot;</span><span class="o">);</span>
+<span class="o">}</span>
 
-<span class="n">protected</span> <span class="n">void</span> <span class="n">bindLog</span><span class="p">(</span><span class="n">LogService</span> <span class="nb">log</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">this</span><span class="o">.</span><span class="nb">log</span> <span class="o">=</span> <span class="nb">log</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">bindLog</span><span class="o">(</span><span class="n">LogService</span> <span class="n">log</span><span class="o">)</span>
+<span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">log</span> <span class="o">=</span> <span class="n">log</span><span class="o">;</span>
+<span class="o">}</span>
 
-<span class="n">protected</span> <span class="n">void</span> <span class="n">unbindLog</span><span class="p">(</span><span class="n">LogService</span> <span class="nb">log</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">this</span><span class="o">.</span><span class="nb">log</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">unbindLog</span><span class="o">(</span><span class="n">LogService</span> <span class="n">log</span><span class="o">)</span>
+<span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">log</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -247,26 +250,6 @@
 <td><code>ds.loglevel</code></td>
 <td>1</td>
 <td>Defines a logging level at which messages are logged. This configuration property is converted to an <code>int</code> number used as the OSGi Log Service logging level.</td>
-</tr>
-<tr>
-<td>* If the property is a number, the <code>int</code> value of the number is used</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>* If the property is a string parseable to an <code>int</code> the parsed value is used</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>* If the property is any of the strings <em>debug</em>, <em>info</em>, <em>warn</em>, or <em>error</em>, the respective log level of <code>4</code>, <code>3</code>, <code>2</code>, or <code>1</code> is used.</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>* Otherwise, unless the <code>ds.showtrace</code> or <code>ds.showerrors</code> property is set, the default value is assumed</td>
-<td></td>
-<td></td>
 </tr>
 <tr>
 <td><code>ds.showtrace</code></td>
@@ -295,10 +278,17 @@
 </tr>
 </tbody>
 </table>
+<p>The <code>ds.loglevel</code> property is treated as follows:</p>
+<ul>
+<li>If the property is a number, the <code>int</code> value of the number is used</li>
+<li>If the property is a string parseable to an <code>int</code> the parsed value is used</li>
+<li>If the property is any of the strings <em>debug</em>, <em>info</em>, <em>warn</em>, or <em>error</em>, the respective log level of <code>4</code>, <code>3</code>, <code>2</code>, or <code>1</code> is used</li>
+<li>Otherwise, unless the <code>ds.showtrace</code> or <code>ds.showerrors</code> property is set, the default value is assumed</li>
+</ul>
 <p>This configuration mechanism is implemented in the <a href="http://svn.apache.org/repos/asf/felix/trunk/scr/src/main/java/org/apache/felix/scr/impl/config/ScrConfiguration.java">ScrConfiguration</a> and its helper classes.</p>
 <h2 id="non-standard-component-factory-behaviour">Non-Standard Component Factory Behaviour</h2>
 <div class="note" markdown="1">
-If you don't know what this section is about, just ignore it and leave the `ds.factory.enabled` configuration property unconfigured.
+If you don't know what this section is about, just ignore it and leave the <code>ds.factory.enabled</code> configuration property unconfigured.
 </div>
 
 <p>Versions of the Apache Felix Declarative Services implementation prior to 1.2.0 supported handling of Component Factory components which is not specification compliant.</p>
@@ -345,8 +335,8 @@ If you don't know what this section is about, just ignore it and leave the `ds.f
 <h3 id="api-use">API Use</h3>
 <p>The API consists of the main interface <code>org.apache.felix.scr.ScrService</code> and two helper interfaces <code>org.apache.felix.scr.Component</code> describing a registered component and <code>org.apache.felix.scr.Reference</code> describing a single reference of a registered component. To access the management API, client applications just ask for the <code>ScrService</code> as usual:</p>
 <div class="codehilite"><pre><span class="o">....</span>
-<span class="n">ServiceReference</span> <span class="n">scrServiceRef</span> <span class="o">=</span> <span class="n">bundleContext</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">(</span> <span class="n">ScrService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="p">);</span>
-<span class="n">ScrService</span> <span class="n">scrService</span> <span class="o">=</span> <span class="p">(</span><span class="n">ScrService</span><span class="p">)</span> <span class="n">bundleContext</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="n">scrServiceRef</span><span class="p">);</span>
+<span class="n">ServiceReference</span> <span class="n">scrServiceRef</span> <span class="o">=</span> <span class="n">bundleContext</span><span class="o">.</span><span class="na">getServiceReference</span><span class="o">(</span> <span class="n">ScrService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">);</span>
+<span class="n">ScrService</span> <span class="n">scrService</span> <span class="o">=</span> <span class="o">(</span><span class="n">ScrService</span><span class="o">)</span> <span class="n">bundleContext</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">scrServiceRef</span><span class="o">);</span>
 <span class="o">....</span>
 </pre></div>
 
@@ -357,7 +347,7 @@ If you don't know what this section is about, just ignore it and leave the `ds.f
 <p>This tutorial just listed some very basic information on Declarative Service. To get more information, for example on hoe the Configuration Admin Service may be used to configure components, refer to the Declarative Services Sepecification in the OSGi Service Platform <em>Service Compendium</em> book.</p>
 <p>Have Fun !</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1465873 by fmeschbe on Tue, 9 Apr 2013 03:46:54 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
