@@ -104,7 +104,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.html">Handler development</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.html">Dive into the iPOJO Manipulation depths</a></li>
                                     </ul>
@@ -116,11 +116,10 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-ant-task.html">Ant Task</a></li>
-                                <li><a href="">Eclipse Plugin</a></li>
-                                <li><a href="">Maven Plugin</a></li>
-                                <li><a href="">`arch` shell command</a></li>
-                                <li><a href="">Online Manipulator</a></li>
-                                <li><a href="">Webconsole plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-maven-plug-in.html">Maven Plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">Architecture commands</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.html">Online Manipulator</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.html">Webconsole plugin</a></li>
                             </ul>
                         </li>
 
@@ -153,7 +152,560 @@
 
     <div class="container">
         <div class="content">
-            
+            <h1 id="how-to-write-your-ipojo-handler">How to write your iPOJO Handler</h1>
+<p><em>This document explains how developers can use iPOJO extensibility mechanism to extend the (primitive) component instance container. Such extensibility mechanism does not require to modify the iPOJO core.</em></p>
+<div class="toc">
+<ul>
+<li><a href="#how-to-write-your-ipojo-handler">How to write your iPOJO Handler</a><ul>
+<li><a href="#ipojo-concepts">iPOJO Concepts</a></li>
+<li><a href="#handler-development-basis">Handler development basis</a><ul>
+<li><a href="#fundamentals">Fundamentals</a></li>
+<li><a href="#declaring-your-handler">Declaring your handler</a></li>
+<li><a href="#handler-lifecycle">Handler lifecycle</a></li>
+<li><a href="#reading-handler-and-instance-configurations">Reading handler and instance configurations</a></li>
+<li><a href="#interacting-with-the-pojo">Interacting with the POJO</a></li>
+<li><a href="#using-your-handler">Using your handler</a></li>
+</ul>
+</li>
+<li><a href="#log-handler-example">Log Handler example</a><ul>
+<li><a href="#handler-metadata">Handler metadata</a></li>
+<li><a href="#handler-implementation">Handler implementation</a><ul>
+<li><a href="#loghandler-class">LogHandler class</a></li>
+<li><a href="#initializecomponentfactory-method">InitializeComponentFactory Method</a></li>
+<li><a href="#configure-method">Configure Method</a></li>
+<li><a href="#statechanged-method">StateChanged Method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#handler-packaging">Handler packaging</a><ul>
+<li><a href="#handler-usage">Handler usage</a></li>
+</ul>
+</li>
+<li><a href="#properties-handler-example">Properties Handler example</a><ul>
+<li><a href="#handler-implementation_1">Handler implementation</a><ul>
+<li><a href="#propertieshandler-class">PropertiesHandler class</a></li>
+<li><a href="#configure-method_1">Configure Method</a></li>
+<li><a href="#the-start-and-stop-methods">The start and stop methods</a></li>
+<li><a href="#onget-and-onset-methods">onGet and onSet methods</a></li>
+</ul>
+</li>
+<li><a href="#handler-packaging_1">Handler packaging</a></li>
+<li><a href="#handler-usage_1">Handler usage</a></li>
+<li><a href="#download">Download</a></li>
+</ul>
+</li>
+<li><a href="#advanced-topics">Advanced topics</a><ul>
+<li><a href="#handler-reconfiguration">Handler reconfiguration</a></li>
+<li><a href="#describing-your-handler">Describing your handler</a></li>
+</ul>
+</li>
+<li><a href="#handlers-annotations">Handler's annotations</a></li>
+<li><a href="#handlers-xsd">Handler's XSD</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>First, iPOJO concepts are briefly explained. The second section explains the steps to create a handler. The two last sections describes the implementation and the usage of two small example handlers : a Log Handler, logging messages inside the OSGi log service, and a Property Handler, injecting properties values inside fields.</p>
+<h2 id="ipojo-concepts">iPOJO Concepts</h2>
+<p>iPOJO is a service oriented component model aiming to simplify OSGi applications development. iPOJO is based on the POJO concepts. A POJO is a simple Java class without any dependency on its runtime environment. In iPOJO, POJO are encapsulated in a container managing the relation between the POJO and the external world. This container keeps separated the POJO from the external "wild" world. Moreover, this container can be extended, using handlers.</p>
+<p>Basically, iPOJO contains two main concepts: component type and component instance. A component type is a type of component. A component type defines its implementation class, its creation policy, and its container. A component instance is a configured instance of a component type. This instance is created with the component type factory. A component instance inherits of all component type characteristics but has a unique name and its own configuration (set of &lt;key, value&gt;).</p>
+<p>Above these concepts, iPOJO runtime will manage component type factories and component instances. Each component instance is managed separately (but the factory can delete them).</p>
+<p>A component type declares its container configuration. Each component instance owns its container conform to the component type container configuration. An iPOJO container is composed by an <code>InstanceManager</code>, encapsulating the POJO, on which are plugged handlers. A handler manages one non functional concern. Handlers participate to the component instance lifecycle; can interact with the POJO; can manage relations with external entity like database, or other POJOs... For example, a persistence handler may interact with a database to store and inject POJO state, while an administration handler may use JMX to allow remote configuration of instance properties.</p>
+<p><img src="POJO-Container-Handler.png"></p>
+<p>iPOJO is an extensible model allowing developer to manage other non functional concerns. Indeed, handlers can be developed singly, without modifying the iPOJO core. At runtime, iPOJO looks for each handler needed by a component instance and plugs an instance of each (required) handler on the container. So iPOJO containers are flexible, light and adaptable to each component. When a needed handler cannot be found, the component instance cannot be created.</p>
+<p>An external handler is identified by a namespace. This namespace will be used by developers to refer to the external handler (when he configures its component type) and by iPOJO to instantiate the handler object.</p>
+<div class="alert alert-info">
+iPOJO core contains 6 "core" handlers managing service providing, service dependencies, lifecycle callbacks, lifecycle controller, instance dynamic configuration, and component instance architecture. Theses handlers follow the same rules than external handlers, except that they use the iPOJO default namespace (i.e. <code>org.apache.felix.ipojo</code>).
+</div>
+
+<h2 id="handler-development-basis">Handler development basis</h2>
+<h3 id="fundamentals">Fundamentals</h3>
+<p>As explain above, the handler interacts with the POJO, with the component's container and with the external world (e.g. : other components, services, bundles, the OSGi framework, ...). The skeleton of such an agent is defined in iPOJO is defined by the <code>PrimitiveHandler</code> (abstract) class that can be found in the <code>org.apache.felix.ipojo</code> package.</p>
+<p>You need to implement the three basic lifecycle methods of this class, but you can extends this model by redefining some other methods (e.g. : to intercept POJO method calls, field accesses, ...).</p>
+<h3 id="declaring-your-handler">Declaring your handler</h3>
+<p>You first need to declare your handler, so iPOJO will be able to initialize, configure and use it when needed. First, you must give a name and an XML namespace to your handler. By doing that, iPOJO can recognize that a certain component uses your handler, so it can initialize it. You need to declare, in the <code>metadata.xml</code> of the bundle containing your handler, the class name of your handler and its name and XML namespace. You can, of course, declare several handlers, and even declare components using these handlers, in the same bundle.
+Then, you must know that a handler is a component (almost) like standard iPOJO components : it can use other handlers (like core handlers : service requirements, provided services, ...). You can consequently describe your handler's required services, provided services, etc. in its metadata.xml, as for classic iPOJO components.</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
+ ... 
+    <span class="nt">&lt;handler</span> <span class="na">className=</span><span class="s">&quot;your.handler.class&quot;</span> 
+        <span class="na">name=</span><span class="s">&quot;HandlerName&quot;</span> 
+        <span class="na">namespace=</span><span class="s">&quot;the.namespace.of.your.handler&quot;</span><span class="nt">&gt;</span>
+        ...
+        <span class="nt">&lt;provides</span> <span class="na">interface=</span><span class="s">&quot;a.provided.Service&quot;</span><span class="nt">&gt;</span>        
+            <span class="nt">&lt;property</span> <span class="na">field=</span><span class="s">&quot;a_field&quot;</span> 
+                <span class="na">name=</span><span class="s">&quot;a.property&quot;</span> <span class="na">value=</span><span class="s">&quot;a.value&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/provides&gt;</span>
+        ...
+    <span class="nt">&lt;/handler&gt;</span>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
+
+
+<div class="alert alert-info">
+In order to use iPOJO annotations processing, the namespace must be a valid package name and the name must be a valid annotation name (without the '@'). Refer to the <a href="#annotations">annotations</a> section.
+</div>
+
+<div class="alert alert-info">
+It is a good idea to provide a documented XML schema description (XSD) with your handler to help users to configure your handler and to validate their configurations. Refer to the <a href="#xsd">XML Schema</a> section.
+</div>
+
+<h3 id="handler-lifecycle">Handler lifecycle</h3>
+<p>A handler lifecycle is composed of four different states.</p>
+<p><img src="Handler-Lifecycle.png"></p>
+<ul>
+<li>First, when iPOJO parses the <code>metadata.xml</code> of a bundle, it detects that a certain component type use your handler (using XML qualified names, see the following ìUsing your handlerî section). When it finds such a reference, it initializes the handler by calling the <code>initializeComponentFactory()</code> method. This method should be static but actually can't be so for some technical reasons. Consequently, a ìmockî instance of the handler is created, the <code>initializeComponentFactory()</code> method is called, and this instance is destroyed. This method aims to check the validity of the component type description, avoiding starting invalid factories.If you override this method, you should here set up the component description (e.g. : common properties, exported services, ...) and check the handler configuration. The parameters passed to this method are the <code>ComponentTypeDescription</code> and the component's <code>Metadata</code> (i.e. : the structure of the component type declaration).</li>
+<li>Once your handler has been initialized, iPOJO configures it for each created instance of the using components. The <code>ComponentTypeDescription</code> and the instance specific properties are passed to the <code>configure()</code> method of your handler.This method is mandatory so you have to implement it. Here you should check the handler configuration (if not already done in the <code>initializeComponentFactory()</code> method) and configure the handler with given instance specific properties.</li>
+<li>Then, iPOJO starts the handler, following the component instance lifecycle, by calling the <code>start()</code> method. You have to put in this method the activation code of your handler. A freshly started handler is by default in an active state (if all its used handlers, like required services, are in an active state).</li>
+<li>Once started, the handler state can be either in a valid or in an invalid state, depending on its used handlers (a handler is an iPOJO component, so it can depend on other handlers, like service dependencies, provided services, ... See the ìHandler extends Componentî section). The validity of your handler depends on used handlers status, but it also can be changed in your handler code by using the <code>setValidity()</code> method.</li>
+<li>Finally, when the component instance is stopped (generally just before being destroyed), the stop method of the handler is called. Place here the inactivation code of your handler.</li>
+</ul>
+<div class="alert alert-warning">
+Keep in mind that the <code>stop()</code> method of your handler is called when the component instance is stopped (not necessarily destroyed). This instance can be restarted later, so the same instance of your handler must have to ability to restart too.
+</div>
+
+<h3 id="reading-handler-and-instance-configurations">Reading handler and instance configurations</h3>
+<p>Your handler need to read how it is configured in the using component type description. The configuration is written in the <code>metadata.xml</code> of the using bundle, but is passed to the <code>initializeComponentFactory()</code> and <code>configure()</code> methods as an <code>Element</code> object.</p>
+<p>The <code>Element</code> type (placed in the <code>org.apache.felix.ipojo.metadata package</code>), coupled with the <code>Attribute</code> type, is used to retrieve the structure and the content of the component configuration. The <code>Element</code> parameter, passed to the initialization and configuration methods, represents the root of the component type description (i.e. the root of the tree is the <code>component</code> XML tag).</p>
+<p>Several methods allows to browse the entire configuration from the root <code>Element</code> :</p>
+<ul>
+<li>The <code>getElement()</code> methods let you access the content of an <code>Element</code> (i.e. the children elements)</li>
+<li>The <code>getAttribute()</code> methods allows you to access the attributes of an <code>Element</code>.</li>
+<li>The <code>containsElement()</code> and <code>containsAttribute()</code> methods test the presence of a child-element or an attribute in an <code>Element</code>.</li>
+</ul>
+<p><em>Note :</em> As described in the <a href="#description">description</a> section, a name and a namespace are associated to each handler. To safely retrieve the configuration of this handler from the component metadata, you can take inspiration from the following snippet (the <code>componentMetadata</code> variable is the component root <code>Element</code> passed to the <code>initializeComponentFactory()</code> and <code>configure()</code> methods) :</p>
+<div class="codehilite"><pre> <span class="n">Element</span><span class="o">[]</span> <span class="n">handlerConfig</span> <span class="o">=</span> 
+           <span class="n">componentMetadata</span><span class="o">.</span><span class="na">getElements</span><span class="o">(</span><span class="s">&quot;HandlerName&quot;</span><span class="o">,</span>
+                               <span class="s">&quot;the.namespace.of.your.handler&quot;</span><span class="o">);</span>
+</pre></div>
+
+
+<p>You will also need to read specific instance configuration (properties defined in the <code>instance</code> XML tag). The instance properties are directly passed, as a <code>Dictionary,</code> to the <code>configure()</code> method. With these properties, you can easily allow instances to override some component fixed configuration.</p>
+<h3 id="interacting-with-the-pojo">Interacting with the POJO</h3>
+<p>One of the most interesting features of an handler is the ability to interact with the component's POJO. Indeed, you can intercept method calls and returns, inject values in the POJO's fields...</p>
+<p>The <code>getPojoMetadata()</code> method of the PrimitiveHandler class lets you access the structure of the POJO (represented by the <code>PojoMetadata</code> type) without having to use (slow) reflection. It allows you to list all fields and methods of the POJO, and get informations about implemented interfaces and the super-class. The <code>PojoMetadata</code> class implements the following operations :</p>
+<ul>
+<li>The <code>getInterfaces()</code> method returns the list of implemented interfaces, while the <code>isInterfaceImplemented()</code> methods test if a given interface is implemented by the POJO.</li>
+<li>The <code>getSuperClass()</code> method returns the name of the class extended by the POJO (or <code>null</code> instead of <code>java.lang.Object</code>).</li>
+<li>The <code>getField()</code> methods lets you access the fields of the POJO. The returned object is a <code>FieldMetadata</code> that provides informations about a particular field inside the POJO.</li>
+<li>The <code>getMethod()</code> methods lets you access the methods of the POJO. The returned object is a <code>MethodMetadata</code> that provides informations about a particular method in the POJO.</li>
+</ul>
+<p>Once you've retrieved informations about the POJO structure, you can interact with it, via the <code>InstanceManager</code>, accessible in your handler by the <code>getInstanceManager()</code> method. It allows you to register interceptors, that are called before and after POJO method calls or field accesses.</p>
+<div class="alert alert-info">
+The InstanceManager manages the component instance attached to your handler instance. Thus, it can't be available in the <code>initializeComponentFactory()</code> because this method is run before the creation of any component instance.
+</div>
+
+<p>You need to implement some of the following methods to intercept fields accesses :</p>
+<ul>
+<li>The <code>void onSet(Object pojo, String fieldName, Object value)</code> method: This method is called each time a field of the POJO is assigned. The first parameter is the instance of the concerned POJO, the second is the name of the accessed field and the third is the value assigned to the POJO's field. If the field type is a primitive type, this method receives the boxed object.</li>
+<li>The <code>Object onGet(Object pojo, String fieldName, Object value)</code> method : This method is called each time a field of the POJO is read. The first parameter is the instance of the concerned POJO, the second is the name of the accessed field and the third is the actual value of the POJO's field. If the field type is a primitive type, this method receives the boxed object. The returned object is the value the intercepted read process will return. It's the standard way to inject a value in the field : returning a specific object whatever the field really contains.</li>
+</ul>
+<p>You need to implements some of the following methods to intercept methods accesses. When these methods are called, the first parameter is the POJO's instance on which the intercepted method is called and the second parameter contains the descriptor of the called method.</p>
+<ul>
+<li>The <code>void onEntry(Object pojo, Method method, Object[] args)</code> method: This method is called before the execution of an intercepted method. The third parameter is the list of parameters with which the method have been called. The method is executed just after the execution of the <code>onEntry()</code> callback.</li>
+<li>The <code>void onExit(Object pojo, Method method, Object returnedObj)</code> method: This method is called right after the successful execution of an intercepted method. The third parameter is the value returned by the method (or <code>null</code> if the method return type is <code>void</code>). This value must not be modified.</li>
+<li>The <code>void onError(Object pojo, Method method, Throwable throwable)</code> method: This method is called right after the unexpected return of an intercepted method (i.e. when an uncaught exception occurred). The third parameter is the thrown object that caused the method termination.</li>
+<li>The <code>void onFinally(Object pojo, Method method)</code> method: This method is called after the termination of an intercepted method (expected or not), after the call of the <code>onExit()</code> or <code>onError()</code> callback.</li>
+</ul>
+<p><em>Warning :</em> The <code>InstanceManager</code> has to know your handler wants to intercept fields or methods access, otherwise the implemented callbacks won't be called. Thus you need to register each field and method you want to intercept, so the <code>InstanceManager</code> will call the appropriated callbacks when the specified field or method is accessed :</p>
+<div class="codehilite"><pre> <span class="n">getInstanceManager</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="n">anInterestingFieldMetadata</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+ <span class="o">...</span>
+ <span class="n">getInstanceManager</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="n">anInterestingMethodMetadata</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+ <span class="o">...</span>
+</pre></div>
+
+
+<div class="alert alert-info">
+The <code>PrimitiveHandler</code> abstract class implements the <code>FieldInterceptor</code> and <code>MethodInterceptor</code> interfaces, which declares the methods described just above. You can create your own interceptor class (implementing one or both of these interfaces) and give it to the <code>InstanceManager</code> register method instead of the handler object itself.
+</div>
+
+<h3 id="using-your-handler">Using your handler</h3>
+<p>Once your handler has been declared, you can use it in iPOJO components. To do so, you first have to be bound to your handler's namespace (using standard XML namespace declaration). Then you can configure the handler in your components type description. An example of bundle's <code>metadata.xml</code> declaring components using the handler is shown hereafter :</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo</span> <span class="na">xmlns:your-shortcut=</span><span class="s">&quot;the.namespace.of.your.handler&quot;</span><span class="nt">&gt;</span>
+    ...
+    <span class="nt">&lt;component</span> <span class="na">className=</span><span class="s">&quot;your.component.class&quot;</span><span class="nt">&gt;</span>
+        ...
+        <span class="nt">&lt;your-shortcut:HandlerName</span> <span class="na">param1=</span><span class="s">&quot;value1&quot;</span> <span class="err">...</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- </span>
+<span class="c">            Configuration of your handler for </span>
+<span class="c">            this component type</span>
+<span class="c">             --&gt;</span>
+        <span class="err">&lt;</span>/your-shortcut{noformat}:HandlerName&gt;
+        ...
+    <span class="nt">&lt;/component&gt;</span>
+    ...
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
+
+
+<p>The remainder of this document describes two examples of handlers:
+<em> A log handler logging messages in the OSGi Log Service
+</em> A properties handler reading a property files to configure POJO field</p>
+<h2 id="log-handler-example">Log Handler example</h2>
+<p>This section describes how to create a simple handler. This handler logs a message in the <em>OSGi Log Service</em> (if present) when the component instance state changes. The code source of this handler is downloadable <a href="loghandler.zip">here</a>.</p>
+<h3 id="handler-metadata">Handler metadata</h3>
+<p>The handler namespace is <code>org.apache.felix.ipojo.log.handler.LogHandler</code>. It is also the name of the handler implementation class. You can note that the handler has an optional dependency on a OSGi log service. If no log services are found, a default implementation is used instead.</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
+    <span class="c">&lt;!-- Declare the handler --&gt;</span>
+    <span class="nt">&lt;handler</span> 
+        <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.handler.log.LogHandler&quot;</span>  
+        <span class="na">name=</span><span class="s">&quot;log&quot;</span>  
+        <span class="na">namespace=</span><span class="s">&quot;org.apache.felix.ipojo.log.handler.LogHandler&quot;</span> <span class="nt">&gt;</span>
+        <span class="c">&lt;!-- The log service dependency --&gt;</span>
+        <span class="nt">&lt;requires</span> <span class="na">field=</span><span class="s">&quot;m_log&quot;</span>  <span class="na">optional=</span><span class="s">&quot;true&quot;</span>  
+        <span class="na">default-implementation=</span>
+         <span class="s">&quot;org.apache.felix.ipojo.handler.log.PrimitiveLogService&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/handler&gt;</span>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
+
+
+<h3 id="handler-implementation">Handler implementation</h3>
+<p>The handler needs to override following methods:
+<em>  <code>configure</code> : to parse the metadata and load the properties file
+</em>  <code>stateChanged</code> : to log messages when the instance state changes.</p>
+<h4 id="loghandler-class">LogHandler class</h4>
+<p>The handler is implemented inside the <code>LogHandler</code> class in the <code>org.apache.felix.ipojo.handler.log</code> package. This class extends the <code>org.apache.felix.ipojo.PrimitiveHandler</code> class.
+The handler needs to be notified when component instances becomes valid or invalid, thus it implements the <code>InstanceStateListener</code> interface.</p>
+<h4 id="initializecomponentfactory-method">InitializeComponentFactory Method</h4>
+<p>This method parses and checks the component type metadata. The handler needs a log element from its namespace. According to the result, the configure method can throw an exception or parse the level attribute (to get the logging level).</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">initializeComponentFactory</span><span class="o">(</span><span class="n">ComponentTypeDescription</span> <span class="n">typeDesc</span><span class="o">,</span>
+                                       <span class="n">Element</span> <span class="n">metadata</span><span class="o">)</span>
+                                      <span class="kd">throws</span> <span class="n">ConfigurationException</span> <span class="o">{</span>
+
+    <span class="c1">// Get all Namespace:log element from the metadata </span>
+    <span class="n">Element</span><span class="o">[]</span> <span class="n">log_elements</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="na">getElements</span><span class="o">(</span><span class="s">&quot;log&quot;</span><span class="o">,</span> <span class="n">NAMESPACE</span><span class="o">);</span>  
+    <span class="k">if</span> <span class="o">(</span><span class="n">log</span> <span class="n">elements</span><span class="o">.</span><span class="na">length</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// There must be exactly one configuration element.</span>
+        <span class="n">Element</span> <span class="n">log_element</span> <span class="o">=</span> <span class="n">log_elements</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span> <span class="c1">// There must be a level attribute </span>
+                                               <span class="c1">// in the configuration element </span>
+        <span class="k">if</span><span class="o">(</span><span class="n">log_element</span><span class="o">.</span><span class="na">containsAttribute</span><span class="o">(</span><span class="s">&quot;level&quot;</span><span class="o">))</span> <span class="o">{</span> 
+            <span class="n">String</span> <span class="n">level</span> <span class="o">=</span> <span class="n">log_element</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&quot;level&quot;</span><span class="o">);</span> <span class="c1">// Check the value of the </span>
+                                                              <span class="c1">// level attribute</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">level</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;No level attribute found in the configuration&quot;</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">level</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;info&quot;</span><span class="o">)</span> <span class="o">&amp;&amp;</span> 
+                <span class="o">!</span><span class="n">level</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;warning&quot;</span><span class="o">)</span> <span class="o">&amp;&amp;</span> 
+                <span class="o">!</span><span class="n">level</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;error&quot;</span><span class="o">))</span> <span class="o">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;Bad log level specified, &quot;</span>
+                <span class="o">+</span> <span class="s">&quot;accepted values are : info, warning, error&quot;</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h4 id="configure-method">Configure Method</h4>
+<p>This method reads the component description and configures the handler. Then, the handler registers itself to the instance manager to be informed of the component's validity changes.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">Element</span> <span class="n">metadata</span><span class="o">,</span> <span class="n">Dictionary</span> <span class="n">config</span><span class="o">)</span>
+                                <span class="kd">throws</span> <span class="n">ConfigurationException</span> <span class="o">{</span>
+
+   <span class="c1">// Get the configuration element</span>
+   <span class="n">Element</span> <span class="n">log_element</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="na">getElements</span><span class="o">(</span><span class="s">&quot;log&quot;</span><span class="o">,</span> <span class="n">NAMESPACE</span><span class="o">)[</span><span class="mi">0</span><span class="o">];</span>
+
+   <span class="c1">// Get the level attribute&#39;s value</span>
+   <span class="n">String</span> <span class="n">level</span> <span class="o">=</span> <span class="n">log_element</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&quot;level&quot;</span><span class="o">);</span>
+
+   <span class="c1">// Extract the log level</span>
+   <span class="k">if</span><span class="o">(</span><span class="n">level</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;info&quot;</span><span class="o">))</span> <span class="o">{</span> 
+       <span class="n">m_level</span> <span class="o">=</span> <span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">level</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;warning&quot;</span><span class="o">))</span> <span class="o">{</span> 
+       <span class="n">m_level</span> <span class="o">=</span> <span class="n">LogService</span><span class="o">.</span><span class="na">LOG_WARNING</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">level</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;error&quot;</span><span class="o">))</span> <span class="o">{</span> 
+       <span class="n">m_level</span> <span class="o">=</span> <span class="n">LogService</span><span class="o">.</span><span class="na">LOG_ERROR</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="n">m_manager</span> <span class="o">=</span> <span class="n">getInstanceManager</span><span class="o">();</span> 
+    <span class="n">m_context</span> <span class="o">=</span> <span class="n">m_manager</span><span class="o">.</span><span class="na">getContext</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h4 id="statechanged-method">StateChanged Method</h4>
+<p>This method is called by the instance manager to notify that the component instance state changes. The handler needs to log a message containing the new state.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">stateChanged</span><span class="o">(</span><span class="kt">int</span> <span class="n">state</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// Log the state changed events</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">InstanceManager</span><span class="o">.</span><span class="na">VALID</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">m_level</span><span class="o">,</span> <span class="s">&quot;The component instance &quot;</span> 
+            <span class="o">+</span> <span class="n">m_manager</span><span class="o">.</span><span class="na">getInstanceName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot; becomes VALID&quot;</span><span class="o">);</span> 
+    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">InstanceManager</span><span class="o">.</span><span class="na">INVALID</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">m_level</span><span class="o">,</span> <span class="s">&quot;The component instance &quot;</span> 
+            <span class="o">+</span> <span class="n">m_manager</span><span class="o">.</span><span class="na">getInstanceName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot; becomes INVALID&quot;</span><span class="o">);</span> 
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="handler-packaging">Handler packaging</h2>
+<p>This handler needs to be packaged inside an iPOJO bundle. The bundle will import the <code>org.apache.felix.ipojo</code>, <code>org.osgi.framework</code> and <code>org.osgi.service.log</code> packages.</p>
+<h3 id="handler-usage">Handler usage</h3>
+<p>To use this handler, a component needs to declare an <code>org.apache.felix.ipojo.log.handler.LogHandler:log</code> XML element, with a level attribute. This level attribute's value can be <code>"error"</code>, <code>"warning"</code> or <code>"info"</code>. Here is an usage example:</p>
+<div class="codehilite"><pre><span class="nt">&lt;ipojo</span> <span class="na">xmlns:log=</span><span class="s">&quot;org.apache.felix.ipojo.log.handler.LogHandler&quot;</span><span class="nt">&gt;</span>
+
+    <span class="c">&lt;!-- Declare a component using the LogHandler --&gt;</span>
+    <span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
+        ...
+        <span class="c">&lt;!-- Configuration of the LogHandler ?</span>
+<span class="c">        &lt;log:log level=&quot;WARNING&quot;/&gt;</span>
+<span class="c">     &lt;/component&gt;</span>
+<span class="c">     ...</span>
+<span class="c">&lt;/ipojo&gt;</span>
+</pre></div>
+
+
+<h2 id="properties-handler-example">Properties Handler example</h2>
+<p>This section presents a second handler. This handler loads a property file containing field name and initial value. Then it injects and maintains these values inside POJO fields. In this example, only String values are managed.</p>
+<p>You can find the sources of this example handler in the <code>example/handler/property</code> directory of the iPOJO sources.</p>
+<p>This handler is always valid, so do not participate to the component instance lifecycle. Moreover, the handler does not need to be notified when the component instance state changed. But, it need to be notified when POJO fields need a value or change their value.</p>
+<h3 id="handler-implementation_1">Handler implementation</h3>
+<p>The handler needs to override following methods:</p>
+<ul>
+<li><code>configure</code> : to parse the metadata and load the properties file </li>
+<li><code>stop</code> : to store the properties </li>
+<li><code>onGet</code> : to inject a values inside a field </li>
+<li><code>onSet</code> : to obtain the new field value </li>
+</ul>
+<h4 id="propertieshandler-class">PropertiesHandler class</h4>
+<p>The handler is implemented by the <code>PropertiesHandler</code> class present in the <code>org.apache.felix.ipojo.properties.handler</code> package. The class has several fields:</p>
+<ul>
+<li>The properties to maintain (<code>m_properties</code>) </li>
+<li>The properties file name (<code>m_file</code>) </li>
+</ul>
+<p><em>Note:</em> the file name is the absolute path on the local machine of the file.</p>
+<h4 id="configure-method_1">Configure Method</h4>
+<p>This method begins by parsing the component type metadata. The handler needs a properties element from its namespace. According to the result, the configure method can return immediately or parse the file attribute (to get the properties file path). Then, it builds a field list (String array) to register to field notification. By registering with a field array, the handler will be a part of the component instance container and will be notified of field access.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">Element</span> <span class="n">metadata</span><span class="o">,</span> <span class="n">Dictionary</span> <span class="n">configuration</span><span class="o">)</span>
+                                             <span class="kd">throws</span> <span class="n">ConfigurationException</span> <span class="o">{</span>
+    <span class="c1">// Parse metadata to get &lt;properties file=&quot;$file&quot;/&gt;</span>
+    <span class="c1">// Get all example.handler.properties:properties element</span>
+    <span class="n">Element</span><span class="o">[]</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="na">getElements</span><span class="o">(</span><span class="s">&quot;properties&quot;</span><span class="o">,</span> <span class="n">NAMESPACE</span><span class="o">).</span>   
+    <span class="k">switch</span> <span class="o">(</span><span class="n">elem</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="mi">0</span><span class="o">:</span> <span class="c1">// No matching element in metadata, throw a configuration error. </span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;No properties found&quot;</span><span class="o">);</span>
+        <span class="k">case</span> <span class="mi">1</span><span class="o">:</span> <span class="c1">// One &#39;properties&#39; found, get attributes</span>
+            <span class="n">m_file</span> <span class="o">=</span> <span class="n">elem</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&quot;file&quot;</span><span class="o">);</span> 
+            <span class="k">if</span> <span class="o">(</span><span class="n">m_file</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// if file is null, throw a configuration error. </span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;Malformed properties &quot;</span> 
+                   <span class="o">+</span> <span class="s">&quot; element : file attribute must be set&quot;</span><span class="o">);</span>
+             <span class="o">}</span> 
+             <span class="k">break</span><span class="o">;</span>
+         <span class="k">default</span><span class="o">:</span> <span class="c1">// To simplify we handle only one properties element. </span>
+             <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;Only one properties element is supported&quot;</span><span class="o">);</span> 
+     <span class="o">}</span>  
+     <span class="c1">// Look if the instance configuration overrides file location : </span>
+     <span class="n">String</span> <span class="n">instanceFile</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">configuration</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;properties.file&quot;</span><span class="o">);</span> 
+     <span class="k">if</span> <span class="o">(</span><span class="n">instanceFile</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+         <span class="n">m_file</span> <span class="o">=</span> <span class="n">instanceFile</span><span class="o">;</span> 
+      <span class="o">}</span>
+      <span class="c1">// Load properties</span>
+      <span class="k">try</span><span class="o">{</span>
+          <span class="n">loadProperties</span><span class="o">();</span>
+      <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;Error when reading the &quot;</span> 
+             <span class="o">+</span>  <span class="n">m_file</span> <span class="o">+</span> <span class="s">&quot; file : &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span> 
+      <span class="o">}</span>
+      <span class="c1">// Register fields </span>
+      <span class="c1">// By convention, properties file entries are field name, </span>
+      <span class="c1">// so looks for each property to get field list.</span>
+      <span class="c1">//First get the Pojo Metadata metadata:</span>
+      <span class="n">PojoMetadata</span> <span class="n">pojoMeta</span> <span class="o">=</span> <span class="n">getPojoMetadata</span><span class="o">();</span>
+      <span class="n">Enumeration</span> <span class="n">e</span> <span class="o">=</span> <span class="n">m_properties</span><span class="o">.</span><span class="na">keys</span><span class="o">();</span>
+      <span class="k">while</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">hasMoreElements</span><span class="o">())</span> <span class="o">{</span> 
+          <span class="n">String</span> <span class="n">field</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">e</span><span class="o">.</span><span class="na">nextElement</span><span class="o">();</span>
+          <span class="n">FieldMetadata</span> <span class="n">fm</span> <span class="o">=</span> <span class="n">pojoMeta</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">field</span><span class="o">);</span>
+          <span class="k">if</span><span class="o">(</span><span class="n">fm</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span>
+              <span class="c1">//The field does not exist</span>
+              <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;The field &quot;</span> <span class="o">+</span> <span class="n">field</span> <span class="o">+</span> 
+                   <span class="s">&quot; is declared in the properties file but does not &quot;</span> <span class="o">+</span>
+                   <span class="s">&quot; exist in the pojo&quot;</span><span class="o">);</span>
+          <span class="o">}</span>
+          <span class="c1">// Then check that the field is a String field </span>
+          <span class="k">if</span> <span class="o">(!</span><span class="n">fm</span><span class="o">.</span><span class="na">getFieldType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()))</span> <span class="o">{</span> 
+              <span class="k">throw</span> <span class="k">new</span> <span class="nf">ConfigurationException</span><span class="o">(</span><span class="s">&quot;The field &quot;</span> <span class="o">+</span> <span class="n">field</span> <span class="o">+</span> 
+                  <span class="s">&quot; exists in the pojo, but is not a String&quot;</span><span class="o">);</span> 
+          <span class="o">}</span> 
+          <span class="c1">// All checks are ok, register the interceptor. </span>
+          <span class="n">getInstanceManager</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="n">fm</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h4 id="the-start-and-stop-methods">The start and stop methods</h4>
+<p>The start method does nothing, but needs to be implemented.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{}</span>
+</pre></div>
+
+
+<p>The stop method stores properties inside the properties file.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{</span> 
+    <span class="k">try</span> <span class="o">{</span> 
+        <span class="n">saveProperties</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="c1">// Log an error message by using the iPOJO logger </span>
+        <span class="n">error</span><span class="o">(</span><span class="s">&quot;Cannot read the file : &quot;</span> <span class="o">+</span> <span class="n">m_file</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span> 
+    <span class="o">}</span> 
+    <span class="n">m_properties</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h4 id="onget-and-onset-methods">onGet and onSet methods</h4>
+<p>The onGet method is called when the POJO need a field value. When called, the method needs to return the stored value.The onSet method is called when the POJO modifies a field value. If the new value if null, the handler will remove this properties from the property list.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="n">Object</span> <span class="nf">onGet</span><span class="o">(</span><span class="n">Object</span> <span class="n">pojo</span><span class="o">,</span> <span class="n">String</span> <span class="n">field</span><span class="o">,</span> <span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span> 
+    <span class="c1">// When the pojo requires a value for a managed field,</span>
+    <span class="c1">// this method is invoked. </span>
+    <span class="c1">// So, we have just to return the stored value. </span>
+    <span class="k">return</span> <span class="n">m_properties</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">field</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onSet</span><span class="o">(</span><span class="n">Object</span> <span class="n">pojo</span><span class="o">,</span> <span class="n">String</span> <span class="n">field</span><span class="o">,</span> <span class="n">Object</span> <span class="n">newvalue</span><span class="o">)</span> <span class="o">{</span> 
+    <span class="c1">// When the pojo set a value to a managed field, </span>
+    <span class="c1">// this method is invoked. </span>
+    <span class="c1">// So, we update the stored value. </span>
+    <span class="n">m_properties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">field</span><span class="o">,</span> <span class="n">newvalue</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="handler-packaging_1">Handler packaging</h3>
+<p>This handler needs to be inside a bundle importing the <code>org.apache.felix.ipojo</code> packages and exporting the <code>org.apache.felix.ipojo.properties.handler</code> package.</p>
+<h3 id="handler-usage_1">Handler usage</h3>
+<p>To use this handler, a component need to declare an <code>Properties</code> XML element in the <code>org.apache.felix.ipojo.properties.handler</code> namespace, with a <code>file</code> attribute indicating the absolute file path of the properties file.</p>
+<p><em>Note :</em> you need to escape '\' (anti-slash characters) in the file path name.</p>
+<h3 id="download">Download</h3>
+<p>The PropertiesHandler is available <a href="property-handler.zip">here</a>. The archive file contains the handler implementation and a simple component using this handler.</p>
+<h2 id="advanced-topics">Advanced topics</h2>
+<h3 id="handler-reconfiguration">Handler reconfiguration</h3>
+<p>iPOJO has the ability to reconfigure component instances while they are running. When instances are reconfigured, their used handler need to update their configuration (if they support such an operation). 
+To do so, reconfigurable handlers must override the <code>reconfigure()</code> method, which notify the concerned handlers of the new instance configuration (represented as a <code>Dictionary</code>).</p>
+<p><a name="description"></a></p>
+<h3 id="describing-your-handler">Describing your handler</h3>
+<p>Handlers have the possibility to describe their state, overriding the <code>getDescription()</code> method and the <code>HandlerDescription</code> class. 
+By default, only the handler's name and validity are displayed in component instance's description (informations displayed by the (<code>arch -instance an.instance.name</code> command). The standard way to add description to your handler is shown hereafter :</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">YourHandler</span> <span class="kd">extends</span> <span class="n">PrimitiveHandler</span> <span class="o">{</span>  
+    <span class="o">...</span> 
+    <span class="c1">// Method returning the handler description. </span>
+    <span class="kd">public</span> <span class="n">HandlerDescription</span> <span class="nf">getDescription</span><span class="o">()</span> <span class="o">{</span> 
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">YourHandlerDescription</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="o">...</span>
+
+    <span class="kd">private</span> <span class="kd">class</span> <span class="nc">YourHandlerDescription</span> <span class="kd">extends</span> <span class="n">HandlerDescription</span> <span class="o">{</span>  
+        <span class="kd">public</span> <span class="nf">Description</span><span class="o">(</span><span class="n">PrimitiveHandler</span> <span class="n">h</span><span class="o">)</span> <span class="o">{</span> <span class="kd">super</span><span class="o">(</span><span class="n">h</span><span class="o">);</span> <span class="o">}</span>
+
+        <span class="c1">// Method returning the custom description of this handler. </span>
+        <span class="kd">public</span> <span class="n">Element</span> <span class="nf">getHandlerInfo</span><span class="o">()</span> <span class="o">{</span> 
+             <span class="c1">// Needed to get the root description element. </span>
+             <span class="n">Element</span> <span class="n">elem</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">getHandlerInfo</span><span class="o">();</span>  
+             <span class="c1">// Add here attributes and sub-elements </span>
+             <span class="c1">// into the root description element. </span>
+             <span class="c1">// Example : elem.addAttribute(new Attribute(&quot;param&quot;, &quot;value&quot;)); </span>
+             <span class="n">Element</span> <span class="n">subElement</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Element</span><span class="o">(</span><span class="s">&quot;subElement&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">);</span> 
+             <span class="n">subElement</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="k">new</span> <span class="n">Attribute</span><span class="o">(</span><span class="s">&quot;subParam&quot;</span><span class="o">,</span> <span class="s">&quot;subValue&quot;</span><span class="o">));</span> 
+             <span class="n">elem</span><span class="o">.</span><span class="na">addElement</span><span class="o">(</span><span class="n">subElement</span><span class="o">);</span>
+             <span class="o">...</span>
+             <span class="k">return</span> <span class="n">elem</span><span class="o">;</span> 
+       <span class="o">}</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><a name="annotations"></a></p>
+<h2 id="handlers-annotations">Handler's annotations</h2>
+<p>Your handle can also provide annotations. Annotations will allows users to configure the Handler from the source code (avoiding XML edition). iPOJO supports annotation of external handlers. Indeed, it detects annotations and re-creates the <code>Element-Attribute</code> structure.
+So, first, external Handler annotations <em>MUST</em> follow some principles:</p>
+<ul>
+<li>The annotation package must be the Handler namespace</li>
+<li>The annotation name must be the Handler name</li>
+<li>The package must contain either the 'ipojo' or the 'handler' word.</li>
+</ul>
+<p>So, when iPOJO detects the annotation, an Element is created with the annotation package as the <code>Element namespace</code> and the annotation name as the <code>Element name</code>.
+Then, 'scalar' annotation attributes are mapped to Attribute. Sub-annotations (annotation attribute) are mapped to sub-elements. For example, the annotation for the property handler is:</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">felix</span><span class="o">.</span><span class="na">ipojo</span><span class="o">.</span><span class="na">properties</span><span class="o">.</span><span class="na">handler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+
+<span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Properties</span> <span class="o">{</span>
+
+    <span class="n">String</span> <span class="nf">file</span><span class="o">();</span>
+
+<span class="o">}</span>
+</pre></div>
+
+
+<p>This annotations is put on the  element, and allows setting the property file:</p>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Properties</span><span class="o">(</span><span class="n">file</span><span class="o">=</span><span class="s">&quot;/Users/clement/felix/properties/i1.properties&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>However, your handler can also provide several annotations to represent Element and sub-elements. Your annotations can also be placed on different code elements (Type, Field, Method). In this case, to recreate the Element/Sub-Element hierarchy, iPOJO processes as following:</p>
+<ul>
+<li>The first annotation of a package <code>P</code> is processed by creating the root Element (component sub-element).</li>
+<li>All others annotations of the package <code>P</code> are processed as sub-element of the previously created Element.</li>
+</ul>
+<p>For example, the following code:</p>
+<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Component</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.handlers.jmx.Config</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.handlers.jmx.Method</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.handlers.jmx.Property</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="nd">@Config</span><span class="o">(</span><span class="n">domain</span><span class="o">=</span><span class="s">&quot;my-domain&quot;</span><span class="o">,</span> <span class="n">usesMOSGi</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span> <span class="c1">// External handler annotation</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">JMXSimple</span> <span class="o">{</span>
+
+    <span class="nd">@Property</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;prop&quot;</span><span class="o">,</span> <span class="n">notification</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">rights</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="o">)</span> <span class="c1">//External handler annotation</span>
+    <span class="n">String</span> <span class="n">m_foo</span><span class="o">;</span>
+
+    <span class="nd">@Method</span><span class="o">(</span><span class="n">description</span><span class="o">=</span><span class="s">&quot;set the foo prop&quot;</span><span class="o">)</span> <span class="c1">//External handler annotation</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setFoo</span><span class="o">(</span><span class="n">String</span> <span class="n">mes</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Set foo to &quot;</span> <span class="o">+</span> <span class="n">mes</span><span class="o">);</span>
+        <span class="n">m_foo</span> <span class="o">=</span> <span class="n">mes</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Method</span><span class="o">(</span><span class="n">description</span><span class="o">=</span><span class="s">&quot;get the foo prop&quot;</span><span class="o">)</span> <span class="c1">//External handler annotation</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">m_foo</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>will be translated to:</p>
+<div class="codehilite"><pre>component <span class="o">{</span> 
+    <span class="nv">$classname</span><span class="o">=</span><span class="s2">&quot;org.apache.felix.ipojo.test.scenarios.component.jmx.JMXSimple&quot;</span>
+    <span class="nv">$public</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="nv">$name</span><span class="o">=</span><span class="s2">&quot;org.apache.felix.ipojo.test.scenarios.component.jmx.JMXSimple&quot;</span>
+    org.apache.felix.ipojo.handlers.jmx:config <span class="o">{</span> 
+        <span class="nv">$usesmosgi</span><span class="o">=</span><span class="s2">&quot;false&quot;</span> <span class="nv">$domain</span><span class="o">=</span><span class="s2">&quot;my-domain&quot;</span> 
+        org.apache.felix.ipojo.handlers.jmx:property <span class="o">{</span> 
+            <span class="nv">$rights</span><span class="o">=</span><span class="s2">&quot;w&quot;</span> <span class="nv">$notification</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="nv">$field</span><span class="o">=</span><span class="s2">&quot;m_foo&quot;</span> <span class="nv">$name</span><span class="o">=</span><span class="s2">&quot;prop&quot;</span> <span class="o">}</span>
+        org.apache.felix.ipojo.handlers.jmx:method <span class="o">{</span> 
+            <span class="nv">$description</span><span class="o">=</span><span class="s2">&quot;set the foo prop&quot;</span> <span class="nv">$method</span><span class="o">=</span><span class="s2">&quot;setFoo&quot;</span> <span class="o">}</span>
+        org.apache.felix.ipojo.handlers.jmx:method <span class="o">{</span> 
+            <span class="nv">$description</span><span class="o">=</span><span class="s2">&quot;get the foo prop&quot;</span> <span class="nv">$method</span><span class="o">=</span><span class="s2">&quot;getFoo&quot;</span> <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>Note:</em> To customize this hierarchy, you can also use the <code>id/parent</code> annotation attributse. The id attribute is used to refer to an Element. An annotation with a <code>parent</code> (targeting an <code>id</code>) attribute will be processed as a sub-element of the Element identified by the given <code>id</code>.</p>
+<p><a name="schemas"></a></p>
+<h2 id="handlers-xsd">Handler's XSD</h2>
+<p>Coming soon...</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this document, we present how-to develop handler for your components. We describe two small examples : a log handler and a properties handler. These handlers are plugged on (primitive) instance. However, it is possible to extends <code>CompositeHandler</code> too to customize the composition model.</p>
+<p>If you develop handler and you want to share it, feel free to contact us by sending a mail on the Felix mailing list.</p>
         </div>
     </div>
 
@@ -168,7 +720,7 @@
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1465947 by clement on Tue, 9 Apr 2013 09:37:22 +0000
                 </div>
             </div>
         </footer>           

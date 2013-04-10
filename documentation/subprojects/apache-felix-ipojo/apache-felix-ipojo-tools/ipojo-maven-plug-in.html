@@ -104,7 +104,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="">Handler development</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.html">Handler development</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.html">Dive into the iPOJO Manipulation depths</a></li>
                                     </ul>
@@ -116,11 +116,10 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-ant-task.html">Ant Task</a></li>
-                                <li><a href="">Eclipse Plugin</a></li>
-                                <li><a href="">Maven Plugin</a></li>
-                                <li><a href="">`arch` shell command</a></li>
-                                <li><a href="">Online Manipulator</a></li>
-                                <li><a href="">Webconsole plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-maven-plug-in.html">Maven Plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">Architecture commands</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.html">Online Manipulator</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.html">Webconsole plugin</a></li>
                             </ul>
                         </li>
 
@@ -154,163 +153,185 @@
     <div class="container">
         <div class="content">
             <h1 id="how-to-use-the-ipojo-maven-plug-in">How to use the iPOJO Maven Plug-in</h1>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
+<div class="toc">
+<ul>
+<li><a href="#how-to-use-the-ipojo-maven-plug-in">How to use the iPOJO Maven Plug-in</a><ul>
+<li><a href="#basic-configuration">Basic configuration</a></li>
+<li><a href="#execution">Execution</a></li>
+<li><a href="#configuration-options">Configuration Options</a></li>
+<li><a href="#generate-the-skeleton-of-your-ipojo-bundle">Generate the skeleton of your iPOJO bundle</a></li>
+<li><a href="#describing-ipojo-configuration-in-the-pom-file">Describing iPOJO configuration in the pom file</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="basic-configuration">Basic configuration</h2>
-<p>To use the iPOJO Maven plug-in, edit the following pom.xml (replace all $XXX elements):
-{div:class=pom}
-<project>
-&nbsp;<modelVersion>4.0.0</modelVersion></p>
-<p>&nbsp;<packaging>bundle</packaging> <!-- Use the BND Maven plug-in -->
-{color:red}&nbsp;{color} {color:red}<groupId>$YOUR<em>GROUP</em>ID</groupId>{color}
-{color:red}&nbsp;{color} {color:red}<artifactId>$YOUR<em>ARTIFACT</em>ID</artifactId>{color}
-{color:red}&nbsp;{color} {color:red}<version>$YOUR<em>ARTIFACT</em>VERSION</version>{color}
-{color:red}&nbsp;{color} {color:red}<name>$YOUR<em>PROJECT</em>NAME</name>{color}</p>
-<p>{color:red}&nbsp;{color} {color:red}<dependencies>{color}
-{color:red}&nbsp;&nbsp;&nbsp;{color} {color:red}$YOUR<em>MAVEN</em>DEPENDENCIES{color}
-{color:red}&nbsp;{color} {color:red}</dependencies>{color}</p>
-<p>&nbsp;<build>
-&nbsp;&nbsp;&nbsp;<plugins>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- BND Maven Plugin Configuration -->
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<plugin>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<artifactId>maven-bundle-plugin</artifactId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <extensions>true</extensions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <configuration>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <instructions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color}{color:red}<Private-Package>$YOUR<em>PRIVATE</em>PACKAGE</Private-Package>{color}
-{color:red}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color}{color:red}<Export-Package>$YOUR<em>EXPORTED</em>PACKAGE</Export-Package>{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</instructions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</configuration>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</plugin>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- iPOJO Maven Plugin Configuration : nothing to do -->
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<plugin>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<artifactId>maven-ipojo-plugin</artifactId>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<version>1.6.0</version>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<executions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<execution>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<goal>ipojo-bundle</goal>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</execution>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</executions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</plugin>
-&nbsp;&nbsp;&nbsp;</plugins>
-&nbsp;</build>
-</project>
-{div}
-The iPOJO Maven Plug-in is generally used with the BND Maven Plug-in (more details here). However the two configurations are completely separated. So, you can use all BND Maven plug-in features. The iPOJO configuration section can be used as previously written without any changes. However it requires that your metadata file is either inside <code>src/main/ipojo</code> or inside the <code>src/main/resources</code> folder and named "metadata.xml".</p>
+<p>To use the iPOJO Maven plug-in, edit the following pom.xml (replace all $XXX elements):</p>
+<div class="codehilite"><pre><span class="nt">&lt;project&gt;</span>
+    <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+
+    <span class="nt">&lt;groupId&gt;</span>$YOUR_GROUP_ID<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>$YOUR_ARTIFACT_ID<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>$YOUR_ARTIFACT_VERSION<span class="nt">&lt;/version&gt;</span>
+
+    <span class="nt">&lt;name&gt;</span>$YOUR_PROJECT_NAME<span class="nt">&lt;/name&gt;</span>
+
+    <span class="c">&lt;!-- Use the bundle packaging type --&gt;</span>
+    <span class="nt">&lt;packaging&gt;</span>bundle<span class="nt">&lt;/packaging&gt;</span>
+
+    <span class="nt">&lt;dependencies&gt;</span>
+       $YOUR_MAVEN_DEPENDENCIES
+    <span class="nt">&lt;/dependencies&gt;</span>
+
+    <span class="nt">&lt;build&gt;</span>
+      <span class="nt">&lt;plugins&gt;</span>
+          <span class="c">&lt;!-- BND Maven Plugin Configuration --&gt;</span>
+          <span class="nt">&lt;plugin&gt;</span>
+              <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+              <span class="nt">&lt;artifactId&gt;</span>maven-bundle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+               <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+               <span class="nt">&lt;configuration&gt;</span>
+                   <span class="nt">&lt;instructions&gt;</span>
+                       <span class="nt">&lt;Bundle-SymbolicName&gt;</span>${pom.artifactId}<span class="nt">&lt;/Bundle-SymbolicName&gt;</span>
+                      <span class="nt">&lt;Private-Package&gt;</span>$YOUR_PRIVATE_PACKAGE<span class="nt">&lt;/Private-Package&gt;</span>
+                      <span class="nt">&lt;Export-Package&gt;</span>$YOUR_EXPORTED_PACKAGE<span class="nt">&lt;/Export-Package&gt;</span>
+                  <span class="nt">&lt;/instructions&gt;</span>
+              <span class="nt">&lt;/configuration&gt;</span>
+          <span class="nt">&lt;/plugin&gt;</span>
+          <span class="nt">&lt;plugin&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>maven-ipojo-plugin<span class="nt">&lt;/artifactId&gt;</span>
+                <span class="nt">&lt;version&gt;</span>1.8.6<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;executions&gt;</span>
+                    <span class="nt">&lt;execution&gt;</span>
+                        <span class="nt">&lt;goals&gt;</span>
+                            <span class="nt">&lt;goal&gt;</span>ipojo-bundle<span class="nt">&lt;/goal&gt;</span>
+                        <span class="nt">&lt;/goals&gt;</span>
+                  <span class="nt">&lt;/execution&gt;</span>
+              <span class="nt">&lt;/executions&gt;</span>
+          <span class="nt">&lt;/plugin&gt;</span>
+      <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>The iPOJO Maven Plug-in is generally used with the BND Maven Plug-in (more details here). However the two configurations are completely separated. So, you can use all BND Maven plug-in features. The iPOJO configuration section can be used as previously written without any changes. However it requires that your metadata file is either inside <code>src/main/ipojo</code> or inside the <code>src/main/resources</code> folder and named "metadata.xml".</p>
 <h2 id="execution">Execution</h2>
-<p>To manipulate your project, use the "<em>mvn clean install</em>" command. The output should be like:
-{div:class=pom}
-[INFO]() Scanning for projects...
-[INFO]() ----------------------------------------------------------------------------
-[INFO]() Building Hello Client
-[INFO]()&nbsp;&nbsp;&nbsp;task-segment: [clean, install]
-[INFO]() ----------------------------------------------------------------------------
-[INFO]() [clean:clean]
-[INFO]() Deleting directory D:\clement\workspaces\iPOJO-Dev\hello.client\target
-[INFO]() Deleting directory D:\clement\workspaces\iPOJO-Dev\hello.client\target\classes
-[INFO]() Deleting directory D:\clement\workspaces\iPOJO-Dev\hello.client\target\test-classes
-[INFO]() Deleting directory D:\clement\workspaces\iPOJO-Dev\hello.client\target\site
-[INFO]() [resources:resources]
-[INFO]() Using default encoding to copy filtered resources.
-[INFO]() Copying 1 resource
-[INFO]() [compiler:compile]
-[INFO]() Compiling 1 source file to D:\clement\workspaces\iPOJO-Dev\hello.client\target\classes
-[INFO]() [resources:testResources]
-[INFO]() Using default encoding to copy filtered resources.
-[INFO]() Resource directory does not exist: D:\clement\workspaces\iPOJO-Dev\hello.client\src\test\resources
-[INFO]() [compiler:testCompile]
-[INFO]() No sources to compile
-[INFO]() [surefire:test]
-[INFO]() No tests to run.
-[INFO]() [bundle:bundle]
-[INFO]() [org.apache.felix.ipojo.:ipojo-bundle {execution: default}]
-[INFO]() Start bundle manipulation
-[INFO]() Metadata File : D:\clement\workspaces\iPOJO-Dev\hello.client\target\classes\metadata.xml
-[INFO]() Input Bundle File : D:\clement\workspaces\iPOJO-Dev\hello.client\target\hello.client-0.0.1.jar
-[INFO]() Bundle manipulation - SUCCESS
-[INFO]() [install:install]
-[INFO]() Installing D:\clement\workspaces\iPOJO-Dev\hello.client\target\hello.client-0.0.1.jar to D:\Dev\maven-repo\ipojo\example\hello.client\0.0.1\hello.client-0.0.1.jar
-[INFO]() ------------------------------------------------------------------------
-[INFO]() BUILD SUCCESSFUL
-[INFO]() ------------------------------------------------------------------------
-[INFO]() Total time: 9 seconds
-[INFO]() Finished at: Mon Aug 13 14:04:55 CEST 2007
-[INFO]() Final Memory: 6M/13M
-[INFO]() ------------------------------------------------------------------------
-{div}</p>
+<p>To manipulate your project, use the "<em>mvn clean install</em>" command. The output should be like:</p>
+<div class="codehilite"><pre><span class="o">[</span>INFO<span class="o">]</span> Scanning <span class="k">for </span>projects...
+<span class="o">[</span>INFO<span class="o">]</span> ----------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> Building Hello Client
+<span class="o">[</span>INFO<span class="o">]</span>      task-segment: <span class="o">[</span>clean, install<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> ----------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>clean:clean<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> Deleting directory ...hello.client<span class="se">\t</span>arget
+<span class="o">[</span>INFO<span class="o">]</span> Deleting directory ...hello.client<span class="se">\t</span>arget<span class="se">\c</span>lasses
+<span class="o">[</span>INFO<span class="o">]</span> Deleting directory ...hello.client<span class="se">\t</span>arget<span class="se">\t</span>est-classes
+<span class="o">[</span>INFO<span class="o">]</span> Deleting directory ...hello.client<span class="se">\t</span>arget<span class="se">\s</span>ite
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>resources:resources<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> Using default encoding to copy filtered resources.
+<span class="o">[</span>INFO<span class="o">]</span> Copying 1 resource
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>compiler:compile<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> Compiling 1 <span class="nb">source </span>file to ...hello.client<span class="se">\t</span>arget<span class="se">\c</span>lasses
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>resources:testResources<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> Using default encoding to copy filtered resources.
+<span class="o">[</span>INFO<span class="o">]</span> Resource directory does not exist: ...hello.client<span class="se">\s</span>rc<span class="se">\t</span>est<span class="se">\r</span>esources
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>compiler:testCompile<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> No sources to compile
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>surefire:test<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> No tests to run.
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>bundle:bundle<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>org.apache.felix.ipojo.:ipojo-bundle <span class="o">{</span>execution: default<span class="o">}]</span>
+<span class="o">[</span>INFO<span class="o">]</span> Start bundle manipulation
+<span class="o">[</span>INFO<span class="o">]</span> Metadata File : ...hello.client<span class="se">\t</span>arget<span class="se">\c</span>lasses<span class="se">\m</span>etadata.xml
+<span class="o">[</span>INFO<span class="o">]</span> Input Bundle File : ...hello.client<span class="se">\t</span>arget<span class="se">\h</span>ello.client-0.0.1.jar
+<span class="o">[</span>INFO<span class="o">]</span> Bundle manipulation - SUCCESS
+<span class="o">[</span>INFO<span class="o">]</span> <span class="o">[</span>install:install<span class="o">]</span>
+<span class="o">[</span>INFO<span class="o">]</span> Installing ...hello.client<span class="se">\t</span>arget<span class="se">\h</span>ello.client-0.0.1.jar to D:<span class="se">\D</span>ev<span class="se">\m</span>aven-repo<span class="se">\i</span>pojo<span class="se">\e</span>xample<span class="se">\h</span>ello.client<span class="se">\0</span>.0.1<span class="se">\h</span>ello.client-0.0.1.jar
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> BUILD SUCCESSFUL
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+<span class="o">[</span>INFO<span class="o">]</span> Total <span class="nb">time</span>: 9 seconds
+<span class="o">[</span>INFO<span class="o">]</span> Finished at: Mon Aug 13 14:04:55 CEST 2007
+<span class="o">[</span>INFO<span class="o">]</span> Final Memory: 6M/13M
+<span class="o">[</span>INFO<span class="o">]</span> ------------------------------------------------------------------------
+</pre></div>
+
+
 <h2 id="configuration-options">Configuration Options</h2>
-<p>You can configure the localization of the iPOJO metadata file as following:
-{div:class=pom}
-<plugin>
-&nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp; <artifactId>maven-ipojo-plugin</artifactId>
-&nbsp;&nbsp;&nbsp; <version>1.6.0</version>
-&nbsp;&nbsp;&nbsp; <executions>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <execution>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <goal>ipojo-bundle</goal>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <configuration>
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{color:red}<metadata>ipojo/meta.xml</metadata>{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </configuration>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;</execution>
-&nbsp;&nbsp;&nbsp;</executions>
-</plugin>
-{div}
-In the metadata element, you can specify your metadata file or directory. The given file path is relative to the root directory ("./ipojo/meta.xml"). If the specified location is a directory, all contained XML files will be used. By default, the plugin searches metadata files into the <code>src/main/ipojo</code> folder. If not found then it searches for <code>target/classes/metadata.xml</code> and <code>./metadata.xml</code>.</p>
-<p><em>Note:</em> The directory support was introduced in the <code>1.7.0</code> version. Previously only one metadata file was found.
-<em>Compatibility:</em> Before the <code>1.7.0</code>, the set location was searched in all resource folders. This is no more supported because it's an anti-pattern.</p>
-<p>The second option allows skipping annotations processing, by using the <code>ignoreAnnotations</code> element:
-{div:class=pom}
-<plugin>
-&nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp; <artifactId>maven-ipojo-plugin</artifactId>
-&nbsp;&nbsp;&nbsp; <version>1.6.0</version>
-&nbsp;&nbsp;&nbsp; <executions>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <execution>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <goal>ipojo-bundle</goal>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <configuration>
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;{color:red}<ignoreAnnotations>true</ignoreAnnotations>{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </configuration>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;</execution>
-&nbsp;&nbsp;&nbsp;</executions>
-</plugin>
-{div}</p>
-<p>You can also ignore embedded XML-Schemas to use external ones. To do so, add the <code>ignoreEmbeddedSchemas</code>. If set to <code>true</code>, the manipulator doesn't use embedded XML-Schemas:
-{div:class=pom}
-<plugin>
-&nbsp;&nbsp;&nbsp; <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;&nbsp; <artifactId>maven-ipojo-plugin</artifactId>
-&nbsp;&nbsp;&nbsp; <version>1.6.0</version>
-&nbsp;&nbsp;&nbsp; <executions>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <execution>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <goal>ipojo-bundle</goal>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <configuration>
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;{color:red}<ignoreEmbeddedSchemas>true</ignoreEmbeddedSchemas>{color}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </configuration>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;</execution>
-&nbsp;&nbsp;&nbsp;</executions>
-</plugin>
-{div}</p>
+<p>You can configure the localization of the iPOJO metadata file as following:</p>
+<div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
+       <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+       <span class="nt">&lt;artifactId&gt;</span>maven-ipojo-plugin<span class="nt">&lt;/artifactId&gt;</span>
+       <span class="nt">&lt;version&gt;</span>1.8.6<span class="nt">&lt;/version&gt;</span>
+       <span class="nt">&lt;executions&gt;</span>
+              <span class="nt">&lt;execution&gt;</span>
+              <span class="nt">&lt;goals&gt;</span>
+                      <span class="nt">&lt;goal&gt;</span>ipojo-bundle<span class="nt">&lt;/goal&gt;</span>
+               <span class="nt">&lt;/goals&gt;</span>
+               <span class="nt">&lt;configuration&gt;</span>
+                        <span class="nt">&lt;metadata&gt;</span>ipojo/meta.xml<span class="nt">&lt;/metadata&gt;</span>
+               <span class="nt">&lt;/configuration&gt;</span>
+               <span class="nt">&lt;/execution&gt;</span>
+      <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
+</pre></div>
+
+
+<p>In the metadata element, you can specify your metadata file or directory. The given file path is relative to the root directory ("./ipojo/meta.xml"). If the specified location is a directory, all contained XML files will be used. By default, the plugin searches metadata files into the <code>src/main/ipojo</code> folder. If not found then it searches for <code>target/classes/metadata.xml</code> and <code>./metadata.xml</code>.</p>
+<div class="alert alert-info">
+The directory support was introduced in the `1.7.0` version. Previously only one metadata file was found.
+Before the `1.7.0`, the set location was searched in all resource folders. This is no more supported because it's an anti-pattern.
+</div>
+
+<p>The second option allows skipping annotations processing, by using the <code>ignoreAnnotations</code> element:</p>
+<div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
+       <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+       <span class="nt">&lt;artifactId&gt;</span>maven-ipojo-plugin<span class="nt">&lt;/artifactId&gt;</span>
+       <span class="nt">&lt;version&gt;</span>1.8.6<span class="nt">&lt;/version&gt;</span>
+       <span class="nt">&lt;executions&gt;</span>
+              <span class="nt">&lt;execution&gt;</span>
+              <span class="nt">&lt;goals&gt;</span>
+                      <span class="nt">&lt;goal&gt;</span>ipojo-bundle<span class="nt">&lt;/goal&gt;</span>
+               <span class="nt">&lt;/goals&gt;</span>
+               <span class="nt">&lt;configuration&gt;</span>
+                      <span class="nt">&lt;ignoreAnnotations&gt;</span>true<span class="nt">&lt;/ignoreAnnotations&gt;</span>
+               <span class="nt">&lt;/configuration&gt;</span>
+               <span class="nt">&lt;/execution&gt;</span>
+      <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
+</pre></div>
+
+
+<p>You can also ignore embedded XML-Schemas to use external ones. To do so, add the <code>ignoreEmbeddedSchemas</code>. If set to <code>true</code>, the manipulator doesn't use embedded XML-Schemas:</p>
+<div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
+       <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+       <span class="nt">&lt;artifactId&gt;</span>maven-ipojo-plugin<span class="nt">&lt;/artifactId&gt;</span>
+       <span class="nt">&lt;version&gt;</span>1.8.6<span class="nt">&lt;/version&gt;</span>
+       <span class="nt">&lt;executions&gt;</span>
+              <span class="nt">&lt;execution&gt;</span>
+              <span class="nt">&lt;goals&gt;</span>
+                      <span class="nt">&lt;goal&gt;</span>ipojo-bundle<span class="nt">&lt;/goal&gt;</span>
+               <span class="nt">&lt;/goals&gt;</span>
+               <span class="nt">&lt;configuration&gt;</span>
+                      <span class="nt">&lt;ignoreEmbeddedSchemas&gt;</span>true<span class="nt">&lt;/ignoreEmbeddedSchemas&gt;</span>
+               <span class="nt">&lt;/configuration&gt;</span>
+               <span class="nt">&lt;/execution&gt;</span>
+      <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
+</pre></div>
+
+
 <h2 id="generate-the-skeleton-of-your-ipojo-bundle">Generate the skeleton of your iPOJO bundle</h2>
 <p>The maven-ipojo-plugin provides a way to generate the skeleton of your project. To generate this structure, just launch the following command:</p>
-<div class="codehilite"><pre><span class="n">mvn</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">maven</span><span class="o">.</span><span class="n">plugins:maven</span><span class="o">-</span><span class="n">archetype</span><span class="o">-</span><span class="n">plugin:generate</span> <span class="o">\</span>
-<span class="o">-</span><span class="n">DarchetypeArtifactId</span><span class="o">=</span><span class="n">maven</span><span class="o">-</span><span class="n">ipojo</span><span class="o">-</span><span class="n">plugin</span> <span class="o">\</span>
-<span class="o">-</span><span class="n">DarchetypeGroupId</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span> <span class="o">\</span>
-<span class="o">-</span><span class="n">DartifactId</span><span class="o">=</span><span class="n">ARTIFACT_NAME_OF_YOUR_PROJECT</span> <span class="o">\</span>
-<span class="o">-</span><span class="n">DgroupId</span><span class="o">=</span><span class="n">GROUP_ID_OF_YOUR_PROJECT</span> <span class="o">\</span>
-<span class="o">-</span><span class="n">DarchetypeVersion</span><span class="o">=</span><span class="n">VERSION_OF_YOUR_PROJECT</span> <span class="o">\</span>
-<span class="o">-</span><span class="n">DpackageName</span><span class="o">=</span><span class="n">PACKAGE_NAME</span>
+<div class="codehilite"><pre>mvn org.apache.maven.plugins:maven-archetype-plugin:generate <span class="se">\</span>
+-DarchetypeArtifactId<span class="o">=</span>maven-ipojo-plugin <span class="se">\</span>
+-DarchetypeGroupId<span class="o">=</span>org.apache.felix <span class="se">\</span>
+-DartifactId<span class="o">=</span>ARTIFACT_NAME_OF_YOUR_PROJECT <span class="se">\</span>
+-DgroupId<span class="o">=</span>GROUP_ID_OF_YOUR_PROJECT <span class="se">\</span>
+-DarchetypeVersion<span class="o">=</span>VERSION_OF_YOUR_PROJECT <span class="se">\</span>
+-DpackageName<span class="o">=</span>PACKAGE_NAME
 </pre></div>
 
 
@@ -319,57 +340,56 @@ In the metadata element, you can specify your metadata file or directory. The gi
 </em> the src/main/java and src/main/resources folders, 
 * the structure of your package name.</p>
 <p>The generated project uses iPOJO annotation and is ready to be deployed.</p>
-<div class="info" markdown="1">
-**Maven Archetype**
+<div class="alert alert-info" markdown="1">
+<h4>Maven Archetype</h4>
 The maven-ipojo-plugin archetype generates a pom file using the latest released version of the maven-ipojo-plugin.
 </div>
 
 <h2 id="describing-ipojo-configuration-in-the-pom-file">Describing iPOJO configuration in the pom file</h2>
-<p>It is also possible to describe iPOJO components and instances inside the pom file (avoiding using a externalized file). The configuration can be described in the <code>metadata</code> attribute inside a CDATA block.
-{div:class=pom}
-<plugin>
-&nbsp;&nbsp;    <groupId>org.apache.felix</groupId>
-&nbsp;&nbsp;    <artifactId>maven-ipojo-plugin</artifactId>
-&nbsp;&nbsp;    <version>1.6.0</version>
-&nbsp;&nbsp;    <executions>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    <execution>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        <goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            <goal>ipojo-bundle</goal>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        </goals>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        <configuration>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            <ignoreAnnotations>true</ignoreAnnotations>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            <metadata>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                &lt;![CDATA[
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                <ipojo
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                 xsi:schemaLocation="org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                 xmlns="org.apache.felix.ipojo">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;               <component
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  classname="org.apache.felix.ipojo.test.scenarios.component.LifecycleControllerTest"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  name="LFC-Test">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  <provides />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  <controller field="m_state" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  <properties>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                      <property name="conf" field="m_conf" method="setConf" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  </properties>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;               </component>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;               <component
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  classname="org.apache.felix.ipojo.test.scenarios.component.LifecycleControllerTest"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  name="LFC-Test-Immediate" immediate="true" architecture="true">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  <provides />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  <controller field="m_state" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  <properties>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                      <property name="conf" field="m_conf" method="setConf" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                  </properties>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;               </component>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                </ipojo>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;               ]]&gt;
-&nbsp;&nbsp;&nbsp;          </metadata>
-&nbsp;&nbsp;&nbsp;      </configuration>
-&nbsp;&nbsp;&nbsp;  </execution>
-&nbsp;&nbsp;    </executions>
-</plugin>
-{div}</p>
+<p>It is also possible to describe iPOJO components and instances inside the pom file (avoiding using a externalized file). The configuration can be described in the <code>metadata</code> attribute inside a CDATA block.</p>
+<div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-ipojo-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>1.8.6<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;executions&gt;</span>
+            <span class="nt">&lt;execution&gt;</span>
+                <span class="nt">&lt;goals&gt;</span>
+                    <span class="nt">&lt;goal&gt;</span>ipojo-bundle<span class="nt">&lt;/goal&gt;</span>
+                <span class="nt">&lt;/goals&gt;</span>
+                <span class="nt">&lt;configuration&gt;</span>
+                    <span class="nt">&lt;ignoreAnnotations&gt;</span>true<span class="nt">&lt;/ignoreAnnotations&gt;</span>
+                    <span class="nt">&lt;metadata&gt;</span>
+                            <span class="cp">&lt;![CDATA[</span>
+<span class="cp">                            &lt;ipojo</span>
+<span class="cp">                             xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+<span class="cp">                             xsi:schemaLocation=&quot;org.apache.felix.ipojo http://felix.apache.org/ipojo/schemas/CURRENT/core.xsd&quot;</span>
+<span class="cp">                             xmlns=&quot;org.apache.felix.ipojo&quot;&gt;</span>
+<span class="cp">                             &lt;component</span>
+<span class="cp">                                classname=&quot;org.apache.felix.ipojo.test.scenarios.component.LifecycleControllerTest&quot;</span>
+<span class="cp">                                name=&quot;LFC-Test&quot;&gt;</span>
+<span class="cp">                                &lt;provides /&gt;</span>
+<span class="cp">                                &lt;controller field=&quot;m_state&quot; /&gt;</span>
+<span class="cp">                                &lt;properties&gt;</span>
+<span class="cp">                                    &lt;property name=&quot;conf&quot; field=&quot;m_conf&quot; method=&quot;setConf&quot; /&gt;</span>
+<span class="cp">                                &lt;/properties&gt;</span>
+<span class="cp">                             &lt;/component&gt;</span>
+<span class="cp">                             &lt;component</span>
+<span class="cp">                                classname=&quot;org.apache.felix.ipojo.test.scenarios.component.LifecycleControllerTest&quot;</span>
+<span class="cp">                                name=&quot;LFC-Test-Immediate&quot; immediate=&quot;true&quot; architecture=&quot;true&quot;&gt;</span>
+<span class="cp">                                &lt;provides /&gt;</span>
+<span class="cp">                                &lt;controller field=&quot;m_state&quot; /&gt;</span>
+<span class="cp">                                &lt;properties&gt;</span>
+<span class="cp">                                    &lt;property name=&quot;conf&quot; field=&quot;m_conf&quot; method=&quot;setConf&quot; /&gt;</span>
+<span class="cp">                                &lt;/properties&gt;</span>
+<span class="cp">                             &lt;/component&gt;</span>
+<span class="cp">                            &lt;/ipojo&gt;</span>
+<span class="cp">                           ]]&gt;</span>
+                    <span class="nt">&lt;/metadata&gt;</span>
+                <span class="nt">&lt;/configuration&gt;</span>
+            <span class="nt">&lt;/execution&gt;</span>
+        <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
+</pre></div>
         </div>
     </div>
 
@@ -384,7 +404,7 @@ The maven-ipojo-plugin archetype generates a pom file using the latest released 
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1465947 by clement on Tue, 9 Apr 2013 09:37:22 +0000
                 </div>
             </div>
         </footer>           
