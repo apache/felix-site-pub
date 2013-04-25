@@ -31,6 +31,9 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <!-- Overide alert's colors -->
+    <link href="/ipojo/web/bootstrap/css/alert.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
 
 
@@ -96,11 +99,13 @@
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
-                                        <li><a href="">Factories and Instances</a></li>
-                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.html">XML Schemas</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
-                                        <li><a href="">Testing components</a></li>
-                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.html">Constructing service objects with factory methods</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.html">Using the introspection API</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.html">Testing components</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.html">Eclipse Integration</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
@@ -138,7 +143,8 @@
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
-                                <li><a href="">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/articles-and-presentations.html">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.html">Developping Camel mediators with iPOJO</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -154,253 +160,265 @@
         <div class="content">
             <h1 id="introspecting-instances">Introspecting instances</h1>
 <p><em>iPOJO provides mechanisms to introspect and reconfigure instances. Those features are available from the instance description. Currently, only the reconfiguration of primitive instances is supported.</em></p>
+<div class="toc">
+<ul>
+<li><a href="#introspecting-instances">Introspecting instances</a><ul>
+<li><a href="#getting-instance-descriptions">Getting instance descriptions</a></li>
+<li><a href="#introspecting-primitive-instances">Introspecting primitive instances</a></li>
+<li><a href="#manipulating-dependencies">Manipulating dependencies</a></li>
+<li><a href="#manipulating-provided-services">Manipulating provided services</a></li>
+<li><a href="#manipulating-configuration-properties">Manipulating configuration properties</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="getting-instance-descriptions">Getting instance descriptions</h2>
 <p>There is two way to get the instance description:
 <em> By using the <code>architecture</code> service exposed by an instance providing introspection support.
-</em> By calling the getInstanceDescription() method on a ComponentInstance object (that you create thanks to a Factory)</p>
-<p>{code:java|Getting the instance description from the ComponentInstance object}
-    /*<em>
-     * Returns the instance description.
-     * @return the instance description of the current instance
-     </em>/
-    InstanceDescription getInstanceDescription();</p>
-<div class="codehilite"><pre><span class="n">h2</span><span class="o">.</span> <span class="n">Introspecting</span> <span class="n">primitive</span> <span class="n">instances</span>
+</em> By calling the <code>getInstanceDescription()</code> method on a ComponentInstance object (that you create thanks to a Factory)</p>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * Returns the instance description.</span>
+<span class="cm"> * @return the instance description of the current instance</span>
+<span class="cm"> */</span>
+<span class="n">InstanceDescription</span> <span class="nf">getInstanceDescription</span><span class="o">();</span>
+</pre></div>
 
-<span class="n">Once</span> <span class="n">you</span> <span class="n">get</span> <span class="n">the</span>  <span class="n">object</span><span class="p">,</span> <span class="n">cast</span> <span class="n">it</span> <span class="n">in</span>  <span class="p">(</span><span class="n">be</span> <span class="n">sure</span> <span class="n">that</span> <span class="n">it</span> <span class="n">is</span> <span class="n">really</span> <span class="n">a</span> <span class="n">primitive</span> <span class="n">instance</span><span class="p">)</span><span class="o">.</span>
-<span class="n">Then</span><span class="p">,</span> <span class="n">you</span> <span class="n">have</span> <span class="n">access</span> <span class="n">to</span> <span class="n">every</span> <span class="n">primitive</span> <span class="n">instance</span> <span class="n">aspects:</span>
-<span class="n">service</span> <span class="n">dependencies</span>
-<span class="n">provided</span> <span class="n">services</span>
-<span class="n">configuration</span> <span class="n">properties</span>
-<span class="n">get</span> <span class="n">created</span> <span class="n">implementation</span> <span class="n">objects</span>
 
-<span class="p">{</span><span class="n">code:java</span><span class="o">|</span><span class="n">title</span><span class="o">=</span><span class="n">Primitive</span> <span class="n">Instance</span> <span class="n">Description</span> <span class="n">methods</span><span class="p">}</span>
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Gets</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">object</span> <span class="n">created</span> <span class="n">by</span> <span class="n">the</span> <span class="n">described</span> <span class="n">instance</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@return</span> <span class="n">the</span> <span class="n">created</span> <span class="n">objects</span><span class="o">.</span>
-     <span class="o">*/</span>
-    <span class="n">public</span> <span class="n">String</span><span class="o">[]</span> <span class="n">getCreatedObjects</span><span class="p">()</span> <span class="p">{</span>
-        <span class="o">...</span>
-    <span class="p">}</span>
+<h2 id="introspecting-primitive-instances">Introspecting primitive instances</h2>
+<p>Once you get the  object, cast it in  (be sure that it is really a primitive instance).
+Then, you have access to every primitive instance aspects:</p>
+<ul>
+<li>service dependencies</li>
+<li>provided services</li>
+<li>configuration properties</li>
+<li>get created implementation objects</li>
+</ul>
+<p>&nbsp;</p>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * Gets the list of object created by the described instance.</span>
+<span class="cm"> * @return the created objects.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">getCreatedObjects</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
 
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Gets</span> <span class="n">the</span> <span class="n">instance</span> <span class="n">service</span> <span class="n">dependencies</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@return</span> <span class="n">the</span> <span class="n">set</span> <span class="n">of</span> <span class="n">dependency</span> <span class="n">description</span> <span class="ow">or</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">array</span> <span class="k">if</span>
-     <span class="o">*</span> <span class="nb">no</span> <span class="n">dependencies</span><span class="o">.</span>
-     <span class="o">*/</span>
-    <span class="n">public</span> <span class="n">DependencyDescription</span><span class="o">[]</span> <span class="n">getDependencies</span><span class="p">()</span> <span class="p">{</span>
-        <span class="o">...</span>
-    <span class="p">}</span>
+<span class="cm">/**</span>
+<span class="cm"> * Gets the instance service dependencies.</span>
+<span class="cm"> * @return the set of dependency description or an empty array if</span>
+<span class="cm"> * no dependencies.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">DependencyDescription</span><span class="o">[]</span> <span class="nf">getDependencies</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
 
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Gets</span> <span class="n">the</span> <span class="n">instance</span> <span class="n">service</span> <span class="n">dependency</span> <span class="n">matching</span> <span class="n">with</span> <span class="n">the</span> <span class="n">given</span> <span class="n">service</span> <span class="n">specification</span> <span class="ow">or</span> <span class="n">id</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@param</span> <span class="n">specification</span> <span class="n">the</span> <span class="n">service</span> <span class="n">specification</span> <span class="n">of</span> <span class="n">the</span> <span class="n">looked</span> <span class="n">specification</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@return</span> <span class="n">the</span> <span class="n">dependency</span> <span class="n">description</span> <span class="n">matching</span> <span class="n">with</span> <span class="n">the</span> <span class="n">given</span> <span class="n">service</span> <span class="n">specification</span> <span class="ow">or</span> <span class="n">id</span><span class="o">.</span>
-     <span class="o">*</span> <span class="sr">&lt;code&gt;</span><span class="n">null</span><span class="sr">&lt;/code&gt;</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">found</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nb">no</span> <span class="n">dependencies</span><span class="o">.</span>
-     <span class="o">*/</span>
-    <span class="n">public</span> <span class="n">DependencyDescription</span> <span class="n">getDependency</span><span class="p">(</span><span class="n">String</span> <span class="n">specification</span><span class="p">)</span> <span class="p">{</span>
-        <span class="o">...</span>
-    <span class="p">}</span>
+<span class="cm">/**</span>
+<span class="cm"> * Gets the instance service dependency matching with the given service specification or id.</span>
+<span class="cm"> * @param specification the service specification of the looked specification.</span>
+<span class="cm"> * @return the dependency description matching with the given service specification or id.</span>
+<span class="cm"> * &lt;code&gt;null&lt;/code&gt; is not found.</span>
+<span class="cm"> * no dependencies.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">DependencyDescription</span> <span class="nf">getDependency</span><span class="o">(</span><span class="n">String</span> <span class="n">specification</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
 
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Gets</span> <span class="n">the</span> <span class="n">instance</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">matching</span> <span class="n">with</span> <span class="n">the</span> <span class="n">given</span> <span class="n">service</span> <span class="n">specification</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@param</span> <span class="n">specification</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">specification</span> <span class="n">of</span> <span class="n">the</span> <span class="n">looked</span> <span class="n">provided</span> <span class="n">service</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@return</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">description</span> <span class="n">matching</span> <span class="n">with</span> <span class="n">the</span> <span class="n">given</span> <span class="n">service</span> <span class="n">specification</span><span class="o">.</span>
-     <span class="o">*</span> <span class="sr">&lt;code&gt;</span><span class="n">null</span><span class="sr">&lt;/code&gt;</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">found</span><span class="o">.</span>
-     <span class="o">*/</span>
-    <span class="n">public</span> <span class="n">ProvidedServiceDescription</span> <span class="n">getProvidedService</span><span class="p">(</span><span class="n">String</span> <span class="n">specification</span><span class="p">)</span> <span class="p">{</span>
-        <span class="o">...</span>
-    <span class="p">}</span>
+<span class="cm">/**</span>
+<span class="cm"> * Gets the instance provided service matching with the given service specification.</span>
+<span class="cm"> * @param specification the provided specification of the looked provided service.</span>
+<span class="cm"> * @return the provided service description matching with the given service specification.</span>
+<span class="cm"> * &lt;code&gt;null&lt;/code&gt; is not found.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">ProvidedServiceDescription</span> <span class="nf">getProvidedService</span><span class="o">(</span><span class="n">String</span> <span class="n">specification</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
 
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Gets</span> <span class="n">the</span> <span class="n">instance</span> <span class="n">provided</span> <span class="n">service</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@return</span> <span class="n">the</span> <span class="n">set</span> <span class="n">of</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">description</span> <span class="ow">or</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">array</span> <span class="k">if</span>
-     <span class="o">*</span> <span class="nb">no</span> <span class="n">provided</span> <span class="n">services</span><span class="o">.</span>
-     <span class="o">*/</span>
-    <span class="n">public</span> <span class="n">ProvidedServiceDescription</span><span class="o">[]</span> <span class="n">getProvidedServices</span><span class="p">()</span> <span class="p">{</span>
-        <span class="o">...</span>
-    <span class="p">}</span>
+<span class="cm">/**</span>
+<span class="cm"> * Gets the instance provided service.</span>
+<span class="cm"> * @return the set of provided service description or an empty array if</span>
+<span class="cm"> * no provided services.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">ProvidedServiceDescription</span><span class="o">[]</span> <span class="nf">getProvidedServices</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
 
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Gets</span> <span class="n">the</span> <span class="n">instance</span> <span class="n">properties</span><span class="o">.</span>
-     <span class="o">*</span> <span class="nv">@return</span> <span class="n">the</span> <span class="n">set</span> <span class="n">of</span> <span class="n">property</span> <span class="n">descriptions</span> <span class="ow">or</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">array</span> <span class="k">if</span>
-     <span class="o">*</span> <span class="nb">no</span> <span class="n">properties</span><span class="o">.</span>
-     <span class="o">*/</span>
-    <span class="n">public</span> <span class="n">PropertyDescription</span><span class="o">[]</span> <span class="n">getProperties</span><span class="p">()</span> <span class="p">{</span>
-        <span class="o">...</span>
-    <span class="p">}</span>
+<span class="cm">/**</span>
+<span class="cm"> * Gets the instance properties.</span>
+<span class="cm"> * @return the set of property descriptions or an empty array if</span>
+<span class="cm"> * no properties.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">PropertyDescription</span><span class="o">[]</span> <span class="nf">getProperties</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <h2 id="manipulating-dependencies">Manipulating dependencies</h2>
-<p class=".. ">You can get service dependencies from the <code>PrimitiveInstanceDescription</code>. Once you get the dependency (<code>DependencyDescription</code> object that you want to manipulate you can call one of those method on it:
-{code:java}
-    public boolean isMultiple()</p>
-<div class="codehilite"><pre>public boolean isOptional() { ... }
+<p>You can get service dependencies from the <code>PrimitiveInstanceDescription</code>. Once you get the dependency (<code>DependencyDescription</code> object that you want to manipulate you can call one of those method on it:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isMultiple</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public String getFilter() { ... }
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isOptional</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public String getInterface() { ... }
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getFilter</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public int getState() { ... }
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getInterface</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public String getId() { ... }
+<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getState</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public boolean supportsNullable() { ... }
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public String getDefaultImplementation() { ... }
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">supportsNullable</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public int getPolicy() { ... }
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getDefaultImplementation</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public String getComparator() { ... }
+<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getPolicy</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-public boolean isFrozen() { ... }
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getComparator</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Gets the service reference list.
- * @return the list of matching service reference,
- * <span class="nt">&lt;code&gt;</span>null<span class="nt">&lt;/code&gt;</span> if no service reference.
- */
-public List getServiceReferences() { ... }
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isFrozen</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Gets the service reference if only one service reference is used.
- * @return the ServiceReference (only if the cardinality could be 1),
- * or <span class="nt">&lt;code&gt;</span>null<span class="nt">&lt;/code&gt;</span> if no service reference.
- */
-public ServiceReference getServiceReference() { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Gets the service reference list.</span>
+<span class="cm"> * @return the list of matching service reference,</span>
+<span class="cm"> * &lt;code&gt;null&lt;/code&gt; if no service reference.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">List</span> <span class="nf">getServiceReferences</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Gets the used service set.
- * @return the list [service reference]() containing the used services,
- * <span class="nt">&lt;code&gt;</span>null<span class="nt">&lt;/code&gt;</span> if no providers are used
- */
-public List getUsedServices() { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Gets the service reference if only one service reference is used.</span>
+<span class="cm"> * @return the ServiceReference (only if the cardinality could be 1),</span>
+<span class="cm"> * or &lt;code&gt;null&lt;/code&gt; if no service reference.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">ServiceReference</span> <span class="nf">getServiceReference</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Sets the dependency comparator.
- * The reference set will be sort at the next usage.
- * @param cmp the comparator
- */
-public void setComparator(Comparator cmp) { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Gets the used service set.</span>
+<span class="cm"> * @return the list [service reference]() containing the used services,</span>
+<span class="cm"> * &lt;code&gt;null&lt;/code&gt; if no providers are used</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">List</span> <span class="nf">getUsedServices</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Sets the dependency filter.
- * @param filter the new LDAP filter
- */
-public void setFilter(Filter filter) { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Sets the dependency comparator.</span>
+<span class="cm"> * The reference set will be sort at the next usage.</span>
+<span class="cm"> * @param cmp the comparator</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setComparator</span><span class="o">(</span><span class="n">Comparator</span> <span class="n">cmp</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Sets the dependency cardinality.
- * @param isAgg if <span class="nt">&lt;code&gt;</span>true<span class="nt">&lt;/code&gt;</span> sets the dependency to aggregate,
- * if <span class="nt">&lt;code&gt;</span>false<span class="nt">&lt;/code&gt;</span> sets the dependency to scalar.
- */
-public void setAggregate(boolean isAgg) { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Sets the dependency filter.</span>
+<span class="cm"> * @param filter the new LDAP filter</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setFilter</span><span class="o">(</span><span class="n">Filter</span> <span class="n">filter</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Sets the dependency optionality.
- * @param isOpt if <span class="nt">&lt;code&gt;</span>true<span class="nt">&lt;/code&gt;</span> sets the dependency to optional,
- * if <span class="nt">&lt;code&gt;</span>false<span class="nt">&lt;/code&gt;</span> sets the dependency to mandatory.
- */
-public void setOptional(boolean isOpt) { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Sets the dependency cardinality.</span>
+<span class="cm"> * @param isAgg if &lt;code&gt;true&lt;/code&gt; sets the dependency to aggregate,</span>
+<span class="cm"> * if &lt;code&gt;false&lt;/code&gt; sets the dependency to scalar.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAggregate</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">isAgg</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Gets the required service specification name.
- * @return the required service specification class name.
- */
-public String getSpecification() { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Sets the dependency optionality.</span>
+<span class="cm"> * @param isOpt if &lt;code&gt;true&lt;/code&gt; sets the dependency to optional,</span>
+<span class="cm"> * if &lt;code&gt;false&lt;/code&gt; sets the dependency to mandatory.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setOptional</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">isOpt</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-These methods allows getting the dependency state as well as reconfiguring the dependency by setting a new filter...
-
-There is a slightly difference between the  methods and the  method. The first ones returns the list of matching provider. The second one returns the list of currently used providers.
-
-h2. Manipulating provided services
-You also can manipulate provided services . 
-{code:java}
-/**
-     * Gets the list of provided service specifications.
-     * @return the provided contract name.
-     */
-    public String[] getServiceSpecifications() { ... }
-
-    /**
-     * Gets the list of properties.
-     * A copy of the actual property set is returned.
-     * @return the properties.
-     */
-    public Properties getProperties() { ... }
-
-    /**
-     * Adds and Updates service properties.
-     * Existing properties are updated. 
-     * New ones are added.
-     * @param props the new properties
-     */
-    public void addProperties(Dictionary props) { ... }
-
-    /**
-     * Removes service properties.
-     * @param props the properties to remove
-     */
-    public void removeProperties(Dictionary props) { ...  }
-
-    /**
-     * Gets provided service state.
-     * @return the state of the provided service (UNREGISTERED | REGISTRED).
-     */
-    public int getState() { ... }
-
-    /**
-     * Gets the service reference.
-     * @return the service reference (null if the service is unregistered).
-     */
-    public ServiceReference getServiceReference() { ... }
-
-    /**
-     * Gets the &#39;main&#39; service object.
-     * @return the &#39;main&#39; service object or <span class="nt">&lt;code&gt;</span>null<span class="nt">&lt;/code&gt;</span>
-     * if no service object are created.
-     */
-    public Object getService() { ... }
-
-    public Object[] getServices() { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Gets the required service specification name.</span>
+<span class="cm"> * @return the required service specification class name.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getSpecification</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 </pre></div>
 
 
-<p class=".. ">Thanks to these method, you can get service objects, get the registered services, and manipulate service properties.
-H2. Manipulating configuration properties
-The last think that you can do from the <code>PrimitiveInstanceDescription</code> is to get configuration properties (<code>PropertyDescription</code>). 
-{code:java}
- /*<em>
-     * Gets the current property name.
-     * @return the property name.
-     </em>/
-    public String getName()</p>
-<div class="codehilite"><pre>/**
- * Gets the current property type.
- * @return the property type.
- */
-public String getType() { ... }
+<p>These methods allows getting the dependency state as well as reconfiguring the dependency by setting a new filter... </p>
+<p>There is a slightly difference between the <code>getServiceReference(s)</code> methods and the <code>getUsedServices</code> method. The first ones returns the list of matching provider. The second one returns the list of currently used providers. </p>
+<h2 id="manipulating-provided-services">Manipulating provided services</h2>
+<p>You also can manipulate provided services . </p>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * Gets the list of provided service specifications.</span>
+<span class="cm"> * @return the provided contract name.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">getServiceSpecifications</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Gets the current property value.
- * @return the default value for the property,
- * <span class="nt">&lt;code&gt;</span>null<span class="nt">&lt;/code&gt;</span> if the property hasn&#39;t a value..
- */
-public String getValue() { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Gets the list of properties.</span>
+<span class="cm"> * A copy of the actual property set is returned.</span>
+<span class="cm"> * @return the properties.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">Properties</span> <span class="nf">getProperties</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-/**
- * Sets the property value.
- * This method can only be called on &#39;living&#39; property
- * (properties with a {@link Property} object).
- * @param value the new value.
- */
-public void setValue(Object value) { ... }
+<span class="cm">/**</span>
+<span class="cm"> * Adds and Updates service properties.</span>
+<span class="cm"> * Existing properties are updated. </span>
+<span class="cm"> * New ones are added.</span>
+<span class="cm"> * @param props the new properties</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addProperties</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">props</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 
-With these methods you can get a property object and update its value dynamically. 
-\\
-\\
+<span class="cm">/**</span>
+<span class="cm"> * Removes service properties.</span>
+<span class="cm"> * @param props the properties to remove</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">removeProperties</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">props</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span>  <span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Gets provided service state.</span>
+<span class="cm"> * @return the state of the provided service (UNREGISTERED | REGISTRED).</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getState</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Gets the service reference.</span>
+<span class="cm"> * @return the service reference (null if the service is unregistered).</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">ServiceReference</span> <span class="nf">getServiceReference</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Gets the &#39;main&#39; service object.</span>
+<span class="cm"> * @return the &#39;main&#39; service object or &lt;code&gt;null&lt;/code&gt;</span>
+<span class="cm"> * if no service object are created.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">Object</span> <span class="nf">getService</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+<span class="kd">public</span> <span class="n">Object</span><span class="o">[]</span> <span class="nf">getServices</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
 </pre></div>
+
+
+<p>Thanks to these method, you can get service objects, get the registered services, and manipulate service properties.</p>
+<h2 id="manipulating-configuration-properties">Manipulating configuration properties</h2>
+<p>The last think that you can do from the <code>PrimitiveInstanceDescription</code> is to get configuration properties (<code>PropertyDescription</code>). </p>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * Gets the current property name.</span>
+<span class="cm"> * @return the property name.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Gets the current property type.</span>
+<span class="cm"> * @return the property type.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getType</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Gets the current property value.</span>
+<span class="cm"> * @return the default value for the property,</span>
+<span class="cm"> * &lt;code&gt;null&lt;/code&gt; if the property hasn&#39;t a value..</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Sets the property value.</span>
+<span class="cm"> * This method can only be called on &#39;living&#39; property</span>
+<span class="cm"> * (properties with a {@link Property} object).</span>
+<span class="cm"> * @param value the new value.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+</pre></div>
+
+
+<p>With these methods you can get a property object and update its value dynamically. </p>
         </div>
     </div>
 
@@ -415,7 +433,7 @@ With these methods you can get a property object and update its value dynamicall
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1467268 by clement on Fri, 12 Apr 2013 13:42:34 +0000
                 </div>
             </div>
         </footer>           

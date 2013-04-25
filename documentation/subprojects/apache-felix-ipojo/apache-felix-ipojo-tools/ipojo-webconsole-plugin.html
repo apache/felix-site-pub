@@ -31,6 +31,9 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <!-- Overide alert's colors -->
+    <link href="/ipojo/web/bootstrap/css/alert.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
 
 
@@ -96,11 +99,13 @@
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
-                                        <li><a href="">Factories and Instances</a></li>
-                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.html">XML Schemas</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
-                                        <li><a href="">Testing components</a></li>
-                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.html">Constructing service objects with factory methods</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.html">Using the introspection API</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.html">Testing components</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.html">Eclipse Integration</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
@@ -138,7 +143,8 @@
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
-                                <li><a href="">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/articles-and-presentations.html">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.html">Developping Camel mediators with iPOJO</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -180,6 +186,51 @@
 <li>iPOJO </li>
 <li>The iPOJO Web console plugin</li>
 </ul>
+<p>You can download <a href="ipojo-webconsole-quicktart-distribution.zip">this Felix distribution</a> as a deployment example. Unzip the archive and go to the Felix directory to launch Felix:</p>
+<div class="codehilite"><pre><span class="nb">cd </span>ipojo-webconsole-quicktart-1.9.0-SNAPSHOT/felix-framework-4.2.1/
+java -jar bin/felix.jar
+</pre></div>
+
+
+<p>Once launched, you can check the deployed bundles:</p>
+<div class="codehilite"><pre><span class="o">[</span>INFO<span class="o">]</span> Started jetty 6.1.x at port<span class="o">(</span>s<span class="o">)</span> HTTP:8080
+____________________________
+Welcome to Apache Felix Gogo
+
+g! INFO : org.apache.felix.webconsole.plugins.memoryusage <span class="o">(</span>17<span class="o">)</span>: Storing Memory Dumps in /Users/clement/Projects/felix-trunk/ipojo/distributions/ipojo-webconsole-quicktart/target/ipojo-webconsole-quicktart-1.9.0-SNAPSHOT/felix-framework-4.2.1/./felix-cache/bundle17/data/dumps
+INFO : org.apache.felix.webconsole.plugins.memoryusage <span class="o">(</span>17<span class="o">)</span>: Setting Automatic Memory Dump Threshold to 0% <span class="k">for </span>pools <span class="o">[</span>CMS Old Gen, CMS Perm Gen, Code Cache<span class="o">]</span>
+INFO : org.apache.felix.webconsole.plugins.memoryusage <span class="o">(</span>17<span class="o">)</span>: Automatic Memory Dump cannot be <span class="nb">set </span><span class="k">for </span>pools <span class="o">[</span>Par Eden Space, Par Survivor Space<span class="o">]</span>
+INFO : org.apache.felix.webconsole.plugins.memoryusage <span class="o">(</span>17<span class="o">)</span>: Setting Automatic Memory Dump Interval to 21600 seconds
+
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle <span class="o">(</span>4.2.1<span class="o">)</span>
+    1|Active     |    1|Java Servlet API <span class="o">(</span>2.4.0<span class="o">)</span>
+    2|Active     |    1|Commons FileUpload <span class="o">(</span>1.2.2<span class="o">)</span>
+    3|Active     |    1|Commons IO <span class="o">(</span>2.4.0<span class="o">)</span>
+    4|Active     |    1|Apache Felix Bundle Repository <span class="o">(</span>1.6.6<span class="o">)</span>
+    5|Active     |    1|Apache Felix Gogo Command <span class="o">(</span>0.12.0<span class="o">)</span>
+    6|Active     |    1|Apache Felix Gogo Runtime <span class="o">(</span>0.10.0<span class="o">)</span>
+    7|Active     |    1|Apache Felix Gogo Shell <span class="o">(</span>0.10.0<span class="o">)</span>
+    8|Active     |    1|Apache Felix Http Api <span class="o">(</span>2.2.0<span class="o">)</span>
+    9|Active     |    1|Apache Felix Http Base <span class="o">(</span>2.2.0<span class="o">)</span>
+   10|Active     |    1|Apache Felix Http Jetty <span class="o">(</span>2.2.0<span class="o">)</span>
+   11|Active     |    1|Apache Felix iPOJO <span class="o">(</span>1.8.6<span class="o">)</span>
+   12|Active     |    1|Apache Felix iPOJO Annotations <span class="o">(</span>1.8.6<span class="o">)</span>
+   13|Active     |    1|Apache Felix iPOJO Gogo Command <span class="o">(</span>1.0.1<span class="o">)</span>
+   14|Active     |    1|iPOJO Metadata <span class="o">(</span>1.6.0<span class="o">)</span>
+   15|Active     |    1|Apache Felix iPOJO WebConsole Plugins <span class="o">(</span>1.7.0.SNAPSHOT<span class="o">)</span>
+   16|Active     |    1|Apache Felix Web Management Console <span class="o">(</span>4.0.0<span class="o">)</span>
+   17|Active     |    1|Apache Felix Web Console Memory Usage Plugin <span class="o">(</span>1.0.2<span class="o">)</span>
+   18|Active     |    1|Apache Felix Web Console Package Admin Service Plugin <span class="o">(</span>1.0.0<span class="o">)</span>
+   19|Active     |    1|osgi.cmpn <span class="o">(</span>4.2.0.200908310645<span class="o">)</span>
+   20|Active     |    1|OW2 Chameleon - JSON Bundle <span class="o">(</span>from org.json<span class="o">)</span> <span class="o">(</span>20090911.0.0.0002<span class="o">)</span>
+</pre></div>
+
+
+<p>You access the web console at: http://localhost:8080/system/console/. The login/password are <em>admin</em>/<em>admin</em>. The iPOJO tabs gives you all the iPOJO information of the system.  <br />
+</p>
         </div>
     </div>
 
@@ -194,7 +245,7 @@
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1465947 by clement on Tue, 9 Apr 2013 09:37:22 +0000
+                Rev. 1475720 by clement on Thu, 25 Apr 2013 12:13:11 +0000
                 </div>
             </div>
         </footer>           

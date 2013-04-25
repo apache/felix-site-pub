@@ -31,6 +31,9 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <!-- Overide alert's colors -->
+    <link href="/ipojo/web/bootstrap/css/alert.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
 
 
@@ -96,11 +99,13 @@
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
-                                        <li><a href="">Factories and Instances</a></li>
-                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.html">XML Schemas</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
-                                        <li><a href="">Testing components</a></li>
-                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.html">Constructing service objects with factory methods</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.html">Using the introspection API</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.html">Testing components</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.html">Eclipse Integration</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
@@ -138,7 +143,8 @@
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
-                                <li><a href="">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/articles-and-presentations.html">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.html">Developping Camel mediators with iPOJO</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -154,38 +160,49 @@
         <div class="content">
             <h1 id="lifecycle-callbacks">Lifecycle callbacks</h1>
 <p><em>It is often necessary to create a POJO object as soon the instance becomes valid (i.e. required services are available). It is also often needed to be able to stop it nicely. This pages presents the iPOJO capabilities to achieve such actions. iPOJO allows you to invoke methods (callbacks) on the POJO object when instance's state changed. For example, it allows invoking a <code>start</code> method when the instance becomes valid and a <code>stop</code> method when the instance becomes invalid. It allows the creation of <code>immediate</code> component. This page presents how to use this handler.</em></p>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
+<div class="toc">
+<ul>
+<li><a href="#lifecycle-callbacks">Lifecycle callbacks</a><ul>
+<li><a href="#instance-lifecycle">Instance Lifecycle</a></li>
+<li><a href="#lifecycle-callback">Lifecycle callback</a></li>
+<li><a href="#an-example">An example</a></li>
+<li><a href="#managing-threads">Managing threads</a></li>
+<li><a href="#invalidate-callbacks-and-services">Invalidate callbacks and services</a></li>
+<li><a href="#immediate-component">Immediate component</a></li>
+<li><a href="#callback-on-several-objects">Callback on several objects</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="instance-lifecycle">Instance Lifecycle</h2>
 <p>iPOJO instances have a very simple lifecycle. This lifecycle contains two states: <code>INVALID</code> and <code>VALID</code>. Once an instance is created, this instance can only be valid if all its plugged handlers are valid. In the most basic case it means all required services are available. For example, an instance requiring a service (and so using the dependency handler) cannot be valid if the required service is unavailable. </p>
 <p>An instance starts and stops in the invalid state.</p>
-<p>!lifecycle.png|width=50%!</p>
+<p><img src="lifecycle.png" width="25%"></p>
 <h2 id="lifecycle-callback">Lifecycle callback</h2>
 <p>This handler supports two kinds of callback. The INVALID=&gt;VALID callback are invoked when the instance becomes valid (at starting or when an event allows the instance to become valid). The VALID=&gt;INVALID callback are invoked when the instance becomes invalid (at stopping or when an event invalids the instance).</p>
-<p>!callback.png!</p>
+<p><img src="callback.png" width="10%"></p>
 <h2 id="an-example">An example</h2>
 <p>Let's take an example. The following class requires a FooService and has two lifecycle callbacks: start and stop.</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Instantiate</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">Foo</span> <span class="p">{</span>
-              <span class="nv">@Requires</span>
-              <span class="n">FooService</span> <span class="n">fs</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Instantiate</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+              <span class="nd">@Requires</span>
+              <span class="n">FooService</span> <span class="n">fs</span><span class="o">;</span>
 
-              <span class="nv">@Validate</span>
-              <span class="n">private</span> <span class="n">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
-                       <span class="sr">//</span> <span class="n">Starting</span> <span class="n">method</span>
-                       <span class="sr">//</span><span class="o">...</span>
-                       <span class="n">fs</span><span class="o">.</span><span class="n">foo</span><span class="p">();</span>
-                       <span class="sr">//</span><span class="o">...</span>
-                <span class="p">}</span>
+              <span class="nd">@Validate</span>
+              <span class="kd">private</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+                       <span class="c1">// Starting method</span>
+                       <span class="c1">//...</span>
+                       <span class="n">fs</span><span class="o">.</span><span class="na">foo</span><span class="o">();</span>
+                       <span class="c1">//...</span>
+                <span class="o">}</span>
 
-                <span class="nv">@Invalidate</span>
-                <span class="n">protected</span> <span class="n">void</span> <span class="n">stop</span><span class="p">()</span> <span class="p">{</span>
-                        <span class="sr">//</span> <span class="n">Stopping</span> <span class="n">method</span>
-                        <span class="k">if</span><span class="p">(</span><span class="n">fs</span><span class="o">!=</span><span class="n">null</span><span class="p">)</span> <span class="p">{</span> <span class="n">fs</span><span class="o">.</span><span class="n">foo</span><span class="p">();</span> <span class="p">}</span>
-                <span class="p">}</span>
-<span class="p">}</span>
+                <span class="nd">@Invalidate</span>
+                <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="c1">// Stopping method</span>
+                        <span class="k">if</span><span class="o">(</span><span class="n">fs</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="n">fs</span><span class="o">.</span><span class="na">foo</span><span class="o">();</span> <span class="o">}</span>
+                <span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -203,66 +220,66 @@
 <p>The invoked methods have no argument, but could be private, protected or public. Public methods can be in parent classes too. Moreover, the <code>INVALID=&gt;VALID</code> (validate) method can use service dependencies (the instance becomes valid means that all required services are available); however, in the stop method (invalidate) it is possible that one of these dependency can be <code>null</code>. Indeed, the departure of a service can be the cause of the instance invalidation.</p>
 <h2 id="managing-threads">Managing threads</h2>
 <p>One usage of lifecycle callback is when the instance needs to create threads. Indeed, the thread can be created in the validate callback, and stopped in the invalidate method. The next class shows an example of a class handling a thread by using lifecycle callbacks.</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
-<span class="nv">@Instantiate</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">HelloRequesterImpl</span> <span class="n">implements</span> <span class="n">Runnable</span> <span class="p">{</span>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="nd">@Instantiate</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloRequesterImpl</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
 
-    <span class="n">final</span> <span class="n">static</span> <span class="nb">int</span> <span class="n">DELAY</span><span class="o">=</span><span class="mi">10000</span><span class="p">;</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">DELAY</span><span class="o">=</span><span class="mi">10000</span><span class="o">;</span>
 
-    <span class="nv">@Requires</span>
-    <span class="n">HelloService</span><span class="o">[]</span> <span class="n">m_hello</span><span class="p">;</span><span class="o">&amp;</span><span class="n">nbsp</span><span class="p">;</span> <span class="sr">//</span> <span class="n">Service</span> <span class="n">Dependency</span>
+    <span class="nd">@Requires</span>
+    <span class="n">HelloService</span><span class="o">[]</span> <span class="n">m_hello</span><span class="o">;&amp;</span><span class="n">nbsp</span><span class="o">;</span> <span class="c1">// Service Dependency</span>
 
-    <span class="n">boolean</span> <span class="n">end</span><span class="p">;</span>
+    <span class="kt">boolean</span> <span class="n">end</span><span class="o">;</span>
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
-      <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">end</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">try</span> <span class="p">{</span>
-        <span class="n">synchronized</span> <span class="p">(</span><span class="n">this</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">for</span><span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_hello</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">m_hello</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sayHello</span><span class="p">(</span><span class="s">&quot;Clement&quot;</span><span class="p">));</span>
-          <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">Thread</span><span class="o">.</span><span class="nb">sleep</span><span class="p">(</span><span class="n">DELAY</span><span class="p">);</span>
-        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="p">)</span> <span class="p">{</span>
-             <span class="sr">/* will recheck quit */</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-   <span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">while</span> <span class="o">(!</span><span class="n">end</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_hello</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">m_hello</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">sayHello</span><span class="o">(</span><span class="s">&quot;Clement&quot;</span><span class="o">));</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">DELAY</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span>
+             <span class="cm">/* will recheck quit */</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+   <span class="o">}</span>
 
-    <span class="nv">@Validate</span>
-    <span class="n">public</span> <span class="n">void</span> <span class="n">starting</span><span class="p">()</span> <span class="p">{</span>
-      <span class="n">Thread</span> <span class="n">T</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="p">(</span><span class="n">this</span><span class="p">);</span>
-      <span class="n">end</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
-      <span class="n">T</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
-    <span class="p">}</span>
+    <span class="nd">@Validate</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">starting</span><span class="o">()</span> <span class="o">{</span>
+      <span class="n">Thread</span> <span class="n">T</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+      <span class="n">end</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+      <span class="n">T</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span>
 
-    <span class="nv">@Invalidate</span>
-    <span class="n">public</span> <span class="n">void</span> <span class="n">stopping</span><span class="p">()</span> <span class="p">{</span> <span class="n">end</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span> <span class="p">}</span>
+    <span class="nd">@Invalidate</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stopping</span><span class="o">()</span> <span class="o">{</span> <span class="n">end</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span> <span class="o">}</span>
 </pre></div>
 
 
 <h2 id="invalidate-callbacks-and-services">Invalidate callbacks and services</h2>
 <p>The invalidate callback has to be developed defensively. Indeed, inside this callback, it might be possible that a service is no more there (the departure of this service has thrown the instance invalidation, which calls the callback). So, you must check that the service is not <code>null</code> before using it:</p>
-<div class="codehilite"><pre><span class="nv">@Invalidate</span>
-<span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">myservice</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">you</span> <span class="n">can</span> <span class="k">use</span> <span class="n">the</span> <span class="n">service</span>
-  <span class="p">}</span>
-  <span class="sr">//</span> <span class="o">...</span>
-<span class="p">}</span>
+<div class="codehilite"><pre><span class="nd">@Invalidate</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">myservice</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// you can use the service</span>
+  <span class="o">}</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <p>Thanks to the iPOJO synchronization model, you can be sure that if the service is available, it will be there until the end of the method.</p>
 <h2 id="immediate-component">Immediate component</h2>
 <p>An instance of an <code>immediate</code> component type is instantiated as soon it becomes valid. It means that, when the instance becomes valid, the constructor of the implementation class is called. This can replace the validate callback. However, it stills a difference between the immediate and the validate callback. The constructor is call only once time. The validate callback is re-called each time the instance becomes valid. Components that do not provide services are automatically set as immediate.</p>
-<p>!constructor.png!</p>
+<p><img src="constructor.png"></p>
 <p>To set a component as immediate you must add the <code>immediate</code> attribute to <code>component</code>:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span><span class="p">(</span><span class="n">immediate</span><span class="o">=</span><span class="n">true</span><span class="p">)</span>
-<span class="nv">@Instantiate</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">MyComponent</span> <span class="n">implements</span> <span class="n">MyService</span> <span class="p">{</span>
-   <span class="sr">//</span> <span class="o">...</span>
-<span class="p">}</span>
+<div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">immediate</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+<span class="nd">@Instantiate</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
+   <span class="c1">// ...</span>
+<span class="o">}</span>
 </pre></div>
 
 
@@ -283,7 +300,7 @@
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1467884 by clement on Mon, 15 Apr 2013 07:43:52 +0000
                 </div>
             </div>
         </footer>           

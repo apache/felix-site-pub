@@ -31,6 +31,9 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <!-- Overide alert's colors -->
+    <link href="/ipojo/web/bootstrap/css/alert.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
 
 
@@ -96,11 +99,13 @@
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
-                                        <li><a href="">Factories and Instances</a></li>
-                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.html">XML Schemas</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
-                                        <li><a href="">Testing components</a></li>
-                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.html">Constructing service objects with factory methods</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.html">Using the introspection API</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.html">Testing components</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.html">Eclipse Integration</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
@@ -138,7 +143,8 @@
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
-                                <li><a href="">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/articles-and-presentations.html">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.html">Developping Camel mediators with iPOJO</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -153,7 +159,7 @@
     <div class="container">
         <div class="content">
             <h1 id="introspection-and-architecture">Introspection and Architecture</h1>
-<p><em>The architecture feature allows obtaining an architectural / component view of your systems. It exposes a snapshot of the present instances &amp; factories, the state of these instances... Moreover; iPOJO defines an 'arch' command displaying this architecture in Felix. You need to install <a href="">the arch command</a>.</em></p>
+<p><em>The architecture feature allows obtaining an architectural / component view of your systems. It exposes a snapshot of the present instances &amp; factories, the state of these instances... Moreover; iPOJO defines an 'arch' command displaying this architecture in Felix. You need to install <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">the arch command</a>.</em></p>
 <div class="toc">
 <ul>
 <li><a href="#introspection-and-architecture">Introspection and Architecture</a><ul>
@@ -175,12 +181,30 @@
 
 <p>By default, the architecture feature is enabled.</p>
 <h2 id="the-arch-command">The "arch" command</h2>
-<p>A Felix command comes with the architecture handler. This command looks for all component exposing the architecture and print the information.</p>
-<div class="codehilite"><pre><span class="nv">arch</span> <span class="o">=</span>&gt; displays instances name &amp; state <span class="o">(</span>equivalent to arch <span class="se">\-</span>instances<span class="o">)</span>
-arch -instance <span class="nv">$instance_name</span> <span class="o">=</span>&gt; displays <span class="nb">complete </span>information about the instance <span class="nv">$instance_name</span>
-arch -factories <span class="o">=</span>&gt; display the list of available factories
-arch -factory <span class="nv">$factory_name</span> <span class="o">=</span>&gt; display <span class="nb">complete </span>information about the factory <span class="nv">$factory_name</span>
-arch -handlers <span class="o">=</span>&gt; list available handlers
+<p>The Gogo commands are the following:</p>
+<ul>
+<li><code>ipojo:instances</code> (or just <code>instances</code>) lists the instances and state</li>
+<li><code>ipojo:instance $instance_name</code> (or just <code>instance $instance_name</code>) displays the complete information about the specified $instance_name</li>
+<li><code>ipojo:factories</code> (or just <code>factories</code>) lists the available public factories</li>
+<li><code>ipojo:factory $factory_name</code> (or just <code>factory $factory_name</code>) displays complete information about the factory $factory_name</li>
+<li><code>ipojo:handlers</code> (or just <code>handlers</code> lists available handlers</li>
+</ul>
+<p>For example:</p>
+<div class="codehilite"><pre><span class="nv">$ </span>instances
+Instance ArchCommand -&gt; valid
+Instance spell.english.EnglishDictionary-0 -&gt; valid
+Instance spell.checker.SpellCheck-0 -&gt; valid
+Instance spell.gui.SpellCheckerGui-0 -&gt; valid
+
+<span class="nv">$ </span>instance spell.checker.SpellCheck-0                                    
+instance component.type<span class="o">=</span><span class="s2">&quot;spell.checker.SpellCheck&quot;</span> <span class="nv">state</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span> <span class="nv">bundle</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;spell.checker.SpellCheck-0&quot;</span>
+    handler <span class="nv">state</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;org.apache.felix.ipojo.handlers.dependency.DependencyHandler&quot;</span>
+        requires <span class="nv">optional</span><span class="o">=</span><span class="s2">&quot;false&quot;</span> <span class="nv">aggregate</span><span class="o">=</span><span class="s2">&quot;false&quot;</span> <span class="nv">state</span><span class="o">=</span><span class="s2">&quot;resolved&quot;</span> binding-policy<span class="o">=</span><span class="s2">&quot;dynamic&quot;</span> <span class="nv">specification</span><span class="o">=</span><span class="s2">&quot;spell.services.DictionaryService&quot;</span>
+    handler <span class="nv">state</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;org.apache.felix.ipojo.handlers.providedservice.ProvidedServiceHandler&quot;</span>
+        provides service.id<span class="o">=</span><span class="s2">&quot;36&quot;</span> <span class="nv">state</span><span class="o">=</span><span class="s2">&quot;registered&quot;</span> <span class="nv">specifications</span><span class="o">=</span><span class="s2">&quot;[spell.services.SpellChecker]&quot;</span>
+            property <span class="nv">value</span><span class="o">=</span><span class="s2">&quot;spell.checker.SpellCheck&quot;</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;factory.name&quot;</span>
+            property <span class="nv">value</span><span class="o">=</span><span class="s2">&quot;spell.checker.SpellCheck-0&quot;</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;instance.name&quot;</span>
+    handler <span class="nv">state</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;org.apache.felix.ipojo.handlers.architecture.ArchitectureHandler&quot;</span>
 </pre></div>
 
 
@@ -201,7 +225,7 @@ arch -handlers <span class="o">=</span>&gt; list available handlers
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1443565 by clement on Thu, 7 Feb 2013 15:43:47 +0000
+                Rev. 1475720 by clement on Thu, 25 Apr 2013 12:13:11 +0000
                 </div>
             </div>
         </footer>           

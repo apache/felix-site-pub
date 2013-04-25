@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Inventory</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
+</p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>
+      </div>
+
+      
+      
+      <h1>Apache Felix Inventory</h1>
+      <p>The Apache Felix Inventory bundle provides an ecosystem for retrieving information about the current state of the system. Typical information includes currently installed bundles, their state, available configurations, framework properties, log files etc.</p>
+<h2 id="introduction">Introduction</h2>
+<p>When trying to find a problem or analyzing the system it would be nice to have a single place to go to and get available information. The Apache Felix inventory bundle tries to exactly fill this gap.</p>
+<p>Originally, the idea started within the Apache Felix WebConsole and it's configuration printers - these pluggable printers allowed to view all available status information in a web browser or download this as zip file. While this already solves most use cases, tying this general functionality to a web console felt wrong, and that's when the inventory module started.</p>
+<p>The current version of the inventory implementation, registers all available InventoryPrinters (see below) as plugins to the web console as this is still the number one use case.</p>
+<h2 id="inventoryprinter">InventoryPrinter</h2>
+<p>The InventoryPrinter is a service interface to be implemented by providers that want to hook into the display of the current configuration and state of the OSGi framework and application.
+The interface consists of a single method:</p>
+<div class="codehilite"><pre><span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">PrintWriter</span> <span class="n">printWriter</span><span class="o">,</span> <span class="n">Format</span> <span class="n">format</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isZip</span><span class="o">);</span>
+</pre></div>
+
+
+<p>A inventory printer might support different formats (text, html, or json), by default it supports just text - if the printer wants to support the other formats, it can declare the service registration property "felix.inventory.printer.format" with the formats it supports.</p>
+<p>If the current output of the printer is included in a zip, the "isZip" parameter is set to true. This allows the printer to provide different output, depending on where the output is used.</p>
+<p>A printer should declare the service registration property "felix.inventory.printer.name" and provide a unique name for the printer. The name can be used for replacing a printer from another bundle by providing a printer with the same name, but a higher service ranking.</p>
+<p>A printer should declare the service registration property "felix.inventory.printer.title". The title is used in the web console as the link for the printer, or within the zip as the file name for the output.</p>
+<p>If the printer wants to opt out from being displayed in the web console, it can declare the service registration property "felix.inventory.printer.webconsole" and provide a boolean with the value "false".</p>
+<h2 id="zipattachmentprovider">ZipAttachmentProvider</h2>
+<p>If an inventory printer wants to provide additional contents to an inventory zip, it can implement this interface and write additional files when the zip is created.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1475666 by cziegeler on Thu, 25 Apr 2013 08:21:14 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

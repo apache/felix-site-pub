@@ -31,6 +31,9 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <!-- Overide alert's colors -->
+    <link href="/ipojo/web/bootstrap/css/alert.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
 
 
@@ -96,11 +99,13 @@
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
-                                        <li><a href="">Factories and Instances</a></li>
-                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.html">XML Schemas</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
-                                        <li><a href="">Testing components</a></li>
-                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.html">Constructing service objects with factory methods</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.html">Using the introspection API</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.html">Testing components</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.html">Eclipse Integration</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
@@ -138,7 +143,8 @@
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
-                                <li><a href="">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/articles-and-presentations.html">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.html">Developping Camel mediators with iPOJO</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -155,15 +161,17 @@
             <h1 id="how-to-test-ipojo-components">How to test iPOJO Components</h1>
 <p>Testing components is a required step in the application development process. This page explains strategies to test iPOJO-based components and applications.</p>
 <h2 id="introduction">Introduction</h2>
-<p>Basically, we can distinguish 2 types of tests:
-<em> Unitary tests
-</em> Integration tests</p>
+<p>Basically, we can distinguish 2 types of tests:</p>
+<ul>
+<li>Unitary tests</li>
+<li>Integration tests</li>
+</ul>
 <p>Unitary tests are famous and were popularized with the proliferation of frameworks like <a href="http://junit.org">Junit</a> and [TestNG|http://testng.org/doc/]. These tests check the behavior of classes. More specially, these tests check the method results according to different parameter values. These test are executed outside the execution environment, can use mock object (link) to replace/simulate missing dependencies...</p>
 <p>Integration tests focus on the execution of the application inside the execution environment. It checks the global behavior of a service or an application. In the case of iPOJO, those tests are executed on OSGi. Some dependencies can be also replaced by mock services/objects.</p>
 <h2 id="executing-unitary-tests-on-ipojo-components">Executing unitary tests on iPOJO components</h2>
-<p>Unitary tests allow checking the internal behavior of an iPOJO component. Those tests ignore the injected dependencies and focus only on the business code of the component.
-To test components, you can use Junit. A special constructor setting fields can do the dependency injection. These tests are executed before the bundlelization. </p>
-<p>Let's imagine a maven project (downloadable <a href="">here</a>).  Unitary tests are placed in the src/test/java folder. You can use mock object as illustrated in the example.  When you launch the <code>mvn clean install</code> command, maven compiles your classes and executes the tests.  If the tests are executed successfully, the build process continues and creates the bundle as follows:</p>
+<p>Unitary tests allow checking the internal behavior of an iPOJO component. Those tests ignore the injected dependencies and focus only on the business code of the component.</p>
+<p>To test components, you can use Junit. A special constructor setting fields can do the dependency injection. These tests are executed before the bundlelization. </p>
+<p>Let's imagine a maven project.  Unitary tests are placed in the src/test/java folder. You can use mock object as illustrated in the example.  When you launch the <code>mvn clean install</code> command, maven compiles your classes and executes the tests.  If the tests are executed successfully, the build process continues and creates the bundle as follows:</p>
 <div class="codehilite"><pre><span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Scanning</span> <span class="k">for</span> <span class="n">projects</span><span class="o">...</span>
 <span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="o">------------------------------------------------------------------------</span>
 <span class="p">[</span><span class="n">INFO</span><span class="p">]</span> <span class="n">Building</span> <span class="n">Dummy</span> <span class="n">Component</span>
@@ -224,8 +232,7 @@ To test components, you can use Junit. A special constructor setting fields can 
 
 
 <h2 id="executing-integration-tests">Executing integration tests</h2>
-<p>Once every component has its unitary test suite (isn't it?), you can go further and creates integration test. In order to check the behavior of the system, iPOJO provides the junit4osgi framework. This framework allows the executing of Junit test inside OSGi. Refer to the <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi.html">Junit4OSGi page</a> to know how to use it.</p>
-<p>Moreover, OPS4J Pax Exam can also be used to test iPOJO components.</p>
+<p>We recommend to use Pax Exam 3 to test iPOJO components. More details about pax exam 3 are available <a href="https://ops4j1.jira.com/wiki/display/PAXEXAM3/Pax+Exam">here</a>.</p>
         </div>
     </div>
 
@@ -240,7 +247,7 @@ To test components, you can use Junit. A special constructor setting fields can 
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1467268 by clement on Fri, 12 Apr 2013 13:42:34 +0000
                 </div>
             </div>
         </footer>           

@@ -31,6 +31,9 @@
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="/ipojo/web/style.css" rel="stylesheet">
 
+    <!-- Overide alert's colors -->
+    <link href="/ipojo/web/bootstrap/css/alert.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/ipojo/web/github.css" type="text/css" media="all">
 
 
@@ -96,11 +99,13 @@
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.html">iPOJO and config admin</a></li>
-                                        <li><a href="">Factories and Instances</a></li>
-                                        <li><a href="">XML Schemas</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.html">XML Schemas</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
-                                        <li><a href="">Testing components</a></li>
-                                        <li><a href="">Eclipse Integration</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.html">Constructing service objects with factory methods</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.html">Using the introspection API</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.html">Testing components</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.html">Eclipse Integration</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
                                         <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
@@ -138,7 +143,8 @@
                             <ul class="dropdown-menu" id="swatch-menu">
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.html">Supported JVMs</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">Supported OSGi Implementations</a></li>
-                                <li><a href="">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/articles-and-presentations.html">Article & Presentations</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.html">Developping Camel mediators with iPOJO</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -300,8 +306,8 @@
 <p>The <code>modified</code> callback is not mandatory. The following XML metadata are describing the same component type:</p>
 <div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...HelloConsumer&quot;</span><span class="nt">&gt;</span>
 <span class="nt">&lt;requires&gt;</span>
-    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/requires&gt;</span>
 ...
 <span class="nt">&lt;/component&gt;</span>
@@ -309,7 +315,7 @@
 
 
 <p>Note, that the different callbacks can be have different signatures. By using this mechanism, you need to be sure to manage the dynamism correctly.
-(<a href="">See note on type discovery</a>)</p>
+(<a href="#note-on-service-interface-discovery">See note on type discovery</a></p>
 <p>Using the <code>@Modified</code> callback is also quite simple:</p>
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloConsumer</span> <span class="o">{</span>
@@ -358,8 +364,8 @@
 <p>In XML, it results in:</p>
 <div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...HelloConsumer&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;requires</span>  <span class="na">field=</span><span class="s">&quot;m_hello&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/requires&gt;</span>
     ...
 <span class="nt">&lt;/component&gt;</span>
@@ -385,10 +391,10 @@
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloConsumer</span> <span class="o">{</span>
      <span class="nd">@Requires</span>
-     <span class="kd">private</span> <span class="n">Hello</span> <span class="n">m_hellos</span><span class="o">[]();</span> <span class="c1">// Array =&gt; Aggregate</span>
+     <span class="kd">private</span> <span class="n">Hello</span> <span class="n">m_hellos</span><span class="o">[];</span> <span class="c1">// Array =&gt; Aggregate</span>
      <span class="kd">public</span> <span class="nf">doSomething</span><span class="o">()</span> <span class="o">{</span>
              <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">I</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">I</span> <span class="o">&lt;</span> <span class="n">m_hellos</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span> 
-                 <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">m_hellos</span><span class="o">[</span><span class="n">i</span><span class="o">]().</span><span class="na">getMessage</span><span class="o">());</span>
+                 <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">m_hellos</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getMessage</span><span class="o">());</span>
              <span class="o">}</span>
        <span class="o">}</span>
 <span class="o">}</span>
@@ -470,8 +476,8 @@ public class HelloConsumer {
 
 <p>This dependency can also be described in XML as follow:</p>
 <div class="codehilite"><pre><span class="nt">&lt;requires</span>  <span class="na">aggregate=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/requires&gt;</span>
 </pre></div>
 
@@ -505,7 +511,7 @@ public class HelloConsumer {
 </pre></div>
 
 
-<p>To declare an optional requirement, you need to add the <em>'optional'</em> attribute. To avoid <code>null</code> pointer exception, iPOJO injects a <code>Nullable</code> object in the field when no service provider is available. The <em>nullable</em> object implements the service interface, but does nothing. Moreover, it is possible to set a <em>default-implementation</em> for the service. A default-implementation is a class implementing the service but used only when no others service providers are available. The default-implementation object will be injected instead of the <em>Nullable</em> objet. For further information <a href="">refer to the note about nullable object</a>.</p>
+<p>To declare an optional requirement, you need to add the <em>'optional'</em> attribute. To avoid <code>null</code> pointer exception, iPOJO injects a <code>Nullable</code> object in the field when no service provider is available. The <em>nullable</em> object implements the service interface, but does nothing. Moreover, it is possible to set a <em>default-implementation</em> for the service. A default-implementation is a class implementing the service but used only when no others service providers are available. The default-implementation object will be injected instead of the <em>Nullable</em> objet. For further information <a href="#note-about-nullable-object-default-implementation">refer to the note about nullable object</a>.</p>
 <h4 id="optional-dependency-with-callbacks-invocation">Optional Dependency with callbacks invocation</h4>
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloConsumer</span> <span class="o">{</span>
@@ -529,8 +535,8 @@ public class HelloConsumer {
 <p>For this component, XML metadata could be:</p>
 <div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...HelloConsumer&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;requires</span> <span class="na">optional=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/requires&gt;</span>
     ...
 <span class="nt">&lt;/component&gt;</span>
@@ -544,7 +550,7 @@ public class HelloConsumer {
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloConsumer</span> <span class="o">{</span>
      <span class="nd">@Requires</span><span class="o">(</span><span class="n">optional</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
-     <span class="kd">private</span> <span class="n">Hello</span> <span class="n">m_hellos</span><span class="o">[]();</span>
+     <span class="kd">private</span> <span class="n">Hello</span> <span class="n">m_hellos</span><span class="o">[];</span>
 
      <span class="kd">public</span> <span class="nf">doSomething</span><span class="o">()</span> <span class="o">{</span>
            <span class="k">for</span><span class="o">(</span><span class="n">Hello</span> <span class="n">h</span> <span class="o">:</span> <span class="n">m_hellos</span><span class="o">)</span> <span class="o">{</span> 
@@ -587,8 +593,8 @@ public class HelloConsumer {
 
 <p>For this component, XML metadata could be:</p>
 <div class="codehilite"><pre><span class="nt">&lt;requires</span> <span class="na">aggregate=</span><span class="s">&quot;true&quot;</span> <span class="na">optional=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
-     <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">&gt;</span>
-     <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">&gt;</span>
+     <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">/&gt;</span>
+     <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/requires&gt;</span>
 </pre></div>
 
@@ -661,7 +667,7 @@ public class HelloConsumer {
 </pre></div>
 
 
-<p>iPOJO maps the <code>from</code> attribute to a specific filter : '|(instance.name=MyHelloProvider)(service.pid=MyHelloProvider)'. Then the dependency can only be fulfilled by a service matching this filter.</p>
+<p>iPOJO maps the <code>from</code> attribute to a specific filter : <code>|(instance.name=MyHelloProvider)(service.pid=MyHelloProvider)</code>. Then the dependency can only be fulfilled by a service matching this filter.</p>
 <p>Moreover, from attributes can be customized instance by instance. It is possible to specialize / change / add a 'from' attribute of a component in the instance configuration. It is useful when you want to create different instances of the same component, with different 'from' clauses. To do it, you have to identify your dependency with an 'id' attribute. Then, you can adapt the 'from' of the dependency in the instance configuration by using the property "requires.from". In this property you can specify each dependency identified by its id and the 'from' value.</p>
 <div class="codehilite"><pre><span class="nt">&lt;component</span> 
    <span class="na">className=</span><span class="s">&quot;org.apache.felix.ipojo.example.FilteredDependency&quot;</span>
@@ -796,7 +802,7 @@ public class HelloConsumer {
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1444686 by clement on Mon, 11 Feb 2013 09:16:09 +0000
+                Rev. 1475668 by clement on Thu, 25 Apr 2013 08:30:42 +0000
                 </div>
             </div>
         </footer>           
