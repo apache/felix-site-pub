@@ -94,12 +94,13 @@ for documentation on that plugin.</p>
 
 
 <h2 id="noclassdeffounderror-during-build">NoClassDefFoundError during build</h2>
-<p>If the javadoc tags are used (and not the annotations) then the QDox library is used to parse/introspect the java class. For this the classes have to be loaded and static fields have to be initialized. If you have have for example something like</p>
+<p>This error might happen with older versions of the Maven SCR Plugins in combination with javadoc tags or newer versions in combination with the annotations.
+In both cases, the scanned classes have to be loaded and static fields have to be initialized. If you have have for example something like</p>
 <div class="codehilite"><pre><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">org</span><span class="o">.</span><span class="na">slf4f</span><span class="o">.</span><span class="na">Logger</span> <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">slf4j</span><span class="o">.</span><span class="na">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">);</span>
 </pre></div>
 
 
-<p>in your code, during the plugin run, a slf4j logger is tried to instantiated. This requires an implementation of the logger. Ususally your module only depends on the slf4j API and therefore a </p>
+<p>in your code, during the plugin run, a slf4j logger is tried to be instantiated. This requires an implementation of the logger. Ususally your module only depends on the slf4j API and therefore a </p>
 <div class="codehilite"><pre><span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">NoClassDefFoundError:</span> <span class="n">org</span><span class="sr">/slf4j/im</span><span class="n">pl</span><span class="o">/</span><span class="n">StaticLoggerBinder</span>
 </pre></div>
 
@@ -120,8 +121,11 @@ for documentation on that plugin.</p>
     ...
 <span class="nt">&lt;/plugin&gt;</span>
 </pre></div>
+
+
+<p>or in the special case of slf4j, using slf4j API 1.6 or higher solves the problem as well</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1438983 by fmeschbe on Sat, 26 Jan 2013 22:54:42 +0000
+        Rev. 1482228 by cziegeler on Tue, 14 May 2013 06:48:44 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

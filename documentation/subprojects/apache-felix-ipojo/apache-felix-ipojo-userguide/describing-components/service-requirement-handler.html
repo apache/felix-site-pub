@@ -279,17 +279,81 @@
 <ul>
 <li>A bind method called when a service appears</li>
 <li>An unbind method called when a service disappears</li>
-<li>A modified method called when a service is modified (the service properties changed, but the service still matches the requirement)</li>
+<li>A modified method called when a service is modified (the service properties have changed, but the service still matches the requirement)</li>
 </ul>
-<p>Moreover, callbacks can be in the component super class (in this case methods must be public). These methods can have one of these four signatures:</p>
+<p>Moreover, callbacks can be in the component super class (in this case methods must be public). These methods can have one of these signatures:</p>
 <ul>
-<li>Without any argument: the method is just a  notification (method())</li>
-<li>With the service object : the object is the  implicated service object (method(Service svc))</li>
-<li>With an OSGi service reference: the service  reference appearing or disappearing (method(ServiceReference ref))</li>
-<li>With the service object and the OSGi service reference (method(Service svc, ServiceReference ref))</li>
-<li>With the service object and the service properties inside a Map (method(Service svc, Map properties))</li>
-<li>With the service object and the service properties inside a Dictionary (method(Service svc, Dictionary properties))</li>
+<li>
+<p>Without any argument: the method is just a notification</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">()</span> <span class="o">{</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>With the service object: the object is the implicated service object. Service dependency type is inferred from the parameter's type.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">HelloService</span> <span class="n">hello</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">m_hello</span> <span class="o">=</span> <span class="n">hello</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>With an OSGi service reference: the service reference appearing or disappearing.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">ServiceReference</span><span class="o">&lt;</span><span class="n">HelloService</span><span class="o">&gt;</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">ServiceReference</span><span class="o">&lt;?&gt;</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>With the service object and the OSGi service reference.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">HelloService</span> <span class="n">hello</span><span class="o">,</span> <span class="n">ServiceReference</span><span class="o">&lt;</span><span class="n">HelloService</span><span class="o">&gt;</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>With the service object and the service properties inside a Map (no adherence to OSGi APIs).</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">HelloService</span> <span class="n">hello</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">properties</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>With the service object and the service properties inside a Dictionary (no adherence to OSGi APIs).</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">HelloService</span> <span class="n">hello</span><span class="o">,</span> <span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">properties</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+</li>
 </ul>
+<div class="alert alert-info info" markdown="1">
+<h4>Important</h4>
+<p>Notice that, when missing (typically no interface can be inferred from the code) dependency information must be supplied to iPOJO in some way
+<ul>
+<li> <code>@Bind</code> with <code>specification</code> and/or <code>filter</code> attribute</li>
+<li> Using XML metadata declaration</li>
+</ul>
+</p>
+</div>
+
 <p>The following component implementation shows an example of implementation using this mechanism:</p>
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloConsumer</span> <span class="o">{</span>
@@ -306,11 +370,11 @@
 
 <p>The <code>modified</code> callback is not mandatory. The following XML metadata are describing the same component type:</p>
 <div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...HelloConsumer&quot;</span><span class="nt">&gt;</span>
-<span class="nt">&lt;requires&gt;</span>
+  <span class="nt">&lt;requires&gt;</span>
     <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bindHello&quot;</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbindHello&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/requires&gt;</span>
-...
+  <span class="nt">&lt;/requires&gt;</span>
+  ...
 <span class="nt">&lt;/component&gt;</span>
 </pre></div>
 
@@ -803,7 +867,7 @@ public class HelloConsumer {
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1475668 by clement on Thu, 25 Apr 2013 08:30:42 +0000
+                Rev. 1478675 by guillaume on Fri, 3 May 2013 09:00:13 +0000
                 </div>
             </div>
         </footer>           
