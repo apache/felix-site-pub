@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -90,28 +89,28 @@
 <p>An event publisher is a simple Java class that creates events and sends them using the <code>EventAdmin</code> service interface, for example:</p>
 <div class="codehilite"><pre>    <span class="n">public</span> <span class="n">void</span> <span class="n">reportGenerated</span><span class="p">(</span><span class="n">Report</span> <span class="n">report</span><span class="p">,</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">ServiceReference</span> <span class="nb">ref</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">(</span><span class="n">EventAdmin</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">());</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">ref</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+        <span class="n">ServiceReference</span> <span class="n">ref</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">(</span><span class="n">EventAdmin</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">());</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ref</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">EventAdmin</span> <span class="n">eventAdmin</span> <span class="o">=</span> <span class="p">(</span><span class="n">EventAdmin</span><span class="p">)</span> <span class="n">context</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="nb">ref</span><span class="p">);</span>
+            <span class="n">EventAdmin</span> <span class="n">eventAdmin</span> <span class="p">=</span> <span class="p">(</span><span class="n">EventAdmin</span><span class="p">)</span> <span class="n">context</span><span class="p">.</span><span class="n">getService</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
 
-            <span class="n">Dictionary</span> <span class="n">properties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="p">();</span>
-            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">getTitle</span><span class="p">());</span>
-            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;path&quot;</span> <span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">getAbsolutePath</span><span class="p">());</span>
-            <span class="n">properties</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="n">System</span><span class="o">.</span><span class="n">currentTimeMillis</span><span class="p">());</span>
+            <span class="n">Dictionary</span> <span class="k">properties</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="p">();</span>
+            <span class="k">properties</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">title</span>&quot;<span class="p">,</span> <span class="n">report</span><span class="p">.</span><span class="n">getTitle</span><span class="p">());</span>
+            <span class="k">properties</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">path</span>&quot; <span class="p">,</span> <span class="n">report</span><span class="p">.</span><span class="n">getAbsolutePath</span><span class="p">());</span>
+            <span class="k">properties</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">time</span>&quot;<span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">currentTimeMillis</span><span class="p">());</span>
 
-            <span class="n">Event</span> <span class="n">reportGeneratedEvent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Event</span><span class="p">(</span><span class="s">&quot;com/acme/reportgenerator/GENERATED&quot;</span><span class="p">,</span> <span class="n">properties</span><span class="p">);</span>
+            <span class="n">Event</span> <span class="n">reportGeneratedEvent</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Event</span><span class="p">(</span>&quot;<span class="n">com</span><span class="o">/</span><span class="n">acme</span><span class="o">/</span><span class="n">reportgenerator</span><span class="o">/</span><span class="n">GENERATED</span>&quot;<span class="p">,</span> <span class="k">properties</span><span class="p">);</span>
 
-            <span class="n">eventAdmin</span><span class="o">.</span><span class="n">sendEvent</span><span class="p">(</span><span class="n">reportGeneratedEvent</span><span class="p">);</span>
+            <span class="n">eventAdmin</span><span class="p">.</span><span class="n">sendEvent</span><span class="p">(</span><span class="n">reportGeneratedEvent</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 </pre></div>
 
 
 <p>The <code>EventAdmin.sendEvent()</code> method sends the <code>Event</code> object synchronously. To send it asynchronously, use the <code>EventAdmin.postEvent()</code> method, such as:</p>
-<div class="codehilite"><pre>            <span class="sr">//</span><span class="o">..</span>        
-            <span class="n">Event</span> <span class="n">reportGeneratedEvent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Event</span><span class="p">(</span><span class="s">&quot;com/acme/reportgenerator/GENERATED&quot;</span><span class="p">,</span> <span class="n">properties</span><span class="p">);</span>
-            <span class="n">eventAdmin</span><span class="o">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">reportGeneratedEvent</span><span class="p">);</span>
+<div class="codehilite"><pre>            <span class="o">//</span><span class="p">..</span>        
+            <span class="n">Event</span> <span class="n">reportGeneratedEvent</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Event</span><span class="p">(</span>&quot;<span class="n">com</span><span class="o">/</span><span class="n">acme</span><span class="o">/</span><span class="n">reportgenerator</span><span class="o">/</span><span class="n">GENERATED</span>&quot;<span class="p">,</span> <span class="k">properties</span><span class="p">);</span>
+            <span class="n">eventAdmin</span><span class="p">.</span><span class="n">postEvent</span><span class="p">(</span><span class="n">reportGeneratedEvent</span><span class="p">);</span>
 </pre></div>
 
 
@@ -121,48 +120,48 @@
 <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">handleEvent</span><span class="p">(</span><span class="n">Event</span> <span class="n">event</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">String</span> <span class="n">reportTitle</span> <span class="o">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">event</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">);</span>
-        <span class="n">String</span> <span class="n">reportPath</span> <span class="o">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">event</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">);</span>
+        <span class="n">String</span> <span class="n">reportTitle</span> <span class="p">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">event</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span>&quot;<span class="n">title</span>&quot;<span class="p">);</span>
+        <span class="n">String</span> <span class="n">reportPath</span> <span class="p">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">event</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span>&quot;<span class="n">path</span>&quot;<span class="p">);</span>
 
         <span class="n">sendReportByEmail</span><span class="p">(</span><span class="n">reportTitle</span><span class="p">,</span> <span class="n">reportPath</span><span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="sr">//</span><span class="o">..</span>
+    <span class="o">//</span><span class="p">..</span>
 </pre></div>
 
 
 <h2 id="registering-an-event-handler">Registering an Event Handler</h2>
 <p>To receive event notifications, the event handler must be registered as a OSGi service under the object class <code>org.osgi.service.event.EventHandler</code>. When registering the service, a <code>String\[\]()</code> property named <code>*EVENT_TOPIC*</code> must be specified; this property describes the list of topics in which the event handler is interested. For example:</p>
-<div class="codehilite"><pre>        <span class="n">String</span><span class="o">[]</span> <span class="n">topics</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="p">{</span>
-            <span class="s">&quot;com/acme/reportgenerator/GENERATED&quot;</span>
+<div class="codehilite"><pre>        <span class="n">String</span><span class="p">[]</span> <span class="n">topics</span> <span class="p">=</span> <span class="n">new</span> <span class="n">String</span><span class="p">[]</span> <span class="p">{</span>
+            &quot;<span class="n">com</span><span class="o">/</span><span class="n">acme</span><span class="o">/</span><span class="n">reportgenerator</span><span class="o">/</span><span class="n">GENERATED</span>&quot;
         <span class="p">};</span>
 
-        <span class="n">Dictionary</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="p">();</span>
-        <span class="n">props</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="o">.</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">topics</span><span class="p">);</span>
-        <span class="n">bundleContext</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span><span class="n">EventHandler</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="k">new</span> <span class="n">ReportEventHandler</span><span class="p">()</span> <span class="p">,</span> <span class="n">props</span><span class="p">);</span>
+        <span class="n">Dictionary</span> <span class="n">props</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="p">();</span>
+        <span class="n">props</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="p">.</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">topics</span><span class="p">);</span>
+        <span class="n">bundleContext</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span><span class="n">EventHandler</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">new</span> <span class="n">ReportEventHandler</span><span class="p">()</span> <span class="p">,</span> <span class="n">props</span><span class="p">);</span>
 </pre></div>
 
 
 <p>It is possible to use '*' as a wildcard in the final character of the EVENT_TOPIC, like in this example:</p>
-<div class="codehilite"><pre>        <span class="n">String</span><span class="o">[]</span> <span class="n">topics</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="p">{</span>
-            <span class="s">&quot;com/acme/reportgenerator/*&quot;</span>
+<div class="codehilite"><pre>        <span class="n">String</span><span class="p">[]</span> <span class="n">topics</span> <span class="p">=</span> <span class="n">new</span> <span class="n">String</span><span class="p">[]</span> <span class="p">{</span>
+            &quot;<span class="n">com</span><span class="o">/</span><span class="n">acme</span><span class="o">/</span><span class="n">reportgenerator</span><span class="o">/*</span>&quot;
         <span class="p">};</span>
 
-        <span class="n">Dictionary</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="p">();</span>
-        <span class="n">props</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="o">.</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">topics</span><span class="p">);</span>
-        <span class="n">bundleContext</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span><span class="n">EventHandler</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="k">new</span> <span class="n">ReportEventHandler</span><span class="p">()</span> <span class="p">,</span> <span class="n">props</span><span class="p">);</span>
+        <span class="n">Dictionary</span> <span class="n">props</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="p">();</span>
+        <span class="n">props</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="p">.</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">topics</span><span class="p">);</span>
+        <span class="n">bundleContext</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span><span class="n">EventHandler</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">new</span> <span class="n">ReportEventHandler</span><span class="p">()</span> <span class="p">,</span> <span class="n">props</span><span class="p">);</span>
 </pre></div>
 
 
 <p>Finally, it is possible to specify an additional <code>EVENT_FILTER</code> property to filter event notifications; the filter expression follows, the normal LDAP syntax:</p>
-<div class="codehilite"><pre>        <span class="n">String</span><span class="o">[]</span> <span class="n">topics</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="p">{</span>
-            <span class="s">&quot;com/acme/reportgenerator/GENERATED&quot;</span>
+<div class="codehilite"><pre>        <span class="n">String</span><span class="p">[]</span> <span class="n">topics</span> <span class="p">=</span> <span class="n">new</span> <span class="n">String</span><span class="p">[]</span> <span class="p">{</span>
+            &quot;<span class="n">com</span><span class="o">/</span><span class="n">acme</span><span class="o">/</span><span class="n">reportgenerator</span><span class="o">/</span><span class="n">GENERATED</span>&quot;
         <span class="p">};</span>
 
-        <span class="n">Dictionary</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="p">();</span>
-        <span class="n">props</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="o">.</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">topics</span><span class="p">);</span>
-        <span class="n">props</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="o">.</span><span class="n">EVENT_FILTER</span><span class="p">,</span> <span class="s">&quot;(title=samplereport)&quot;</span><span class="p">);</span>
-        <span class="n">bundleContext</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span><span class="n">EventHandler</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="k">new</span> <span class="n">ReportEventHandler</span><span class="p">()</span> <span class="p">,</span> <span class="n">props</span><span class="p">);</span>
+        <span class="n">Dictionary</span> <span class="n">props</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="p">();</span>
+        <span class="n">props</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="p">.</span><span class="n">EVENT_TOPIC</span><span class="p">,</span> <span class="n">topics</span><span class="p">);</span>
+        <span class="n">props</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">EventConstants</span><span class="p">.</span><span class="n">EVENT_FILTER</span><span class="p">,</span> &quot;<span class="p">(</span><span class="n">title</span><span class="p">=</span><span class="n">samplereport</span><span class="p">)</span>&quot;<span class="p">);</span>
+        <span class="n">bundleContext</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span><span class="n">EventHandler</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">new</span> <span class="n">ReportEventHandler</span><span class="p">()</span> <span class="p">,</span> <span class="n">props</span><span class="p">);</span>
 </pre></div>
 
 

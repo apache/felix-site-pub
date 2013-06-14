@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -111,9 +110,9 @@
     <span class="n">String</span> <span class="n">getLocation</span><span class="p">();</span>
     <span class="n">URL</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
     <span class="n">Enumeration</span> <span class="n">getResources</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">IOException</span><span class="p">;</span>
-    <span class="n">ServiceReference</span><span class="o">[]</span> <span class="n">getRegisteredServices</span><span class="p">();</span>
-    <span class="n">ServiceReference</span><span class="o">[]</span> <span class="n">getServicesInUse</span><span class="p">();</span>
-    <span class="nb">int</span> <span class="n">getState</span><span class="p">();</span>
+    <span class="n">ServiceReference</span><span class="p">[]</span> <span class="n">getRegisteredServices</span><span class="p">();</span>
+    <span class="n">ServiceReference</span><span class="p">[]</span> <span class="n">getServicesInUse</span><span class="p">();</span>
+    <span class="n">int</span> <span class="n">getState</span><span class="p">();</span>
     <span class="n">String</span> <span class="n">getSymbolicName</span><span class="p">();</span>
     <span class="n">Version</span> <span class="n">getVersion</span><span class="p">();</span>
     <span class="n">boolean</span> <span class="n">hasPermission</span><span class="p">(</span><span class="n">Object</span> <span class="n">obj</span><span class="p">);</span>
@@ -183,104 +182,104 @@ Felix configuration properties have change considerably starting from `1.4.0`; i
 <p>The remainder of this section describes how the standard Felix launcher works as well as how to create a custom launcher.</p>
 <h2 id="standard-felix-framework-launcher">Standard Felix Framework Launcher</h2>
 <p>The standard Felix framework launcher is very simple and is not intended to solve every possible requirement; it is intended to work for most standard situations. Most special launching requirements should be resolved by creating a custom launcher. This section describes how the standard launcher works. The following code represents the complete <code>main()</code> method of the standard launcher, each numbered comment will be described in more detail below:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
 <span class="p">{</span>
-    <span class="sr">//</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">Check</span> <span class="k">for</span> <span class="n">command</span> <span class="n">line</span> <span class="n">arguments</span> <span class="ow">and</span> <span class="n">verify</span> <span class="n">usage</span><span class="o">.</span>
-    <span class="n">String</span> <span class="n">bundleDir</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">String</span> <span class="n">cacheDir</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">boolean</span> <span class="n">expectBundleDir</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">args</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="o">//</span> <span class="p">(</span>1<span class="p">)</span> <span class="n">Check</span> <span class="k">for</span> <span class="n">command</span> <span class="n">line</span> <span class="n">arguments</span> <span class="n">and</span> <span class="n">verify</span> <span class="n">usage</span><span class="p">.</span>
+    <span class="n">String</span> <span class="n">bundleDir</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">String</span> <span class="n">cacheDir</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">boolean</span> <span class="n">expectBundleDir</span> <span class="p">=</span> <span class="n">false</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="nb">i</span> <span class="p">=</span> 0<span class="p">;</span> <span class="nb">i</span> <span class="o">&lt;</span> <span class="n">args</span><span class="p">.</span><span class="nb">length</span><span class="p">;</span> <span class="nb">i</span><span class="o">++</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">BUNDLE_DIR_SWITCH</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="nb">i</span><span class="p">].</span><span class="n">equals</span><span class="p">(</span><span class="n">BUNDLE_DIR_SWITCH</span><span class="p">))</span>
         <span class="p">{</span>
-            <span class="n">expectBundleDir</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+            <span class="n">expectBundleDir</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">expectBundleDir</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">bundleDir</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-            <span class="n">expectBundleDir</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+            <span class="n">bundleDir</span> <span class="p">=</span> <span class="n">args</span><span class="p">[</span><span class="nb">i</span><span class="p">];</span>
+            <span class="n">expectBundleDir</span> <span class="p">=</span> <span class="n">false</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="k">else</span>
         <span class="p">{</span>
-            <span class="n">cacheDir</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+            <span class="n">cacheDir</span> <span class="p">=</span> <span class="n">args</span><span class="p">[</span><span class="nb">i</span><span class="p">];</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">((</span><span class="n">args</span><span class="o">.</span><span class="nb">length</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">expectBundleDir</span> <span class="o">&amp;&amp;</span> <span class="n">bundleDir</span> <span class="o">==</span> <span class="n">null</span><span class="p">))</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">args</span><span class="p">.</span><span class="nb">length</span> <span class="o">&gt;</span> 3<span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">expectBundleDir</span> <span class="o">&amp;&amp;</span> <span class="n">bundleDir</span> <span class="o">==</span> <span class="n">null</span><span class="p">))</span>
     <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Usage: [-b &lt;bundle-deploy-dir&gt;] [&lt;bundle-cache-dir&gt;]&quot;</span><span class="p">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Usage</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">deploy</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">cache</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span><span class="p">]</span>&quot;<span class="p">);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="sr">//</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="n">Load</span> <span class="nb">system</span> <span class="n">properties</span><span class="o">.</span>
-    <span class="n">Main</span><span class="o">.</span><span class="n">loadSystemProperties</span><span class="p">();</span>
+    <span class="o">//</span> <span class="p">(</span>2<span class="p">)</span> <span class="n">Load</span> <span class="n">system</span> <span class="k">properties</span><span class="p">.</span>
+    <span class="n">Main</span><span class="p">.</span><span class="n">loadSystemProperties</span><span class="p">();</span>
 
-    <span class="sr">//</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="n">Read</span> <span class="n">configuration</span> <span class="n">properties</span><span class="o">.</span>
-    <span class="n">Properties</span> <span class="n">configProps</span> <span class="o">=</span> <span class="n">Main</span><span class="o">.</span><span class="n">loadConfigProperties</span><span class="p">();</span>
+    <span class="o">//</span> <span class="p">(</span>3<span class="p">)</span> <span class="n">Read</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
+    <span class="n">Properties</span> <span class="n">configProps</span> <span class="p">=</span> <span class="n">Main</span><span class="p">.</span><span class="n">loadConfigProperties</span><span class="p">();</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">configProps</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;No &quot;</span> <span class="o">+</span> <span class="n">CONFIG_PROPERTIES_FILE_VALUE</span> <span class="o">+</span> <span class="s">&quot; found.&quot;</span><span class="p">);</span>
-        <span class="n">configProps</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Properties</span><span class="p">();</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">No</span> &quot; <span class="o">+</span> <span class="n">CONFIG_PROPERTIES_FILE_VALUE</span> <span class="o">+</span> &quot; <span class="n">found</span><span class="p">.</span>&quot;<span class="p">);</span>
+        <span class="n">configProps</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Properties</span><span class="p">();</span>
     <span class="p">}</span>
 
-    <span class="sr">//</span> <span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="n">Copy</span> <span class="n">framework</span> <span class="n">properties</span> <span class="n">from</span> <span class="n">the</span> <span class="nb">system</span> <span class="n">properties</span><span class="o">.</span>
-    <span class="n">Main</span><span class="o">.</span><span class="n">copySystemProperties</span><span class="p">(</span><span class="n">configProps</span><span class="p">);</span>
+    <span class="o">//</span> <span class="p">(</span>4<span class="p">)</span> <span class="n">Copy</span> <span class="n">framework</span> <span class="k">properties</span> <span class="n">from</span> <span class="n">the</span> <span class="n">system</span> <span class="k">properties</span><span class="p">.</span>
+    <span class="n">Main</span><span class="p">.</span><span class="n">copySystemProperties</span><span class="p">(</span><span class="n">configProps</span><span class="p">);</span>
 
-    <span class="sr">//</span> <span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">auto</span><span class="o">-</span><span class="n">deploy</span> <span class="n">directory</span> <span class="n">over</span> <span class="n">default</span><span class="o">.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">bundleDir</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+    <span class="o">//</span> <span class="p">(</span>5<span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">auto</span><span class="o">-</span><span class="n">deploy</span> <span class="n">directory</span> <span class="n">over</span> <span class="n">default</span><span class="p">.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bundleDir</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">configProps</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span><span class="n">AutoProcessor</span><span class="o">.</span><span class="n">AUTO_DEPLOY_DIR_PROPERY</span><span class="p">,</span> <span class="n">bundleDir</span><span class="p">);</span>
+        <span class="n">configProps</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="n">AutoProcessor</span><span class="p">.</span><span class="n">AUTO_DEPLOY_DIR_PROPERY</span><span class="p">,</span> <span class="n">bundleDir</span><span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="sr">//</span> <span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">bundle</span> <span class="n">cache</span> <span class="n">directory</span> <span class="n">over</span> <span class="n">default</span><span class="o">.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">cacheDir</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+    <span class="o">//</span> <span class="p">(</span>6<span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">bundle</span> <span class="n">cache</span> <span class="n">directory</span> <span class="n">over</span> <span class="n">default</span><span class="p">.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cacheDir</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">configProps</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">FRAMEWORK_STORAGE</span><span class="p">,</span> <span class="n">cacheDir</span><span class="p">);</span>
+        <span class="n">configProps</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">FRAMEWORK_STORAGE</span><span class="p">,</span> <span class="n">cacheDir</span><span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="sr">//</span> <span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="n">Add</span> <span class="n">a</span> <span class="nb">shutdown</span> <span class="n">hook</span> <span class="n">to</span> <span class="n">clean</span> <span class="n">stop</span> <span class="n">the</span> <span class="n">framework</span><span class="o">.</span>
-    <span class="n">String</span> <span class="n">enableHook</span> <span class="o">=</span> <span class="n">configProps</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">SHUTDOWN_HOOK_PROP</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">enableHook</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="o">||</span> <span class="o">!</span><span class="n">enableHook</span><span class="o">.</span><span class="n">equalsIgnoreCase</span><span class="p">(</span><span class="s">&quot;false&quot;</span><span class="p">))</span>
+    <span class="o">//</span> <span class="p">(</span>7<span class="p">)</span> <span class="n">Add</span> <span class="n">a</span> <span class="n">shutdown</span> <span class="n">hook</span> <span class="n">to</span> <span class="n">clean</span> <span class="n">stop</span> <span class="n">the</span> <span class="n">framework</span><span class="p">.</span>
+    <span class="n">String</span> <span class="n">enableHook</span> <span class="p">=</span> <span class="n">configProps</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">SHUTDOWN_HOOK_PROP</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">enableHook</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="o">||</span> !<span class="n">enableHook</span><span class="p">.</span><span class="n">equalsIgnoreCase</span><span class="p">(</span>&quot;<span class="n">false</span>&quot;<span class="p">))</span>
     <span class="p">{</span>
-        <span class="n">Runtime</span><span class="o">.</span><span class="n">getRuntime</span><span class="p">()</span><span class="o">.</span><span class="n">addShutdownHook</span><span class="p">(</span><span class="k">new</span> <span class="n">Thread</span><span class="p">(</span><span class="s">&quot;Felix Shutdown Hook&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Runtime</span><span class="p">.</span><span class="n">getRuntime</span><span class="p">().</span><span class="n">addShutdownHook</span><span class="p">(</span><span class="n">new</span> <span class="n">Thread</span><span class="p">(</span>&quot;<span class="n">Felix</span> <span class="n">Shutdown</span> <span class="n">Hook</span>&quot;<span class="p">)</span> <span class="p">{</span>
             <span class="n">public</span> <span class="n">void</span> <span class="n">run</span><span class="p">()</span>
             <span class="p">{</span>
-                <span class="n">try</span>
+                <span class="k">try</span>
                 <span class="p">{</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">m_fwk</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">m_fwk</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
                     <span class="p">{</span>
-                        <span class="n">m_fwk</span><span class="o">.</span><span class="n">stop</span><span class="p">();</span>
-                        <span class="n">m_fwk</span><span class="o">.</span><span class="n">waitForStop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+                        <span class="n">m_fwk</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+                        <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
-                <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+                <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
                 <span class="p">{</span>
-                    <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Error stopping framework: &quot;</span> <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
+                    <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Error</span> <span class="n">stopping</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
                 <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">});</span>
     <span class="p">}</span>
 
-    <span class="n">try</span>
+    <span class="k">try</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="n">Create</span> <span class="n">an</span> <span class="n">instance</span> <span class="ow">and</span> <span class="n">initialize</span> <span class="n">the</span> <span class="n">framework</span><span class="o">.</span>
-        <span class="n">FrameworkFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="n">getFrameworkFactory</span><span class="p">();</span>
-        <span class="n">m_fwk</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">newFramework</span><span class="p">(</span><span class="n">configProps</span><span class="p">);</span>
-        <span class="n">m_fwk</span><span class="o">.</span><span class="n">init</span><span class="p">();</span>
-        <span class="sr">//</span> <span class="p">(</span><span class="mi">9</span><span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="nb">system</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">to</span> <span class="n">process</span> <span class="n">the</span> <span class="n">auto</span><span class="o">-</span><span class="n">deploy</span>
-        <span class="sr">//</span> <span class="ow">and</span> <span class="n">auto</span><span class="o">-</span><span class="n">install</span><span class="o">/</span><span class="n">auto</span><span class="o">-</span><span class="n">start</span> <span class="n">properties</span><span class="o">.</span>
-        <span class="n">AutoProcessor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">configProps</span><span class="p">,</span> <span class="n">m_fwk</span><span class="o">.</span><span class="n">getBundleContext</span><span class="p">());</span>
-        <span class="sr">//</span> <span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="n">Start</span> <span class="n">the</span> <span class="n">framework</span><span class="o">.</span>
-        <span class="n">m_fwk</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
-        <span class="sr">//</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="n">Wait</span> <span class="k">for</span> <span class="n">framework</span> <span class="n">to</span> <span class="n">stop</span> <span class="n">to</span> <span class="nb">exit</span> <span class="n">the</span> <span class="n">VM</span><span class="o">.</span>
-        <span class="n">m_fwk</span><span class="o">.</span><span class="n">waitForStop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="o">//</span> <span class="p">(</span>8<span class="p">)</span> <span class="n">Create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">and</span> <span class="n">initialize</span> <span class="n">the</span> <span class="n">framework</span><span class="p">.</span>
+        <span class="n">FrameworkFactory</span> <span class="n">factory</span> <span class="p">=</span> <span class="n">getFrameworkFactory</span><span class="p">();</span>
+        <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">factory</span><span class="p">.</span><span class="n">newFramework</span><span class="p">(</span><span class="n">configProps</span><span class="p">);</span>
+        <span class="n">m_fwk</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
+        <span class="o">//</span> <span class="p">(</span>9<span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">system</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">to</span> <span class="n">process</span> <span class="n">the</span> <span class="n">auto</span><span class="o">-</span><span class="n">deploy</span>
+        <span class="o">//</span> <span class="n">and</span> <span class="n">auto</span><span class="o">-</span><span class="n">install</span><span class="o">/</span><span class="n">auto</span><span class="o">-</span><span class="n">start</span> <span class="k">properties</span><span class="p">.</span>
+        <span class="n">AutoProcessor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">configProps</span><span class="p">,</span> <span class="n">m_fwk</span><span class="p">.</span><span class="n">getBundleContext</span><span class="p">());</span>
+        <span class="o">//</span> <span class="p">(</span>10<span class="p">)</span> <span class="n">Start</span> <span class="n">the</span> <span class="n">framework</span><span class="p">.</span>
+        <span class="n">m_fwk</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
+        <span class="o">//</span> <span class="p">(</span>11<span class="p">)</span> <span class="n">Wait</span> <span class="k">for</span> <span class="n">framework</span> <span class="n">to</span> <span class="n">stop</span> <span class="n">to</span> <span class="n">exit</span> <span class="n">the</span> <span class="n">VM</span><span class="p">.</span>
+        <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
     <span class="p">}</span>
-    <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+    <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Could not create framework: &quot;</span> <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-        <span class="n">ex</span><span class="o">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-        <span class="n">System</span><span class="o">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
+        <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -304,77 +303,77 @@ Felix configuration properties have change considerably starting from `1.4.0`; i
 <p>This section creates a bare-bones launcher to demonstrate the minimum requirements for creating an interactive launcher for the Felix framework. This example uses the standard Gogo shell bundles for interactivity, but any other bundles could be used instead. This example launcher project has the following directory structure:</p>
 <div class="codehilite"><pre><span class="n">launcher</span><span class="o">/</span>
    <span class="n">lib</span><span class="o">/</span>
-      <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">main</span><span class="o">-</span><span class="mf">3.0.0</span><span class="o">.</span><span class="n">jar</span>
+      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="o">-</span>3<span class="p">.</span>0<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
    <span class="n">bundle</span><span class="o">/</span>
-      <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">gogo</span><span class="o">.</span><span class="n">command</span><span class="o">-</span><span class="mf">0.6.0</span><span class="o">.</span><span class="n">jar</span>
-      <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">gogo</span><span class="o">.</span><span class="n">runtime</span><span class="o">-</span><span class="mf">0.6.0</span><span class="o">.</span><span class="n">jar</span>
-      <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">gogo</span><span class="o">.</span><span class="n">shell</span><span class="o">-</span><span class="mf">0.6.0</span><span class="o">.</span><span class="n">jar</span>
+      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">gogo</span><span class="p">.</span><span class="n">command</span><span class="o">-</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
+      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">gogo</span><span class="p">.</span><span class="n">runtime</span><span class="o">-</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
+      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">gogo</span><span class="p">.</span><span class="n">shell</span><span class="o">-</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
    <span class="n">src</span><span class="o">/</span>
       <span class="n">example</span><span class="o">/</span>
-         <span class="n">Main</span><span class="o">.</span><span class="n">java</span>
+         <span class="n">Main</span><span class="p">.</span><span class="n">java</span>
 </pre></div>
 
 
 <p>The <code>lib/</code> directory contains Felix' main JAR file, which also contains the OSGi core interfaces. The main JAR file is used so that we can reuse the default launcher's auto-install/auto-start configuration property handling; if these capabilities are not needed, then it would be possible to use the framework JAR file instead of the main JAR file. The <code>bundle/</code> directory contains the shell service and textual shell interface bundles that will be used for interacting with the framework instance. Note: If you do not launch the framework with interactive bundles, it will appear as if the framework instance is hung, but it is actually just sitting there waiting for someone to tell it to do something. The <code>src/example/</code> directory contains the following <code>Main.java</code> file, which is a very simplistic framework launcher.</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">example</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">example</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.*</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">launch</span><span class="o">.*</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">AutoProcessor</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">io</span><span class="o">.*</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">launch</span><span class="o">.*</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="p">.</span><span class="n">AutoProcessor</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">Main</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">static</span> <span class="n">Framework</span> <span class="n">m_fwk</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">static</span> <span class="n">Framework</span> <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
-    <span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">argv</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
+    <span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">argv</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Print</span> <span class="n">welcome</span> <span class="n">banner</span><span class="o">.</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;\nWelcome to My Launcher&quot;</span><span class="p">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;======================\n&quot;</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Print</span> <span class="n">welcome</span> <span class="n">banner</span><span class="p">.</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="o">\</span><span class="n">nWelcome</span> <span class="n">to</span> <span class="n">My</span> <span class="n">Launcher</span>&quot;<span class="p">);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="o">======================\</span><span class="n">n</span>&quot;<span class="p">);</span>
 
-        <span class="n">try</span>
+        <span class="k">try</span>
         <span class="p">{</span>
-            <span class="n">m_fwk</span> <span class="o">=</span> <span class="n">getFrameworkFactory</span><span class="p">()</span><span class="o">.</span><span class="n">newFramework</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
-            <span class="n">m_fwk</span><span class="o">.</span><span class="n">init</span><span class="p">();</span>
-            <span class="n">AutoProcessor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">m_fwk</span><span class="o">.</span><span class="n">getBundleContext</span><span class="p">());</span>
-            <span class="n">m_fwk</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
-            <span class="n">m_fwk</span><span class="o">.</span><span class="n">waitForStop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-            <span class="n">System</span><span class="o">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+            <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">getFrameworkFactory</span><span class="p">().</span><span class="n">newFramework</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
+            <span class="n">m_fwk</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
+            <span class="n">AutoProcessor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">m_fwk</span><span class="p">.</span><span class="n">getBundleContext</span><span class="p">());</span>
+            <span class="n">m_fwk</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
+            <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
+            <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
         <span class="p">}</span>
-        <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Could not create framework: &quot;</span> <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="o">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">System</span><span class="o">.</span><span class="nb">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
+            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+            <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span>1<span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="n">private</span> <span class="n">static</span> <span class="n">FrameworkFactory</span> <span class="n">getFrameworkFactory</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span>
     <span class="p">{</span>
-        <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="n">Main</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getClassLoader</span><span class="p">()</span><span class="o">.</span><span class="n">getResource</span><span class="p">(</span>
-            <span class="s">&quot;META-INF/services/org.osgi.framework.launch.FrameworkFactory&quot;</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">url</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+        <span class="n">java</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">URL</span> <span class="n">url</span> <span class="p">=</span> <span class="n">Main</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getClassLoader</span><span class="p">().</span><span class="n">getResource</span><span class="p">(</span>
+            &quot;<span class="n">META</span><span class="o">-</span><span class="n">INF</span><span class="o">/</span><span class="n">services</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">launch</span><span class="p">.</span><span class="n">FrameworkFactory</span>&quot;<span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">url</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="p">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">openStream</span><span class="p">()));</span>
-            <span class="n">try</span>
+            <span class="n">BufferedReader</span> <span class="n">br</span> <span class="p">=</span> <span class="n">new</span> <span class="n">BufferedReader</span><span class="p">(</span><span class="n">new</span> <span class="n">InputStreamReader</span><span class="p">(</span><span class="n">url</span><span class="p">.</span><span class="n">openStream</span><span class="p">()));</span>
+            <span class="k">try</span>
             <span class="p">{</span>
-                <span class="k">for</span> <span class="p">(</span><span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="n">readLine</span><span class="p">();</span> <span class="n">s</span> <span class="o">!=</span> <span class="n">null</span><span class="p">;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="n">readLine</span><span class="p">())</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">String</span> <span class="n">s</span> <span class="p">=</span> <span class="n">br</span><span class="p">.</span><span class="n">readLine</span><span class="p">();</span> <span class="n">s</span> !<span class="p">=</span> <span class="n">null</span><span class="p">;</span> <span class="n">s</span> <span class="p">=</span> <span class="n">br</span><span class="p">.</span><span class="n">readLine</span><span class="p">())</span>
                 <span class="p">{</span>
-                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">trim</span><span class="p">();</span>
-                    <span class="sr">//</span> <span class="n">Try</span> <span class="n">to</span> <span class="n">load</span> <span class="n">first</span> <span class="n">non</span><span class="o">-</span><span class="n">empty</span><span class="p">,</span> <span class="n">non</span><span class="o">-</span><span class="n">commented</span> <span class="n">line</span><span class="o">.</span>
-                    <span class="k">if</span> <span class="p">((</span><span class="n">s</span><span class="o">.</span><span class="nb">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="s">&#39;#&#39;</span><span class="p">))</span>
+                    <span class="n">s</span> <span class="p">=</span> <span class="n">s</span><span class="p">.</span><span class="n">trim</span><span class="p">();</span>
+                    <span class="o">//</span> <span class="n">Try</span> <span class="n">to</span> <span class="n">load</span> <span class="n">first</span> <span class="n">non</span><span class="o">-</span><span class="n">empty</span><span class="p">,</span> <span class="n">non</span><span class="o">-</span><span class="n">commented</span> <span class="n">line</span><span class="p">.</span>
+                    <span class="k">if</span> <span class="p">((</span><span class="n">s</span><span class="p">.</span><span class="nb">length</span><span class="p">()</span> <span class="o">&gt;</span> 0<span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">charAt</span><span class="p">(</span>0<span class="p">)</span> !<span class="p">=</span> <span class="s">&#39;#&#39;</span><span class="p">))</span>
                     <span class="p">{</span>
-                        <span class="k">return</span> <span class="p">(</span><span class="n">FrameworkFactory</span><span class="p">)</span> <span class="n">Class</span><span class="o">.</span><span class="n">forName</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">newInstance</span><span class="p">();</span>
+                        <span class="k">return</span> <span class="p">(</span><span class="n">FrameworkFactory</span><span class="p">)</span> <span class="n">Class</span><span class="p">.</span><span class="n">forName</span><span class="p">(</span><span class="n">s</span><span class="p">).</span><span class="n">newInstance</span><span class="p">();</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
             <span class="n">finally</span>
             <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">br</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="n">br</span><span class="o">.</span><span class="nb">close</span><span class="p">();</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">br</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> <span class="n">br</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
             <span class="p">}</span>
         <span class="p">}</span>
 
-        <span class="n">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s">&quot;Could not find framework factory.&quot;</span><span class="p">);</span>
+        <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="nb">find</span> <span class="n">framework</span> <span class="n">factory</span><span class="p">.</span>&quot;<span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -382,39 +381,39 @@ Felix configuration properties have change considerably starting from `1.4.0`; i
 
 <p>This launcher relies on the default behavior of <code>AutoProcessor</code> to automatically deploy the shell bundles. This simple, generic launcher provides a good starting point if the default Felix launcher is not sufficient. Since very few configuration properties are specified, the default values are used. For the bundle auto-deploy directory, "<code>bundle</code>" in the current directory is used, while for the framework bundle cache, "<code>felix-cache</code>" in the current directory is used.</p>
 <p>By breaking down the above source code into small chunks, it is quite easy to see what is going on.</p>
-<div class="codehilite"><pre>            <span class="n">m_fwk</span> <span class="o">=</span> <span class="n">getFrameworkFactory</span><span class="p">()</span><span class="o">.</span><span class="n">newFramework</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
-            <span class="n">m_fwk</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<div class="codehilite"><pre>            <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">getFrameworkFactory</span><span class="p">().</span><span class="n">newFramework</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
+            <span class="n">m_fwk</span><span class="p">.</span><span class="n">init</span><span class="p">()</span>
 </pre></div>
 
 
 <p>These steps get a the framework factory service and use it to create a framework instance with a default configuration. Once the framework instance is created, it is initialized with <code>init()</code>.</p>
-<div class="codehilite"><pre>            <span class="n">AutoProcessor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">m_fwk</span><span class="o">.</span><span class="n">getBundleContext</span><span class="p">());</span>
+<div class="codehilite"><pre>            <span class="n">AutoProcessor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">m_fwk</span><span class="p">.</span><span class="n">getBundleContext</span><span class="p">());</span>
 </pre></div>
 
 
 <p>The <code>AutorProcessor</code> will automatically deploy bundles in the auto-deploy directory and any referenced from the auto-install/start properties. Since we are using an empty configuration, the auto-deploy directory is the <code>bundle</code> directory in the current directory and there are no auto properties. Therefore, in this case, the shell bundles will be installed.</p>
-<div class="codehilite"><pre>            <span class="n">m_fwk</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
-            <span class="n">m_fwk</span><span class="o">.</span><span class="n">waitForStop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-            <span class="n">System</span><span class="o">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<div class="codehilite"><pre>            <span class="n">m_fwk</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
+            <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
+            <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
 </pre></div>
 
 
 <p>These final steps start the framework and cause the launching application thread to wait for the framework to stop and when it does the launching thread calls <code>System.exit()</code> to make sure the VM actually exits.</p>
 <div class="codehilite"><pre>    <span class="n">private</span> <span class="n">static</span> <span class="n">FrameworkFactory</span> <span class="n">getFrameworkFactory</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span>
     <span class="p">{</span>
-        <span class="o">...</span>
+        <span class="p">...</span>
     <span class="p">}</span>
 </pre></div>
 
 
 <p>This method retrieves the framework factory service by doing a META-INF/services resource lookup, which it can use to obtain the concrete class name for the factory. If you are using Java 6, then you can use the <code>ServiceLoader</code> API in the JRE to further simplify the factory service lookup.</p>
 <p>The following command compiles the launcher when run from the root directory of the launcher project:</p>
-<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="o">.</span> <span class="o">-</span><span class="n">classpath</span> <span class="n">lib</span><span class="sr">/org.apache.felix.main-3.0.0.jar src/</span><span class="n">example</span><span class="o">/</span><span class="n">Main</span><span class="o">.</span><span class="n">java</span>
+<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="p">.</span> <span class="o">-</span><span class="n">classpath</span> <span class="n">lib</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="o">-</span>3<span class="p">.</span>0<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span> <span class="n">src</span><span class="o">/</span><span class="n">example</span><span class="o">/</span><span class="n">Main</span><span class="p">.</span><span class="n">java</span>
 </pre></div>
 
 
 <p>After executing this command, an <code>example/</code> directory is created in the current directory, which contains the generated class file. The following command executes the simple launcher when run from the root directory of the launcher project:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">cp</span> <span class="o">.</span><span class="p">:</span><span class="n">lib</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">main</span><span class="o">-</span><span class="mf">3.0.0</span><span class="o">.</span><span class="n">jar</span> <span class="n">example</span><span class="o">.</span><span class="n">Main</span>
+<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">cp</span> <span class="p">.:</span><span class="n">lib</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="o">-</span>3<span class="p">.</span>0<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span> <span class="n">example</span><span class="p">.</span><span class="n">Main</span>
 </pre></div>
 
 
@@ -431,23 +430,23 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 <p>Each activator instance passed into the constructor effectively becomes part of the system bundle. This means that the <code>start()</code>/<code>stop()</code> methods of each activator instance in the list gets invoked when the system bundle's activator <code>start()</code>/<code>stop()</code> methods gets invoked, respectively. Each activator instance will be given the system bundle's <code>BundleContext</code> object so that they can interact with the framework. Consider following snippet of a bundle activator:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">HostActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="n">public</span> <span class="n">Bundle</span><span class="o">[]</span> <span class="n">getBundles</span><span class="p">()</span>
+    <span class="n">public</span> <span class="n">Bundle</span><span class="p">[]</span> <span class="n">getBundles</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">m_context</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">m_context</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="k">return</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getBundles</span><span class="p">();</span>
+            <span class="k">return</span> <span class="n">m_context</span><span class="p">.</span><span class="n">getBundles</span><span class="p">();</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
     <span class="p">}</span>
@@ -458,47 +457,47 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 <p>Given the above bundle activator, it is now possible to embed the Felix framework into a host application and interact with it as the following snippet illustrates:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">HostApplication</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">HostApplication</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="nb">map</span><span class="o">.</span>
-        <span class="n">Map</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
-        <span class="sr">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
-        <span class="n">m_activator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HostActivator</span><span class="p">();</span>
-        <span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-        <span class="n">list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
-        <span class="n">configMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="o">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="n">map</span><span class="p">.</span>
+        <span class="n">Map</span> <span class="n">config</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
+        <span class="o">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
+        <span class="n">m_activator</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HostActivator</span><span class="p">();</span>
+        <span class="n">List</span> <span class="n">list</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+        <span class="n">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
+        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="p">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
 
-        <span class="n">try</span>
+        <span class="k">try</span>
         <span class="p">{</span>
-            <span class="sr">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
-            <span class="sr">//</span> <span class="k">our</span> <span class="n">configuration</span> <span class="n">properties</span><span class="o">.</span>
-            <span class="n">m_felix</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
-            <span class="sr">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="o">.</span>
-            <span class="n">m_felix</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
+            <span class="o">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
+            <span class="o">//</span> <span class="n">our</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
+            <span class="n">m_felix</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+            <span class="o">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="p">.</span>
+            <span class="n">m_felix</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
         <span class="p">}</span>
-        <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Could not create framework: &quot;</span> <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="o">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
+            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="n">public</span> <span class="n">Bundle</span><span class="o">[]</span> <span class="n">getInstalledBundles</span><span class="p">()</span>
+    <span class="n">public</span> <span class="n">Bundle</span><span class="p">[]</span> <span class="n">getInstalledBundles</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Use</span> <span class="n">the</span> <span class="nb">system</span> <span class="n">bundle</span> <span class="n">activator</span> <span class="n">to</span> <span class="n">gain</span> <span class="n">external</span>
-        <span class="sr">//</span> <span class="n">access</span> <span class="n">to</span> <span class="n">the</span> <span class="n">set</span> <span class="n">of</span> <span class="n">installed</span> <span class="n">bundles</span><span class="o">.</span>
-        <span class="k">return</span> <span class="n">m_activator</span><span class="o">.</span><span class="n">getBundles</span><span class="p">();</span>
+        <span class="o">//</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">system</span> <span class="n">bundle</span> <span class="n">activator</span> <span class="n">to</span> <span class="n">gain</span> <span class="n">external</span>
+        <span class="o">//</span> <span class="n">access</span> <span class="n">to</span> <span class="n">the</span> <span class="n">set</span> <span class="n">of</span> <span class="n">installed</span> <span class="n">bundles</span><span class="p">.</span>
+        <span class="k">return</span> <span class="n">m_activator</span><span class="p">.</span><span class="n">getBundles</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">shutdownApplication</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
-        <span class="sr">//</span> <span class="n">host</span> <span class="n">application</span><span class="o">.</span>
-        <span class="n">m_felix</span><span class="o">.</span><span class="n">stop</span><span class="p">();</span>
-        <span class="n">m_felix</span><span class="o">.</span><span class="n">waitForStop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
+        <span class="o">//</span> <span class="n">host</span> <span class="n">application</span><span class="p">.</span>
+        <span class="n">m_felix</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+        <span class="n">m_felix</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -508,7 +507,7 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 <h2 id="providing-host-application-services">Providing Host Application Services</h2>
 <p>Providing services from the host application to bundles inside the embedded Felix framework instance follows the basic approach laid out in <a href="">above</a>. The main complication for providing a host application service to bundles is the fact that both the host application and the bundles must be using the same class definitions for the service interface classes. Since the host application cannot import classes from a bundle, this means that the service interface classes <em>must</em> be accessible on the class path, typically as part of the host application itself. The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it. This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
 <p>Consider the follow simple property lookup service:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">host</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">lookup</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">interface</span> <span class="n">Lookup</span>
 <span class="p">{</span>
@@ -518,112 +517,112 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 
 
 <p>This package is simply part of the host application, which is potentially packaged into a JAR file and started with the "<code>java -jar</code>" command. Now consider the following host application bundle activator, which will be used to register/unregister the property lookup service when the embedded framework instance starts/stops:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">host</span><span class="o">.</span><span class="n">core</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Map</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceRegistration</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">host</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">lookup</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Map</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceRegistration</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">HostActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_lookupMap</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">m_registration</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_lookupMap</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">m_registration</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">HostActivator</span><span class="p">(</span><span class="n">Map</span> <span class="n">lookupMap</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Save</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">backing</span> <span class="n">store</span><span class="o">.</span>
-        <span class="n">m_lookupMap</span> <span class="o">=</span> <span class="n">lookupMap</span><span class="p">;</span>
+        <span class="o">//</span> <span class="n">Save</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span><span class="o">&#39;</span><span class="n">s</span> <span class="n">backing</span> <span class="n">store</span><span class="p">.</span>
+        <span class="n">m_lookupMap</span> <span class="p">=</span> <span class="n">lookupMap</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Save</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span><span class="o">.</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
-        <span class="sr">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span> <span class="n">implementation</span><span class="o">.</span>
-        <span class="n">Lookup</span> <span class="n">lookup</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Lookup</span><span class="p">()</span> <span class="p">{</span>
+        <span class="o">//</span> <span class="n">Save</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span><span class="p">.</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span> <span class="n">implementation</span><span class="p">.</span>
+        <span class="n">Lookup</span> <span class="n">lookup</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Lookup</span><span class="p">()</span> <span class="p">{</span>
             <span class="n">public</span> <span class="n">Object</span> <span class="n">lookup</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="k">return</span> <span class="n">m_lookupMap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
             <span class="p">}</span>
         <span class="p">};</span>
-        <span class="sr">//</span> <span class="n">Register</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span> <span class="ow">and</span> <span class="n">save</span>
-        <span class="sr">//</span> <span class="n">the</span> <span class="n">service</span> <span class="n">registration</span><span class="o">.</span>
-        <span class="n">m_registration</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
-            <span class="n">Lookup</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">lookup</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Register</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span> <span class="n">and</span> <span class="n">save</span>
+        <span class="o">//</span> <span class="n">the</span> <span class="n">service</span> <span class="n">registration</span><span class="p">.</span>
+        <span class="n">m_registration</span> <span class="p">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span>
+            <span class="n">Lookup</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">lookup</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Unregister</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span><span class="o">.</span>
-        <span class="n">m_registration</span><span class="o">.</span><span class="n">unregister</span><span class="p">();</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+        <span class="o">//</span> <span class="n">Unregister</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span><span class="p">.</span>
+        <span class="n">m_registration</span><span class="p">.</span><span class="n">unregister</span><span class="p">();</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 
 
 <p>Given the above host application bundle activator, the following code snippet shows how the host application could create an embedded version of the Felix framework and provide the property lookup service to installed bundles:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">host</span><span class="o">.</span><span class="n">core</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">List</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">ArrayList</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Map</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">HashMap</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">host</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">lookup</span><span class="o">.</span><span class="n">Lookup</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">Felix</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">FelixConstants</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">Constants</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">List</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">ArrayList</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Map</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">HashMap</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">.</span><span class="n">Lookup</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Felix</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">FelixConstants</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Constants</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">HostApplication</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_lookupMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
+    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_lookupMap</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
 
     <span class="n">public</span> <span class="n">HostApplication</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Initialize</span> <span class="n">the</span> <span class="nb">map</span> <span class="k">for</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span><span class="o">.</span>
-        <span class="n">m_lookupMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;name1&quot;</span><span class="p">,</span> <span class="s">&quot;value1&quot;</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Initialize</span> <span class="n">the</span> <span class="n">map</span> <span class="k">for</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span><span class="p">.</span>
+        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name1</span>&quot;<span class="p">,</span> &quot;<span class="n">value1</span>&quot;<span class="p">);</span>
 
-        <span class="n">m_lookupMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;name2&quot;</span><span class="p">,</span> <span class="s">&quot;value2&quot;</span><span class="p">);</span>
-        <span class="n">m_lookupMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;name3&quot;</span><span class="p">,</span> <span class="s">&quot;value3&quot;</span><span class="p">);</span>
-        <span class="n">m_lookupMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;name4&quot;</span><span class="p">,</span> <span class="s">&quot;value4&quot;</span><span class="p">);</span>
+        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name2</span>&quot;<span class="p">,</span> &quot;<span class="n">value2</span>&quot;<span class="p">);</span>
+        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name3</span>&quot;<span class="p">,</span> &quot;<span class="n">value3</span>&quot;<span class="p">);</span>
+        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name4</span>&quot;<span class="p">,</span> &quot;<span class="n">value4</span>&quot;<span class="p">);</span>
 
-        <span class="sr">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="nb">map</span><span class="o">.</span>
-        <span class="n">Map</span> <span class="n">configMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
-        <span class="sr">//</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">host</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">interface</span> <span class="nb">package</span><span class="o">.</span>
-        <span class="n">configMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">FRAMEWORK_SYSTEMPACKAGES_EXTRA</span><span class="p">,</span>
-            <span class="s">&quot;host.service.lookup; version=1.0.0&quot;</span><span class="p">);</span>
-        <span class="sr">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
-        <span class="n">m_activator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HostActivator</span><span class="p">(</span><span class="n">m_lookupMap</span><span class="p">);</span>
-        <span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-        <span class="n">list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
-        <span class="n">configMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="o">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="n">map</span><span class="p">.</span>
+        <span class="n">Map</span> <span class="n">configMap</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
+        <span class="o">//</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">host</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">interface</span> <span class="n">package</span><span class="p">.</span>
+        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">FRAMEWORK_SYSTEMPACKAGES_EXTRA</span><span class="p">,</span>
+            &quot;<span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">;</span> <span class="n">version</span><span class="p">=</span>1<span class="p">.</span>0<span class="p">.</span>0&quot;<span class="p">);</span>
+        <span class="o">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
+        <span class="n">m_activator</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HostActivator</span><span class="p">(</span><span class="n">m_lookupMap</span><span class="p">);</span>
+        <span class="n">List</span> <span class="n">list</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+        <span class="n">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
+        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="p">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
 
-        <span class="n">try</span>
+        <span class="k">try</span>
         <span class="p">{</span>
-            <span class="sr">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
-            <span class="sr">//</span> <span class="k">our</span> <span class="n">configuration</span> <span class="n">properties</span><span class="o">.</span>
-            <span class="n">m_felix</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">configMap</span><span class="p">);</span>
-            <span class="sr">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="o">.</span>
-            <span class="n">m_felix</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
+            <span class="o">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
+            <span class="o">//</span> <span class="n">our</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
+            <span class="n">m_felix</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">configMap</span><span class="p">);</span>
+            <span class="o">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="p">.</span>
+            <span class="n">m_felix</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
         <span class="p">}</span>
-        <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Could not create framework: &quot;</span> <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="o">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
+            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">shutdownApplication</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
-        <span class="sr">//</span> <span class="n">host</span> <span class="n">application</span><span class="o">.</span>
-        <span class="n">m_felix</span><span class="o">.</span><span class="n">stop</span><span class="p">();</span>
-        <span class="n">m_felix</span><span class="o">.</span><span class="n">waitForStop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
+        <span class="o">//</span> <span class="n">host</span> <span class="n">application</span><span class="p">.</span>
+        <span class="n">m_felix</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+        <span class="n">m_felix</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -633,7 +632,7 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 <h2 id="using-services-provided-by-bundles">Using Services Provided by Bundles</h2>
 <p>Using services provided by bundles follows the same general approach of using a host application bundle activator. The main complication for the host application using a service from a bundle is the fact that both the host application and the bundle must be using the same class definitions for the service interface classes. Since the host application cannot import classes from a bundle, this means that the service interface classes <em>must</em> be accessible on the class path, typically as part of the host application itself. The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it. This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
 <p>Consider the following simple command service interface for which bundles provide implementations, such as might be used to create an extensible interactive shell:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">host</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">command</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">command</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">Command</span>
 <span class="p">{</span>
@@ -645,23 +644,23 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 
 
 <p>This package is simply part of the host application, which is potentially packaged into a JAR file and started with the "<code>java -jar</code>" command. Now consider the previously introduced host application bundle activator below, which simply provides access to the system bundle context:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">host</span><span class="o">.</span><span class="n">core</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">HostActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">BundleContext</span> <span class="n">getContext</span><span class="p">()</span>
@@ -673,76 +672,76 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 
 
 <p>With this bundle activator, the host application can use command services provided by bundles installed inside its embedded Felix framework instance. The following code snippet illustrates one possible approach:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">host</span><span class="o">.</span><span class="n">core</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">List</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">ArrayList</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Map</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">host</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">Command</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">Felix</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">FelixConstants</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">BundleCache</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">Constants</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">tracker</span><span class="o">.</span><span class="n">ServiceTracker</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">List</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">ArrayList</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Map</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">command</span><span class="p">.</span><span class="n">Command</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Felix</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">FelixConstants</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">cache</span><span class="p">.</span><span class="n">BundleCache</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Constants</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">tracker</span><span class="p">.</span><span class="n">ServiceTracker</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">HostApplication</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">ServiceTracker</span> <span class="n">m_tracker</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">ServiceTracker</span> <span class="n">m_tracker</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">HostApplication</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="nb">map</span><span class="o">.</span>
-        <span class="n">Map</span> <span class="n">configMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
-        <span class="sr">//</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">host</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">interface</span> <span class="nb">package</span><span class="o">.</span>
-        <span class="n">configMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">FRAMEWORK_SYSTEMPACKAGES_EXTRA</span><span class="p">,</span>
-            <span class="s">&quot;host.service.command; version=1.0.0&quot;</span><span class="p">);</span>
-        <span class="sr">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
-        <span class="n">m_activator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HostActivator</span><span class="p">();</span>
-        <span class="n">List</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-        <span class="n">list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
-        <span class="n">configMap</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="o">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="n">map</span><span class="p">.</span>
+        <span class="n">Map</span> <span class="n">configMap</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
+        <span class="o">//</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">host</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">interface</span> <span class="n">package</span><span class="p">.</span>
+        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">FRAMEWORK_SYSTEMPACKAGES_EXTRA</span><span class="p">,</span>
+            &quot;<span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">command</span><span class="p">;</span> <span class="n">version</span><span class="p">=</span>1<span class="p">.</span>0<span class="p">.</span>0&quot;<span class="p">);</span>
+        <span class="o">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
+        <span class="n">m_activator</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HostActivator</span><span class="p">();</span>
+        <span class="n">List</span> <span class="n">list</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+        <span class="n">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
+        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="p">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
 
-        <span class="n">try</span>
+        <span class="k">try</span>
         <span class="p">{</span>
-            <span class="sr">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
-            <span class="sr">//</span> <span class="k">our</span> <span class="n">configuration</span> <span class="n">properties</span><span class="o">.</span>
-            <span class="n">m_felix</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">configMap</span><span class="p">);</span>
-            <span class="sr">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="o">.</span>
-            <span class="n">m_felix</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
+            <span class="o">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
+            <span class="o">//</span> <span class="n">our</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
+            <span class="n">m_felix</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">configMap</span><span class="p">);</span>
+            <span class="o">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="p">.</span>
+            <span class="n">m_felix</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
         <span class="p">}</span>
-        <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Could not create framework: &quot;</span> <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="o">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
+            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
         <span class="p">}</span>
 
-        <span class="n">m_tracker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceTracker</span><span class="p">(</span>
-            <span class="n">m_activator</span><span class="o">.</span><span class="n">getContext</span><span class="p">(),</span> <span class="n">Command</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
-        <span class="n">m_tracker</span><span class="o">.</span><span class="nb">open</span><span class="p">();</span>
+        <span class="n">m_tracker</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ServiceTracker</span><span class="p">(</span>
+            <span class="n">m_activator</span><span class="p">.</span><span class="n">getContext</span><span class="p">(),</span> <span class="n">Command</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
+        <span class="n">m_tracker</span><span class="p">.</span><span class="n">open</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">boolean</span> <span class="n">execute</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">,</span> <span class="n">String</span> <span class="n">commandline</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">See</span> <span class="k">if</span> <span class="n">any</span> <span class="n">of</span> <span class="n">the</span> <span class="n">currently</span> <span class="n">tracked</span> <span class="n">command</span> <span class="n">services</span>
-        <span class="sr">//</span> <span class="n">match</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">command</span> <span class="n">name</span><span class="p">,</span> <span class="k">if</span> <span class="n">so</span> <span class="k">then</span> <span class="n">execute</span> <span class="n">it</span><span class="o">.</span>
-        <span class="n">Object</span><span class="o">[]</span> <span class="n">services</span> <span class="o">=</span> <span class="n">m_tracker</span><span class="o">.</span><span class="n">getServices</span><span class="p">();</span>
-        <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">services</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">services</span><span class="o">.</span><span class="nb">length</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="o">//</span> <span class="n">See</span> <span class="k">if</span> <span class="n">any</span> <span class="n">of</span> <span class="n">the</span> <span class="n">currently</span> <span class="n">tracked</span> <span class="n">command</span> <span class="n">services</span>
+        <span class="o">//</span> <span class="n">match</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">command</span> <span class="n">name</span><span class="p">,</span> <span class="k">if</span> <span class="n">so</span> <span class="n">then</span> <span class="n">execute</span> <span class="n">it</span><span class="p">.</span>
+        <span class="n">Object</span><span class="p">[]</span> <span class="n">services</span> <span class="p">=</span> <span class="n">m_tracker</span><span class="p">.</span><span class="n">getServices</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="nb">i</span> <span class="p">=</span> 0<span class="p">;</span> <span class="p">(</span><span class="n">services</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nb">i</span> <span class="o">&lt;</span> <span class="n">services</span><span class="p">.</span><span class="nb">length</span><span class="p">);</span> <span class="nb">i</span><span class="o">++</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">try</span>
+            <span class="k">try</span>
             <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(((</span><span class="n">Command</span><span class="p">)</span> <span class="n">services</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">if</span> <span class="p">(((</span><span class="n">Command</span><span class="p">)</span> <span class="n">services</span><span class="p">[</span><span class="nb">i</span><span class="p">]).</span><span class="n">getName</span><span class="p">().</span><span class="n">equals</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
                 <span class="p">{</span>
-                    <span class="k">return</span> <span class="p">((</span><span class="n">Command</span><span class="p">)</span> <span class="n">services</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">commandline</span><span class="p">);</span>
+                    <span class="k">return</span> <span class="p">((</span><span class="n">Command</span><span class="p">)</span> <span class="n">services</span><span class="p">[</span><span class="nb">i</span><span class="p">]).</span><span class="n">execute</span><span class="p">(</span><span class="n">commandline</span><span class="p">);</span>
                 <span class="p">}</span>
             <span class="p">}</span>
-            <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="sr">//</span> <span class="n">Since</span> <span class="n">the</span> <span class="n">services</span> <span class="n">returned</span> <span class="n">by</span> <span class="n">the</span> <span class="n">tracker</span> <span class="n">could</span> <span class="n">become</span>
-                <span class="sr">//</span> <span class="n">invalid</span> <span class="n">at</span> <span class="n">any</span> <span class="n">moment</span><span class="p">,</span> <span class="n">we</span> <span class="n">will</span> <span class="n">catch</span> <span class="n">all</span> <span class="n">exceptions</span><span class="p">,</span> <span class="nb">log</span>
-                <span class="sr">//</span> <span class="n">a</span> <span class="n">message</span><span class="p">,</span> <span class="ow">and</span> <span class="k">then</span> <span class="n">ignore</span> <span class="n">faulty</span> <span class="n">services</span><span class="o">.</span>
-                <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="p">);</span>
+                <span class="o">//</span> <span class="n">Since</span> <span class="n">the</span> <span class="n">services</span> <span class="n">returned</span> <span class="n">by</span> <span class="n">the</span> <span class="n">tracker</span> <span class="n">could</span> <span class="n">become</span>
+                <span class="o">//</span> <span class="n">invalid</span> <span class="n">at</span> <span class="n">any</span> <span class="n">moment</span><span class="p">,</span> <span class="n">we</span> <span class="n">will</span> <span class="k">catch</span> <span class="n">all</span> <span class="n">exceptions</span><span class="p">,</span> <span class="nb">log</span>
+                <span class="o">//</span> <span class="n">a</span> <span class="n">message</span><span class="p">,</span> <span class="n">and</span> <span class="n">then</span> <span class="n">ignore</span> <span class="n">faulty</span> <span class="n">services</span><span class="p">.</span>
+                <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="p">);</span>
             <span class="p">}</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
@@ -750,10 +749,10 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">shutdownApplication</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
-        <span class="sr">//</span> <span class="n">host</span> <span class="n">application</span><span class="o">.</span>
-        <span class="n">m_felix</span><span class="o">.</span><span class="n">stop</span><span class="p">();</span>
-        <span class="n">m_felix</span><span class="o">.</span><span class="n">waitForStop</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
+        <span class="o">//</span> <span class="n">host</span> <span class="n">application</span><span class="p">.</span>
+        <span class="n">m_felix</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+        <span class="n">m_felix</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>

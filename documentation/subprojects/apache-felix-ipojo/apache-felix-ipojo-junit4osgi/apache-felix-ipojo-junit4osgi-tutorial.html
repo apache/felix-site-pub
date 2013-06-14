@@ -181,46 +181,49 @@
 <p>!http://felix.apache.org/site/apache-felix-ipojo-junit4osgi.data/screenshot-junit4ogsi-swing-runner.PNG!</p>
 <h2 id="testcase-testsuite">TestCase, TestSuite</h2>
 <p>A test case is an environment (made of conditions and variables) under which a tester will check that a requirement is satisfied. For JUnit, test cases are classes that define several test methods ; each test method tests an aspect of the targeted requirement. Test cases are often collected into test suites. A test suite aggregates several test cases (and even other test suites), including the notion of test hierarchy. Tests can be organized according to the different requirements they try to validate. The skeleton of a JUnit <code>TestCase</code> and <code>TestSuite</code> is shown just above :</p>
-<div class="codehilite"><pre><span class="o">/**</span>
- <span class="o">*</span> <span class="n">The</span> <span class="n">skeleton</span> <span class="n">of</span> <span class="n">a</span> <span class="n">JUnit</span> <span class="n">test</span> <span class="k">case</span>
- <span class="o">*/</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">MyTestCase</span> <span class="n">extends</span> <span class="n">junit</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">TestCase</span> <span class="p">{</span>
-    <span class="o">...</span>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * The skeleton of a JUnit test case</span>
+<span class="cm"> */</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">MyTestCase</span> <span class="k">extends</span> <span class="n">junit</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">TestCase</span> <span class="p">{</span>
+    <span class="p">...</span>
 
- <span class="n">public</span> <span class="n">void</span> <span class="n">setUp</span><span class="p">()</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">Performs</span> <span class="n">actions</span> <span class="n">BEFORE</span> <span class="n">running</span> <span class="n">any</span> <span class="n">test</span> <span class="k">case</span><span class="o">.</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setUp</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Performs actions BEFORE running any test case.</span>
  <span class="p">}</span>
 
- <span class="n">public</span> <span class="n">void</span> <span class="n">testSomething</span><span class="p">()</span> <span class="n">throws</span> <span class="n">AnyException</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">A</span> <span class="n">test</span> <span class="n">method</span>
-    <span class="o">...</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">testSomething</span><span class="p">()</span> <span class="n">throws</span> <span class="n">AnyException</span> <span class="p">{</span>
+    <span class="c1">// A test method</span>
+    <span class="p">...</span>
     <span class="n">assertTrue</span><span class="p">(</span><span class="n">myTest</span><span class="p">);</span>
     <span class="n">assertEquals</span><span class="p">(</span><span class="n">myValue</span><span class="p">,</span> <span class="n">expectedValue</span><span class="p">);</span>
-    <span class="o">...</span>
+    <span class="p">...</span>
  <span class="p">}</span>
 
- <span class="n">public</span> <span class="n">void</span> <span class="n">testAnotherThing</span><span class="p">()</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">Another</span> <span class="n">test</span> <span class="n">method</span>
-    <span class="o">...</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">testAnotherThing</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Another test method</span>
+    <span class="p">...</span>
  <span class="p">}</span>
 
- <span class="n">public</span> <span class="n">void</span> <span class="n">tearDown</span><span class="p">()</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">Performs</span> <span class="n">actions</span> <span class="n">AFTER</span> <span class="n">running</span> <span class="n">all</span> <span class="n">test</span> <span class="n">cases</span><span class="o">.</span>
+
+ <span class="n">public</span> <span class="k">void</span> <span class="n">tearDown</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Performs actions AFTER running all test cases.</span>
  <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="o">/**</span>
- <span class="o">*</span> <span class="n">The</span> <span class="n">skeleton</span> <span class="n">of</span> <span class="n">a</span> <span class="n">JUnit</span> <span class="n">test</span> <span class="n">suite</span>
- <span class="o">*/</span>
-<span class="n">public</span> <span class="n">class</span> <span class="n">MyTestSuite</span> <span class="n">extends</span> <span class="n">junit</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">TestSuite</span> <span class="p">{</span>
- <span class="o">/**</span>
- <span class="o">*</span> <span class="n">The</span> <span class="n">skeleton</span> <span class="n">of</span> <span class="n">a</span> <span class="n">JUnit</span> <span class="n">test</span> <span class="n">suite</span>
- <span class="o">*/</span>
- <span class="n">public</span> <span class="n">static</span> <span class="n">Test</span> <span class="n">suite</span><span class="p">()</span> <span class="p">{</span>
+
+
+<span class="cm">/**</span>
+<span class="cm"> * The skeleton of a JUnit test suite</span>
+<span class="cm"> */</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">MyTestSuite</span> <span class="k">extends</span> <span class="n">junit</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">TestSuite</span> <span class="p">{</span>
+ <span class="cm">/**</span>
+<span class="cm"> * The skeleton of a JUnit test suite</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">static</span> <span class="n">Test</span> <span class="n">suite</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">TestSuite</span> <span class="n">suite</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TestSuite</span><span class="p">(</span><span class="s">&quot;The name of the test suite&quot;</span><span class="p">);</span>
-    <span class="n">suite</span><span class="o">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">MyTestCase</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
-    <span class="n">suite</span><span class="o">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">AnotherTestCase</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
-    <span class="o">...</span>
+    <span class="n">suite</span><span class="p">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">MyTestCase</span><span class="p">.</span><span class="k">class</span><span class="p">);</span>
+    <span class="n">suite</span><span class="p">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">AnotherTestCase</span><span class="p">.</span><span class="k">class</span><span class="p">);</span>
+    <span class="p">...</span>
     <span class="k">return</span> <span class="n">suite</span><span class="p">;</span>
  <span class="p">}</span>
 <span class="p">}</span>
@@ -235,17 +238,17 @@
   <span class="o">*</span> <span class="n">The</span> <span class="n">structure</span> <span class="n">of</span> <span class="n">an</span> <span class="n">OSGiTestCase</span>
   <span class="o">*/</span>
  <span class="n">public</span> <span class="n">class</span> <span class="n">MyOSGiTestCase</span> <span class="n">extends</span> <span class="n">OSGiTestCase</span> <span class="p">{</span>
-    <span class="n">public</span> <span class="n">void</span> <span class="n">setUp</span><span class="p">()</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setUp</span><span class="p">()</span> <span class="p">{...}</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">testSomething</span><span class="p">()</span> <span class="p">{</span> 
-        <span class="sr">//</span> <span class="n">You</span> <span class="n">can</span> <span class="n">access</span> <span class="n">here</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">through</span> 
-        <span class="sr">//</span> <span class="n">the</span> <span class="s">&#39;getContext()&#39;</span> <span class="n">method</span> 
-        <span class="n">getContext</span><span class="p">()</span><span class="o">.</span><span class="n">getServiceReference</span><span class="p">(</span><span class="o">...</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">You</span> <span class="n">can</span> <span class="n">access</span> <span class="n">here</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">through</span> 
+        <span class="o">//</span> <span class="n">the</span> <span class="s">&#39;getContext()&#39;</span> <span class="n">method</span> 
+        <span class="n">getContext</span><span class="p">().</span><span class="n">getServiceReference</span><span class="p">(...);</span>
 
-        <span class="o">...</span>
+        <span class="p">...</span>
     <span class="p">}</span>
- <span class="n">public</span> <span class="n">void</span> <span class="n">testAnotherThing</span><span class="p">()</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
- <span class="o">...</span>
- <span class="n">public</span> <span class="n">void</span> <span class="n">tearDown</span><span class="p">()</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+ <span class="n">public</span> <span class="n">void</span> <span class="n">testAnotherThing</span><span class="p">()</span> <span class="p">{...}</span>
+ <span class="p">...</span>
+ <span class="n">public</span> <span class="n">void</span> <span class="n">tearDown</span><span class="p">()</span> <span class="p">{...}</span>
  <span class="p">}</span>
 </pre></div>
 
@@ -253,16 +256,16 @@
 <p>By extension, OSGi test suites are collections of OSGi test cases. But you can also add classic JUnit test cases inside your <code>OSGiTestSuite</code>. The skeleton of an OSGiTestSuite is globally the same as a TestSuite, except the fact that a reference to the bundle context is passed :</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">MyOSGiTestSuite</span> <span class="p">{</span>
  <span class="o">/**</span>
-  <span class="o">*</span> <span class="n">This</span> <span class="n">method</span> <span class="n">returns</span> <span class="n">the</span> <span class="n">suite</span> <span class="n">of</span> <span class="n">tests</span> <span class="n">to</span> <span class="n">run</span><span class="o">.</span>
+  <span class="o">*</span> <span class="n">This</span> <span class="n">method</span> <span class="n">returns</span> <span class="n">the</span> <span class="n">suite</span> <span class="n">of</span> <span class="n">tests</span> <span class="n">to</span> <span class="n">run</span><span class="p">.</span>
  <span class="o">*/</span>
  <span class="n">public</span> <span class="n">static</span> <span class="n">Test</span> <span class="n">suite</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">bc</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">OSGiTestSuite</span> <span class="n">suite</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OSGiTestSuite</span><span class="p">(</span><span class="s">&quot;My OSGi test suite&quot;</span><span class="p">,</span> <span class="n">bc</span><span class="p">);</span>
-    <span class="n">suite</span><span class="o">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">MyFirstTest</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
-    <span class="n">suite</span><span class="o">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">MySecondTest</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
-    <span class="o">...</span>
-    <span class="sr">//</span> <span class="n">Here</span><span class="p">,</span> <span class="n">we</span> <span class="n">add</span> <span class="n">a</span> <span class="k">sub </span><span class="nf">test</span> <span class="nf">suite</span> <span class="nf">in</span> <span class="nf">this</span> <span class="nf">test</span> <span class="nf">suite</span><span class="err">.</span>
-    <span class="nf">suite</span><span class="err">.</span><span class="nf">addTest</span><span class="err">(</span><span class="nf">AnotherTestSuite</span><span class="err">.</span><span class="nf">suite</span><span class="err">(</span><span class="nf">bc</span><span class="err">))</span><span class="p">;</span>
-    <span class="o">...</span>
+    <span class="n">OSGiTestSuite</span> <span class="n">suite</span> <span class="p">=</span> <span class="n">new</span> <span class="n">OSGiTestSuite</span><span class="p">(</span>&quot;<span class="n">My</span> <span class="n">OSGi</span> <span class="n">test</span> <span class="n">suite</span>&quot;<span class="p">,</span> <span class="n">bc</span><span class="p">);</span>
+    <span class="n">suite</span><span class="p">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">MyFirstTest</span><span class="p">.</span><span class="n">class</span><span class="p">);</span>
+    <span class="n">suite</span><span class="p">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">MySecondTest</span><span class="p">.</span><span class="n">class</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="o">//</span> <span class="n">Here</span><span class="p">,</span> <span class="n">we</span> <span class="n">add</span> <span class="n">a</span> <span class="n">sub</span> <span class="n">test</span> <span class="n">suite</span> <span class="n">in</span> <span class="n">this</span> <span class="n">test</span> <span class="n">suite</span><span class="p">.</span>
+    <span class="n">suite</span><span class="p">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">AnotherTestSuite</span><span class="p">.</span><span class="n">suite</span><span class="p">(</span><span class="n">bc</span><span class="p">));</span>
+    <span class="p">...</span>
     <span class="k">return</span> <span class="n">suite</span><span class="p">;</span>
  <span class="p">}</span>
 <span class="p">}</span>
@@ -294,7 +297,7 @@
 
 
 <p>With the aQute Bnd Ant task, add the following lines in your project bnd file:</p>
-<div class="codehilite"><pre><span class="n">Test</span><span class="o">-</span><span class="n">Suite:</span> <span class="n">a</span><span class="o">.</span><span class="nb">package</span><span class="o">.</span><span class="n">MyFirstTestSuite</span><span class="p">,</span> <span class="n">yet</span><span class="o">.</span><span class="n">another</span><span class="o">.</span><span class="nb">package</span><span class="o">.</span><span class="n">MySingleTestCase</span><span class="p">,</span> <span class="o">...</span>
+<div class="codehilite"><pre><span class="n">Test</span><span class="o">-</span><span class="n">Suite</span><span class="p">:</span> <span class="n">a</span><span class="p">.</span><span class="n">package</span><span class="p">.</span><span class="n">MyFirstTestSuite</span><span class="p">,</span> <span class="n">yet</span><span class="p">.</span><span class="n">another</span><span class="p">.</span><span class="n">package</span><span class="p">.</span><span class="n">MySingleTestCase</span><span class="p">,</span> <span class="p">...</span>
 </pre></div>
 
 
@@ -309,37 +312,39 @@
 </em> org.apache.felix.ipojo.junit4osgi.felix-command-1.1.0-SNAPSHOT.jar: the command line junit4osgi runner</p>
 <h3 id="the-remixed-junit-example">The remixed JUnit example</h3>
 <p>This example is a simple conversion of a classic JUnit example derived from the JUnit Cookbook. The test case and the test suite are shown to remind you JUnit principles.</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">junit</span><span class="o">.</span><span class="n">example</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">junit</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">TestCase</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">junit</span><span class="o">.</span><span class="n">money</span><span class="o">.</span><span class="n">Money</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">junit</span><span class="p">.</span><span class="n">example</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">junit</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">TestCase</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">junit</span><span class="p">.</span><span class="n">money</span><span class="p">.</span><span class="n">Money</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">SimpleTestCase</span> <span class="n">extends</span> <span class="n">TestCase</span> <span class="p">{</span>
     <span class="n">private</span> <span class="n">Money</span> <span class="n">f12CHF</span><span class="p">;</span>
     <span class="n">private</span> <span class="n">Money</span> <span class="n">f14CHF</span><span class="p">;</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">setUp</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">f12CHF</span><span class="o">=</span> <span class="k">new</span> <span class="n">Money</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="s">&quot;CHF&quot;</span><span class="p">);</span>
-        <span class="n">f14CHF</span><span class="o">=</span> <span class="k">new</span> <span class="n">Money</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="s">&quot;CHF&quot;</span><span class="p">);</span>
+        <span class="n">f12CHF</span><span class="p">=</span> <span class="n">new</span> <span class="n">Money</span><span class="p">(</span>12<span class="p">,</span> &quot;<span class="n">CHF</span>&quot;<span class="p">);</span>
+        <span class="n">f14CHF</span><span class="p">=</span> <span class="n">new</span> <span class="n">Money</span><span class="p">(</span>14<span class="p">,</span> &quot;<span class="n">CHF</span>&quot;<span class="p">);</span>
     <span class="p">}</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">testEquals</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">assertTrue</span><span class="p">(</span><span class="o">!</span><span class="n">f12CHF</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">null</span><span class="p">));</span>
+        <span class="n">assertTrue</span><span class="p">(</span>!<span class="n">f12CHF</span><span class="p">.</span><span class="n">equals</span><span class="p">(</span><span class="n">null</span><span class="p">));</span>
         <span class="n">assertEquals</span><span class="p">(</span><span class="n">f12CHF</span><span class="p">,</span> <span class="n">f12CHF</span><span class="p">);</span>
-        <span class="n">assertEquals</span><span class="p">(</span><span class="n">f12CHF</span><span class="p">,</span> <span class="k">new</span> <span class="n">Money</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="s">&quot;CHF&quot;</span><span class="p">));</span>
-        <span class="n">assertTrue</span><span class="p">(</span><span class="o">!</span><span class="n">f12CHF</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">f14CHF</span><span class="p">));</span>
+        <span class="n">assertEquals</span><span class="p">(</span><span class="n">f12CHF</span><span class="p">,</span> <span class="n">new</span> <span class="n">Money</span><span class="p">(</span>12<span class="p">,</span> &quot;<span class="n">CHF</span>&quot;<span class="p">));</span>
+        <span class="n">assertTrue</span><span class="p">(</span>!<span class="n">f12CHF</span><span class="p">.</span><span class="n">equals</span><span class="p">(</span><span class="n">f14CHF</span><span class="p">));</span>
     <span class="p">}</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">testSimpleAdd</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">Money</span> <span class="n">expected</span><span class="o">=</span> <span class="k">new</span> <span class="n">Money</span><span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="s">&quot;CHF&quot;</span><span class="p">);</span>
-        <span class="n">Money</span> <span class="n">result</span><span class="o">=</span> <span class="n">f12CHF</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f14CHF</span><span class="p">);</span>
-        <span class="n">assertTrue</span><span class="p">(</span><span class="n">expected</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">result</span><span class="p">));</span>
+        <span class="n">Money</span> <span class="n">expected</span><span class="p">=</span> <span class="n">new</span> <span class="n">Money</span><span class="p">(</span>26<span class="p">,</span> &quot;<span class="n">CHF</span>&quot;<span class="p">);</span>
+        <span class="n">Money</span> <span class="n">result</span><span class="p">=</span> <span class="n">f12CHF</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">f14CHF</span><span class="p">);</span>
+        <span class="n">assertTrue</span><span class="p">(</span><span class="n">expected</span><span class="p">.</span><span class="n">equals</span><span class="p">(</span><span class="n">result</span><span class="p">));</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nb">package</span> <span class="n">junit</span><span class="o">.</span><span class="n">example</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">junit</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">Test</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">junit</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">;</span>
+
+
+<span class="n">package</span> <span class="n">junit</span><span class="p">.</span><span class="n">example</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">junit</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Test</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">junit</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">TestSuite</span><span class="p">;</span>
 <span class="n">public</span> <span class="n">class</span> <span class="n">SimpleTestSuite</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">static</span> <span class="n">Test</span> <span class="n">suite</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">TestSuite</span> <span class="n">suite</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TestSuite</span><span class="p">(</span><span class="s">&quot;Money Simple Test Suite&quot;</span><span class="p">);</span>
-        <span class="n">suite</span><span class="o">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">SimpleTestCase</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
+        <span class="n">TestSuite</span> <span class="n">suite</span> <span class="p">=</span> <span class="n">new</span> <span class="n">TestSuite</span><span class="p">(</span>&quot;<span class="n">Money</span> <span class="n">Simple</span> <span class="n">Test</span> <span class="n">Suite</span>&quot;<span class="p">);</span>
+        <span class="n">suite</span><span class="p">.</span><span class="n">addTestSuite</span><span class="p">(</span><span class="n">SimpleTestCase</span><span class="p">.</span><span class="n">class</span><span class="p">);</span>
         <span class="k">return</span> <span class="n">suite</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -347,23 +352,23 @@
 
 
 <p>The following bnd file declares the test suite in the target bundle's header :</p>
-<div class="codehilite"><pre><span class="n">Private</span><span class="o">-</span><span class="n">Package:</span> <span class="n">junit</span><span class="o">.</span><span class="n">money</span><span class="p">,</span> <span class="n">junit</span><span class="o">.</span><span class="n">example</span>
-<span class="n">Test</span><span class="o">-</span><span class="n">Suite:</span> <span class="n">junit</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">SimpleTestSuite</span>
+<div class="codehilite"><pre><span class="n">Private</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">junit</span><span class="p">.</span><span class="n">money</span><span class="p">,</span> <span class="n">junit</span><span class="p">.</span><span class="n">example</span>
+<span class="n">Test</span><span class="o">-</span><span class="n">Suite</span><span class="p">:</span> <span class="n">junit</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">SimpleTestSuite</span>
 </pre></div>
 
 
 <p>Once built, the bundle must be deployed in the provided Felix framework, and tests can be performed using the <code>'junit'</code> command :</p>
 <div class="codehilite"><pre>    <span class="o">-&gt;</span> <span class="n">ps</span>
-    <span class="n">START</span> <span class="n">LEVEL</span> <span class="mi">1</span>
+    <span class="n">START</span> <span class="n">LEVEL</span> 1
     <span class="n">ID</span> <span class="n">State</span> <span class="n">Level</span> <span class="n">Name</span>
-    <span class="o">...</span>
-    <span class="p">[</span> <span class="mi">12</span><span class="p">]</span> <span class="p">[</span><span class="n">Active</span> <span class="p">]</span> <span class="p">[</span> <span class="mi">1</span><span class="p">]</span> <span class="n">Junit</span><span class="o">-</span><span class="n">Example</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="o">...</span>
-    <span class="o">-&gt;</span> <span class="n">junit</span> <span class="mi">12</span>
+    <span class="p">...</span>
+    <span class="p">[</span> 12<span class="p">]</span> <span class="p">[</span><span class="n">Active</span> <span class="p">]</span> <span class="p">[</span> 1<span class="p">]</span> <span class="n">Junit</span><span class="o">-</span><span class="n">Example</span> <span class="p">(</span>0<span class="p">)</span>
+    <span class="p">...</span>
+    <span class="o">-&gt;</span> <span class="n">junit</span> 12
     <span class="n">Executing</span> <span class="p">[</span><span class="n">Money</span> <span class="n">Simple</span> <span class="n">Test</span> <span class="n">Suite</span><span class="p">]</span>
-    <span class="o">..</span>
-    <span class="n">Time:</span> <span class="mi">0</span>
-    <span class="n">OK</span> <span class="p">(</span><span class="mi">2</span> <span class="n">tests</span><span class="p">)</span>
+    <span class="p">..</span>
+    <span class="n">Time</span><span class="p">:</span> 0
+    <span class="n">OK</span> <span class="p">(</span>2 <span class="n">tests</span><span class="p">)</span>
 <span class="o">-&gt;</span>
 </pre></div>
 
@@ -371,42 +376,42 @@
 <p>As you can see above, all tests have been correctly executed !</p>
 <h2 id="an-osgi-based-junit-example">An OSGi-based JUnit example</h2>
 <p>This example shows you how to interact with the OSGi framework within your tests. The test bundle provide a service (HelloService) and tests its work normally. To get the service reference of the HelloService, it uses the bundle context field of the OSGiTestCase class (named <code>'context'</code>) and interacts with it like any other OSGi bundle does.</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">junit</span><span class="o">.</span><span class="n">example</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">junit</span><span class="p">.</span><span class="n">example</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">junit</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">hello</span><span class="o">.</span><span class="n">HelloService</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">junit</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">hello</span><span class="p">.</span><span class="n">HelloService</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">ipojo</span><span class="o">.</span><span class="n">junit4osgi</span><span class="o">.</span><span class="n">OSGiTestCase</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ServiceReference</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">junit4osgi</span><span class="p">.</span><span class="n">OSGiTestCase</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceReference</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">SimpleTestCase</span> <span class="n">extends</span> <span class="n">OSGiTestCase</span> <span class="p">{</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">testHelloAvailability</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">ServiceReference</span> <span class="nb">ref</span> <span class="o">=</span> <span class="n">getServiceReference</span><span class="p">(</span><span class="n">HelloService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">());</span>
-        <span class="n">assertNotNull</span><span class="p">(</span><span class="s">&quot;Assert Availability&quot;</span><span class="p">,</span> <span class="nb">ref</span><span class="p">);</span>
+        <span class="n">ServiceReference</span> <span class="n">ref</span> <span class="p">=</span> <span class="n">getServiceReference</span><span class="p">(</span><span class="n">HelloService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">());</span>
+        <span class="n">assertNotNull</span><span class="p">(</span>&quot;<span class="n">Assert</span> <span class="n">Availability</span>&quot;<span class="p">,</span> <span class="n">ref</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">testHelloAvailability2</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">ServiceReference</span> <span class="nb">ref</span> <span class="o">=</span> <span class="n">getServiceReference</span><span class="p">(</span><span class="n">HelloService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
-        <span class="n">assertNotNull</span><span class="p">(</span><span class="s">&quot;Assert Availability&quot;</span><span class="p">,</span> <span class="nb">ref</span><span class="p">);</span>
+        <span class="n">ServiceReference</span> <span class="n">ref</span> <span class="p">=</span> <span class="n">getServiceReference</span><span class="p">(</span><span class="n">HelloService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
+        <span class="n">assertNotNull</span><span class="p">(</span>&quot;<span class="n">Assert</span> <span class="n">Availability</span>&quot;<span class="p">,</span> <span class="n">ref</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">testHelloMessage</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">ServiceReference</span> <span class="nb">ref</span> <span class="o">=</span> <span class="n">getServiceReference</span><span class="p">(</span><span class="n">HelloService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">());</span>
-        <span class="n">assertNotNull</span><span class="p">(</span><span class="s">&quot;Assert Availability&quot;</span><span class="p">,</span> <span class="nb">ref</span><span class="p">);</span>
-        <span class="n">HelloService</span> <span class="n">hs</span> <span class="o">=</span> <span class="p">(</span><span class="n">HelloService</span><span class="p">)</span> <span class="n">getContext</span><span class="p">()</span><span class="o">.</span><span class="n">getService</span><span class="p">(</span><span class="nb">ref</span><span class="p">);</span>
-        <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">getHelloMessage</span><span class="p">();</span>
-        <span class="n">assertNotNull</span><span class="p">(</span><span class="s">&quot;Check the message existence&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
-        <span class="n">assertEquals</span><span class="p">(</span><span class="s">&quot;Check the message&quot;</span><span class="p">,</span> <span class="s">&quot;hello&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
-        <span class="sr">//</span> <span class="n">Don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">need</span> <span class="n">to</span> <span class="n">unget</span> <span class="n">references</span><span class="p">,</span> <span class="n">they</span> <span class="n">are</span> <span class="n">unget</span> <span class="n">by</span> <span class="n">junit4osgi</span>
+        <span class="n">ServiceReference</span> <span class="n">ref</span> <span class="p">=</span> <span class="n">getServiceReference</span><span class="p">(</span><span class="n">HelloService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">());</span>
+        <span class="n">assertNotNull</span><span class="p">(</span>&quot;<span class="n">Assert</span> <span class="n">Availability</span>&quot;<span class="p">,</span> <span class="n">ref</span><span class="p">);</span>
+        <span class="n">HelloService</span> <span class="n">hs</span> <span class="p">=</span> <span class="p">(</span><span class="n">HelloService</span><span class="p">)</span> <span class="n">getContext</span><span class="p">().</span><span class="n">getService</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
+        <span class="n">String</span> <span class="n">message</span> <span class="p">=</span> <span class="n">hs</span><span class="p">.</span><span class="n">getHelloMessage</span><span class="p">();</span>
+        <span class="n">assertNotNull</span><span class="p">(</span>&quot;<span class="n">Check</span> <span class="n">the</span> <span class="n">message</span> <span class="n">existence</span>&quot;<span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+        <span class="n">assertEquals</span><span class="p">(</span>&quot;<span class="n">Check</span> <span class="n">the</span> <span class="n">message</span>&quot;<span class="p">,</span> &quot;<span class="n">hello</span>&quot;<span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Don</span><span class="o">&#39;</span><span class="n">t</span> <span class="n">need</span> <span class="n">to</span> <span class="n">unget</span> <span class="n">references</span><span class="p">,</span> <span class="n">they</span> <span class="n">are</span> <span class="n">unget</span> <span class="n">by</span> <span class="n">junit4osgi</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">testHelloMessage2</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">assertTrue</span><span class="p">(</span><span class="s">&quot;Check availability of the service&quot;</span><span class="p">,</span> 
-            <span class="n">isServiceAvailable</span><span class="p">(</span><span class="n">HelloService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">()));</span>
-        <span class="n">HelloService</span> <span class="n">hs</span> <span class="o">=</span> <span class="p">(</span><span class="n">HelloService</span><span class="p">)</span> <span class="n">getServiceObject</span><span class="p">(</span><span class="n">HelloService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
-        <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">getHelloMessage</span><span class="p">();</span>
-        <span class="n">assertNotNull</span><span class="p">(</span><span class="s">&quot;Check the message existence&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
-        <span class="n">assertEquals</span><span class="p">(</span><span class="s">&quot;Check the message&quot;</span><span class="p">,</span> <span class="s">&quot;hello&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+        <span class="n">assertTrue</span><span class="p">(</span>&quot;<span class="n">Check</span> <span class="n">availability</span> <span class="n">of</span> <span class="n">the</span> <span class="n">service</span>&quot;<span class="p">,</span> 
+            <span class="n">isServiceAvailable</span><span class="p">(</span><span class="n">HelloService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">()));</span>
+        <span class="n">HelloService</span> <span class="n">hs</span> <span class="p">=</span> <span class="p">(</span><span class="n">HelloService</span><span class="p">)</span> <span class="n">getServiceObject</span><span class="p">(</span><span class="n">HelloService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
+        <span class="n">String</span> <span class="n">message</span> <span class="p">=</span> <span class="n">hs</span><span class="p">.</span><span class="n">getHelloMessage</span><span class="p">();</span>
+        <span class="n">assertNotNull</span><span class="p">(</span>&quot;<span class="n">Check</span> <span class="n">the</span> <span class="n">message</span> <span class="n">existence</span>&quot;<span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+        <span class="n">assertEquals</span><span class="p">(</span>&quot;<span class="n">Check</span> <span class="n">the</span> <span class="n">message</span>&quot;<span class="p">,</span> &quot;<span class="n">hello</span>&quot;<span class="p">,</span> <span class="n">message</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -414,21 +419,21 @@
 
 <p>The performed tests give out the following results :</p>
 <div class="codehilite"><pre><span class="o">-&gt;</span> <span class="n">ps</span>
-<span class="n">START</span> <span class="n">LEVEL</span> <span class="mi">1</span>
+<span class="n">START</span> <span class="n">LEVEL</span> 1
 <span class="n">ID</span> <span class="n">State</span> <span class="n">Level</span> <span class="n">Name</span>
-<span class="o">...</span>
-<span class="p">[</span> <span class="mi">17</span><span class="p">]</span> <span class="p">[</span><span class="n">Active</span> <span class="p">]</span> <span class="p">[</span> <span class="mi">1</span><span class="p">]</span> <span class="n">Junit</span><span class="o">-</span><span class="n">OSGi</span><span class="o">-</span><span class="n">Example</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="o">-&gt;</span> <span class="n">services</span> <span class="mi">17</span>
-<span class="n">Junit</span><span class="o">-</span><span class="n">OSGi</span><span class="o">-</span><span class="n">Example</span> <span class="p">(</span><span class="mi">17</span><span class="p">)</span> <span class="n">provides:</span>
+<span class="p">...</span>
+<span class="p">[</span> 17<span class="p">]</span> <span class="p">[</span><span class="n">Active</span> <span class="p">]</span> <span class="p">[</span> 1<span class="p">]</span> <span class="n">Junit</span><span class="o">-</span><span class="n">OSGi</span><span class="o">-</span><span class="n">Example</span> <span class="p">(</span>0<span class="p">)</span>
+<span class="p">...</span>
+<span class="o">-&gt;</span> <span class="n">services</span> 17
+<span class="n">Junit</span><span class="o">-</span><span class="n">OSGi</span><span class="o">-</span><span class="n">Example</span> <span class="p">(</span>17<span class="p">)</span> <span class="n">provides</span><span class="p">:</span>
 <span class="o">---------------------------------</span>
-<span class="n">objectClass</span> <span class="o">=</span> <span class="n">junit</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">hello</span><span class="o">.</span><span class="n">HelloService</span>
-<span class="n">service</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">36</span>
-<span class="o">-&gt;</span> <span class="n">junit</span> <span class="mi">17</span>
+<span class="n">objectClass</span> <span class="p">=</span> <span class="n">junit</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">hello</span><span class="p">.</span><span class="n">HelloService</span>
+<span class="n">service</span><span class="p">.</span><span class="n">id</span> <span class="p">=</span> 36
+<span class="o">-&gt;</span> <span class="n">junit</span> 17
 <span class="n">Executing</span> <span class="p">[</span><span class="n">Hello</span> <span class="n">Service</span> <span class="n">Test</span> <span class="n">Suite</span><span class="p">]</span>
-<span class="o">..</span>
-<span class="n">Time:</span> <span class="mi">0</span><span class="p">,</span><span class="mo">015</span>
-<span class="n">OK</span> <span class="p">(</span><span class="mi">4</span> <span class="n">tests</span><span class="p">)</span>
+<span class="p">..</span>
+<span class="n">Time</span><span class="p">:</span> 0<span class="p">,</span>015
+<span class="n">OK</span> <span class="p">(</span>4 <span class="n">tests</span><span class="p">)</span>
 <span class="o">-&gt;</span>
 </pre></div>
 

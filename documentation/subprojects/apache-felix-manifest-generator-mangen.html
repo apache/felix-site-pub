@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -84,8 +83,7 @@
 <li>Detect the majority of common import and export cases and provide manual override mechanisms to include cases that are not detected</li>
 <li>Provide a simple, extensible, rule based mechansim to allow the required imports and possible exports sets to be refined e.g. removing un-needed packages, automatic resolving to packages in other JARs etc.</li>
 <li>Provide a simple, extensible, reporting mechanism of actions taken</li>
-<li>Automatic updating of each bundle JAR's Manifest, including a means to easily switch between either OSGi R3 or R4 compatible Manifest headers<br />
-</li>
+<li>Automatic updating of each bundle JAR's Manifest, including a means to easily switch between either OSGi R3 or R4 compatible Manifest headers  </li>
 </ul>
 <p>If you're not a Java developer, or you're not sure what OSGi is yet, then this tool is probably not for you!</p>
 <h2 id="licensing">Licensing</h2>
@@ -95,7 +93,7 @@
 <h1 id="using-mangen">Using <code>mangen</code></h1>
 <h2 id="basic-operation">Basic operation</h2>
 <p>Using mangen is very simple. Unpack the distribution file to an installation directory, change to this directory and type the following command:</p>
-<div class="codehilite"><pre>    <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">lib</span><span class="o">/</span><span class="n">mangen</span><span class="o">.</span><span class="n">jar</span> <span class="sr">&lt;file-list&gt;</span>
+<div class="codehilite"><pre>    <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">lib</span><span class="o">/</span><span class="n">mangen</span><span class="p">.</span><span class="n">jar</span> <span class="o">&lt;</span><span class="n">file</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span>
 </pre></div>
 
 
@@ -125,7 +123,7 @@
 <h3 id="mangenproperties">mangen.properties</h3>
 <p>The <code>mangen.properties</code> Property is used to instruct mangen where to find it's properties file. By default, <code>mangen</code> will look for a file named <code>mangen.properties</code> in the same directory in which <code>mangen.jar</code> was installed (i.e. <code>lib/mangen.properties</code>). By including a <code>-Dmangen.properties</code> setting on the command line a different properties file can be specified.</p>
 <p><em>Example:</em></p>
-<div class="codehilite"><pre>    <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">lib</span><span class="o">/</span><span class="n">mangen</span><span class="o">.</span><span class="n">jar</span> <span class="o">-</span><span class="n">Dmangen</span><span class="o">.</span><span class="n">properties</span><span class="o">=</span><span class="n">my_mangen</span><span class="o">.</span><span class="n">properties</span> <span class="n">my_app</span><span class="o">.</span><span class="n">jar</span>
+<div class="codehilite"><pre>    <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">lib</span><span class="o">/</span><span class="n">mangen</span><span class="p">.</span><span class="n">jar</span> <span class="o">-</span><span class="n">Dmangen</span><span class="p">.</span><span class="k">properties</span><span class="p">=</span><span class="n">my_mangen</span><span class="p">.</span><span class="k">properties</span> <span class="n">my_app</span><span class="p">.</span><span class="n">jar</span>
 </pre></div>
 
 
@@ -139,14 +137,14 @@
 <h3 id="mangenrulesets">mangen.rulesets</h3>
 <p>Rules are the engine room of <code>mangen</code>, providing the basic means for refining the <code>mangen</code> detected import and export package sets e.g. removing un-needed or unused exports, supplying package version information, including undetectable package cases such as dynamic classloading.</p>
 <p>Rulesets provide a simple means of organising the rules to be executed into groups of rule sets. The rulesets are specified as a list of comma-separated values, each value specifying the ruleset name prefix. The following example shows a ruleset definition for 2 rules:</p>
-<div class="codehilite"><pre>    <span class="n">mangen</span><span class="o">.</span><span class="n">rulesets</span><span class="o">=</span><span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span> <span class="p">,</span> <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">final</span><span class="o">-</span>
-    <span class="o">...</span>
-    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="mi">0</span><span class="o">=...</span>
-    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="mi">1</span><span class="o">=...</span>
-    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="mi">2</span><span class="o">=...</span>
-    <span class="o">...</span>
-    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">final</span><span class="o">-</span><span class="mi">0</span><span class="o">=...</span>
-    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">final</span><span class="o">-</span><span class="mi">1</span><span class="o">=...</span>
+<div class="codehilite"><pre>    <span class="n">mangen</span><span class="p">.</span><span class="n">rulesets</span><span class="p">=</span><span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span> <span class="p">,</span> <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">final</span><span class="o">-</span>
+    <span class="p">...</span>
+    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span>0<span class="p">=...</span>
+    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span>1<span class="p">=...</span>
+    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">first</span><span class="o">-</span>2<span class="p">=...</span>
+    <span class="p">...</span>
+    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">final</span><span class="o">-</span>0<span class="p">=...</span>
+    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="n">final</span><span class="o">-</span>1<span class="p">=...</span>
 </pre></div>
 
 
@@ -172,8 +170,8 @@
 <p>See the <a href="">Rules</a> section for full details of the currently support rule types.</p>
 <h3 id="mangen-report-">mangen-report-</h3>
 <p>Reports in <code>mangen</code> work in a similar fashion to rules but without the ruleset concept. The set of sequentially numbered <code>mangen-report-</code> properties will be scanned to determine which reports should be run e.g.</p>
-<div class="codehilite"><pre>    <span class="n">mangen</span><span class="o">-</span><span class="n">report</span><span class="o">-</span><span class="mi">0</span><span class="o">=</span><span class="n">RuleReport</span> <span class="o">.*</span>
-    <span class="n">mangen</span><span class="o">-</span><span class="n">report</span><span class="o">-</span><span class="mi">1</span><span class="o">=</span><span class="n">BundleReport</span> <span class="o">.*</span>
+<div class="codehilite"><pre>    <span class="n">mangen</span><span class="o">-</span><span class="n">report</span><span class="o">-</span>0<span class="p">=</span><span class="n">RuleReport</span> <span class="o">.*</span>
+    <span class="n">mangen</span><span class="o">-</span><span class="n">report</span><span class="o">-</span>1<span class="p">=</span><span class="n">BundleReport</span> <span class="o">.*</span>
 </pre></div>
 
 
@@ -186,7 +184,7 @@
 <p>Default is <code>off</code>.</p>
 <h2 id="rules">Rules</h2>
 <p>The Rule concept in <code>mangen</code> was adopted to avoid hard-coding the types of post-processing steps that a user would be able to perform on the <code>mangen</code> generated set of package imports and exports. The rule syntax is as follows:</p>
-<div class="codehilite"><pre>    <span class="sr">&lt;rule-type&gt;</span> <span class="sr">&lt;rule-options&gt;</span>
+<div class="codehilite"><pre>    <span class="o">&lt;</span><span class="n">rule</span><span class="o">-</span><span class="n">type</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rule</span><span class="o">-</span><span class="n">options</span><span class="o">&gt;</span>
 </pre></div>
 
 
@@ -198,12 +196,12 @@
 <em><em> <code>sys-packages()</code> - a comma seperated list of standard 'system package' patterns, using the JDK regex format. The specific handling undertaken for each match being dependent on the </em><rule-type></em></li>
 </ul>
 <p>Rules will can have either "global" scope, in which case every bundle JAR processed will have the rule appplied, or "local" scope meaning that they will only apply to a single bundle JAR. Global rules will be included in the <code>mangen.properties</code> file. Local rules are placed within the Manifest for the appropriate bundle in a special <code>mangen</code> attributes section e.g. </p>
-<div class="codehilite"><pre>    <span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">Help</span> <span class="n">Component</span>
-    <span class="n">Bundle</span><span class="o">-</span><span class="n">ClassPath:</span> <span class="o">.</span><span class="p">,</span><span class="n">help4</span><span class="o">.</span><span class="n">jar</span><span class="p">,</span><span class="n">oracle_ice</span><span class="o">.</span><span class="n">jar</span><span class="p">,</span><span class="n">ohj</span><span class="o">-</span><span class="n">jewt</span><span class="o">.</span><span class="n">jar</span>
-    <span class="n">Metadata</span><span class="o">-</span><span class="n">Location:</span> <span class="n">metadata</span><span class="o">.</span><span class="n">xml</span>
+<div class="codehilite"><pre>    <span class="n">Bundle</span><span class="o">-</span><span class="n">Name</span><span class="p">:</span> <span class="n">Help</span> <span class="n">Component</span>
+    <span class="n">Bundle</span><span class="o">-</span><span class="n">ClassPath</span><span class="p">:</span> <span class="p">.,</span><span class="n">help4</span><span class="p">.</span><span class="n">jar</span><span class="p">,</span><span class="n">oracle_ice</span><span class="p">.</span><span class="n">jar</span><span class="p">,</span><span class="n">ohj</span><span class="o">-</span><span class="n">jewt</span><span class="p">.</span><span class="n">jar</span>
+    <span class="n">Metadata</span><span class="o">-</span><span class="n">Location</span><span class="p">:</span> <span class="n">metadata</span><span class="p">.</span><span class="n">xml</span>
 
-    <span class="n">Name:</span> <span class="n">com</span><span class="sr">/ascert/o</span><span class="n">penosgi</span><span class="o">/</span><span class="n">mangen</span>
-    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="mi">0</span><span class="p">:</span> <span class="n">Ignore</span> <span class="n">imports</span><span class="p">(</span><span class="n">com</span><span class="o">\.</span><span class="n">adobe</span><span class="o">\.</span><span class="n">acrobat</span><span class="o">.*</span><span class="p">,</span><span class="n">webeq</span><span class="o">\..*</span><span class="p">,</span><span class="n">javax</span><span class="o">\.</span><span class="n">help</span><span class="p">,</span><span class="n">javax</span><span class="o">\.</span><span class="n">media</span><span class="p">)</span>
+    <span class="n">Name</span><span class="p">:</span> <span class="n">com</span><span class="o">/</span><span class="n">ascert</span><span class="o">/</span><span class="n">openosgi</span><span class="o">/</span><span class="n">mangen</span>
+    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span>0<span class="p">:</span> <span class="n">Ignore</span> <span class="n">imports</span><span class="p">(</span><span class="n">com</span><span class="o">\</span><span class="p">.</span><span class="n">adobe</span><span class="o">\</span><span class="p">.</span><span class="n">acrobat</span><span class="o">.*</span><span class="p">,</span><span class="n">webeq</span><span class="o">\</span><span class="p">.</span><span class="o">.*</span><span class="p">,</span><span class="n">javax</span><span class="o">\</span><span class="p">.</span><span class="n">help</span><span class="p">,</span><span class="n">javax</span><span class="o">\</span><span class="p">.</span><span class="n">media</span><span class="p">)</span>
 </pre></div>
 
 
@@ -217,7 +215,7 @@
 <p>The rule may be supplied locally, in which case it will only apply to instances of a package name match with a specific bundle JAR, or globally in which case it will be applied to all instances of a package name match across all JARs.</p>
 <p>The <code>imports</code> or <code>exports</code> options allow stamping of attributes to either imported or exported packages respectively. The rule will perform a regex package name match against each entry in the list and if the name matches, will augment the matched package name with any additional attributes suppled. The following shows an example of this.</p>
 <p><em>Example:</em></p>
-<div class="codehilite"><pre>    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span><span class="mi">1</span><span class="o">=</span><span class="n">AttributeStamp</span> <span class="n">imports</span><span class="p">(</span><span class="n">org</span><span class="o">\\.</span><span class="n">osgi</span><span class="o">\\.</span><span class="n">framework</span><span class="p">;</span><span class="n">version</span><span class="o">=</span><span class="s">&quot;1.2.0&quot;</span><span class="p">)</span>
+<div class="codehilite"><pre>    <span class="n">mangen</span><span class="o">-</span><span class="n">rule</span><span class="o">-</span>1<span class="p">=</span><span class="n">AttributeStamp</span> <span class="n">imports</span><span class="p">(</span><span class="n">org</span><span class="o">\\</span><span class="p">.</span><span class="n">osgi</span><span class="o">\\</span><span class="p">.</span><span class="n">framework</span><span class="p">;</span><span class="n">version</span><span class="p">=</span>&quot;1<span class="p">.</span>2<span class="p">.</span>0&quot;<span class="p">)</span>
 </pre></div>
 
 
@@ -260,12 +258,12 @@
 </li>
 </ul>
 <p><em>Example:</em></p>
-<div class="codehilite"><pre>    <span class="n">Manifest</span><span class="o">-</span><span class="n">Version:</span> <span class="mf">1.0</span>
-    <span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">mybundle</span>
-    <span class="n">Export</span><span class="o">-</span><span class="n">Package:</span> <span class="k">my</span><span class="o">.</span><span class="n">bundle</span><span class="o">.</span><span class="nb">package</span>
+<div class="codehilite"><pre>    <span class="n">Manifest</span><span class="o">-</span><span class="n">Version</span><span class="p">:</span> 1<span class="p">.</span>0
+    <span class="n">Bundle</span><span class="o">-</span><span class="n">Name</span><span class="p">:</span> <span class="n">mybundle</span>
+    <span class="n">Export</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">my</span><span class="p">.</span><span class="n">bundle</span><span class="p">.</span><span class="n">package</span>
 
-    <span class="n">Name:</span> <span class="n">com</span><span class="sr">/ascert/o</span><span class="n">penosgi</span><span class="o">/</span><span class="n">mangen</span>
-    <span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">some</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="nb">package</span>
+    <span class="n">Name</span><span class="p">:</span> <span class="n">com</span><span class="o">/</span><span class="n">ascert</span><span class="o">/</span><span class="n">openosgi</span><span class="o">/</span><span class="n">mangen</span>
+    <span class="n">Import</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">some</span><span class="p">.</span><span class="n">other</span><span class="p">.</span><span class="n">package</span>
 </pre></div>
 
 
@@ -297,8 +295,7 @@
 <p>Some OSGi developers use the framework as a basis for creating packaged applications, in fact it is just this usage which Ascert make of OSGi and Oscar and which motivated the creation of =mangen. In such cases, the simplest and possibly most powerful rule use case is  simply to supply <code>mangen</code> with a complete set of application bundles and let it work out the matrix of imports and exports required to resolve every bundle dependency. This is exactly what the ResolveImportsToExports does. </p>
 <p>ResolveImportsToExports can only be used globally and will prune down the set of possible exports and required imports to just those required to satisfy every bundle dependency. It will generate <code>*** WARNING ***</code> report lines for the following cases:</p>
 <ul>
-<li>duplicate exports where more than one bundle could be an exporter of the same package which is a necessary import of some other bundle. In these cases, at present, the first possible exporter found will be picked and all others removed and a warning generated <br />
-</li>
+<li>duplicate exports where more than one bundle could be an exporter of the same package which is a necessary import of some other bundle. In these cases, at present, the first possible exporter found will be picked and all others removed and a warning generated   </li>
 <li>missing exports i.e. packages required by one or more bundles that are never exported. Erroneous warnings for standard JDK packages can be avoided using the <code>sys-packages</code> option.</li>
 </ul>
 <p>At present, the known cases where this rule may fail to create a consistent and resolved set of bundle Manifests are:</p>
@@ -331,7 +328,7 @@
 <p>The <code>skip-jars</code> option can be used to specify a comma separated list of JAR name regex patterns for which OBR descriptors are not required (e.g. source JARs).</p>
 <p>OBR descriptor production is a quite different aspect of <code>mangen</code> usage to import/export generation and so a separate example <code>obr.properties</code> file has been included to show typical settings for it's usage. The <code>-Dmangen.properties</code> setting can be used to run <code>mangen</code> with these settings e.g.</p>
 <p><em>Example:</em></p>
-<div class="codehilite"><pre>    <span class="n">java</span> <span class="o">-</span><span class="n">Dmangen</span><span class="o">.</span><span class="n">properties</span><span class="o">=</span><span class="n">lib</span><span class="o">\</span><span class="n">obr</span><span class="o">.</span><span class="n">properties</span> <span class="o">-</span><span class="n">jar</span> <span class="n">lib</span><span class="o">\</span><span class="n">mangen</span><span class="o">.</span><span class="n">jar</span> <span class="n">e:</span><span class="o">\</span><span class="n">obr</span><span class="o">\</span><span class="n">repo</span><span class="o">\</span>
+<div class="codehilite"><pre>    <span class="n">java</span> <span class="o">-</span><span class="n">Dmangen</span><span class="p">.</span><span class="k">properties</span><span class="p">=</span><span class="n">lib</span><span class="o">\</span><span class="n">obr</span><span class="p">.</span><span class="k">properties</span> <span class="o">-</span><span class="n">jar</span> <span class="n">lib</span><span class="o">\</span><span class="n">mangen</span><span class="p">.</span><span class="n">jar</span> <span class="n">e</span><span class="p">:</span><span class="o">\</span><span class="n">obr</span><span class="o">\</span><span class="n">repo</span><span class="o">\</span>
 </pre></div>
 
 
@@ -366,8 +363,7 @@
 <ul>
 <li>pre-compiled versions of <code>mangen</code> and libraries</li>
 <li>full source code and Ant build files</li>
-<li>this documentation in HTML format. The original documentation is maintained in TWiki format at Ascert's intranet set and a copy of the raw TWiki file is included.<br />
-</li>
+<li>this documentation in HTML format. The original documentation is maintained in TWiki format at Ascert's intranet set and a copy of the raw TWiki file is included.  </li>
 </ul>
 <p>The following third party libraries are also included in the distribution:</p>
 <ul>
@@ -439,8 +435,7 @@
 <p>Most <code>mangen</code> enhancement ideas have now been created as issues in the <a href="https://issues.apache.org/jira/secure/IssueNavigator.jspa?component=12310910&amp;sorter/field=priority&amp;mode=hide&amp;reset=true&amp;pid=12310100&amp;sorter/order=ASC">Apache JIRA list</a>.</p>
 <p>Those which are more speculative have been left below.</p>
 <h3 id="online-usage-within-an-osgi-environment">Online usage within an OSGi environment</h3>
-<p>Extending the concept of <a href="">Manifest-less usage</a> comes an interesting possibility that a specific OSGi platform such as [Oscar|http://oscar.objectweb.org/] could be extended to load any JAR and automatically 'fix-up' a usable Manifest. This would require internal access/knowledge of the specific platform's implementation since the existing standard OSGi API would not supply sufficient details and access to the set of loaded bundle JARs. Additionally, it would probably need to be a "multi-step" process since until a largely complete set of bundle JARs were loaded it may not be possible to resolve all imports and exports. This perhaps implies some form of platform extension to allow a set of JARs to be passed to some form of "pre-load" mechanism capable of resolving their imports and exports within the JAR set, and possibly from existing loaded bundle JARs or even an external [OBR|http://oscar-osgi.sourceforge.net/]. <br />
-</p>
+<p>Extending the concept of <a href="">Manifest-less usage</a> comes an interesting possibility that a specific OSGi platform such as [Oscar|http://oscar.objectweb.org/] could be extended to load any JAR and automatically 'fix-up' a usable Manifest. This would require internal access/knowledge of the specific platform's implementation since the existing standard OSGi API would not supply sufficient details and access to the set of loaded bundle JARs. Additionally, it would probably need to be a "multi-step" process since until a largely complete set of bundle JARs were loaded it may not be possible to resolve all imports and exports. This perhaps implies some form of platform extension to allow a set of JARs to be passed to some form of "pre-load" mechanism capable of resolving their imports and exports within the JAR set, and possibly from existing loaded bundle JARs or even an external [OBR|http://oscar-osgi.sourceforge.net/].   </p>
 <h1 id="acknowledgements">Acknowledgements</h1>
 <p>Ascert is pleased to acknowledge the following projects, organisations and individuals whose tools have been used in the creation of this software:</p>
 <ul>

@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -163,28 +162,29 @@
 <p>Once started, the values of these properties are printed to the console.</p>
 <h2 id="configurations">Configurations</h2>
 <p>Configuration files are plain property files (<code>java.util.Property</code>). The format is simple:</p>
-<div class="codehilite"><pre><span class="n">header</span> <span class="o">::=</span> <span class="sr">&lt;header&gt;</span> <span class="p">(</span> <span class="s">&#39;:&#39;</span> <span class="o">|</span> <span class="s">&#39;=&#39;</span> <span class="p">)</span> <span class="sr">&lt;value&gt;</span> <span class="p">(</span> <span class="s">&#39;\&lt;nl&gt; &lt;value&gt; ) *</span>
-<span class="s">comment ::= &#39;</span><span class="c1">#&#39; &lt;any&gt;</span>
+<div class="codehilite"><pre><span class="n">file</span> <span class="p">::=</span> <span class="p">(</span> <span class="n">header</span> <span class="o">|</span> <span class="n">comment</span> <span class="p">)</span> <span class="o">*</span>
+<span class="n">header</span> <span class="p">::=</span> <span class="o">&lt;</span><span class="n">header</span><span class="o">&gt;</span> <span class="p">(</span> <span class="s">&#39;:&#39;</span> <span class="o">|</span> <span class="s">&#39;=&#39;</span> <span class="p">)</span> <span class="o">&lt;</span><span class="n">value</span><span class="o">&gt;</span> <span class="p">(</span> <span class="s">&#39;\&lt;nl&gt; &lt;value&gt; ) *</span>
+<span class="s">comment ::= &#39;</span>#<span class="s">&#39;</span><span class="err"> &lt;any&gt;</span>
 </pre></div>
 
 
 <p>Notice that this model only supports string properties. For example:</p>
-<div class="codehilite"><pre><span class="c1"># default port</span>
-<span class="n">ftp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">21</span>
+<div class="codehilite"><pre><span class="c"># default port</span>
+<span class="nb">ftp</span><span class="p">.</span><span class="n">port</span> <span class="p">=</span> 21
 </pre></div>
 
 
 <p>Configuration file names are related to the PID and factory PID. The structure of the file name is as follows:</p>
-<div class="codehilite"><pre>
+<div class="codehilite"><pre><span class="n">filename</span> <span class="p">::=</span> <span class="o">&lt;</span><span class="n">pid</span><span class="o">&gt;</span> <span class="p">(</span> <span class="s">&#39;-&#39;</span> <span class="o">&lt;</span><span class="n">subname</span><span class="o">&gt;</span> <span class="p">)</span>? <span class="s">&#39;.cfg&#39;</span>
 </pre></div>
 
 
 <p>If the form is <code>&lt;pid&gt;.cfg</code>, the file contains the properties for a Managed Service. The <code>&lt;pid&gt;</code> is then the PID of the Managed Service. See the Configuration Admin service for details.</p>
 <p>When a Managed Service Factory is used, the situation is different. The <code>&lt;pid&gt;</code> part then describes the PID of the Managed Service Factory. You can pick any <code>&lt;subname&gt;</code>, this bundle will then create an instance for the factory for each unique name. For example:</p>
-<div class="codehilite"><pre><span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">cfg</span> <span class="sr">//</span> <span class="n">configuration</span> <span class="k">for</span> <span class="n">Managed</span> <span class="n">Service</span>
-<span class="sr">//</span> <span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">xyz</span>
-<span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">abc</span><span class="o">-</span><span class="n">default</span><span class="o">.</span><span class="n">cfg</span> <span class="sr">//</span> <span class="n">Managed</span> <span class="n">Service</span> <span class="n">Factory</span><span class="p">,</span>
-<span class="sr">//</span> <span class="n">creates</span> <span class="n">an</span> <span class="n">instance</span> <span class="k">for</span> <span class="n">com</span><span class="o">.</span><span class="n">acme</span><span class="o">.</span><span class="n">abc</span>
+<div class="codehilite"><pre><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">xyz</span><span class="p">.</span><span class="n">cfg</span> <span class="o">//</span> <span class="n">configuration</span> <span class="k">for</span> <span class="n">Managed</span> <span class="n">Service</span>
+<span class="o">//</span> <span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">xyz</span>
+<span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">abc</span><span class="o">-</span><span class="n">default</span><span class="p">.</span><span class="n">cfg</span> <span class="o">//</span> <span class="n">Managed</span> <span class="n">Service</span> <span class="n">Factory</span><span class="p">,</span>
+<span class="o">//</span> <span class="n">creates</span> <span class="n">an</span> <span class="n">instance</span> <span class="k">for</span> <span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">abc</span>
 </pre></div>
 
 
@@ -198,17 +198,22 @@ Example:</p>
 
 <h2 id="watching-multiple-directories-with-file-install">Watching multiple directories with File Install</h2>
 <p>Starting with version 3.1.0 it is possible to specify several directories to watch with the system property <code>felix.fileinstall.dir</code>; this property can either point to a single directory or a comma separated list of directories. In addition, Apache Felix File Install provides a ManagedServiceFactory to create multiple instances of File Install. Asuming you have a File Install bundle watching a <code>bundles</code> folder, creating a new instance is as simple as creating a new configuration file <code>org.apache.felix.fileinstall-&lt;pid&gt;.cfg</code> in that folder (substitute <pid> with a unique Id for the new service instance):</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>org.apache.felix.fileinstall-configDir.cfg</B></DIV><DIV class="codeContent panelContent">
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>org.apache.felix.fileinstall-configDir.cfg</B></DIV><DIV class="codeContent panelContent">
     felix.fileinstall.poll=2000
     felix.fileinstall.dir=/configDir
     felix.fileinstall.debug=-1
-    felix.fileinstall.filter=.*\.cfg
-    felix.fileinstall.bundles.new.start=false</p>
-<h2 id="exploded-bundles">Exploded bundles</h2>
-<p>Apache Felix File Install has the ability to watch for exploded bundles and automatically update such bundles if the content is changed in any way.  If a watched directory contains a sub directory, its content will be jar'ed and deployed to the OSGi framework.  Any change to a file in this directory or one of its subdirectories will result in the directory to be jar'ed again and the corresponding bundle to be updated.</p>
-<h2 id="custom-artifacts">Custom artifacts</h2>
-<p>Apache Felix File Install can support deployment of custom artifacts.  By default, configurations and plain OSGi bundles are supported, but other kind of artifacts can be deployed through custom artifact handlers.</p>
-<p>To add support for a custom artifact, a service implementing one of <code>org.apache.felix.fileinstall.ArtifactListener</code>'s sub interfaces must be registered in the OSGi registry.</p>
+    felix.fileinstall.filter=.*\\.cfg
+    felix.fileinstall.bundles.new.start=false
+
+## Exploded bundles
+
+Apache Felix File Install has the ability to watch for exploded bundles and automatically update such bundles if the content is changed in any way.  If a watched directory contains a sub directory, its content will be jar'ed and deployed to the OSGi framework.  Any change to a file in this directory or one of its subdirectories will result in the directory to be jar'ed again and the corresponding bundle to be updated.
+
+## Custom artifacts
+
+Apache Felix File Install can support deployment of custom artifacts.  By default, configurations and plain OSGi bundles are supported, but other kind of artifacts can be deployed through custom artifact handlers.
+
+To add support for a custom artifact, a service implementing one of `org.apache.felix.fileinstall.ArtifactListener`'s sub interfaces must be registered in the OSGi registry.
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
         Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
       </div>

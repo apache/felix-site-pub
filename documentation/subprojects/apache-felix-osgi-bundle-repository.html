@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -171,12 +170,12 @@
 <p>Typically, OBR service clients only need to interact with the Repository Admin service, which provides the mechanisms necessary to discover available resources. The Repository Admin interface is defined as follows:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">RepositoryAdmin</span>
 <span class="p">{</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="o">[]</span> <span class="n">discoverResources</span><span class="p">(</span><span class="n">String</span> <span class="n">filterExpr</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">discoverResources</span><span class="p">(</span><span class="n">String</span> <span class="n">filterExpr</span><span class="p">);</span>
     <span class="n">public</span> <span class="n">Resolver</span> <span class="n">resolver</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Repository</span> <span class="n">addRepository</span><span class="p">(</span><span class="n">URL</span> <span class="n">repository</span><span class="p">)?</span>
+    <span class="n">public</span> <span class="n">Repository</span> <span class="n">addRepository</span><span class="p">(</span><span class="n">URL</span> <span class="n">repository</span><span class="p">)</span>?
         <span class="n">throws</span> <span class="n">Exception</span><span class="p">;</span>
     <span class="n">public</span> <span class="n">boolean</span> <span class="n">removeRepository</span><span class="p">(</span><span class="n">URL</span> <span class="n">repository</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Repository</span><span class="o">[]</span> <span class="n">listRepositories</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">Repository</span><span class="p">[]</span> <span class="n">listRepositories</span><span class="p">();</span>
     <span class="n">public</span> <span class="n">Resource</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">respositoryId</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
@@ -186,12 +185,12 @@
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Resolver</span>
 <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">add</span><span class="p">(</span><span class="n">Resource</span> <span class="n">resource</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Requirement</span><span class="o">[]</span> <span class="n">getUnsatisfiedRequirements</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="o">[]</span> <span class="n">getOptionalResources</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Requirement</span><span class="o">[]</span> <span class="n">getReason</span><span class="p">(</span><span class="n">Resource</span> <span class="n">resource</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="o">[]</span> <span class="n">getResources</span><span class="p">(</span><span class="n">Requirement</span> <span class="n">requirement</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="o">[]</span> <span class="n">getRequiredResources</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="o">[]</span> <span class="n">getAddedResources</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">Requirement</span><span class="p">[]</span> <span class="n">getUnsatisfiedRequirements</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getOptionalResources</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">Requirement</span><span class="p">[]</span> <span class="n">getReason</span><span class="p">(</span><span class="n">Resource</span> <span class="n">resource</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getResources</span><span class="p">(</span><span class="n">Requirement</span> <span class="n">requirement</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getRequiredResources</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getAddedResources</span><span class="p">();</span>
     <span class="n">public</span> <span class="n">boolean</span> <span class="n">resolve</span><span class="p">();</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">deploy</span><span class="p">(</span><span class="n">boolean</span> <span class="n">start</span><span class="p">);</span>
 <span class="p">}</span>
@@ -199,20 +198,20 @@
 
 
 <p>When desired resources are discovered via the query mechanisms of the Repository Admin, they are added to a Resolver instance which will can be used to resolve all transitive dependencies and to reflect on any resolution result. The following code snippet depicts a typical usage scenario:</p>
-<div class="codehilite"><pre><span class="n">RepositoryAdmin</span> <span class="n">repoAdmin</span> <span class="o">=</span> <span class="o">...</span> <span class="sr">//</span> <span class="n">Get</span> <span class="n">repo</span> <span class="n">admin</span> <span class="n">service</span>
-<span class="n">Resolver</span> <span class="n">resolver</span> <span class="o">=</span> <span class="n">repoAdmin</span><span class="o">.</span><span class="n">resolver</span><span class="p">();</span>
-<span class="n">Resource</span> <span class="n">resource</span> <span class="o">=</span> <span class="n">repoAdmin</span><span class="o">.</span><span class="n">discoverResources</span><span class="p">(</span><span class="n">filterStr</span><span class="p">);</span>
-<span class="n">resolver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">resource</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">resolver</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+<div class="codehilite"><pre><span class="n">RepositoryAdmin</span> <span class="n">repoAdmin</span> <span class="p">=</span> <span class="p">...</span> <span class="o">//</span> <span class="n">Get</span> <span class="n">repo</span> <span class="n">admin</span> <span class="n">service</span>
+<span class="n">Resolver</span> <span class="n">resolver</span> <span class="p">=</span> <span class="n">repoAdmin</span><span class="p">.</span><span class="n">resolver</span><span class="p">();</span>
+<span class="n">Resource</span> <span class="n">resource</span> <span class="p">=</span> <span class="n">repoAdmin</span><span class="p">.</span><span class="n">discoverResources</span><span class="p">(</span><span class="n">filterStr</span><span class="p">);</span>
+<span class="n">resolver</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">resource</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">resolver</span><span class="p">.</span><span class="n">resolve</span><span class="p">())</span>
 <span class="p">{</span>
-    <span class="n">resolver</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="n">true</span><span class="p">);</span>
+    <span class="n">resolver</span><span class="p">.</span><span class="n">deploy</span><span class="p">(</span><span class="n">true</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span>
 <span class="p">{</span>
-    <span class="n">Requirement</span><span class="o">[]</span> <span class="n">reqs</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">getUnsatisfiedRequirements</span><span class="p">();</span>
-    <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">reqs</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">Requirement</span><span class="p">[]</span> <span class="n">reqs</span> <span class="p">=</span> <span class="n">resolver</span><span class="p">.</span><span class="n">getUnsatisfiedRequirements</span><span class="p">();</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="nb">i</span> <span class="p">=</span> 0<span class="p">;</span> <span class="nb">i</span> <span class="o">&lt;</span> <span class="n">reqs</span><span class="p">.</span><span class="nb">length</span><span class="p">;</span> <span class="nb">i</span><span class="o">++</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Unable to resolve: &quot;</span> <span class="o">+</span> <span class="n">reqs</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Unable</span> <span class="n">to</span> <span class="n">resolve</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">reqs</span><span class="p">[</span><span class="nb">i</span><span class="p">]);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -239,81 +238,81 @@
 <p>This command gets the URLs to the repository files used by the Repository Admin.</p>
 <h3 id="obr-add-url">obr add-url</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">add</span><span class="o">-</span><span class="n">url</span> <span class="p">[</span><span class="sr">&lt;repository-file-url&gt;</span> <span class="o">...</span><span class="p">]</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">add</span><span class="o">-</span><span class="n">url</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">repository</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">url</span><span class="o">&gt;</span> <span class="p">...]</span>
 </pre></div>
 
 
 <p>This command adds a repository file to the set of repository files for which the Repository Admin service provides access. The repository file is represented as a URL. If the repository file URL is already in the Repository Admin's set of repository files, the request is treated like a reload operation.</p>
 <h3 id="obr-remove-url">obr remove-url</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">remove</span><span class="o">-</span><span class="n">url</span> <span class="p">[</span><span class="sr">&lt;repository-file-url&gt;</span> <span class="o">...</span><span class="p">]</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">remove</span><span class="o">-</span><span class="n">url</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">repository</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">url</span><span class="o">&gt;</span> <span class="p">...]</span>
 </pre></div>
 
 
 <p>This command removes a repository file to the set of repository files for which the Repository Admin service provides access. The repository file is represented as a URL.</p>
 <h3 id="obr-list">obr list</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">list</span> <span class="p">[</span><span class="sr">&lt;string&gt;</span> <span class="o">...</span><span class="p">]</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">list</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">...]</span>
 </pre></div>
 
 
 <p>This command lists bundles available in the bundle repository. If no arguments are specified, then all available bundles are listed, otherwise any arguments are concatenated with spaces and used as a substring filter on the bundle names.</p>
 <h3 id="obr-info">obr info</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">info</span> <span class="sr">&lt;bundle-name&gt;</span><span class="p">[;</span><span class="sr">&lt;version&gt;</span><span class="p">]</span> <span class="o">...</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">info</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
 </pre></div>
 
 
 <p>This command displays the meta-data for the specified bundles. If a bundle's name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">info</span> <span class="s">&quot;Bundle Repository&quot;</span><span class="p">;</span><span class="mf">1.0.0</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">info</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
 </pre></div>
 
 
 <p>The above example retrieves the meta-data for version "1.0.0" of the bundle named "Bundle Repository".</p>
 <h3 id="obr-deploy">obr deploy</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">deploy</span> <span class="sr">&lt;bundle-name&gt;</span><span class="p">[;</span><span class="sr">&lt;version&gt;</span><span class="p">]</span> <span class="o">...</span> <span class="o">|</span> <span class="sr">&lt;bundle-id&gt;</span> <span class="o">...</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">deploy</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">id</span><span class="o">&gt;</span> <span class="p">...</span>
 </pre></div>
 
 
 <p>This command tries to install or update the specified bundles and all of their dependencies by default. You can specify either the bundle name or the bundle identifier. If a bundle's name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">deploy</span> <span class="s">&quot;Bundle Repository&quot;</span><span class="p">;</span><span class="mf">1.0.0</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">deploy</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
 </pre></div>
 
 
 <p>For the above example, if version "1.0.0" of "Bundle Repository" is already installed locally, then the command will attempt to update it and all of its dependencies; otherwise, the command will install it and all of its dependencies.</p>
 <h3 id="obr-start">obr start</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">start</span> <span class="p">[</span><span class="o">-</span><span class="n">nodeps</span><span class="p">]</span> <span class="sr">&lt;bundle-name&gt;</span><span class="p">[;</span><span class="sr">&lt;version&gt;</span><span class="p">]</span> <span class="o">...</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">start</span> <span class="p">[</span><span class="o">-</span><span class="n">nodeps</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
 </pre></div>
 
 
 <p>This command installs and starts the specified bundles and all of their dependencies by default; use the "-nodeps" switch to ignore dependencies. If a bundle's name contains spaces, then it must be surrounded by quotes. If a specified bundle is already installed, then this command has no effect. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">start</span> <span class="s">&quot;Bundle Repository&quot;</span><span class="p">;</span><span class="mf">1.0.0</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">start</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
 </pre></div>
 
 
 <p>The above example installs and starts the "1.0.0" version of the bundle named "Bundle Repository" and its dependencies.</p>
 <h3 id="obr-source">obr source</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">source</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="sr">&lt;local-dir&gt;</span> <span class="sr">&lt;bundle-name&gt;</span><span class="p">[;</span><span class="sr">&lt;version&gt;</span><span class="p">]</span> <span class="o">...</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">source</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">local</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
 </pre></div>
 
 
 <p>This command retrieves the source archives of the specified bundles and saves them to the specified local directory; use the "-x" switch to automatically extract the source archives. If a bundle name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">source</span> <span class="sr">/home/</span><span class="n">rickhall</span><span class="o">/</span><span class="n">tmp</span> <span class="s">&quot;Bundle Repository&quot;</span><span class="p">;</span><span class="mf">1.0.0</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">source</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">rickhall</span><span class="o">/</span><span class="n">tmp</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
 </pre></div>
 
 
 <p>The above example retrieves the source archive of version "1.0.0" of the bundle named "Bundle Repository" and saves it to the specified local directory.</p>
 <h3 id="obr-javadoc">obr javadoc</h3>
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">javadoc</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="sr">&lt;local-dir&gt;</span> <span class="sr">&lt;bundle-name&gt;</span><span class="p">[;</span><span class="sr">&lt;version&gt;</span><span class="p">]</span> <span class="o">...</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">javadoc</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">local</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
 </pre></div>
 
 
 <p>This command retrieves the javadoc archives of the specified bundles and saves them to the specified local directory; use the "-x" switch to automatically extract the javadoc archives. If a bundle name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">javadoc</span> <span class="sr">/home/</span><span class="n">rickhall</span><span class="o">/</span><span class="n">tmp</span> <span class="s">&quot;Bundle Repository&quot;</span><span class="p">;</span><span class="mf">1.0.0</span>
+<div class="codehilite"><pre><span class="n">obr</span> <span class="n">javadoc</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">rickhall</span><span class="o">/</span><span class="n">tmp</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
 </pre></div>
 
 

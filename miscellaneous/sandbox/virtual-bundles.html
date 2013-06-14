@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -110,15 +109,15 @@
 <h2 id="virtualmodule"><code>VirtualModule</code></h2>
 <p>The <code>VirtualModule</code> interface abstracts access to the virtual bundle's content and is the management object handling content access. The name might seem confusing, but results from how framework implementations must handle bundles. Normally in the OSGi framework, a bundle is not necessarily associated with a single bundle archive; instead, it may have multiple archives associated with it at run time depending on whether it has been updated or not. In the Felix framework implementation, we call these things modules and this naming was chosen for that reason:</p>
 <div class="codehilite"><pre>    <span class="n">public</span> <span class="n">interface</span> <span class="n">VirtualModule</span> <span class="p">{</span>
-        <span class="n">void</span> <span class="n">resolve</span><span class="p">(</span><span class="n">Wire</span> <span class="n">bootWire</span><span class="p">,</span> <span class="n">List</span><span class="sr">&lt;Wire&gt;</span> <span class="n">wires</span><span class="p">)</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
+        <span class="n">void</span> <span class="n">resolve</span><span class="p">(</span><span class="n">Wire</span> <span class="n">bootWire</span><span class="p">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Wire</span><span class="o">&gt;</span> <span class="n">wires</span><span class="p">)</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
 
         <span class="n">Class</span> <span class="n">loadClass</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ClassNotFoundException</span><span class="p">;</span>
         <span class="n">URL</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
         <span class="n">Enumeration</span> <span class="n">getResources</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
 
         <span class="n">URL</span> <span class="n">getEntry</span><span class="p">(</span><span class="n">String</span> <span class="n">entry</span><span class="p">);</span>
-        <span class="n">Enumeration</span><span class="sr">&lt;String&gt;</span> <span class="n">getEntryPaths</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">);</span>
-        <span class="n">Enumeration</span><span class="sr">&lt;URL&gt;</span> <span class="n">findEntries</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">,</span> <span class="n">String</span> <span class="n">filePattern</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">recurse</span><span class="p">);</span>
+        <span class="n">Enumeration</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">getEntryPaths</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">);</span>
+        <span class="n">Enumeration</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="n">findEntries</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">,</span> <span class="n">String</span> <span class="n">filePattern</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">recurse</span><span class="p">);</span>
     <span class="p">}</span>
 </pre></div>
 
@@ -204,7 +203,7 @@
 <p>A more complicated case is related to ordering, which is how to deal with bundles that were installed before the manager was present and/or activated. In this case, a normal update is not completely sufficient since the manager really wants to update the bundle to a virtual bundle, but keep its existing content. Technically, this is possible with the current API by using the entry-related <code>Bundle</code> methods to reconstruct the installed bundle, then performing an update on it to convert it to a virtual bundle.</p>
 <h2 id="resource-handling">Resource handling</h2>
 <p>Typically, a framework implementation has to know something about the content of a bundle to create resource URLs. For example, both Felix and Equinox create resource URLs something like this:</p>
-<div class="codehilite"><pre>    <span class="n">bundle:</span><span class="sr">//&lt;framework-id&gt;&lt;bundle-id&gt;</span><span class="p">:</span><span class="sr">&lt;classpath-idx&gt;/path/</span><span class="n">to</span><span class="o">/</span><span class="n">resource</span><span class="o">.</span><span class="n">txt</span>
+<div class="codehilite"><pre>    <span class="n">bundle</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">framework</span><span class="o">-</span><span class="n">id</span><span class="o">&gt;&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">id</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">classpath</span><span class="o">-</span><span class="n">idx</span><span class="o">&gt;/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">resource</span><span class="p">.</span><span class="n">txt</span>
 </pre></div>
 
 

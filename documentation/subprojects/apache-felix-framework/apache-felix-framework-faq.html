@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -96,27 +95,27 @@
 <h2 id="why-do-i-get-an-unknown-protocol-http-exception-when-i-run-felix-on-a-non-sun-jre">Why do I get an "Unknown protocol: http" exception when I run Felix on a non-Sun JRE?</h2>
 <p>Felix installs the URL Handlers service by default. If you do not want this service you can disable it, by setting the <code>felix.service.urlhandlers</code> property to <code>false</code> in the <code>config.properties</code> file. It is not recommended to disable this, but the main reason for doing so it because the URL Handlers implementation invokes methods to set the singleton factories for URL stream and content handler factories. Assuming that you want to use URL Handlers service, you must configure it if you aren't running on the standard Sun JRE.</p>
 <p>The URL Handlers service extends the standard Java URL stream and content handler mechanism to work in an OSGi environment. The way that built-in URL protocol and content handlers are discovered is by probing packages for the appropriate classes to handle the protocol/content. For example, the default package for Sun protocol handlers is:</p>
-<div class="codehilite"><pre><span class="n">sun</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">www</span><span class="o">.</span><span class="n">protocol</span>
+<div class="codehilite"><pre><span class="n">sun</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">www</span><span class="p">.</span><span class="n">protocol</span>
 </pre></div>
 
 
 <p>If someone tries to create a URL for the "http" protocol, then the class to handle the protocol will be:</p>
-<div class="codehilite"><pre><span class="n">sun</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">www</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">Handler</span>
+<div class="codehilite"><pre><span class="n">sun</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">www</span><span class="p">.</span><span class="n">protocol</span><span class="p">.</span><span class="n">http</span><span class="p">.</span><span class="n">Handler</span>
 </pre></div>
 
 
 <p>A similar process is followed for content handlers, whose default package is:</p>
-<div class="codehilite"><pre><span class="n">sun</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">www</span><span class="o">.</span><span class="n">content</span>
+<div class="codehilite"><pre><span class="n">sun</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">www</span><span class="p">.</span><span class="n">content</span>
 </pre></div>
 
 
 <p>If you are running on a VM that is different than Sun's, then you must determine what are the default packages used for its protocol and content handlers. Once you know this information, then you can configure Felix to use those packages instead of the default one. You can configure Felix by setting the following system properties:</p>
-<div class="codehilite"><pre><span class="n">java</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">pkgs</span>
+<div class="codehilite"><pre><span class="n">java</span><span class="p">.</span><span class="n">protocol</span><span class="p">.</span><span class="n">handler</span><span class="p">.</span><span class="n">pkgs</span>
 </pre></div>
 
 
 <p>and</p>
-<div class="codehilite"><pre><span class="n">java</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">pkgs</span>
+<div class="codehilite"><pre><span class="n">java</span><span class="p">.</span><span class="n">content</span><span class="p">.</span><span class="n">handler</span><span class="p">.</span><span class="n">pkgs</span>
 </pre></div>
 
 

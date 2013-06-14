@@ -503,25 +503,25 @@
 
 
 <p>Java:</p>
-<div class="codehilite"><pre><span class="nv">@Component</span>
+<div class="codehilite"><pre><span class="p">@</span><span class="n">Component</span>
 <span class="n">public</span> <span class="n">class</span> <span class="n">Dependency</span> <span class="p">{</span>
 
-    <span class="nv">@Unbind</span>
+    <span class="p">@</span><span class="n">Unbind</span>
     <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">unbindBaz</span><span class="p">(</span><span class="n">BazService</span> <span class="n">bz</span><span class="p">)</span> <span class="p">{</span>
-        <span class="sr">//</span><span class="o">...</span>
+        <span class="o">//</span><span class="p">...</span>
     <span class="p">}</span>
 
-    <span class="nv">@Bind</span>
+    <span class="p">@</span><span class="n">Bind</span>
     <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">bindBaz</span><span class="p">(</span><span class="n">BazService</span> <span class="n">bz</span><span class="p">)</span> <span class="p">{</span>
-        <span class="sr">//</span> <span class="o">...</span>
+        <span class="o">//</span> <span class="p">...</span>
     <span class="p">}</span>
 
-    <span class="nv">@Modified</span>
+    <span class="p">@</span><span class="n">Modified</span>
     <span class="n">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">modifiedBaz</span><span class="p">()</span> <span class="p">{</span>
-        <span class="sr">//</span> <span class="o">...</span>
+        <span class="o">//</span> <span class="p">...</span>
     <span class="p">}</span>
 
-  <span class="sr">//</span><span class="o">...</span>
+  <span class="o">//</span><span class="p">...</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -588,87 +588,96 @@
         <callback type="unbind" method="unbind"/>
     </requires>
 </component></p>
-<instance name="FOO1" component="FOO"/> <!-- Use the default 'from' value -->
-
-<instance name="FOO2" component="FOO">
+<p><instance name="FOO1" component="FOO"/> <!-- Use the default 'from' value --></p>
+<p><instance name="FOO2" component="FOO">
     <property name="requires.from">
         <property name="id1" value="myprovider"/>
     </property>
-</instance>
+</instance></p>
+<div class="codehilite"><pre> h2. Configuring the  attribute
+* Thanks to the  property, it is possible to override the  attribute value.
 
-     h2. Configuring the  attribute
-    * Thanks to the  property, it is possible to override the  attribute value.
+{code:xml|Filter attribute configuration}
+<span class="nt">&lt;component</span> 
+   <span class="na">classname=</span><span class="s">&quot;org.apache.felix.ipojo.example.FilteredDependency&quot;</span> 
+   <span class="na">name=</span><span class="s">&quot;FOO&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;requires</span> <span class="na">field=</span><span class="s">&quot;m_foo&quot;</span> <span class="na">fiter=</span><span class="s">&quot;(foo.property=FOO)&quot;</span> <span class="na">id=</span><span class="s">&quot;id1&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;bind&quot;</span> <span class="na">method=</span><span class="s">&quot;bind&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;callback</span> <span class="na">type=</span><span class="s">&quot;unbind&quot;</span> <span class="na">method=</span><span class="s">&quot;unbind&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/requires&gt;</span>
+<span class="nt">&lt;/component&gt;</span>
 
-    {code:xml|Filter attribute configuration}
-    <component 
-       classname="org.apache.felix.ipojo.example.FilteredDependency" 
-       name="FOO">
-        <requires field="m_foo" fiter="(foo.property=FOO)" id="id1">
-            <callback type="bind" method="bind"/>
-            <callback type="unbind" method="unbind"/>
-        </requires>
-    </component>
+<span class="nt">&lt;instance</span> <span class="na">name=</span><span class="s">&quot;FOO1&quot;</span> <span class="na">component=</span><span class="s">&quot;FOO&quot;</span><span class="nt">/&gt;</span> <span class="c">&lt;!-- Use the default &#39;filter&#39; value --&gt;</span>
 
-    <instance name="FOO1" component="FOO"/> <!-- Use the default 'filter' value -->
+<span class="nt">&lt;instance</span> <span class="na">name=</span><span class="s">&quot;FOO2&quot;</span> <span class="na">component=</span><span class="s">&quot;FOO&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;requires.filters&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;id1&quot;</span> <span class="na">value=</span><span class="s">&quot;(foo.property=BAR)&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/instance&gt;</span>
+</pre></div>
 
-    <instance name="FOO2" component="FOO">
-        <property name="requires.filters">
-            <property name="id1" value="(foo.property=BAR)"/>
-        </property>
-    </instance>
 
-# Reacting to lifecycle state changes
-## Immediate components
-* A POJO object (implementation object) is created as soons as the instance becomes valid
-* Instances that don't provide services becomes automatically immediate
+<h1 id="reacting-to-lifecycle-state-changes">Reacting to lifecycle state changes</h1>
+<h2 id="immediate-components">Immediate components</h2>
+<ul>
+<li>A POJO object (implementation object) is created as soons as the instance becomes valid</li>
+<li>
+<p>Instances that don't provide services becomes automatically immediate
     :::xml
 <component classname="my.service.implementation" name="my-service-impl" immediate="true">
    <provides/>
-</component>
-
-    {code:java|title=Annotations}
-    @Component(immediate=true)
-    @Provides
-    public class Implementation implements FooService {
-       ...
-    }
-
-{div:class=borderedTable}
+</component></p>
+<p>{code:java|title=Annotations}
+@Component(immediate=true)
+@Provides
+public class Implementation implements FooService {
+   ...
+}</p>
+</li>
+</ul>
+<p>{div:class=borderedTable}
 {center}
 |Attribute name | Required | Default value | |
 |--|--|--|--|
 | immediate | no | false // true for instances that don't provide a service | specifies if the instance is immediate or not |
 {center}
 {div}
-* [Lifecycle Callback Handler](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html)
+* <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle Callback Handler</a></p>
+<h2 id="lifecycle-callbacks">Lifecycle callbacks</h2>
+<div class="codehilite"><pre>
+</pre></div>
 
-## Lifecycle callbacks
-    :::xml
-<component classname="my.implementation" name="my-impl">
+
+<p><component classname="my.implementation" name="my-impl">
     <callback transition="validate" method="start" />
     <callback transition="invalidate" method="stop" />
-</component>
+</component></p>
+<div class="codehilite"><pre><span class="p">{</span><span class="n">code</span><span class="p">:</span><span class="n">java</span><span class="o">|</span><span class="n">title</span><span class="p">=</span><span class="n">Annotations</span><span class="p">}</span>
+<span class="p">@</span><span class="n">Component</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">Implementation</span> <span class="p">{</span>
 
-    {code:java|title=Annotations}
-    @Component
-    public class Implementation {
+    <span class="p">@</span><span class="n">Validate</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
 
-        @Validate
-        public void start() {
+    <span class="p">}</span>
 
-        }
+    <span class="p">@</span><span class="n">Invalidate</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">()</span> <span class="p">{</span>
 
-        @Invalidate
-        public void stop() {
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 
-        }
-    }
 
-* [Lifecycle Callback Handler](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html)
+<ul>
+<li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.html">Lifecycle Callback Handler</a></li>
+</ul>
+<h1 id="declaring-properties">Declaring properties</h1>
+<div class="codehilite"><pre>
+</pre></div>
 
-# Declaring properties
-    :::xml
-<component classname="my.Implementation" name="my-impl">
+
+<p><component classname="my.Implementation" name="my-impl">
     <properties propagation="true" managedservice="MyPID">
         <property name="boo" method="setBoo" />
     <property field="m_bar" mandatory="true"/>
@@ -683,30 +692,31 @@
     <property name="boo" value="..."/>
     <property name="m_bar" value="..."/>
     <property name="managed.service.pid" value="AnotherPID"/>
-</instance>
+</instance></p>
+<div class="codehilite"><pre><span class="p">{</span><span class="n">code</span><span class="p">:</span><span class="n">java</span><span class="o">|</span><span class="n">title</span><span class="p">=</span><span class="n">Annotations</span><span class="p">}</span>
+<span class="p">@</span><span class="n">Component</span><span class="p">(</span><span class="n">managedservice</span><span class="p">=</span>&quot;<span class="n">MyPID</span>&quot;<span class="p">,</span> <span class="n">propagation</span><span class="p">=</span><span class="n">true</span><span class="p">)</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">Implementation</span> <span class="p">{</span>
 
-    {code:java|title=Annotations}
-    @Component(managedservice="MyPID", propagation=true)
-    public class Implementation {
+    <span class="p">@</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">boo</span>&quot;<span class="p">)</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">setBoo</span><span class="p">(</span><span class="n">int</span> <span class="n">boo</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">//</span><span class="p">...</span>
+    <span class="p">}</span>
 
-        @Property(name="boo")
-        public void setBoo(int boo) {
-            //...
-        }
+    <span class="p">@</span><span class="n">Property</span><span class="p">(</span><span class="n">mandatory</span><span class="p">=</span><span class="n">true</span><span class="p">)</span>
+    <span class="n">public</span> <span class="n">int</span> <span class="n">m_bar</span><span class="p">;</span>
 
-        @Property(mandatory=true)
-        public int m_bar;
+    <span class="p">@</span><span class="n">Property</span><span class="p">(</span><span class="n">value</span><span class="p">=</span>&quot;4&quot;<span class="p">)</span>
+    <span class="n">public</span> <span class="n">int</span> <span class="n">m_foo</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
 
-        @Property(value="4")
-        public int m_foo;
-    }
 
-{div:class=borderedTable}
+<p>{div:class=borderedTable}
 {center}
 |Attribute name | Required | Default value | |
 |--|--|--|--|
 | propagation | no | false | specifies if the properties propagation (properties are also published as service properties) is enabled or disabled |
-| managedservice | no | instance name | specifies the PID of the published managed service. // This value can be overidden by the `managed.service.pid` instance property |
+| managedservice | no | instance name | specifies the PID of the published managed service. // This value can be overidden by the <code>managed.service.pid</code> instance property |
 | name | no | field name or computed from the method name | specifies if the the property name |
 | value | no |  | specifies the default property value |
 | field | no | automatically detected with annotations | specifies the field in which the property value will be injected |
@@ -714,167 +724,170 @@
 | mandatory | no | false | specifies if the property has to receive a value from the instance configuration |
 {center}
 {div}
-* [Configuration Handler](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html)
-
-# PostRegistration and PostUnregistration callbacks
-* This feature is part of the provided service handler, and so requires that the component provides a service.
-* The callback receives a `ServiceReference` as parameter.
+* <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration Handler</a></p>
+<h1 id="postregistration-and-postunregistration-callbacks">PostRegistration and PostUnregistration callbacks</h1>
+<ul>
+<li>This feature is part of the provided service handler, and so requires that the component provides a service.</li>
+<li>
+<p>The callback receives a <code>ServiceReference</code> as parameter.
     :::xml
 <component
      classname="...">
     <provides
     post-unregistration="unregistered" post-registration="registered"/>
-</component>
-
-    {code:java|title=Annotations}
-    @PostRegistration
-    public void registered(ServiceReference ref) {
-        System.out.println("Registered");
-    }
-
-    @PostUnregistration
-    public void unregistered(ServiceReference ref) {
-        System.out.println("Unregistered");
-    }
-
-* [Provided Service Handler](http://felix.apache.org/site/providing-osgi-services.html#ProvidingOSGiservices-Beingnotifiedoftheserviceregistrationandunregistration)
-
-# Controlling service publication
-* This feature is part of the provided service handler, and so requires that the component provides a service.
-* It allows a component to force the un-publication of a service.
+</component></p>
+<p>{code:java|title=Annotations}
+@PostRegistration
+public void registered(ServiceReference ref) {
+    System.out.println("Registered");
+}</p>
+<p>@PostUnregistration
+public void unregistered(ServiceReference ref) {
+    System.out.println("Unregistered");
+}</p>
+</li>
+<li>
+<p><a href="http://felix.apache.org/site/providing-osgi-services.html#ProvidingOSGiservices-Beingnotifiedoftheserviceregistrationandunregistration">Provided Service Handler</a></p>
+</li>
+</ul>
+<h1 id="controlling-service-publication">Controlling service publication</h1>
+<ul>
+<li>This feature is part of the provided service handler, and so requires that the component provides a service.</li>
+<li>
+<p>It allows a component to force the un-publication of a service.
     :::xml
 <component
      classname="...">
     <provides>
         <controller field="controller" value="false"/>
     </provides>
-</component>
-
-    {code:java|title=Annotations}
-    @ServiceController(value="false")
-    private boolean controller
-
-* [Provided Service Handler](http://felix.apache.org/site/providing-osgi-services.html)
-
-# Using 'arch'
-* Deploy the 'arch' command bundle (available for Felix and Equinox)
-* Launch the 'arch' command in the OSGi Framework Shell
+</component></p>
+<p>{code:java|title=Annotations}
+@ServiceController(value="false")
+private boolean controller</p>
+</li>
+<li>
+<p><a href="http://felix.apache.org/site/providing-osgi-services.html">Provided Service Handler</a></p>
+</li>
+</ul>
+<h1 id="using-arch">Using 'arch'</h1>
+<ul>
+<li>Deploy the 'arch' command bundle (available for Felix and Equinox)</li>
+<li>
+<p>Launch the 'arch' command in the OSGi Framework Shell
 {code:java|title=Felix Shell}
-arch => displays instances name & state (equivalent to arch \-instances)
-arch -instance $instance*name => displays complete information about the instance $instance*name
-arch -factories => display the list of available factories
-arch -factory $factory*name => display complete information about the factory $factory*name
-arch -handlers => list available handlers
-
-    {code:java|title=Felix Gogo}
-    ipojo:instances => displays instances name & state (equivalent to arch \-instances)
-    ipojo:instance $instance_name => displays complete information about the instance $instance_name
-    ipojo:factories => display the list of available factories
-    ipojo:factory $factory_name => display complete information about the factory $factory_name
-    ipojo:handlers => list available handlers
-
-* [iPOJO Arch Command](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html)
-* [Architecture Handler](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html)
-
-# Temporal Dependencies
- * Temporal dependencies are injected in fields. When accessing to the service, the thread waits for the service availability. If a timeout is reached, a timeout policy is executed.
- * Service objects can be injected as `proxies` and be given to collaborator objects.
-* Temporal dependencies are implemented as an *external handlers*. To use them, deploy and start the temporal dependency handler bundle.
-
-    :::xml
+arch =&gt; displays instances name &amp; state (equivalent to arch -instances)
+arch -instance $instance<em>name =&gt; displays complete information about the instance $instance</em>name
+arch -factories =&gt; display the list of available factories
+arch -factory $factory<em>name =&gt; display complete information about the factory $factory</em>name
+arch -handlers =&gt; list available handlers</p>
+<p>{code:java|title=Felix Gogo}
+ipojo:instances =&gt; displays instances name &amp; state (equivalent to arch -instances)
+ipojo:instance $instance_name =&gt; displays complete information about the instance $instance_name
+ipojo:factories =&gt; display the list of available factories
+ipojo:factory $factory_name =&gt; display complete information about the factory $factory_name
+ipojo:handlers =&gt; list available handlers</p>
+</li>
+<li>
+<p><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">iPOJO Arch Command</a></p>
+</li>
+<li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Architecture Handler</a></li>
+</ul>
+<h1 id="temporal-dependencies">Temporal Dependencies</h1>
+<ul>
+<li>Temporal dependencies are injected in fields. When accessing to the service, the thread waits for the service availability. If a timeout is reached, a timeout policy is executed.</li>
+<li>Service objects can be injected as <code>proxies</code> and be given to collaborator objects.</li>
+<li>
+<p>Temporal dependencies are implemented as an <em>external handlers</em>. To use them, deploy and start the temporal dependency handler bundle.</p>
+<p>:::xml
 <iPOJO xmlns:temporal="org.apache.felix.ipojo.handler.temporal">
 <component
-    className="my.Implementation">
-
-    <!-- Temporal dependency configuration -->
-    <temporal:requires field="mytemporal"/>
-    <provides/>
+className="my.Implementation"></p>
+<p><!-- Temporal dependency configuration -->
+<temporal:requires field="mytemporal"/>
+<provides/>
 </component>
-</iPOJO>
+</iPOJO></p>
+<p>{code:java|title=Annotations}
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.handler.temporal.Requires;
+import org.apache.felix.ipojo.test.scenarios.annotations.service.FooService;</p>
+<p>@Component
+public class Implementation {</p>
+<div class="codehilite"><pre><span class="p">@</span><span class="n">Requires</span> <span class="o">//</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">handler</span><span class="p">.</span><span class="n">temporal</span><span class="p">.</span><span class="n">Requires</span>
+<span class="n">private</span> <span class="n">FooService</span> <span class="n">mytemporal</span><span class="p">;</span>
+</pre></div>
 
-    {code:java|title=Annotations}
-    import org.apache.felix.ipojo.annotations.Component;
-    import org.apache.felix.ipojo.handler.temporal.Requires;
-    import org.apache.felix.ipojo.test.scenarios.annotations.service.FooService;
 
-    @Component
-    public class Implementation {
-
-        @Requires // org.apache.felix.ipojo.handler.temporal.Requires
-        private FooService mytemporal;
-
-    }
-
-{div:class=borderedTable}
+<p>}</p>
+</li>
+</ul>
+<p>{div:class=borderedTable}
 {center}
 |Attribute name | Required | Default value | |
 |--|--|--|--|
 | field | no | automatically detected with annotations | specifies the field in which the service object will be injected |
 | timeout | no | 3000 ms | specifies the timeout value (in ms). When the timeout is reached, the on timeout policy is executed |
-| onTimeout | no | Runtime Exception | specifies the on timeout policy. Possible values are: `null`, `nullable`, `empty`, *default-implementation* (class name) |
+| onTimeout | no | Runtime Exception | specifies the on timeout policy. Possible values are: <code>null</code>, <code>nullable</code>, <code>empty</code>, <em>default-implementation</em> (class name) |
 | specification | only when using Collections |  | specifies the required service specification. This attribute is required when the injected field is a Collection |
 | proxy | no | false | enables/disables proxy injection. Service injected as proxies can be given to collaborators |
 | filter | no |  no filter | Filter use to discover matching filter. |
 {center}
 {div}
-* [Temporal Service Dependency](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html)
-
-# Sending and receiving events
-
-## Receiving events
-
- * The event admin handler allows receiving events from the Event Admin.
- * The event admin handler is implemented as an *external handlers*. To use it, deploy and start the event admin handler bundle and an implementation of the event admin service.
- * Event (or data) are receive thanks to a callback method.
-
-    :::xml
+* <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html">Temporal Service Dependency</a></p>
+<h1 id="sending-and-receiving-events">Sending and receiving events</h1>
+<h2 id="receiving-events">Receiving events</h2>
+<ul>
+<li>The event admin handler allows receiving events from the Event Admin.</li>
+<li>The event admin handler is implemented as an <em>external handlers</em>. To use it, deploy and start the event admin handler bundle and an implementation of the event admin service.</li>
+<li>
+<p>Event (or data) are receive thanks to a callback method.</p>
+<p>:::xml
 <ipojo
-    xmlns:ev="org.apache.felix.ipojo.handlers.event.EventAdminHandler">
-    <component className="...MyComponent">
-        <ev:subscriber
-            name="mySubscriber"
-            callback="receive"
-            topics="foo"/>
-    </component>
-</ipojo>
+xmlns:ev="org.apache.felix.ipojo.handlers.event.EventAdminHandler">
+<component className="...MyComponent">
+    <ev:subscriber
+        name="mySubscriber"
+        callback="receive"
+        topics="foo"/>
+</component>
+</ipojo></p>
+<p>{code:java|title=Annotations}
+@Component
+public class MyComponent {</p>
+<div class="codehilite"><pre><span class="p">@</span><span class="n">Subscriber</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">s1</span>&quot;<span class="p">,</span> <span class="n">data_key</span><span class="p">=</span>&quot;<span class="n">data</span>&quot;<span class="p">)</span>
+<span class="n">public</span> <span class="n">void</span> <span class="n">receive1</span><span class="p">(</span><span class="n">Object</span> <span class="n">foo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Nothing</span>
+<span class="p">}</span>
 
-    {code:java|title=Annotations}
-    @Component
-    public class MyComponent {
+<span class="p">@</span><span class="n">Subscriber</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">s2</span>&quot;<span class="p">,</span> <span class="n">topics</span><span class="p">=</span>&quot;<span class="n">foo</span><span class="p">,</span><span class="n">bar</span>&quot;<span class="p">,</span> <span class="n">filter</span><span class="p">=</span>&quot;<span class="p">(</span><span class="n">foo</span><span class="p">=</span><span class="n">true</span><span class="p">)</span>&quot;<span class="p">)</span>
+<span class="n">public</span> <span class="n">void</span> <span class="n">receive2</span><span class="p">(</span><span class="n">Event</span> <span class="n">foo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Nothing</span>
+<span class="p">}</span>
 
-        @Subscriber(name="s1", data_key="data")
-        public void receive1(Object foo) {
-            // Nothing
-        }
+<span class="p">@</span><span class="n">Subscriber</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">s3</span>&quot;<span class="p">,</span> <span class="n">topics</span><span class="p">=</span>&quot;<span class="n">foo</span>&quot;<span class="p">,</span> <span class="n">data_key</span><span class="p">=</span>&quot;<span class="n">data</span>&quot;<span class="p">,</span> <span class="n">data_type</span><span class="p">=</span>&quot;<span class="n">java</span><span class="p">.</span><span class="n">lang</span><span class="p">.</span><span class="n">String</span>&quot;<span class="p">)</span>
+<span class="n">public</span> <span class="n">void</span> <span class="n">receive3</span><span class="p">(</span><span class="n">String</span> <span class="n">foo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Nothing</span>
+<span class="p">}</span>
+</pre></div>
 
-        @Subscriber(name="s2", topics="foo,bar", filter="(foo=true)")
-        public void receive2(Event foo) {
-            // Nothing
-        }
 
-        @Subscriber(name="s3", topics="foo", data_key="data", data_type="java.lang.String")
-        public void receive3(String foo) {
-            // Nothing
-        }
-
-{div:class=borderedTable}
+</li>
+</ul>
+<p>{div:class=borderedTable}
 {center}
 |Attribute name | Required | Default value | |
 |--|--|--|--|
-| name | yes | | specifies the name of the event subscriber, acting as a unique identifier. This name is used to configure event subscription in the instance configuration. |
-
-| topics | yes | | specifies the list (comma-separated-list) of the topics that the handler will listen to. Each event sent on a topic present in this list will be sent to the specified callback method. This parameter can be overridden by instances |
-
-If you use this attribute, the parameter passed to the callback method is the the value associated to this key, not the whole event. This attribute is generally used with the `data-type` attribute to specify the received object type. If an event is received and it does not contain such a key, it is ignored (with a warning message).  |
-
-| filter | no | no filter | specifies the event LDAP filter used to filter incoming events before sending them to the callback. The syntax of this field is described in the OSGi EventAdmin Specification. If you don't specify a filter, all events sent on the listened topics will be considered.   |
+| name | yes | | specifies the name of the event subscriber, acting as a unique identifier. This name is used to configure event subscription in the instance configuration. |</p>
+<p>| topics | yes | | specifies the list (comma-separated-list) of the topics that the handler will listen to. Each event sent on a topic present in this list will be sent to the specified callback method. This parameter can be overridden by instances |</p>
+<p>If you use this attribute, the parameter passed to the callback method is the the value associated to this key, not the whole event. This attribute is generally used with the <code>data-type</code> attribute to specify the received object type. If an event is received and it does not contain such a key, it is ignored (with a warning message).  |</p>
+<p>| filter | no | no filter | specifies the event LDAP filter used to filter incoming events before sending them to the callback. The syntax of this field is described in the OSGi EventAdmin Specification. If you don't specify a filter, all events sent on the listened topics will be considered.   |
 {center}
 {div}
 * Instance configuration
-   **  event.topics : overrides `topics` attribute
-   ** event.filter : overrides `filter` attribute
-
-{code:xml|title=Instance configuration}
+   <strong>  event.topics : overrides <code>topics</code> attribute
+   </strong> event.filter : overrides <code>filter</code> attribute</p>
+<p>{code:xml|title=Instance configuration}
 <instance component="...MyComponent">
         <property name="event.topics">
             <property name="mySubscriber" value="foo"/>
@@ -883,113 +896,121 @@ If you use this attribute, the parameter passed to the callback method is the th
             <property name="mySubscriber"
                     value="|((arg=Minibar)(arg=Coconuts))"/>
         </property>
-    </instance>
+    </instance></p>
+<div class="codehilite"><pre>* [Event Admin Handlers]
 
-    * [Event Admin Handlers]
+h2. Sending events
 
-    h2. Sending events
+ * The event admin handler allows sending events to the Event Admin.
+ * The event admin handler is implemented as an _external handlers_. To use it, deploy and start the event admin handler bundle and an implementation of the event admin service.
+ * To send events, your code must contains a  field.
 
-     * The event admin handler allows sending events to the Event Admin.
-     * The event admin handler is implemented as an _external handlers_. To use it, deploy and start the event admin handler bundle and an implementation of the event admin service.
-     * To send events, your code must contains a  field.
+    :::xml
+<span class="nt">&lt;ipojo</span>
+    <span class="na">xmlns:ev=</span><span class="s">&quot;org.apache.felix.ipojo.handlers.event.EventAdminHandler&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;component</span> <span class="na">className=</span><span class="s">&quot;...MyComponent&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;ev:publisher</span>
+            <span class="na">name=</span><span class="s">&quot;myPublisher&quot;</span>
+            <span class="na">field=</span><span class="s">&quot;m_publisher&quot;</span>
+            <span class="na">topics=</span><span class="s">&quot;bar,nuts&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/component&gt;</span>
+    <span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;...MyComponent&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/ipojo&gt;</span>
+</pre></div>
 
-        :::xml
-    <ipojo
-        xmlns:ev="org.apache.felix.ipojo.handlers.event.EventAdminHandler">
-        <component className="...MyComponent">
-            <ev:publisher
-                name="myPublisher"
-                field="m_publisher"
-                topics="bar,nuts"/>
-        </component>
-        <instance component="...MyComponent"/>
-    </ipojo>
 
-{code:java|title=Annotations}
-
-@Component
+<p>{code:java|title=Annotations}</p>
+<p>@Component
 public class MyComponent {
     // We use qualified names to avoid conflict.
     @org.apache.felix.ipojo.handlers.event.Publisher(name="p1", synchronous=true)
-    org.apache.felix.ipojo.handlers.event.publisher.Publisher publisher1;
+    org.apache.felix.ipojo.handlers.event.publisher.Publisher publisher1;</p>
+<div class="codehilite"><pre><span class="p">@</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">handlers</span><span class="p">.</span><span class="n">event</span><span class="p">.</span><span class="n">Publisher</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">p2</span>&quot;<span class="p">,</span> <span class="n">synchronous</span><span class="p">=</span><span class="n">false</span><span class="p">,</span> <span class="n">topics</span><span class="p">=</span>&quot;<span class="n">foo</span><span class="p">,</span><span class="n">bar</span>&quot;<span class="p">,</span> <span class="n">data_key</span><span class="p">=</span>&quot;<span class="n">data</span>&quot;<span class="p">)</span>
+<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">handlers</span><span class="p">.</span><span class="n">event</span><span class="p">.</span><span class="n">publisher</span><span class="p">.</span><span class="n">Publisher</span> <span class="n">publisher2</span><span class="p">;</span>
 
-    @org.apache.felix.ipojo.handlers.event.Publisher(name="p2", synchronous=false, topics="foo,bar", data_key="data")
-    org.apache.felix.ipojo.handlers.event.publisher.Publisher publisher2;
+<span class="p">@</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">handlers</span><span class="p">.</span><span class="n">event</span><span class="p">.</span><span class="n">Publisher</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">p3</span>&quot;<span class="p">,</span> <span class="n">synchronous</span><span class="p">=</span><span class="n">true</span><span class="p">,</span> <span class="n">topics</span><span class="p">=</span>&quot;<span class="n">bar</span>&quot;<span class="p">)</span>
+<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">handlers</span><span class="p">.</span><span class="n">event</span><span class="p">.</span><span class="n">publisher</span><span class="p">.</span><span class="n">Publisher</span> <span class="n">publisher3</span><span class="p">;</span>
 
-    @org.apache.felix.ipojo.handlers.event.Publisher(name="p3", synchronous=true, topics="bar")
-    org.apache.felix.ipojo.handlers.event.publisher.Publisher publisher3;
+<span class="o">//</span> <span class="p">...</span>
 
-    // ...
+<span class="n">public</span> <span class="n">void</span> <span class="n">doSomething</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Dictionary</span> <span class="n">e</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Properties</span><span class="p">();</span>
+    <span class="o">//</span><span class="p">...</span>
+    <span class="o">//</span> <span class="n">Fill</span> <span class="n">out</span> <span class="n">the</span> <span class="n">event</span>
 
-    public void doSomething() {
-        Dictionary e = new Properties();
-        //...
-        // Fill out the event
+    <span class="o">//</span> <span class="n">Send</span> <span class="n">event</span>
+    <span class="n">publisher1</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
 
-        // Send event
-        publisher1.send(e);
-    }
-}
 
-    * [Event Admin Handlers]
+<p>}</p>
+<div class="codehilite"><pre><span class="o">*</span> <span class="p">[</span><span class="n">Event</span> <span class="n">Admin</span> <span class="n">Handlers</span><span class="p">]</span>
 
-    {div:class=borderedTable}
-    {center}
-    ||Attribute name || Required || Default value || ||
-    | name | yes | | specifies the name of the event publisher, acting as a unique identifier. This name is used to configure event publishing in the instance configuration. |
-    | field | yes \\ automatically detected with annotations | | specifies The name of the field used to send events. The field is initialized at component instantiation time. The type of the field must be : . |
-    | topics | yes | | specifies the list (comma-separated-list) of the topics on which events will be sent. This parameter can be overridden by instances |
-    | data-key \\ data_key when using annotations | no | user.data | specifies the data key used when you want to send data events.  This attribute's value is the key, in the event's dictionary, in which sent data are stored. When you use the _sendData_ method of the Publisher, the given object is placed in the event dictionary, associated with the specified data-key.  |
-    | synchronous | no | false | specifies if event sending is synchronous or not.   |
-    {center}
-    {div}
+<span class="p">{</span><span class="n">div</span><span class="p">:</span><span class="n">class</span><span class="p">=</span><span class="n">borderedTable</span><span class="p">}</span>
+<span class="p">{</span><span class="n">center</span><span class="p">}</span>
+<span class="o">||</span><span class="n">Attribute</span> <span class="n">name</span> <span class="o">||</span> <span class="n">Required</span> <span class="o">||</span> <span class="n">Default</span> <span class="n">value</span> <span class="o">||</span> <span class="o">||</span>
+<span class="o">|</span> <span class="n">name</span> <span class="o">|</span> <span class="n">yes</span> <span class="o">|</span> <span class="o">|</span> <span class="n">specifies</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">event</span> <span class="n">publisher</span><span class="p">,</span> <span class="n">acting</span> <span class="n">as</span> <span class="n">a</span> <span class="n">unique</span> <span class="n">identifier</span><span class="p">.</span> <span class="n">This</span> <span class="n">name</span> <span class="n">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">configure</span> <span class="n">event</span> <span class="n">publishing</span> <span class="n">in</span> <span class="n">the</span> <span class="n">instance</span> <span class="n">configuration</span><span class="p">.</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">field</span> <span class="o">|</span> <span class="n">yes</span> <span class="o">\\</span> <span class="n">automatically</span> <span class="n">detected</span> <span class="n">with</span> <span class="n">annotations</span> <span class="o">|</span> <span class="o">|</span> <span class="n">specifies</span> <span class="n">The</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">field</span> <span class="n">used</span> <span class="n">to</span> <span class="n">send</span> <span class="k">events</span><span class="p">.</span> <span class="n">The</span> <span class="n">field</span> <span class="n">is</span> <span class="n">initialized</span> <span class="n">at</span> <span class="n">component</span> <span class="n">instantiation</span> <span class="n">time</span><span class="p">.</span> <span class="n">The</span> <span class="n">type</span> <span class="n">of</span> <span class="n">the</span> <span class="n">field</span> <span class="n">must</span> <span class="n">be</span> <span class="p">:</span> <span class="p">.</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">topics</span> <span class="o">|</span> <span class="n">yes</span> <span class="o">|</span> <span class="o">|</span> <span class="n">specifies</span> <span class="n">the</span> <span class="n">list</span> <span class="p">(</span><span class="n">comma</span><span class="o">-</span><span class="n">separated</span><span class="o">-</span><span class="n">list</span><span class="p">)</span> <span class="n">of</span> <span class="n">the</span> <span class="n">topics</span> <span class="n">on</span> <span class="n">which</span> <span class="k">events</span> <span class="n">will</span> <span class="n">be</span> <span class="n">sent</span><span class="p">.</span> <span class="n">This</span> <span class="n">parameter</span> <span class="n">can</span> <span class="n">be</span> <span class="n">overridden</span> <span class="n">by</span> <span class="n">instances</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">data</span><span class="o">-</span><span class="n">key</span> <span class="o">\\</span> <span class="n">data_key</span> <span class="n">when</span> <span class="n">using</span> <span class="n">annotations</span> <span class="o">|</span> <span class="n">no</span> <span class="o">|</span> <span class="n">user</span><span class="p">.</span><span class="n">data</span> <span class="o">|</span> <span class="n">specifies</span> <span class="n">the</span> <span class="n">data</span> <span class="n">key</span> <span class="n">used</span> <span class="n">when</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">send</span> <span class="n">data</span> <span class="k">events</span><span class="p">.</span>  <span class="n">This</span> <span class="n">attribute</span><span class="o">&#39;</span><span class="n">s</span> <span class="n">value</span> <span class="n">is</span> <span class="n">the</span> <span class="n">key</span><span class="p">,</span> <span class="n">in</span> <span class="n">the</span> <span class="n">event</span><span class="o">&#39;</span><span class="n">s</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">in</span> <span class="n">which</span> <span class="n">sent</span> <span class="n">data</span> <span class="n">are</span> <span class="n">stored</span><span class="p">.</span> <span class="n">When</span> <span class="n">you</span> <span class="n">use</span> <span class="n">the</span> <span class="n">_sendData_</span> <span class="n">method</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Publisher</span><span class="p">,</span> <span class="n">the</span> <span class="n">given</span> <span class="n">object</span> <span class="n">is</span> <span class="n">placed</span> <span class="n">in</span> <span class="n">the</span> <span class="n">event</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">associated</span> <span class="n">with</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">data</span><span class="o">-</span><span class="n">key</span><span class="p">.</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="n">synchronous</span> <span class="o">|</span> <span class="n">no</span> <span class="o">|</span> <span class="n">false</span> <span class="o">|</span> <span class="n">specifies</span> <span class="k">if</span> <span class="n">event</span> <span class="n">sending</span> <span class="n">is</span> <span class="n">synchronous</span> <span class="n">or</span> <span class="n">not</span><span class="p">.</span>   <span class="o">|</span>
+<span class="p">{</span><span class="n">center</span><span class="p">}</span>
+<span class="p">{</span><span class="n">div</span><span class="p">}</span>
 
-    * Instance configuration
-        ** event.topics : overrides  attribute
+<span class="o">*</span> <span class="n">Instance</span> <span class="n">configuration</span>
+    <span class="o">**</span> <span class="n">event</span><span class="p">.</span><span class="n">topics</span> <span class="p">:</span> <span class="n">overrides</span>  <span class="n">attribute</span>
 
-    {code:xml|title=Instance configuration}
-    <instance component="...MyComponent">
-            <property name="event.topics">
-                <property name="myPublisher" value="foo"/>
-            </property>
-        </instance>
+<span class="p">{</span><span class="n">code</span><span class="p">:</span><span class="n">xml</span><span class="o">|</span><span class="n">title</span><span class="p">=</span><span class="n">Instance</span> <span class="n">configuration</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">instance</span> <span class="n">component</span><span class="p">=</span>&quot;<span class="p">...</span><span class="n">MyComponent</span>&quot;<span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">property</span> <span class="n">name</span><span class="p">=</span>&quot;<span class="n">event</span><span class="p">.</span><span class="n">topics</span>&quot;<span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">property</span> <span class="n">name</span><span class="p">=</span>&quot;<span class="n">myPublisher</span>&quot; <span class="n">value</span><span class="p">=</span>&quot;<span class="n">foo</span>&quot;<span class="o">/&gt;</span>
+        <span class="o">&lt;/</span><span class="n">property</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">instance</span><span class="o">&gt;</span>
+</pre></div>
 
-# Extender Pattern
- * Allows implementing an `Extender pattern` without handling obscure details
- * The extender pattern handler is implemented as an *external handlers*. To use it, deploy and start the external pattern handler bundle.
 
-    :::xml
+<h1 id="extender-pattern">Extender Pattern</h1>
+<ul>
+<li>Allows implementing an <code>Extender pattern</code> without handling obscure details</li>
+<li>
+<p>The extender pattern handler is implemented as an <em>external handlers</em>. To use it, deploy and start the external pattern handler bundle.</p>
+<p>:::xml
 <ipojo xmlns:extender="org.apache.felix.ipojo.extender">
-    <component
-        classname="org.apache.felix.ipojo.extender.Myextender">
+<component
+    classname="org.apache.felix.ipojo.extender.Myextender"></p>
+<div class="codehilite"><pre>        <span class="o">&lt;</span>!—<span class="n">Extender</span> <span class="n">Pattern</span> <span class="n">handler</span> <span class="n">configuration</span> <span class="o">--&gt;</span>
+<span class="o">&lt;</span><span class="n">extender</span><span class="p">:</span><span class="n">extender</span> 
+          <span class="n">extension</span><span class="p">=</span>&quot;<span class="n">My</span><span class="o">-</span><span class="n">Extension</span>&quot;
+          <span class="n">onArrival</span><span class="p">=</span>&quot;<span class="n">onArrival</span>&quot; 
+          <span class="n">onDeparture</span><span class="p">=</span>&quot;<span class="n">onDeparture</span>&quot; 
+        <span class="o">/&gt;</span>
 
-                <!—Extender Pattern handler configuration -->
-        <extender:extender 
-                  extension="My-Extension"
-                  onArrival="onArrival" 
-                  onDeparture="onDeparture" 
-                />
+<span class="o">&lt;</span><span class="n">callback</span> <span class="n">transition</span><span class="p">=</span>&quot;<span class="n">invalidate</span>&quot; <span class="n">method</span><span class="p">=</span>&quot;<span class="n">stopping</span>&quot; <span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">callback</span> <span class="n">transition</span><span class="p">=</span>&quot;<span class="n">validate</span>&quot; <span class="n">method</span><span class="p">=</span>&quot;<span class="n">starting</span>&quot; <span class="o">/&gt;</span>
+</pre></div>
 
-        <callback transition="invalidate" method="stopping" />
-        <callback transition="validate" method="starting" />
-    </component>
-</ipojo>
 
-    {code:java|title=Annotations}
-    @Component
-    @org.apache.felix.ipojo.extender.Extender(extension="My-Extension", onArrival="onArrival", onDeparture="onDeparture")
-    public class Myextender {
+<p></component>
+</ipojo></p>
+<p>{code:java|title=Annotations}
+@Component
+@org.apache.felix.ipojo.extender.Extender(extension="My-Extension", onArrival="onArrival", onDeparture="onDeparture")
+public class Myextender {</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">void</span> <span class="n">onArrival</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">,</span> <span class="n">String</span> <span class="n">extension</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">handle</span> <span class="n">matching</span> <span class="n">bundle</span> <span class="n">arrival</span>
+<span class="p">}</span>
 
-        public void onArrival(Bundle bundle, String extension) {
-            // handle matching bundle arrival
-        }
+<span class="n">public</span> <span class="n">void</span> <span class="n">onDeparture</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">bundle</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">handler</span> <span class="n">matching</span> <span class="n">bundle</span> <span class="n">departure</span>
+<span class="p">}</span>
+</pre></div>
 
-        public void onDeparture(Bundle bundle) {
-            // handler matching bundle departure
-        }
-    }
 
-{div:class=borderedTable}
+<p>}</p>
+</li>
+</ul>
+<p>{div:class=borderedTable}
 {center}
 |Attribute name | Required | Default value | |
 |--|--|--|--|
@@ -998,50 +1019,57 @@ public class MyComponent {
 | onDeparture | yes | | specifies the method called when a matching bundle leaves. The method receives the Bundle object |
 {center}
 {div}
-* [Extender Pattern Handler](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.html)
-
-# Whiteboard Pattern
- * Allows implementing a `Whiteboard pattern` without handling obscure details
- * The whiteboard pattern handler is implemented as an *external handlers*. To use it, deploy and start the whiteboard pattern handler bundle.
-
-    :::xml
+* <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.html">Extender Pattern Handler</a></p>
+<h1 id="whiteboard-pattern">Whiteboard Pattern</h1>
+<ul>
+<li>Allows implementing a <code>Whiteboard pattern</code> without handling obscure details</li>
+<li>
+<p>The whiteboard pattern handler is implemented as an <em>external handlers</em>. To use it, deploy and start the whiteboard pattern handler bundle.</p>
+<p>:::xml
 <ipojo xmlns:wbp="org.apache.felix.ipojo.whiteboard">
-     <component 
-          classname="org.apache.felix.ipojo.test.MyWhiteBoardPattern"
-      >
-        <wbp:wbp 
-          filter="(my.property=1)" 
-              onArrival="onArrival" 
-              onDeparture="onDeparture" 
-              onModification="onModification"
-         />
+ &lt;component 
+      classname="org.apache.felix.ipojo.test.MyWhiteBoardPattern"</p>
+<blockquote>
+<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">wbp</span><span class="p">:</span><span class="n">wbp</span> 
+  <span class="n">filter</span><span class="p">=</span>&quot;<span class="p">(</span><span class="n">my</span><span class="p">.</span><span class="n">property</span><span class="p">=</span>1<span class="p">)</span>&quot; 
+      <span class="n">onArrival</span><span class="p">=</span>&quot;<span class="n">onArrival</span>&quot; 
+      <span class="n">onDeparture</span><span class="p">=</span>&quot;<span class="n">onDeparture</span>&quot; 
+      <span class="n">onModification</span><span class="p">=</span>&quot;<span class="n">onModification</span>&quot;
+ <span class="o">/&gt;</span>
+</pre></div>
 
-         <provides/>
-      </component>
 
-    {code:java|title=Annotations}
-    @Component
-    @org.apache.felix.ipojo.whiteboard.Wbp(filter="(my.property=1)", 
-            onArrival="onArrival", 
-            onDeparture="onDeparture",
-            onModification="onModification")
-    public class WhiteBoardWIModification {
+</blockquote>
+<div class="codehilite"><pre> <span class="o">&lt;</span><span class="n">provides</span><span class="o">/&gt;</span>
+</pre></div>
 
-        public void onArrival(ServiceReference ref) {
-            // ...
-        }
 
-        public void onDeparture(ServiceReference ref) {
-            // ...
-        }
+<p></component></p>
+<p>{code:java|title=Annotations}
+@Component
+@org.apache.felix.ipojo.whiteboard.Wbp(filter="(my.property=1)", 
+        onArrival="onArrival", 
+        onDeparture="onDeparture",
+        onModification="onModification")
+public class WhiteBoardWIModification {</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">void</span> <span class="n">onArrival</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="p">...</span>
+<span class="p">}</span>
 
-        public void onModification(ServiceReference ref) {
-            // ...
-        }
+<span class="n">public</span> <span class="n">void</span> <span class="n">onDeparture</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="p">...</span>
+<span class="p">}</span>
 
-    }
+<span class="n">public</span> <span class="n">void</span> <span class="n">onModification</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
 
-{center}
+
+<p>}</p>
+</li>
+</ul>
+<p>{center}
 |Attribute name | Required | Default value | |
 |--|--|--|--|
 | filter | yes | | specifies LDAP filter used to detect required service providers |
@@ -1049,7 +1077,7 @@ public class MyComponent {
 | onDeparture | yes | | specifies the method called when a matching service provider leaves. The method receives the ServiceReference object |
 | omModification | no | | specifies the method called when a matching service provider is modified and is still matching. The method receives the ServiceReference object |
 {center}
-* [White Board Pattern Handler](/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html)
+* <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html">White Board Pattern Handler</a></p>
         </div>
     </div>
 

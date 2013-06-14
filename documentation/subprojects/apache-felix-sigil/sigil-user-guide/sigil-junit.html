@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -76,38 +75,38 @@
       <h1>Sigil JUnit</h1>
       <h2 id="overview">Overview</h2>
 <p>The Sigil JUnit plugin is an OSGi bundle that when started in an OSGi enabled JVM watches for other bundles that contain JUnit TestCase classes in the framework. The main access point to the plugin is the <code>org.cauldron.sigil.junit.server.JUnitService</code>.</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>JUnitService.java|borderStyle=solid</B></DIV><DIV class="codeContent panelContent">
-    package org.cauldron.sigil.junit.server;</p>
-<div class="codehilite"><pre><span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Set</span><span class="p">;</span>
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>JUnitService.java|borderStyle=solid</B></DIV><DIV class="codeContent panelContent">
+    package org.cauldron.sigil.junit.server;
 
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+    import java.util.Set;
 
-<span class="nb">import</span> <span class="n">junit</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">;</span>
+    import org.osgi.framework.BundleContext;
 
-<span class="o">/**</span>
- <span class="o">*</span>
- <span class="o">*/</span> 
-<span class="n">public</span> <span class="n">interface</span> <span class="n">JUnitService</span> <span class="p">{</span>
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Returns</span> <span class="n">the</span> <span class="n">names</span> <span class="n">of</span> <span class="n">all</span> <span class="n">tests</span> <span class="n">currently</span> <span class="n">installed</span> <span class="n">in</span> <span class="n">the</span> <span class="n">OSGi</span> <span class="n">runtime</span>
-     <span class="o">*/</span> 
-    <span class="n">Set</span><span class="sr">&lt;String&gt;</span> <span class="n">getTests</span><span class="p">();</span>
+    import junit.framework.TestSuite;
 
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Create</span> <span class="n">a</span> <span class="k">new</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">test</span><span class="o">.</span> <span class="n">Equivalent</span> <span class="n">to</span> <span class="n">calling</span> <span class="n">createTest</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
-     <span class="o">*/</span> 
-    <span class="n">TestSuite</span> <span class="n">createTest</span><span class="p">(</span><span class="n">String</span> <span class="n">test</span><span class="p">);</span>
+    /**
+     *
+     */ 
+    public interface JUnitService {
+        /**
+         * Returns the names of all tests currently installed in the OSGi runtime
+         */ 
+        Set<String> getTests();
 
-    <span class="o">/**</span>
-     <span class="o">*</span> <span class="n">Create</span> <span class="n">a</span> <span class="k">new</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">test</span> <span class="n">passing</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">to</span> <span class="n">the</span> <span class="n">test</span> <span class="n">classes</span><span class="o">.</span>
-     <span class="o">*</span> <span class="n">If</span> <span class="n">ctx</span> <span class="n">is</span> <span class="n">null</span> <span class="n">the</span> <span class="n">callers</span> <span class="n">BundleContext</span> <span class="n">is</span> <span class="n">passed</span> <span class="n">to</span> <span class="n">the</span> <span class="n">test</span><span class="o">.</span>
-     <span class="o">*/</span> 
-    <span class="n">TestSuite</span> <span class="n">createTest</span><span class="p">(</span><span class="n">String</span> <span class="n">test</span><span class="p">,</span> <span class="n">BundleContext</span> <span class="n">ctx</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
+        /**
+         * Create a new instance of the specified test. Equivalent to calling createTest(test, null);
+         */ 
+        TestSuite createTest(String test);
+
+        /**
+         * Create a new instance of the specified test passing the specified bundle context to the test classes.
+         * If ctx is null the callers BundleContext is passed to the test.
+         */ 
+        TestSuite createTest(String test, BundleContext ctx);
+    }
 
 
-<p>When a test is created the <code>JUnitService</code> introspects the test class and looks for a method <code>public void setBundleContext(BundleContext ctx);</code> if one is found then the BundleContext is injected into the test class before being returned to the caller. </p>
+When a test is created the `JUnitService` introspects the test class and looks for a method `public void setBundleContext(BundleContext ctx);` if one is found then the BundleContext is injected into the test class before being returned to the caller.
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
         Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
       </div>

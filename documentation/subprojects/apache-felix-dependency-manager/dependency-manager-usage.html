@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -83,15 +82,15 @@
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">HttpActivator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
   <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span>
                                   <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
-    <span class="n">Properties</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Properties</span><span class="p">();</span>
-    <span class="n">props</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;port&quot;</span><span class="p">,</span> <span class="s">&quot;8080&quot;</span><span class="p">);</span>
-    <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">WebService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">props</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">WebServiceImpl</span><span class="o">.</span><span class="n">class</span><span class="p">));</span>
+    <span class="n">Properties</span> <span class="n">props</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Properties</span><span class="p">();</span>
+    <span class="n">props</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">port</span>&quot;<span class="p">,</span> &quot;8080&quot;<span class="p">);</span>
+    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
+      <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">WebService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">props</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">WebServiceImpl</span><span class="p">.</span><span class="n">class</span><span class="p">));</span>
   <span class="p">}</span>
   <span class="n">public</span> <span class="n">void</span> <span class="n">destroy</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span>
                                   <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">cleaned</span> <span class="n">up</span> <span class="n">automatically</span>
+    <span class="o">//</span> <span class="n">cleaned</span> <span class="n">up</span> <span class="n">automatically</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -100,26 +99,26 @@
 <p>There are a couple of alternatives that need some clarification. First of all, you might not have a public interface at all, so the setInterface call is optional. Like in OSGi itself, you can also specify multiple service interfaces in an array of strings. For the implementation you have two choices. You can either specify the class of the implementation, in which case this class needs to have a default, no-args constructor and the dependency manager will use lazy instantiation or you can specify an instance you've already created. More on the life-cycle of the service implementation can be found in the next paragraph.</p>
 <h2 id="specifying-service-dependencies">Specifying service dependencies</h2>
 <p>Dependencies can either be required or optional. Required dependencies need to be resolved before the service can even become active. Optional dependencies can appear and disappear while the service is active. The example demonstrates how both are specified in the activator.</p>
-<div class="codehilite"><pre>    <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">WebService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">WebServiceImpl</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">ConfigurationAdmin</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">null</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">true</span><span class="p">))</span>
-      <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">LogService</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">null</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">))</span>
+<div class="codehilite"><pre>    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
+      <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">WebService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">WebServiceImpl</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">ConfigurationAdmin</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> <span class="n">null</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">true</span><span class="p">))</span>
+      <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">LogService</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> <span class="n">null</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">))</span>
 </pre></div>
 
 
 <h2 id="specifying-configuration-dependencies">Specifying configuration dependencies</h2>
 <p>Configuration dependencies specified here are by definition required. The reason for this is that if you need an optional configuration, simply registering as a ManagedService(Factory) and implementing updated(Dictionary) works fine. For required configuration dependencies, you can use code along these lines:</p>
-<div class="codehilite"><pre>    <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">HttpServlet</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MyServlet</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createConfigurationDependency</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">setPid</span><span class="p">(</span><span class="s">&quot;org.apache.felix.myservlet&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setPropagate</span><span class="p">(</span><span class="n">true</span><span class="p">))</span>
+<div class="codehilite"><pre>    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
+      <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">HttpServlet</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MyServlet</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createConfigurationDependency</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">setPid</span><span class="p">(</span>&quot;<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">myservlet</span>&quot;<span class="p">)</span>
+        <span class="p">.</span><span class="n">setPropagate</span><span class="p">(</span><span class="n">true</span><span class="p">))</span>
 </pre></div>
 
 
@@ -152,8 +151,8 @@
   <span class="n">private</span> <span class="n">volatile</span> <span class="n">LogService</span> <span class="n">logSvc</span><span class="p">;</span>
 
   <span class="n">public</span> <span class="n">void</span> <span class="n">loadSettings</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">logSvc</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="n">LogService</span><span class="o">.</span><span class="n">LOG_INFO</span><span class="p">,</span> <span class="s">&quot;Loading settings.&quot;</span><span class="p">);</span>
-    <span class="sr">//</span> <span class="k">do</span> <span class="n">stuff</span> <span class="n">here</span>
+    <span class="n">logSvc</span><span class="p">.</span><span class="nb">log</span><span class="p">(</span><span class="n">LogService</span><span class="p">.</span><span class="n">LOG_INFO</span><span class="p">,</span> &quot;<span class="n">Loading</span> <span class="n">settings</span><span class="p">.</span>&quot;<span class="p">);</span>
+    <span class="o">//</span> <span class="n">do</span> <span class="n">stuff</span> <span class="n">here</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -164,9 +163,9 @@
 <h2 id="using-compositions">Using compositions</h2>
 <p>Sometimes, a service implementation consists of more than a single instance. Instead, it can be a composition of a number of instances. That might also mean that you need dependencies injected into more than one instance. If that is the case, you can provide a list of instances to use for dependency injection yourself.</p>
 <p>To do that, you can specify the name of a method that will return a list of instances, like this:</p>
-<div class="codehilite"><pre>    <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MainServiceImpl</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">setComposition</span><span class="p">(</span><span class="s">&quot;getInstances&quot;</span><span class="p">));</span>
+<div class="codehilite"><pre>    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
+      <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MainServiceImpl</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">setComposition</span><span class="p">(</span>&quot;<span class="n">getInstances</span>&quot;<span class="p">));</span>
 </pre></div>
 
 
@@ -176,12 +175,12 @@
     <span class="n">private</span> <span class="n">SubComponentB</span> <span class="n">m_compB</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">MainServiceImpl</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">m_compA</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SubComponentA</span><span class="p">();</span>
-        <span class="n">m_compB</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SubComponentB</span><span class="p">();</span>
+        <span class="n">m_compA</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SubComponentA</span><span class="p">();</span>
+        <span class="n">m_compB</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SubComponentB</span><span class="p">();</span>
     <span class="p">}</span>
 
-    <span class="n">public</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">getInstances</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="p">{</span> <span class="n">this</span><span class="p">,</span> <span class="n">m_compA</span><span class="p">,</span> <span class="n">m_compB</span> <span class="p">};</span>
+    <span class="n">public</span> <span class="n">Object</span><span class="p">[]</span> <span class="n">getInstances</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">new</span> <span class="n">Object</span><span class="p">[]</span> <span class="p">{</span> <span class="n">this</span><span class="p">,</span> <span class="n">m_compA</span><span class="p">,</span> <span class="n">m_compB</span> <span class="p">};</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -189,19 +188,21 @@
 
 <h2 id="listening-to-service-dependencies">Listening to service dependencies</h2>
 <p>Optionally, a service can define callbacks for each dependency. These callbacks are invoked whenever a new dependency is discovered, an existing dependency changes or disappears. They allow you to track these dependencies. This can be very useful if you, for example, want to implement the white board pattern.</p>
-<div class="codehilite"><pre>    <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DeviceListener</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Device</span><span class="o">.</span><span class="n">class</span><span class="p">,</span> <span class="n">null</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setCallbacks</span><span class="p">(</span><span class="s">&quot;added&quot;</span><span class="p">,</span> <span class="s">&quot;changed&quot;</span><span class="p">,</span> <span class="s">&quot;removed&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">));</span>
+<div class="codehilite"><pre>    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createService</span><span class="p">()</span>
+      <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DeviceListener</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Device</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> <span class="n">null</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">setCallbacks</span><span class="p">(</span>&quot;<span class="n">added</span>&quot;<span class="p">,</span> &quot;<span class="n">changed</span>&quot;<span class="p">,</span> &quot;<span class="n">removed</span>&quot;<span class="p">)</span>
+        <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">));</span>
+
+
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">DeviceListener</span> <span class="p">{</span>
-  <span class="n">public</span> <span class="n">void</span> <span class="n">added</span><span class="p">(</span><span class="n">ServiceReferende</span> <span class="nb">ref</span><span class="p">,</span> <span class="n">Object</span> <span class="n">service</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">public</span> <span class="n">void</span> <span class="n">added</span><span class="p">(</span><span class="n">ServiceReferende</span> <span class="n">ref</span><span class="p">,</span> <span class="n">Object</span> <span class="n">service</span><span class="p">)</span> <span class="p">{</span>
   <span class="p">}</span>
-  <span class="n">public</span> <span class="n">void</span> <span class="n">changed</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">,</span> <span class="n">Object</span> <span class="n">service</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">public</span> <span class="n">void</span> <span class="n">changed</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">,</span> <span class="n">Object</span> <span class="n">service</span><span class="p">)</span> <span class="p">{</span>
   <span class="p">}</span>
-  <span class="n">public</span> <span class="n">void</span> <span class="n">removed</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="nb">ref</span><span class="p">,</span> <span class="n">Object</span> <span class="n">service</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">public</span> <span class="n">void</span> <span class="n">removed</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">,</span> <span class="n">Object</span> <span class="n">service</span><span class="p">)</span> <span class="p">{</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -217,10 +218,10 @@
 <p>The search ends when the first signature in this list is found. That method will actually be invoked.</p>
 <h2 id="listening-to-the-service-state">Listening to the service state</h2>
 <p>If you're interested in the state of a service, you can register a service state listener with the service of interest. It will be notified whenever the service is starting, started, stopping and stopped.</p>
-<div class="codehilite"><pre>    <span class="n">Service</span> <span class="n">s</span> <span class="o">=</span> <span class="n">createService</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">WebService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">WebServiceImpl</span><span class="o">.</span><span class="n">class</span><span class="p">);</span>
-    <span class="n">s</span><span class="o">.</span><span class="n">setStateListener</span><span class="p">(</span><span class="k">new</span> <span class="n">ServiceStateListener</span><span class="p">()</span> <span class="p">{</span>
+<div class="codehilite"><pre>    <span class="n">Service</span> <span class="n">s</span> <span class="p">=</span> <span class="n">createService</span><span class="p">()</span>
+      <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">WebService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">WebServiceImpl</span><span class="p">.</span><span class="n">class</span><span class="p">);</span>
+    <span class="n">s</span><span class="p">.</span><span class="n">setStateListener</span><span class="p">(</span><span class="n">new</span> <span class="n">ServiceStateListener</span><span class="p">()</span> <span class="p">{</span>
         <span class="n">public</span> <span class="n">void</span> <span class="n">starting</span><span class="p">(</span><span class="n">Service</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
         <span class="p">}</span>
         <span class="n">public</span> <span class="n">void</span> <span class="n">started</span><span class="p">(</span><span class="n">Service</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
@@ -230,7 +231,7 @@
         <span class="n">public</span> <span class="n">void</span> <span class="n">stopped</span><span class="p">(</span><span class="n">Service</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
         <span class="p">}</span>
       <span class="p">});</span>
-    <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
 </pre></div>
 
 
@@ -244,7 +245,7 @@
   <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">ctx</span><span class="p">;</span>
   <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">svcReg</span><span class="p">;</span>
 
-  <span class="sr">//</span>  
+  <span class="o">//</span>  
 <span class="p">}</span>
 </pre></div>
 

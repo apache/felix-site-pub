@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -90,11 +89,11 @@ Notice that the changed/removed callbacks are not used when the timeout paramete
 <li><em>propagate</em>: Returns true if the dependency service properties must be published along with the service. Any additional service properties specified directly are merged with these.</li>
 </ul>
 <p>Usage Example: Here, the MyComponent component is injected with a dependency over a "MyDependency" service.</p>
-<div class="codehilite"><pre>     <span class="nv">@Component</span>
+<div class="codehilite"><pre>     <span class="p">@</span><span class="n">Component</span>
      <span class="n">class</span> <span class="n">MyComponent</span> <span class="p">{</span>
-         <span class="nv">@ServiceDependency</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">15000</span><span class="p">)</span>
+         <span class="p">@</span><span class="n">ServiceDependency</span><span class="p">(</span><span class="n">timeout</span><span class="p">=</span>15000<span class="p">)</span>
          <span class="n">MyDependency</span> <span class="n">dependency</span><span class="p">;</span>
-         <span class="o">...</span>
+         <span class="p">...</span>
      <span class="p">}</span>
 </pre></div>
 
@@ -102,43 +101,43 @@ Notice that the changed/removed callbacks are not used when the timeout paramete
 <p>Usage example of a Service whose dependency filter is configured from ConfigAdmin, using a "named" dependency
 (please check <a href="">Apache Felix Dependency Manager - Using Annotations - Lifecycle#Dynamic Dependency Configuration</a> for more informations about "named" dependencies):</p>
 <div class="codehilite"><pre>      <span class="o">/**</span>
-        <span class="o">*</span> <span class="n">A</span> <span class="n">Service</span> <span class="n">whose</span> <span class="n">service</span> <span class="n">dependency</span> <span class="s">&quot;otherService&quot;</span> <span class="n">filter</span> <span class="n">is</span> <span class="n">configured</span> <span class="n">from</span> <span class="n">ConfigAdmin</span>
+        <span class="o">*</span> <span class="n">A</span> <span class="n">Service</span> <span class="n">whose</span> <span class="n">service</span> <span class="n">dependency</span> &quot;<span class="n">otherService</span>&quot; <span class="n">filter</span> <span class="n">is</span> <span class="n">configured</span> <span class="n">from</span> <span class="n">ConfigAdmin</span>
         <span class="o">*/</span>
-      <span class="nv">@Service</span>
+      <span class="p">@</span><span class="n">Service</span>
       <span class="n">class</span> <span class="n">X</span> <span class="p">{</span>
           <span class="n">private</span> <span class="n">Dictionary</span> <span class="n">m_config</span><span class="p">;</span>
 
           <span class="o">/**</span>
-           <span class="o">*</span> <span class="n">Initialize</span> <span class="k">our</span> <span class="n">service</span> <span class="n">from</span> <span class="n">config</span> <span class="o">...</span> <span class="ow">and</span> <span class="n">store</span> <span class="n">the</span> <span class="n">config</span> <span class="k">for</span> <span class="n">later</span> <span class="n">usage</span> <span class="p">(</span><span class="n">from</span> <span class="k">our</span> <span class="n">init</span> <span class="n">method</span><span class="p">)</span>
+           <span class="o">*</span> <span class="n">Initialize</span> <span class="n">our</span> <span class="n">service</span> <span class="n">from</span> <span class="n">config</span> <span class="p">...</span> <span class="n">and</span> <span class="n">store</span> <span class="n">the</span> <span class="n">config</span> <span class="k">for</span> <span class="n">later</span> <span class="n">usage</span> <span class="p">(</span><span class="n">from</span> <span class="n">our</span> <span class="n">init</span> <span class="n">method</span><span class="p">)</span>
            <span class="o">*/</span>
-          <span class="nv">@ConfigurationDependency</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="s">&quot;MyPid&quot;</span><span class="p">)</span>
+          <span class="p">@</span><span class="n">ConfigurationDependency</span><span class="p">(</span><span class="n">pid</span><span class="p">=</span>&quot;<span class="n">MyPid</span>&quot;<span class="p">)</span>
           <span class="n">void</span> <span class="n">configure</span><span class="p">(</span><span class="n">Dictionary</span> <span class="n">conf</span><span class="p">)</span> <span class="p">{</span>
-               <span class="n">m_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">;</span>
+               <span class="n">m_config</span> <span class="p">=</span> <span class="n">config</span><span class="p">;</span>
           <span class="p">}</span>
 
           <span class="o">/**</span>
-           <span class="o">*</span> <span class="n">All</span> <span class="n">unnamed</span> <span class="n">dependencies</span> <span class="n">are</span> <span class="n">injected:</span> <span class="n">we</span> <span class="n">can</span> <span class="n">now</span> <span class="n">configure</span> <span class="n">other</span> <span class="n">named</span>
-           <span class="o">*</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">using</span> <span class="n">the</span> <span class="n">already</span> <span class="n">injected</span> <span class="n">configuration</span><span class="o">.</span>
-           <span class="o">*</span> <span class="n">The</span> <span class="n">returned</span> <span class="n">Map</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="n">configure</span> <span class="k">our</span> <span class="s">&quot;otherService&quot;</span> <span class="n">Dependency</span><span class="o">.</span>
+           <span class="o">*</span> <span class="n">All</span> <span class="n">unnamed</span> <span class="n">dependencies</span> <span class="n">are</span> <span class="n">injected</span><span class="p">:</span> <span class="n">we</span> <span class="n">can</span> <span class="n">now</span> <span class="n">configure</span> <span class="n">other</span> <span class="n">named</span>
+           <span class="o">*</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">using</span> <span class="n">the</span> <span class="n">already</span> <span class="n">injected</span> <span class="n">configuration</span><span class="p">.</span>
+           <span class="o">*</span> <span class="n">The</span> <span class="n">returned</span> <span class="n">Map</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="n">configure</span> <span class="n">our</span> &quot;<span class="n">otherService</span>&quot; <span class="n">Dependency</span><span class="p">.</span>
            <span class="o">*/</span>
-          <span class="nv">@Init</span>
+          <span class="p">@</span><span class="n">Init</span>
           <span class="n">Map</span> <span class="n">init</span><span class="p">()</span> <span class="p">{</span>
-              <span class="k">return</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">()</span> <span class="p">;</span>
+              <span class="k">return</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">()</span> <span class="p">;</span>
           <span class="p">}</span>
 
           <span class="o">/**</span>
-           <span class="o">*</span> <span class="n">This</span> <span class="n">named</span> <span class="n">dependency</span> <span class="n">filter</span><span class="o">/</span><span class="n">required</span> <span class="n">flag</span> <span class="n">will</span> <span class="n">be</span> <span class="n">configured</span> <span class="n">by</span> <span class="k">our</span> <span class="n">init</span> <span class="n">method</span> <span class="p">(</span><span class="n">see</span> <span class="n">above</span><span class="p">)</span><span class="o">.</span>
+           <span class="o">*</span> <span class="n">This</span> <span class="n">named</span> <span class="n">dependency</span> <span class="n">filter</span><span class="o">/</span><span class="n">required</span> <span class="n">flag</span> <span class="n">will</span> <span class="n">be</span> <span class="n">configured</span> <span class="n">by</span> <span class="n">our</span> <span class="n">init</span> <span class="n">method</span> <span class="p">(</span><span class="n">see</span> <span class="n">above</span><span class="p">).</span>
            <span class="o">*/</span>
-          <span class="nv">@ServiceDependency</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;otherService&quot;</span><span class="p">)</span>
+          <span class="p">@</span><span class="n">ServiceDependency</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">otherService</span>&quot;<span class="p">)</span>
           <span class="n">void</span> <span class="n">bindOtherService</span><span class="p">(</span><span class="n">OtherService</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
           <span class="p">}</span>
 
           <span class="o">/**</span>
-           <span class="o">*</span> <span class="n">All</span> <span class="n">dependencies</span> <span class="n">are</span> <span class="n">injected</span> <span class="ow">and</span> <span class="k">our</span> <span class="n">service</span> <span class="n">is</span> <span class="n">now</span> <span class="n">ready</span> <span class="n">to</span> <span class="n">be</span> <span class="n">published</span><span class="o">.</span>
-           <span class="o">*</span> <span class="n">Notice</span> <span class="n">that</span> <span class="n">you</span> <span class="n">can</span> <span class="n">also</span> <span class="k">use</span> <span class="n">the</span> <span class="n">publisher</span> <span class="n">service</span> <span class="n">attribute</span> <span class="k">if</span> <span class="n">you</span> <span class="n">need</span>
-           <span class="o">*</span> <span class="n">to</span> <span class="n">take</span> <span class="n">control</span> <span class="n">on</span> <span class="n">service</span> <span class="n">exposition</span><span class="o">.</span>
+           <span class="o">*</span> <span class="n">All</span> <span class="n">dependencies</span> <span class="n">are</span> <span class="n">injected</span> <span class="n">and</span> <span class="n">our</span> <span class="n">service</span> <span class="n">is</span> <span class="n">now</span> <span class="n">ready</span> <span class="n">to</span> <span class="n">be</span> <span class="n">published</span><span class="p">.</span>
+           <span class="o">*</span> <span class="n">Notice</span> <span class="n">that</span> <span class="n">you</span> <span class="n">can</span> <span class="n">also</span> <span class="n">use</span> <span class="n">the</span> <span class="n">publisher</span> <span class="n">service</span> <span class="n">attribute</span> <span class="k">if</span> <span class="n">you</span> <span class="n">need</span>
+           <span class="o">*</span> <span class="n">to</span> <span class="n">take</span> <span class="n">control</span> <span class="n">on</span> <span class="n">service</span> <span class="n">exposition</span><span class="p">.</span>
            <span class="o">*/</span>
-          <span class="nv">@Start</span>
+          <span class="p">@</span><span class="n">Start</span>
           <span class="n">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
           <span class="p">}</span>
       <span class="p">}</span>
@@ -157,44 +156,44 @@ Notice that the changed/removed callbacks are not used when the timeout paramete
 </ul>
 <p>Usage Examples</p>
 <p>In the following example, the "Printer" component depends on a configuration whose PID name is "org.apache.felix.sample.Printer". This service will initialize its ip/port number from the provided configuration:</p>
-<div class="codehilite"><pre>     <span class="nb">package</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sample</span><span class="p">;</span>
+<div class="codehilite"><pre>     <span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">sample</span><span class="p">;</span>
 
-     <span class="nv">@Component</span>
+     <span class="p">@</span><span class="n">Component</span>
      <span class="n">public</span> <span class="n">class</span> <span class="n">Printer</span> <span class="p">{</span>
-         <span class="nv">@ConfigurationDependency</span>
+         <span class="p">@</span><span class="n">ConfigurationDependency</span>
          <span class="n">void</span> <span class="n">updated</span><span class="p">(</span><span class="n">Dictionary</span> <span class="n">config</span><span class="p">)</span> <span class="p">{</span>
-             <span class="sr">//</span> <span class="n">load</span> <span class="n">printer</span> <span class="n">ip</span><span class="o">/</span><span class="n">port</span> <span class="n">from</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">dictionary</span><span class="o">.</span>
+             <span class="o">//</span> <span class="n">load</span> <span class="n">printer</span> <span class="n">ip</span><span class="o">/</span><span class="n">port</span> <span class="n">from</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">dictionary</span><span class="p">.</span>
          <span class="p">}</span>
      <span class="p">}</span>
 </pre></div>
 
 
 <p>This other example shows how to specify a configuration dependency, as well as meta data used to customize the WebConsole GUI. Using these meta data, you can specify for example the default value for your configurations data, some descriptions, the cardinality of configuration values, etc ...</p>
-<div class="codehilite"><pre>     <span class="nb">package</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">sample</span><span class="p">;</span>
+<div class="codehilite"><pre>     <span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">sample</span><span class="p">;</span>
 
-     <span class="nv">@Component</span>
+     <span class="p">@</span><span class="n">Component</span>
      <span class="n">public</span> <span class="n">class</span> <span class="n">Printer</span> <span class="p">{</span>
-         <span class="nv">@ConfigurationDependency</span><span class="p">(</span>
-             <span class="n">heading</span> <span class="o">=</span> <span class="s">&quot;Printer Service&quot;</span><span class="p">,</span>
-             <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Declare here parameters used to configure the Printer service&quot;</span><span class="p">,</span>
-             <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
-                 <span class="nv">@PropertyMetaData</span><span class="p">(</span><span class="n">heading</span> <span class="o">=</span> <span class="s">&quot;Ip Address&quot;</span><span class="p">,</span>
-                                   <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Enter the ip address for the Printer service&quot;</span><span class="p">,</span>
-                                   <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;127.0.0.1&quot;</span> <span class="p">},</span>
-                                   <span class="n">type</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">class</span><span class="p">,</span>
-                                   <span class="n">id</span> <span class="o">=</span> <span class="s">&quot;IPADDR&quot;</span><span class="p">,</span>
-                                   <span class="n">cardinality</span> <span class="o">=</span> <span class="mi">0</span><span class="p">),</span>
-                 <span class="nv">@PropertyMetaData</span><span class="p">(</span><span class="n">heading</span> <span class="o">=</span> <span class="s">&quot;Port Number&quot;</span><span class="p">,</span>
-                                   <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Enter the port number for the Printer service&quot;</span><span class="p">,</span>
-                                   <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;4444&quot;</span> <span class="p">},</span>
-                                   <span class="n">type</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="n">class</span><span class="p">,</span>
-                                   <span class="n">id</span> <span class="o">=</span> <span class="s">&quot;PORTNUM&quot;</span><span class="p">,</span>
-                                   <span class="n">cardinality</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+         <span class="p">@</span><span class="n">ConfigurationDependency</span><span class="p">(</span>
+             <span class="n">heading</span> <span class="p">=</span> &quot;<span class="n">Printer</span> <span class="n">Service</span>&quot;<span class="p">,</span>
+             <span class="n">description</span> <span class="p">=</span> &quot;<span class="n">Declare</span> <span class="n">here</span> <span class="n">parameters</span> <span class="n">used</span> <span class="n">to</span> <span class="n">configure</span> <span class="n">the</span> <span class="n">Printer</span> <span class="n">service</span>&quot;<span class="p">,</span>
+             <span class="n">metadata</span> <span class="p">=</span> <span class="p">{</span>
+                 <span class="p">@</span><span class="n">PropertyMetaData</span><span class="p">(</span><span class="n">heading</span> <span class="p">=</span> &quot;<span class="n">Ip</span> <span class="n">Address</span>&quot;<span class="p">,</span>
+                                   <span class="n">description</span> <span class="p">=</span> &quot;<span class="n">Enter</span> <span class="n">the</span> <span class="n">ip</span> <span class="n">address</span> <span class="k">for</span> <span class="n">the</span> <span class="n">Printer</span> <span class="n">service</span>&quot;<span class="p">,</span>
+                                   <span class="n">defaults</span> <span class="p">=</span> <span class="p">{</span> &quot;127<span class="p">.</span>0<span class="p">.</span>0<span class="p">.</span>1&quot; <span class="p">},</span>
+                                   <span class="n">type</span> <span class="p">=</span> <span class="n">String</span><span class="p">.</span><span class="n">class</span><span class="p">,</span>
+                                   <span class="n">id</span> <span class="p">=</span> &quot;<span class="n">IPADDR</span>&quot;<span class="p">,</span>
+                                   <span class="n">cardinality</span> <span class="p">=</span> 0<span class="p">),</span>
+                 <span class="p">@</span><span class="n">PropertyMetaData</span><span class="p">(</span><span class="n">heading</span> <span class="p">=</span> &quot;<span class="n">Port</span> <span class="n">Number</span>&quot;<span class="p">,</span>
+                                   <span class="n">description</span> <span class="p">=</span> &quot;<span class="n">Enter</span> <span class="n">the</span> <span class="n">port</span> <span class="n">number</span> <span class="k">for</span> <span class="n">the</span> <span class="n">Printer</span> <span class="n">service</span>&quot;<span class="p">,</span>
+                                   <span class="n">defaults</span> <span class="p">=</span> <span class="p">{</span> &quot;4444&quot; <span class="p">},</span>
+                                   <span class="n">type</span> <span class="p">=</span> <span class="n">Integer</span><span class="p">.</span><span class="n">class</span><span class="p">,</span>
+                                   <span class="n">id</span> <span class="p">=</span> &quot;<span class="n">PORTNUM</span>&quot;<span class="p">,</span>
+                                   <span class="n">cardinality</span> <span class="p">=</span> 0<span class="p">)</span>
 
              <span class="p">}</span>
          <span class="p">)</span>
          <span class="n">void</span> <span class="n">updated</span><span class="p">(</span><span class="n">Dictionary</span> <span class="n">config</span><span class="p">)</span> <span class="p">{</span>
-             <span class="sr">//</span> <span class="n">load</span> <span class="n">configuration</span> <span class="n">from</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">dictionary</span><span class="o">.</span>
+             <span class="o">//</span> <span class="n">load</span> <span class="n">configuration</span> <span class="n">from</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">dictionary</span><span class="p">.</span>
          <span class="p">}</span>
 </pre></div>
 
@@ -214,19 +213,19 @@ Please refer to <a href="">Apache Felix Dependency Manager - Using Annotations -
 </ul>
 <p>Usage Examples</p>
 <p>In the following example, the "SCR" Component allows to track all bundles containing a specific "Service-Component" OSGi header, in order to load and manage all Declarative Service components specified in the SCR xml documents referenced by the header:</p>
-<div class="codehilite"><pre>     <span class="nv">@Component</span>
+<div class="codehilite"><pre>     <span class="p">@</span><span class="n">Component</span>
      <span class="n">public</span> <span class="n">class</span> <span class="n">SCR</span> <span class="p">{</span>
-         <span class="nv">@BundleDependency</span><span class="p">(</span><span class="n">required</span> <span class="o">=</span> <span class="n">false</span><span class="p">,</span>
-                           <span class="n">removed</span> <span class="o">=</span> <span class="s">&quot;unloadServiceComponents&quot;</span><span class="p">,</span>
-                           <span class="n">filter</span> <span class="o">=</span> <span class="s">&quot;(Service-Component=*)&quot;</span>
-                           <span class="n">stateMask</span> <span class="o">=</span> <span class="n">Bundle</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">)</span>
+         <span class="p">@</span><span class="n">BundleDependency</span><span class="p">(</span><span class="n">required</span> <span class="p">=</span> <span class="n">false</span><span class="p">,</span>
+                           <span class="n">removed</span> <span class="p">=</span> &quot;<span class="n">unloadServiceComponents</span>&quot;<span class="p">,</span>
+                           <span class="n">filter</span> <span class="p">=</span> &quot;<span class="p">(</span><span class="n">Service</span><span class="o">-</span><span class="n">Component</span><span class="p">=</span><span class="o">*</span><span class="p">)</span>&quot;
+                           <span class="n">stateMask</span> <span class="p">=</span> <span class="n">Bundle</span><span class="p">.</span><span class="n">ACTIVE</span><span class="p">)</span>
          <span class="n">void</span> <span class="n">loadServiceComponents</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
-             <span class="n">String</span> <span class="n">descriptorPaths</span> <span class="o">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">b</span><span class="o">.</span><span class="n">getHeaders</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;Service-Component&quot;</span><span class="p">);</span>
-             <span class="sr">//</span> <span class="n">load</span> <span class="n">all</span> <span class="n">service</span> <span class="n">component</span> <span class="n">specified</span> <span class="n">in</span> <span class="n">the</span> <span class="n">XML</span> <span class="n">descriptorPaths</span> <span class="n">files</span> <span class="o">...</span>
+             <span class="n">String</span> <span class="n">descriptorPaths</span> <span class="p">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">b</span><span class="p">.</span><span class="n">getHeaders</span><span class="p">().</span><span class="n">get</span><span class="p">(</span>&quot;<span class="n">Service</span><span class="o">-</span><span class="n">Component</span>&quot;<span class="p">);</span>
+             <span class="o">//</span> <span class="n">load</span> <span class="n">all</span> <span class="n">service</span> <span class="n">component</span> <span class="n">specified</span> <span class="n">in</span> <span class="n">the</span> <span class="n">XML</span> <span class="n">descriptorPaths</span> <span class="n">files</span> <span class="p">...</span>
          <span class="p">}</span>
 
          <span class="n">void</span> <span class="n">unloadServiceComponents</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
-             <span class="sr">//</span> <span class="n">unload</span> <span class="n">all</span> <span class="n">service</span> <span class="n">component</span> <span class="n">we</span> <span class="n">loaded</span> <span class="n">from</span> <span class="k">our</span> <span class="s">&quot;loadServiceComponents&quot;</span> <span class="n">method</span><span class="o">.</span>
+             <span class="o">//</span> <span class="n">unload</span> <span class="n">all</span> <span class="n">service</span> <span class="n">component</span> <span class="n">we</span> <span class="n">loaded</span> <span class="n">from</span> <span class="n">our</span> &quot;<span class="n">loadServiceComponents</span>&quot; <span class="n">method</span><span class="p">.</span>
          <span class="p">}</span>
      <span class="p">}</span>
 </pre></div>
@@ -247,64 +246,64 @@ A resource is a URL and you can use a filter condition based on protocol, host, 
 </ul>
 <p>Usage Examples
 Here, the "VideoPlayer" component plays any provided MKV video resources</p>
-<div class="codehilite"><pre>     <span class="nv">@Component</span>
+<div class="codehilite"><pre>     <span class="p">@</span><span class="n">Component</span>
      <span class="n">public</span> <span class="n">class</span> <span class="n">VideoPlayer</span> <span class="p">{</span>
-         <span class="nv">@ResourceDependency</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="n">false</span><span class="p">,</span> <span class="n">filter</span><span class="o">=</span><span class="s">&quot;(path=/videos/*.mkv)&quot;</span><span class="p">)</span>
-         <span class="n">void</span> <span class="n">playResource</span><span class="p">(</span><span class="n">URL</span> <span class="n">video</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+         <span class="p">@</span><span class="n">ResourceDependency</span><span class="p">(</span><span class="n">required</span><span class="p">=</span><span class="n">false</span><span class="p">,</span> <span class="n">filter</span><span class="p">=</span>&quot;<span class="p">(</span><span class="n">path</span><span class="p">=</span><span class="o">/</span><span class="n">videos</span><span class="o">/*</span><span class="p">.</span><span class="n">mkv</span><span class="p">)</span>&quot;<span class="p">)</span>
+         <span class="n">void</span> <span class="n">playResource</span><span class="p">(</span><span class="n">URL</span> <span class="n">video</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
      <span class="p">}</span>
 </pre></div>
 
 
 <p>And here is an example of a VideoProvider, which provides some videos using a web URL. Notice that Resource providers need to depend on the DependencyManager API:</p>
-<div class="codehilite"><pre>     <span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">MalformedURLException</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">URL</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">HashMap</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Map</span><span class="p">;</span>
+<div class="codehilite"><pre>     <span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">MalformedURLException</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">URL</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">HashMap</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Map</span><span class="p">;</span>
 
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">dm</span><span class="o">.</span><span class="n">ResourceHandler</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">dm</span><span class="o">.</span><span class="n">ResourceUtil</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">dm</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">Component</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">dm</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">Init</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">dm</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">ServiceDependency</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">Filter</span><span class="p">;</span>
-     <span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">InvalidSyntaxException</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">ResourceHandler</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">ResourceUtil</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">Component</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">Init</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">ServiceDependency</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Filter</span><span class="p">;</span>
+     <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">InvalidSyntaxException</span><span class="p">;</span>
 
-     <span class="nv">@Component</span>
+     <span class="p">@</span><span class="n">Component</span>
      <span class="n">public</span> <span class="n">class</span> <span class="n">VideoProvider</span>
      <span class="p">{</span>
-         <span class="sr">//</span> <span class="n">Injected</span> <span class="n">by</span> <span class="n">reflection</span>
+         <span class="o">//</span> <span class="n">Injected</span> <span class="n">by</span> <span class="n">reflection</span>
          <span class="n">private</span> <span class="n">volatile</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="p">;</span>
-         <span class="sr">//</span> <span class="n">List</span> <span class="n">of</span> <span class="n">known</span> <span class="n">resource</span> <span class="n">handlers</span>
-         <span class="n">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">ResourceHandler</span><span class="p">,</span> <span class="n">Filter</span><span class="o">&gt;</span> <span class="n">m_handlers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">ResourceHandler</span><span class="p">,</span> <span class="n">Filter</span><span class="o">&gt;</span><span class="p">();</span>
-         <span class="sr">//</span> <span class="n">List</span> <span class="n">of</span> <span class="n">known</span> <span class="n">video</span> <span class="n">resources</span>
-         <span class="n">private</span> <span class="n">URL</span><span class="o">[]</span> <span class="n">m_videos</span><span class="p">;</span>
+         <span class="o">//</span> <span class="n">List</span> <span class="n">of</span> <span class="n">known</span> <span class="n">resource</span> <span class="n">handlers</span>
+         <span class="n">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">ResourceHandler</span><span class="p">,</span> <span class="n">Filter</span><span class="o">&gt;</span> <span class="n">m_handlers</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">ResourceHandler</span><span class="p">,</span> <span class="n">Filter</span><span class="o">&gt;</span><span class="p">();</span>
+         <span class="o">//</span> <span class="n">List</span> <span class="n">of</span> <span class="n">known</span> <span class="n">video</span> <span class="n">resources</span>
+         <span class="n">private</span> <span class="n">URL</span><span class="p">[]</span> <span class="n">m_videos</span><span class="p">;</span>
 
-         <span class="nv">@Init</span>
+         <span class="p">@</span><span class="n">Init</span>
          <span class="n">void</span> <span class="n">init</span><span class="p">()</span> <span class="n">throws</span> <span class="n">MalformedURLException</span>
          <span class="p">{</span>
-            <span class="n">m_videos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="o">[]</span> <span class="p">{</span>
-                    <span class="k">new</span> <span class="n">URL</span><span class="p">(</span><span class="s">&quot;http://localhost:8080/videos/video1.mkv&quot;</span><span class="p">),</span>
-                    <span class="k">new</span> <span class="n">URL</span><span class="p">(</span><span class="s">&quot;http://localhost:8080/videos/video2.mkv&quot;</span><span class="p">),</span>
+            <span class="n">m_videos</span> <span class="p">=</span> <span class="n">new</span> <span class="n">URL</span><span class="p">[]</span> <span class="p">{</span>
+                    <span class="n">new</span> <span class="n">URL</span><span class="p">(</span>&quot;<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">videos</span><span class="o">/</span><span class="n">video1</span><span class="p">.</span><span class="n">mkv</span>&quot;<span class="p">),</span>
+                    <span class="n">new</span> <span class="n">URL</span><span class="p">(</span>&quot;<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">videos</span><span class="o">/</span><span class="n">video2</span><span class="p">.</span><span class="n">mkv</span>&quot;<span class="p">),</span>
              <span class="p">};</span>
          <span class="p">}</span>
 
-         <span class="sr">//</span> <span class="n">Track</span> <span class="n">resource</span> <span class="n">handlers</span>
-         <span class="nv">@ServiceDependency</span><span class="p">(</span><span class="n">required</span> <span class="o">=</span> <span class="n">false</span><span class="p">)</span>
+         <span class="o">//</span> <span class="n">Track</span> <span class="n">resource</span> <span class="n">handlers</span>
+         <span class="p">@</span><span class="n">ServiceDependency</span><span class="p">(</span><span class="n">required</span> <span class="p">=</span> <span class="n">false</span><span class="p">)</span>
          <span class="n">public</span> <span class="n">void</span> <span class="n">add</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">serviceProperties</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="n">throws</span> <span class="n">InvalidSyntaxException</span>
          <span class="p">{</span>
-             <span class="n">String</span> <span class="n">filterString</span> <span class="o">=</span> <span class="n">serviceProperties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;filter&quot;</span><span class="p">);</span>
-             <span class="n">filterString</span> <span class="o">=</span> <span class="p">(</span><span class="n">filterString</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">?</span> <span class="n">filterString</span> <span class="p">:</span> <span class="s">&quot;(path=*)&quot;</span><span class="p">;</span>
-             <span class="n">Filter</span> <span class="n">filter</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">createFilter</span><span class="p">(</span><span class="n">filterString</span><span class="p">);</span>
+             <span class="n">String</span> <span class="n">filterString</span> <span class="p">=</span> <span class="n">serviceProperties</span><span class="p">.</span><span class="n">get</span><span class="p">(</span>&quot;<span class="n">filter</span>&quot;<span class="p">);</span>
+             <span class="n">filterString</span> <span class="p">=</span> <span class="p">(</span><span class="n">filterString</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> ? <span class="n">filterString</span> <span class="p">:</span> &quot;<span class="p">(</span><span class="n">path</span><span class="p">=</span><span class="o">*</span><span class="p">)</span>&quot;<span class="p">;</span>
+             <span class="n">Filter</span> <span class="n">filter</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">createFilter</span><span class="p">(</span><span class="n">filterString</span><span class="p">);</span>
              <span class="n">synchronized</span> <span class="p">(</span><span class="n">this</span><span class="p">)</span>
              <span class="p">{</span>
-                 <span class="n">m_handlers</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">filter</span><span class="p">);</span>
+                 <span class="n">m_handlers</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">filter</span><span class="p">);</span>
              <span class="p">}</span>
              <span class="k">for</span> <span class="p">(</span><span class="n">URL</span> <span class="n">video</span> <span class="p">:</span> <span class="n">m_videos</span><span class="p">)</span>
              <span class="p">{</span>
-                 <span class="k">if</span> <span class="p">(</span><span class="n">filter</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">ResourceUtil</span><span class="o">.</span><span class="n">createProperties</span><span class="p">(</span><span class="n">video</span><span class="p">)))</span>
+                 <span class="k">if</span> <span class="p">(</span><span class="n">filter</span><span class="p">.</span><span class="n">match</span><span class="p">(</span><span class="n">ResourceUtil</span><span class="p">.</span><span class="n">createProperties</span><span class="p">(</span><span class="n">video</span><span class="p">)))</span>
                  <span class="p">{</span>
-                     <span class="n">handler</span><span class="o">.</span><span class="n">added</span><span class="p">(</span><span class="n">video</span><span class="p">);</span>
+                     <span class="n">handler</span><span class="p">.</span><span class="n">added</span><span class="p">(</span><span class="n">video</span><span class="p">);</span>
                  <span class="p">}</span>
              <span class="p">}</span>
          <span class="p">}</span>

@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -85,32 +84,34 @@
 * org.osgi.framework.trust.repositories=&lt;list of keystores)</p>
 <p>The first installs a security manager on framework init (which in combination with the installed security bundle enables security). </p>
 <p>The second, points to a security policy file that gives allpermission like so,</p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>all.policy</B></DIV><DIV class="codeContent panelContent">
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>all.policy</B></DIV><DIV class="codeContent panelContent">
     grant {
      permission java.security.AllPermission;
-    };</p>
-<p>The third, allows to specify a File.pathseparater separated list of JKS keystores without a password. The certificates found inside the keystores are the trusted root certificates of the framework (setting this property is optional). </p>
-<p><DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>Example</B></DIV><DIV class="codeContent panelContent">
-    $ java -Djava.security.policy=all.policy -Dorg.osgi.framework.security="osgi" -jar bin/felix.jar</p>
-<div class="codehilite"><pre><span class="gh">Welcome to Felix</span>
-<span class="gh">================</span>
+    };
 
--&gt; install file:org.apache.felix.framework.security.jar
--&gt; inspect s c 0
-<span class="gh">System Bundle (0) provides services:</span>
-<span class="gh">------------------------------------</span>
-objectClass = org.osgi.service.startlevel.StartLevel
-<span class="gh">service.id = 1</span>
-<span class="gh">----</span>
-objectClass = org.osgi.service.packageadmin.PackageAdmin
-<span class="gh">service.id = 2</span>
-<span class="gh">----</span>
-objectClass = org.osgi.service.permissionadmin.PermissionAdmin
-<span class="gh">service.id = 3</span>
-<span class="gh">----</span>
-objectClass = org.osgi.service.condpermadmin.ConditionalPermissionAdmin
-service.id = 4
-</pre></div>
+The third, allows to specify a File.pathseparater separated list of JKS keystores without a password. The certificates found inside the keystores are the trusted root certificates of the framework (setting this property is optional). 
+
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>Example</B></DIV><DIV class="codeContent panelContent">
+    $ java -Djava.security.policy=all.policy -Dorg.osgi.framework.security="osgi" -jar bin/felix.jar
+
+    Welcome to Felix
+    ================
+
+    -> install file:org.apache.felix.framework.security.jar
+    -> inspect s c 0
+    System Bundle (0) provides services:
+    ------------------------------------
+    objectClass = org.osgi.service.startlevel.StartLevel
+    service.id = 1
+    ----
+    objectClass = org.osgi.service.packageadmin.PackageAdmin
+    service.id = 2
+    ----
+    objectClass = org.osgi.service.permissionadmin.PermissionAdmin
+    service.id = 3
+    ----
+    objectClass = org.osgi.service.condpermadmin.ConditionalPermissionAdmin
+    service.id = 4
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
         Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
       </div>

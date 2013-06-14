@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -85,9 +84,9 @@
 <p>Notice that the dependency manager API uses method chaining to create a more or less "fluent" API that, with proper indentation, is very easy to read.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
-        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">Store</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MemoryStore</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+        <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">Store</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MemoryStore</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
         <span class="p">);</span>
     <span class="p">}</span>
 
@@ -106,14 +105,14 @@
 
 <p>And finally the implementation. Again, this is just a POJO, there is no reference here to any OSGi or dependency manager specific class or annotation.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">MemoryStore</span> <span class="n">implements</span> <span class="n">Store</span> <span class="p">{</span>
-    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
+    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_map</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
 
     <span class="n">public</span> <span class="n">Object</span> <span class="n">get</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">m_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">m_map</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">put</span><span class="p">(</span><span class="n">String</span> <span class="n">key</span><span class="p">,</span> <span class="n">Object</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">m_map</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+        <span class="n">m_map</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -123,15 +122,15 @@
 <p>Our second example is that of a component that depends on two other services: our <code>Store</code> from the previous example and the standard OSGi <code>LogService</code>. Looking at the code, there is a small but important difference between the two: <code>Store</code> is a required dependency and <code>LogService</code> is not. This means that our component really needs a store to work, but if there is no logging available, it can work without. Also note that this component has no <code>setInterface</code> method, which simply means it is not itself a service. This is perfectly fine.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
-        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DataGenerator</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Store</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">true</span><span class="p">)</span>
+        <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DataGenerator</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Store</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">true</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">LogService</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">LogService</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="p">);</span>
     <span class="p">}</span>
@@ -148,10 +147,10 @@
     <span class="n">private</span> <span class="n">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">generate</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;#&quot;</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="s">&quot;value_&quot;</span> <span class="o">+</span> <span class="n">i</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="nb">i</span> <span class="p">=</span> 0<span class="p">;</span> <span class="nb">i</span> <span class="o">&lt;</span> 10<span class="p">;</span> <span class="nb">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">m_store</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;#&quot; <span class="o">+</span> <span class="nb">i</span><span class="p">,</span> &quot;<span class="n">value_</span>&quot; <span class="o">+</span> <span class="nb">i</span><span class="p">);</span>
         <span class="p">}</span>
-        <span class="n">m_log</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="n">LogService</span><span class="o">.</span><span class="n">LOG_INFO</span><span class="p">,</span> <span class="s">&quot;Data generated.&quot;</span><span class="p">);</span>
+        <span class="n">m_log</span><span class="p">.</span><span class="nb">log</span><span class="p">(</span><span class="n">LogService</span><span class="p">.</span><span class="n">LOG_INFO</span><span class="p">,</span> &quot;<span class="n">Data</span> <span class="n">generated</span><span class="p">.</span>&quot;<span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -161,12 +160,12 @@
 <p>Sometimes, simply injecting services does not give you enough control over a dependency because you might want to track more than one, or you might want to execute some code on changes. For all those cases, callbacks are your friends. Since one of our goals is to not introduce any kind of API in our POJO, callbacks are declared by specifying their method names instead of through some interface. In this case, we have a dependency on <code>Translator</code> services, and we define <code>added</code> and <code>removed</code> as callbacks.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
-        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DocumentTranslator</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Translator</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">setCallbacks</span><span class="p">(</span><span class="s">&quot;added&quot;</span><span class="p">,</span> <span class="s">&quot;removed&quot;</span><span class="p">)</span>
+        <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">DocumentTranslator</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">Translator</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">setCallbacks</span><span class="p">(</span>&quot;<span class="n">added</span>&quot;<span class="p">,</span> &quot;<span class="n">removed</span>&quot;<span class="p">)</span>
             <span class="p">)</span>
         <span class="p">);</span>
     <span class="p">}</span>
@@ -186,20 +185,20 @@
 
 <p>Finally, here's our implementation. It declares the callback methods with one parameter: the <code>Translator</code> service. Actually, the dependency manager will look for several different signatures (all explained in more detail in the reference section).</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">DocumentTranslator</span> <span class="p">{</span>
-    <span class="n">private</span> <span class="n">List</span><span class="sr">&lt;Translator&gt;</span> <span class="n">m_translators</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="sr">&lt;Translator&gt;</span><span class="p">();</span>
+    <span class="n">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Translator</span><span class="o">&gt;</span> <span class="n">m_translators</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Translator</span><span class="o">&gt;</span><span class="p">();</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">added</span><span class="p">(</span><span class="n">Translator</span> <span class="n">translator</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">m_translators</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">translator</span><span class="p">);</span>
+        <span class="n">m_translators</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">translator</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">removed</span><span class="p">(</span><span class="n">Translator</span> <span class="n">translator</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">m_translators</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">translator</span><span class="p">);</span>
+        <span class="n">m_translators</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">translator</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">Document</span> <span class="n">translate</span><span class="p">(</span><span class="n">Document</span> <span class="n">document</span><span class="p">,</span> <span class="n">String</span> <span class="n">from</span><span class="p">,</span> <span class="n">String</span> <span class="n">to</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">Translator</span> <span class="n">translator</span> <span class="p">:</span> <span class="n">m_translators</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">translator</span><span class="o">.</span><span class="n">canTranslate</span><span class="p">(</span><span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">))</span> <span class="p">{</span>
-                <span class="k">return</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">translator</span><span class="p">.</span><span class="n">canTranslate</span><span class="p">(</span><span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="n">translator</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">from</span><span class="p">,</span> <span class="n">to</span><span class="p">);</span>
             <span class="p">}</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
@@ -212,10 +211,10 @@
 <p>Not all dependencies are on services. There are several other types of dependencies that are supported, one of them is the configuration dependency. In fact, only <em>required</em> configuration dependencies are supported, because optional ones can just be achieved by registering as a <code>ManagedService</code> yourself. When defining the dependency, you must define the persistent ID of the service. The component will not become active until the configuration you depend on is available <em>and</em> is valid. The latter can be checked by your implementation as we will see below.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
-        <span class="n">manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">Task</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">createConfigurationDependency</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">setPid</span><span class="p">(</span><span class="s">&quot;config.pid&quot;</span><span class="p">)</span>
+        <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+            <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">Task</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createConfigurationDependency</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">setPid</span><span class="p">(</span>&quot;<span class="n">config</span><span class="p">.</span><span class="n">pid</span>&quot;<span class="p">)</span>
             <span class="p">)</span>
         <span class="p">);</span>
     <span class="p">}</span>
@@ -230,14 +229,14 @@
     <span class="n">private</span> <span class="n">String</span> <span class="n">m_interval</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">execute</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Scheduling task with interval &quot;</span> <span class="o">+</span> <span class="n">m_interval</span><span class="p">);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Scheduling</span> <span class="n">task</span> <span class="n">with</span> <span class="n">interval</span> &quot; <span class="o">+</span> <span class="n">m_interval</span><span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">updated</span><span class="p">(</span><span class="n">Dictionary</span> <span class="n">properties</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ConfigurationException</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">properties</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_interval</span> <span class="o">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;interval&quot;</span><span class="p">);</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">updated</span><span class="p">(</span><span class="n">Dictionary</span> <span class="k">properties</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ConfigurationException</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">properties</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">m_interval</span> <span class="p">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="k">properties</span><span class="p">.</span><span class="n">get</span><span class="p">(</span>&quot;<span class="n">interval</span>&quot;<span class="p">);</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">m_interval</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">throw</span> <span class="k">new</span> <span class="n">ConfigurationException</span><span class="p">(</span><span class="s">&quot;interval&quot;</span><span class="p">,</span> <span class="s">&quot;must be specified&quot;</span><span class="p">);</span>
+                <span class="n">throw</span> <span class="n">new</span> <span class="n">ConfigurationException</span><span class="p">(</span>&quot;<span class="n">interval</span>&quot;<span class="p">,</span> &quot;<span class="n">must</span> <span class="n">be</span> <span class="n">specified</span>&quot;<span class="p">);</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -245,7 +244,7 @@
 </pre></div>
 
 
-<h3 id="">...</h3>
+<h3 id="_1">...</h3>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
         Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
       </div>

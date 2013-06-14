@@ -194,7 +194,7 @@ The composite provides the HelloDispatcher service:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">HelloDispatcher</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">dispatch</span><span class="p">();</span>
     <span class="n">public</span> <span class="n">String</span> <span class="n">getLanguage</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">List</span><span class="sr">&lt;Person&gt;</span> <span class="n">getPersons</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">getPersons</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -216,7 +216,7 @@ The following code snippet shows the Hello service interface:</p>
 <p>The following code snippet shows the Directory service interface:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Directory</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">Person</span> <span class="n">getPerson</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">List</span><span class="sr">&lt;Person&gt;</span> <span class="n">getPersons</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">getPersons</span><span class="p">();</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">addPerson</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">,</span> <span class="n">String</span> <span class="n">address</span><span class="p">);</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">removePerson</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
 <span class="p">}</span>
@@ -271,7 +271,7 @@ The delegation of HelloDispatcher service methods to sub-service methods is auto
 <p><a href="">Coming soon...</a></p>
 <h2 id="packaging">Packaging</h2>
 <p>A composite component type is described in the metadata.xml file of an iPOJO bundle which means that iPOJO creates a factory service for the composite, like all iPOJO components. Also like all iPOJO components, it is possible to create an instance of the composite in the metadata file by declaring an instance, such as:</p>
-<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">instance</span> <span class="n">component</span><span class="o">=</span><span class="s">&quot;HelloComposition&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;hello-composition&quot;</span><span class="o">/&gt;</span>
+<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">instance</span> <span class="n">component</span><span class="p">=</span>&quot;<span class="n">HelloComposition</span>&quot; <span class="n">name</span><span class="p">=</span>&quot;<span class="n">hello</span><span class="o">-</span><span class="n">composition</span>&quot;<span class="o">/&gt;</span>
 </pre></div>
 
 
@@ -295,8 +295,8 @@ The delegation of HelloDispatcher service methods to sub-service methods is auto
 <em> Cardinality: Indicates whether a single provider instance is imported or an aggregated set of the available providers instances is imported.
 </em> Optionality: Indicates whether the imported sub-service is optional or mandatory.
 * Filtering: Indicates how the services available in the parent composite can be further filtered using an LDAP expression evaluated over their service properties.</p>
-<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">requires</span> <span class="n">specification</span><span class="o">=</span><span class="s">&quot;org.apache.felix.ipojo.test.scenarios.service.Hello&quot;</span>
- <span class="n">optional</span><span class="o">=</span><span class="s">&quot;true&quot;</span> <span class="n">aggregate</span><span class="o">=</span><span class="s">&quot;true&quot;</span> <span class="n">filter</span><span class="o">=</span><span class="s">&quot;(language=en)&quot;</span><span class="o">/&gt;</span>
+<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">requires</span> <span class="n">specification</span><span class="p">=</span>&quot;<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">test</span><span class="p">.</span><span class="n">scenarios</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">Hello</span>&quot;
+ <span class="n">optional</span><span class="p">=</span>&quot;<span class="n">true</span>&quot; <span class="n">aggregate</span><span class="p">=</span>&quot;<span class="n">true</span>&quot; <span class="n">filter</span><span class="p">=</span>&quot;<span class="p">(</span><span class="n">language</span><span class="p">=</span><span class="n">en</span><span class="p">)</span>&quot;<span class="o">/&gt;</span>
 </pre></div>
 
 
@@ -304,7 +304,7 @@ The delegation of HelloDispatcher service methods to sub-service methods is auto
 <p>The composite can provide services to its parent composite. Each provided service is described by a <code>&lt;provides&gt;</code> element in the composite description. A provide service must specify provided service specification.</p>
 <p>Service provision is realized by delegating method invocations on the service interface to methods on the sub-service instances contained in the composition. A delegation mapping is automatically created by matching method names and arguments types. If a delegation mapping cannot be determined, the composition is invalidated.</p>
 <p>Service specifications can also declare certain methods as optional in the service interface; this is done by declaring that a method throws an <code>UnsupportedOperationException</code>. Optional methods need not have a mapping for delegation purposes. If a non-optional service method does not have a mapping for delegation, then a warning message is issued.</p>
-<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">provides</span> <span class="n">specification</span><span class="o">=</span><span class="s">&quot;org.apache.felix.ipojo.composition.ex1.service.HelloDispatcher&quot;</span><span class="o">/&gt;</span>
+<div class="codehilite"><pre><span class="o">&lt;</span><span class="n">provides</span> <span class="n">specification</span><span class="p">=</span>&quot;<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">ipojo</span><span class="p">.</span><span class="n">composition</span><span class="p">.</span><span class="n">ex1</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">HelloDispatcher</span>&quot;<span class="o">/&gt;</span>
 </pre></div>
 
 

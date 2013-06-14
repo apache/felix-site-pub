@@ -49,8 +49,7 @@
 <a href="http://www.apache.org/">asf</a>  <br />
 <a href="http://www.apache.org/security/">security</a>  <br />
 <a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>  <br />
-</p>
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -94,11 +93,11 @@
 <p>The remainder of this document describes how the shell service works and how to create custom commands for it. This document does not describe how to use the command shell, nor does it describe the text-based or GUI-based user interfaces that are available for the shell.</p>
 <h2 id="how-the-shell-service-works">How the Shell Service Works</h2>
 <p>The Felix shell service is intended to be a simple, but extensible shell service that can have multiple user interface implementations, all of which are independent from the Felix framework. The shell service is currently not intended to be sophisticated, rather it is just a mechanism to execute commands. The shell service maintains a list of command services, each of which have a unique command name. The shell service is defined by the following service interface:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">interface</span> <span class="n">ShellService</span>
 <span class="p">{</span>
-    <span class="n">public</span> <span class="n">String</span><span class="o">[]</span> <span class="n">getCommands</span><span class="p">();</span>
+    <span class="n">public</span> <span class="n">String</span><span class="p">[]</span> <span class="n">getCommands</span><span class="p">();</span>
     <span class="n">public</span> <span class="n">String</span> <span class="n">getCommandUsage</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
     <span class="n">public</span> <span class="n">String</span> <span class="n">getCommandDescription</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
     <span class="n">public</span> <span class="n">ServiceReference</span> <span class="n">getCommandReference</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
@@ -118,7 +117,7 @@
 <li><code>executeCommand()</code> - executes a particular command using the specified command line and print streams.</li>
 </ul>
 <p>Most of the shell service methods require no explanation except for the executeCommand() method. Even though this method is the most complex, it is still fairly simplistic. The assumption of the shell service is that a command line will be typed by the user (or perhaps constructed by a GUI) and passed into it for execution. The shell service interprets the command line in a very simplistic fashion; it takes the leading string of characters terminated by a space character (not including it) and assumes that this leading token is the command name. Consider the following command line:</p>
-<div class="codehilite"><pre><span class="n">update</span> <span class="mi">3</span> <span class="n">http:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">foo</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">bar</span><span class="o">.</span><span class="n">jar</span>
+<div class="codehilite"><pre><span class="n">update</span> 3 <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">foo</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">bar</span><span class="p">.</span><span class="n">jar</span>
 </pre></div>
 
 
@@ -126,7 +125,7 @@
 <p>Notice that there is no method to add commands to the shell service interface. This is because commands are implemented as OSGi services and the shell service listens for service events and when a command service registers/unregisters it automatically updates its list of commands accordingly.</p>
 <h2 id="how-commands-work">How Commands Work</h2>
 <p>All commands available in the shell service are implemented as OSGi services. The advantage of this approach is two-fold: the shell service can leverage OSGi service events to maintain its list of available commands and the set available commands is dynamically extendable by installed bundles. The command service interface is defined as follows:</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">interface</span> <span class="n">Command</span>
 <span class="p">{</span>
@@ -147,81 +146,81 @@
 </ul>
 <h2 id="creating-a-command">Creating a Command</h2>
 <p>The following example creates a simple version of the <code>start</code> command.</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">test</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">test</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">PrintStream</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">URL</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">MalformedURLException</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">StringTokenizer</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">PrintStream</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">URL</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">MalformedURLException</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">StringTokenizer</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.*</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellService</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">Command</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="o">.*</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">.</span><span class="n">ShellService</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">.</span><span class="n">Command</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">MyStartCommandImpl</span> <span class="n">implements</span> <span class="n">Command</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">MyStartCommandImpl</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">String</span> <span class="n">getName</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="k">return</span> <span class="s">&quot;mystart&quot;</span><span class="p">;</span>
+        <span class="k">return</span> &quot;<span class="n">mystart</span>&quot;<span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">String</span> <span class="n">getUsage</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="k">return</span> <span class="s">&quot;mystart &lt;id&gt; [&lt;id&gt; ...]&quot;</span><span class="p">;</span>
+        <span class="k">return</span> &quot;<span class="n">mystart</span> <span class="o">&lt;</span><span class="n">id</span><span class="o">&gt;</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">id</span><span class="o">&gt;</span> <span class="p">...]</span>&quot;<span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">String</span> <span class="n">getShortDescription</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="k">return</span> <span class="s">&quot;start bundle(s).&quot;</span><span class="p">;</span>
+        <span class="k">return</span> &quot;<span class="n">start</span> <span class="n">bundle</span><span class="p">(</span><span class="n">s</span><span class="p">).</span>&quot;<span class="p">;</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">execute</span><span class="p">(</span><span class="n">String</span> <span class="n">s</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">out</span><span class="p">,</span> <span class="n">PrintStream</span> <span class="n">err</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">StringTokenizer</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringTokenizer</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">);</span>
+        <span class="n">StringTokenizer</span> <span class="n">st</span> <span class="p">=</span> <span class="n">new</span> <span class="n">StringTokenizer</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> &quot; &quot;<span class="p">);</span>
 
-        <span class="sr">//</span> <span class="n">Ignore</span> <span class="n">the</span> <span class="n">command</span> <span class="n">name</span><span class="o">.</span>
-        <span class="n">st</span><span class="o">.</span><span class="n">nextToken</span><span class="p">();</span>
+        <span class="o">//</span> <span class="n">Ignore</span> <span class="n">the</span> <span class="n">command</span> <span class="n">name</span><span class="p">.</span>
+        <span class="n">st</span><span class="p">.</span><span class="n">nextToken</span><span class="p">();</span>
 
-        <span class="sr">//</span> <span class="n">There</span> <span class="n">should</span> <span class="n">be</span> <span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">bundle</span> <span class="n">id</span><span class="o">.</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">countTokens</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="o">//</span> <span class="n">There</span> <span class="n">should</span> <span class="n">be</span> <span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">bundle</span> <span class="n">id</span><span class="p">.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">countTokens</span><span class="p">()</span> <span class="o">&gt;</span><span class="p">=</span> 1<span class="p">)</span>
         <span class="p">{</span>
-            <span class="k">while</span> <span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">hasMoreTokens</span><span class="p">())</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">hasMoreTokens</span><span class="p">())</span>
             <span class="p">{</span>
-                <span class="n">String</span> <span class="n">id</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nextToken</span><span class="p">()</span><span class="o">.</span><span class="n">trim</span><span class="p">();</span>
+                <span class="n">String</span> <span class="n">id</span> <span class="p">=</span> <span class="n">st</span><span class="p">.</span><span class="n">nextToken</span><span class="p">().</span><span class="n">trim</span><span class="p">();</span>
 
-                <span class="n">try</span> <span class="p">{</span>
-                    <span class="n">long</span> <span class="n">l</span> <span class="o">=</span> <span class="n">Long</span><span class="o">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">longValue</span><span class="p">();</span>
-                    <span class="n">Bundle</span> <span class="n">bundle</span> <span class="o">=</span> <span class="n">m_context</span><span class="o">.</span><span class="n">getBundle</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">bundle</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                <span class="k">try</span> <span class="p">{</span>
+                    <span class="n">long</span> <span class="n">l</span> <span class="p">=</span> <span class="n">Long</span><span class="p">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">id</span><span class="p">).</span><span class="n">longValue</span><span class="p">();</span>
+                    <span class="n">Bundle</span> <span class="n">bundle</span> <span class="p">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">getBundle</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">bundle</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
                     <span class="p">{</span>
-                        <span class="n">bundle</span><span class="o">.</span><span class="n">start</span><span class="p">();</span>
+                        <span class="n">bundle</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
                     <span class="p">}</span>
                     <span class="k">else</span>
                     <span class="p">{</span>
-                        <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Bundle ID &quot;</span> <span class="o">+</span> <span class="n">id</span> <span class="o">+</span> <span class="s">&quot; is invalid.&quot;</span><span class="p">);</span>
+                        <span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Bundle</span> <span class="n">ID</span> &quot; <span class="o">+</span> <span class="n">id</span> <span class="o">+</span> &quot; <span class="n">is</span> <span class="n">invalid</span><span class="p">.</span>&quot;<span class="p">);</span>
                     <span class="p">}</span>
-                <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">NumberFormatException</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Unable to parse id &#39;&quot;</span> <span class="o">+</span> <span class="n">id</span> <span class="o">+</span> <span class="s">&quot;&#39;.&quot;</span><span class="p">);</span>
-                <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">BundleException</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">getNestedException</span><span class="p">()</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
-                        <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">getNestedException</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">());</span>
+                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">NumberFormatException</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Unable</span> <span class="n">to</span> <span class="n">parse</span> <span class="n">id</span> <span class="s">&#39;&quot; + id + &quot;&#39;</span><span class="p">.</span>&quot;<span class="p">);</span>
+                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">BundleException</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">getNestedException</span><span class="p">()</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
+                        <span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">getNestedException</span><span class="p">().</span><span class="n">toString</span><span class="p">());</span>
                     <span class="k">else</span>
-                        <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">toString</span><span class="p">());</span>
-                <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">toString</span><span class="p">());</span>
+                        <span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">toString</span><span class="p">());</span>
+                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">toString</span><span class="p">());</span>
                 <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">}</span>
         <span class="k">else</span>
         <span class="p">{</span>
-            <span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Incorrect number of arguments&quot;</span><span class="p">);</span>
+            <span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Incorrect</span> <span class="n">number</span> <span class="n">of</span> <span class="n">arguments</span>&quot;<span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
@@ -229,50 +228,50 @@
 
 
 <p>A bundle activator class is needed for packaging the command servce; the bundle activator registers the command service in its <code>start()</code> method. Note: You do not need one activator per command, a single activator can register any number of commands.</p>
-<div class="codehilite"><pre><span class="nb">package</span> <span class="n">test</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">test</span><span class="p">;</span>
 
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleActivator</span><span class="p">;</span>
-<span class="nb">import</span> <span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">BundleContext</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleActivator</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
 
 <span class="n">public</span> <span class="n">class</span> <span class="n">MyStartActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
 <span class="p">{</span>
-    <span class="n">private</span> <span class="n">transient</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">transient</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
 
-        <span class="sr">//</span> <span class="n">Register</span> <span class="n">the</span> <span class="n">command</span> <span class="n">service</span><span class="o">.</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
-            <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">Command</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
-            <span class="k">new</span> <span class="n">MyStartCommandImpl</span><span class="p">(</span><span class="n">m_context</span><span class="p">),</span> <span class="n">null</span><span class="p">);</span>
+        <span class="o">//</span> <span class="n">Register</span> <span class="n">the</span> <span class="n">command</span> <span class="n">service</span><span class="p">.</span>
+        <span class="n">context</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span>
+            <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">.</span><span class="n">Command</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span>
+            <span class="n">new</span> <span class="n">MyStartCommandImpl</span><span class="p">(</span><span class="n">m_context</span><span class="p">),</span> <span class="n">null</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="sr">//</span> <span class="n">Services</span> <span class="n">are</span> <span class="n">automatically</span> <span class="n">unregistered</span> <span class="n">so</span>
-        <span class="sr">//</span> <span class="n">we</span> <span class="n">don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">to</span> <span class="n">unregister</span> <span class="n">the</span> <span class="n">factory</span> <span class="n">here</span><span class="o">.</span>
+        <span class="o">//</span> <span class="n">Services</span> <span class="n">are</span> <span class="n">automatically</span> <span class="n">unregistered</span> <span class="n">so</span>
+        <span class="o">//</span> <span class="n">we</span> <span class="n">don</span><span class="o">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">to</span> <span class="n">unregister</span> <span class="n">the</span> <span class="n">factory</span> <span class="n">here</span><span class="p">.</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 
 
 <p>To compile these classes you will need to have <code>org.apache.felix.framework-x.y.z.jar</code> and <code>org.apache.felix.shell-x.y.z.jar</code> on your class path. Compile all of the source files using a command like:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">cp</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">framework</span><span class="o">-</span><span class="mf">1.8.1</span><span class="o">.</span><span class="n">jar:org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="o">-</span><span class="mf">1.2.0</span><span class="o">.</span><span class="n">jar</span> <span class="o">-</span><span class="n">d</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*.</span><span class="n">java</span>
+<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">cp</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="o">-</span>1<span class="p">.</span>8<span class="p">.</span>1<span class="p">.</span><span class="n">jar</span><span class="p">:</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="o">-</span>1<span class="p">.</span>2<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span> <span class="o">-</span><span class="n">d</span> <span class="n">c</span><span class="p">:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*</span><span class="p">.</span><span class="n">java</span>
 </pre></div>
 
 
 <p>This command compiles all of the source files and outputs the generated class files into a subdirectory of the <code>c:\classes</code> directory, called test, named after the package of the source files; for the above command to work, the <code>c:\classes</code> directory must exist. Once you have compiled all of the above classes, you need to create a bundle JAR file of the generated package directory. The bundle JAR file needs a manifest, so create a file called <code>manifest.mf</code> with the following contents:</p>
-<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name:</span> <span class="n">My</span> <span class="n">Start</span> <span class="n">Command</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Description:</span> <span class="n">A</span> <span class="s">&#39;start&#39;</span> <span class="n">command</span> <span class="k">for</span> <span class="n">the</span> <span class="n">shell</span> <span class="n">service</span><span class="o">.</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator:</span> <span class="n">test</span><span class="o">.</span><span class="n">MyStartActivator</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">ClassPath:</span> <span class="o">.</span>
-<span class="n">Import</span><span class="o">-</span><span class="n">Package:</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">felix</span><span class="o">.</span><span class="n">shell</span><span class="p">,</span><span class="n">org</span><span class="o">.</span><span class="n">osgi</span><span class="o">.</span><span class="n">framework</span>
+<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name</span><span class="p">:</span> <span class="n">My</span> <span class="n">Start</span> <span class="n">Command</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Description</span><span class="p">:</span> <span class="n">A</span> <span class="s">&#39;start&#39;</span> <span class="n">command</span> <span class="k">for</span> <span class="n">the</span> <span class="n">shell</span> <span class="n">service</span><span class="p">.</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator</span><span class="p">:</span> <span class="n">test</span><span class="p">.</span><span class="n">MyStartActivator</span>
+<span class="n">Bundle</span><span class="o">-</span><span class="n">ClassPath</span><span class="p">:</span> <span class="p">.</span>
+<span class="n">Import</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">,</span><span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span>
 </pre></div>
 
 
 <p>To create the bundle JAR file, issue the command:</p>
-<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">mystart</span><span class="o">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="o">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c:</span><span class="o">\</span><span class="n">classes</span> <span class="n">test</span>
+<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">mystart</span><span class="p">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="p">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c</span><span class="p">:</span><span class="o">\</span><span class="n">classes</span> <span class="n">test</span>
 </pre></div>
 
 
