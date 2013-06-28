@@ -1,0 +1,399 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * or more contributor license agreements.  See the NOTICE file<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * distributed with this work for additional information<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * regarding copyright ownership.  The ASF licenses this file<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * to you under the Apache License, Version 2.0 (the<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * "License"); you may not use this file except in compliance<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * with the License.  You may obtain a copy of the License at<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *<a name="line.9"></a>
+<span class="sourceLineNo">010</span> * http://www.apache.org/licenses/LICENSE-2.0<a name="line.10"></a>
+<span class="sourceLineNo">011</span> *<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * Unless required by applicable law or agreed to in writing,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * software distributed under the License is distributed on an<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * KIND, either express or implied.  See the License for the<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * specific language governing permissions and limitations<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * under the License.<a name="line.17"></a>
+<span class="sourceLineNo">018</span> */<a name="line.18"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span>package org.apache.felix.ipojo;<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span>import org.apache.felix.ipojo.extender.internal.Extender;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import org.apache.felix.ipojo.util.Log;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import org.apache.felix.ipojo.util.Logger;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.apache.felix.ipojo.util.ServiceLocator;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.osgi.framework.*;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.osgi.service.cm.*;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.osgi.service.cm.ConfigurationException;<a name="line.28"></a>
+<span class="sourceLineNo">029</span><a name="line.29"></a>
+<span class="sourceLineNo">030</span>import java.io.IOException;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import java.util.*;<a name="line.31"></a>
+<span class="sourceLineNo">032</span><a name="line.32"></a>
+<span class="sourceLineNo">033</span>/**<a name="line.33"></a>
+<span class="sourceLineNo">034</span> * An object tracking configuration from the configuration admin. It delegates to the underlying factories or<a name="line.34"></a>
+<span class="sourceLineNo">035</span> * component instance the action.<a name="line.35"></a>
+<span class="sourceLineNo">036</span> * &lt;p/&gt;<a name="line.36"></a>
+<span class="sourceLineNo">037</span> * This class implements a Configuration Listener, so events are received asynchronously.<a name="line.37"></a>
+<span class="sourceLineNo">038</span> */<a name="line.38"></a>
+<span class="sourceLineNo">039</span>public class ConfigurationTracker implements ConfigurationListener {<a name="line.39"></a>
+<span class="sourceLineNo">040</span><a name="line.40"></a>
+<span class="sourceLineNo">041</span>    /**<a name="line.41"></a>
+<span class="sourceLineNo">042</span>     * The tracker instance.<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     */<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    private static ConfigurationTracker m_singleton;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    private final ServiceRegistration m_registration;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    private final BundleContext m_context;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    private final Logger m_logger;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    private Map&lt;String, IPojoFactory&gt; m_factories = new HashMap&lt;String, IPojoFactory&gt;();<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>    public ConfigurationTracker() {<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        m_context = Extender.getIPOJOBundleContext();<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        m_logger = new Logger(m_context, "iPOJO Configuration Admin listener", Log.INFO);<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        // register as listener for configurations<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        Dictionary&lt;String, Object&gt; props = new Hashtable&lt;String, Object&gt;();<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        props.put(Constants.SERVICE_DESCRIPTION, "iPOJO Configuration Admin Listener");<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        props.put(Constants.SERVICE_VENDOR, "The Apache Software Foundation");<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        m_registration = m_context.registerService(ConfigurationListener.class.getName(), this, props);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>    public static void initialize() {<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        synchronized (ConfigurationTracker.class) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            if (m_singleton == null) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                m_singleton = new ConfigurationTracker();<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            }<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        }<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    public static void shutdown() {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        m_singleton.dispose();<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        m_singleton = null;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    }<a name="line.71"></a>
+<span class="sourceLineNo">072</span><a name="line.72"></a>
+<span class="sourceLineNo">073</span>    public static ConfigurationTracker get() {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        return m_singleton;<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>    /**<a name="line.77"></a>
+<span class="sourceLineNo">078</span>     * This method must be called by the iPOJO System itself, and only once.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>     */<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    public synchronized void dispose() {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        if (m_registration != null) {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>            m_registration.unregister();<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        m_factories.clear();<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    }<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>    public synchronized void registerFactory(IPojoFactory factory) {<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        m_factories.put(factory.getFactoryName(), factory);<a name="line.88"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
+<span class="sourceLineNo">090</span>        ServiceLocator&lt;ConfigurationAdmin&gt; locator = new ServiceLocator&lt;ConfigurationAdmin&gt;(ConfigurationAdmin<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                .class, m_context);<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        final ConfigurationAdmin admin = locator.get();<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        if (admin == null) {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>            return;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>        List&lt;Configuration&gt; configurations = findFactoryConfiguration(admin, factory);<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        for (Configuration configuration : configurations) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>            try {<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                factory.updated(configuration.getPid(), configuration.getProperties());<a name="line.100"></a>
+<span class="sourceLineNo">101</span>            } catch (ConfigurationException e) {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                m_logger.log(Log.ERROR, "Cannot reconfigure instance " + configuration.getPid() + " from " +<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                        configuration.getFactoryPid() + " with the configuration : " + configuration.getProperties(),<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                        e);<a name="line.104"></a>
+<span class="sourceLineNo">105</span>            }<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        }<a name="line.106"></a>
+<span class="sourceLineNo">107</span>    }<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>    public synchronized void instanceCreated(ComponentInstance instance) {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        ServiceLocator&lt;ConfigurationAdmin&gt; locator = new ServiceLocator&lt;ConfigurationAdmin&gt;(ConfigurationAdmin<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                .class, m_context);<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        final ConfigurationAdmin admin = locator.get();<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        if (admin == null) {<a name="line.113"></a>
+<span class="sourceLineNo">114</span>            return;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        }<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>        Configuration configuration = findSingletonConfiguration(admin, instance.getInstanceName());<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        if (configuration != null) {<a name="line.118"></a>
+<span class="sourceLineNo">119</span>            Hashtable&lt;String, Object&gt; conf = copyConfiguration(configuration);<a name="line.119"></a>
+<span class="sourceLineNo">120</span>            if (!conf.containsKey(Factory.INSTANCE_NAME_PROPERTY)) {<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                conf.put(Factory.INSTANCE_NAME_PROPERTY, configuration.getPid());<a name="line.121"></a>
+<span class="sourceLineNo">122</span>            }<a name="line.122"></a>
+<span class="sourceLineNo">123</span>            try {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                instance.getFactory().reconfigure(conf);<a name="line.124"></a>
+<span class="sourceLineNo">125</span>            } catch (UnacceptableConfiguration unacceptableConfiguration) {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                m_logger.log(Log.ERROR, "Cannot reconfigure the instance " + configuration.getPid() + " - the " +<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                        "configuration is unacceptable", unacceptableConfiguration);<a name="line.127"></a>
+<span class="sourceLineNo">128</span>            } catch (MissingHandlerException e) {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                m_logger.log(Log.ERROR, "Cannot reconfigure the instance " + configuration.getPid() + " - factory is " +<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                        "invalid", e);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>            }<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        }<a name="line.132"></a>
+<span class="sourceLineNo">133</span>    }<a name="line.133"></a>
+<span class="sourceLineNo">134</span><a name="line.134"></a>
+<span class="sourceLineNo">135</span>    public synchronized void unregisterFactory(IPojoFactory factory) {<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        m_factories.remove(factory.getFactoryName());<a name="line.136"></a>
+<span class="sourceLineNo">137</span>    }<a name="line.137"></a>
+<span class="sourceLineNo">138</span><a name="line.138"></a>
+<span class="sourceLineNo">139</span>    public void configurationEvent(ConfigurationEvent event) {<a name="line.139"></a>
+<span class="sourceLineNo">140</span>        String pid = event.getPid();<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        String factoryPid = event.getFactoryPid();<a name="line.141"></a>
+<span class="sourceLineNo">142</span><a name="line.142"></a>
+<span class="sourceLineNo">143</span>        if (factoryPid == null) {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>            ComponentInstance instance = retrieveInstance(pid);<a name="line.144"></a>
+<span class="sourceLineNo">145</span>            if (instance != null) {<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                manageConfigurationEventForSingleton(instance, event);<a name="line.146"></a>
+<span class="sourceLineNo">147</span>            }<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        } else {<a name="line.148"></a>
+<span class="sourceLineNo">149</span>            IPojoFactory factory = retrieveFactory(factoryPid);<a name="line.149"></a>
+<span class="sourceLineNo">150</span>            if (factory != null) {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                manageConfigurationEventForFactory(factory, event);<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            }<a name="line.152"></a>
+<span class="sourceLineNo">153</span>            // Else the factory is unknown, do nothing.<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        }<a name="line.154"></a>
+<span class="sourceLineNo">155</span><a name="line.155"></a>
+<span class="sourceLineNo">156</span>    }<a name="line.156"></a>
+<span class="sourceLineNo">157</span><a name="line.157"></a>
+<span class="sourceLineNo">158</span>    private void manageConfigurationEventForFactory(final IPojoFactory factory, final ConfigurationEvent event) {<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        ServiceLocator&lt;ConfigurationAdmin&gt; locator = new ServiceLocator&lt;ConfigurationAdmin&gt;(ConfigurationAdmin<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                .class, m_context);<a name="line.160"></a>
+<span class="sourceLineNo">161</span><a name="line.161"></a>
+<span class="sourceLineNo">162</span>        switch (event.getType()) {<a name="line.162"></a>
+<span class="sourceLineNo">163</span>            case ConfigurationEvent.CM_DELETED:<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                factory.deleted(event.getPid());<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                break;<a name="line.165"></a>
+<span class="sourceLineNo">166</span>            case ConfigurationEvent.CM_UPDATED:<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                final ConfigurationAdmin admin = locator.get();<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                if (admin == null) {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                    break;<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                }<a name="line.170"></a>
+<span class="sourceLineNo">171</span>                final Configuration config = getConfiguration(admin, event.getPid(),<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                        factory.getBundleContext().getBundle());<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                if (config != null) {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                    try {<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                        factory.updated(event.getPid(), config.getProperties());<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                    } catch (org.osgi.service.cm.ConfigurationException e) {<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                        m_logger.log(Log.ERROR, "Cannot reconfigure instance " + event.getPid() + " with the new " +<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                                "configuration " + config.getProperties(), e);<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                    }<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                }<a name="line.180"></a>
+<span class="sourceLineNo">181</span>            default:<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                // To nothing.<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        }<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>        locator.unget();<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    }<a name="line.186"></a>
+<span class="sourceLineNo">187</span><a name="line.187"></a>
+<span class="sourceLineNo">188</span>    private void manageConfigurationEventForSingleton(final ComponentInstance instance,<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                                                      final ConfigurationEvent event) {<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        ServiceLocator&lt;ConfigurationAdmin&gt; locator = new ServiceLocator&lt;ConfigurationAdmin&gt;(ConfigurationAdmin<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                .class, m_context);<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>        switch (event.getType()) {<a name="line.193"></a>
+<span class="sourceLineNo">194</span>            case ConfigurationEvent.CM_DELETED:<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                instance.dispose();<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                break;<a name="line.196"></a>
+<span class="sourceLineNo">197</span>            case ConfigurationEvent.CM_UPDATED:<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                final ConfigurationAdmin admin = locator.get();<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                if (admin == null) {<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                    break;<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                }<a name="line.201"></a>
+<span class="sourceLineNo">202</span>                final Configuration config = getConfiguration(admin, event.getPid(),<a name="line.202"></a>
+<span class="sourceLineNo">203</span>                        instance.getFactory().getBundleContext().getBundle());<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                if (config != null) {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                    Hashtable&lt;String, Object&gt; conf = copyConfiguration(config);<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                    if (!conf.containsKey(Factory.INSTANCE_NAME_PROPERTY)) {<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                        conf.put(Factory.INSTANCE_NAME_PROPERTY, event.getPid());<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                    }<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                    try {<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                        instance.getFactory().reconfigure(conf);<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                    } catch (UnacceptableConfiguration unacceptableConfiguration) {<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                        m_logger.log(Log.ERROR, "Cannot reconfigure the instance " + event.getPid() + " - the " +<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                                "configuration is unacceptable", unacceptableConfiguration);<a name="line.213"></a>
+<span class="sourceLineNo">214</span>                    } catch (MissingHandlerException e) {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                        m_logger.log(Log.ERROR, "Cannot reconfigure the instance " + event.getPid() + " - factory is " +<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                                "invalid", e);<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                    }<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                }<a name="line.218"></a>
+<span class="sourceLineNo">219</span>            default:<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                // To nothing.<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        }<a name="line.221"></a>
+<span class="sourceLineNo">222</span><a name="line.222"></a>
+<span class="sourceLineNo">223</span>        locator.unget();<a name="line.223"></a>
+<span class="sourceLineNo">224</span>    }<a name="line.224"></a>
+<span class="sourceLineNo">225</span><a name="line.225"></a>
+<span class="sourceLineNo">226</span>    private Hashtable&lt;String, Object&gt; copyConfiguration(Configuration config) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        Hashtable&lt;String, Object&gt; conf = new Hashtable&lt;String, Object&gt;();<a name="line.227"></a>
+<span class="sourceLineNo">228</span>        // Copy configuration<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        Enumeration keys = config.getProperties().keys();<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        while (keys.hasMoreElements()) {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>            String key = (String) keys.nextElement();<a name="line.231"></a>
+<span class="sourceLineNo">232</span>            conf.put(key, config.getProperties().get(key));<a name="line.232"></a>
+<span class="sourceLineNo">233</span>        }<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        return conf;<a name="line.234"></a>
+<span class="sourceLineNo">235</span>    }<a name="line.235"></a>
+<span class="sourceLineNo">236</span><a name="line.236"></a>
+<span class="sourceLineNo">237</span>    private IPojoFactory retrieveFactory(String factoryPid) {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>        synchronized (this) {<a name="line.238"></a>
+<span class="sourceLineNo">239</span>            return m_factories.get(factoryPid);<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        }<a name="line.240"></a>
+<span class="sourceLineNo">241</span>    }<a name="line.241"></a>
+<span class="sourceLineNo">242</span><a name="line.242"></a>
+<span class="sourceLineNo">243</span>    private ComponentInstance retrieveInstance(String instanceName) {<a name="line.243"></a>
+<span class="sourceLineNo">244</span>        Collection&lt;IPojoFactory&gt; factories;<a name="line.244"></a>
+<span class="sourceLineNo">245</span>        synchronized (this) {<a name="line.245"></a>
+<span class="sourceLineNo">246</span>            factories = m_factories.values();<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        }<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        for (IPojoFactory factory : factories) {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>            ComponentInstance instance = factory.getInstanceByName(instanceName);<a name="line.249"></a>
+<span class="sourceLineNo">250</span>            if (instance != null) {<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                return instance;<a name="line.251"></a>
+<span class="sourceLineNo">252</span>            }<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        }<a name="line.253"></a>
+<span class="sourceLineNo">254</span>        return null;<a name="line.254"></a>
+<span class="sourceLineNo">255</span>    }<a name="line.255"></a>
+<span class="sourceLineNo">256</span><a name="line.256"></a>
+<span class="sourceLineNo">257</span>    private Configuration getConfiguration(final ConfigurationAdmin admin, final String pid,<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                                           final Bundle bundle) {<a name="line.258"></a>
+<span class="sourceLineNo">259</span>        if (admin == null) {<a name="line.259"></a>
+<span class="sourceLineNo">260</span>            return null;<a name="line.260"></a>
+<span class="sourceLineNo">261</span>        }<a name="line.261"></a>
+<span class="sourceLineNo">262</span><a name="line.262"></a>
+<span class="sourceLineNo">263</span>        try {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>            // Even if it is possible, we don't build the filter with bundle.location to detect the case where the<a name="line.264"></a>
+<span class="sourceLineNo">265</span>            // configuration exists but can't be managed by iPOJO.<a name="line.265"></a>
+<span class="sourceLineNo">266</span>            final Configuration cfg = admin.getConfiguration(pid);<a name="line.266"></a>
+<span class="sourceLineNo">267</span>            final String bundleLocation = bundle.getLocation();<a name="line.267"></a>
+<span class="sourceLineNo">268</span>            if (cfg.getBundleLocation() == null || bundleLocation.equals(cfg.getBundleLocation())<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                    || m_context.getBundle().getLocation().equals(cfg.getBundleLocation())) {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                cfg.setBundleLocation(bundleLocation);<a name="line.270"></a>
+<span class="sourceLineNo">271</span>                return cfg;<a name="line.271"></a>
+<span class="sourceLineNo">272</span>            }<a name="line.272"></a>
+<span class="sourceLineNo">273</span><a name="line.273"></a>
+<span class="sourceLineNo">274</span>            // Multi-location<a name="line.274"></a>
+<span class="sourceLineNo">275</span>            if (cfg.getBundleLocation().startsWith("?")) {<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                if (bundle.hasPermission(new ConfigurationPermission(cfg.getBundleLocation(), "target"))) {<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                    return cfg;<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                }<a name="line.278"></a>
+<span class="sourceLineNo">279</span>            }<a name="line.279"></a>
+<span class="sourceLineNo">280</span><a name="line.280"></a>
+<span class="sourceLineNo">281</span>            // configuration belongs to another bundle, cannot be used here<a name="line.281"></a>
+<span class="sourceLineNo">282</span>            m_logger.log(Log.ERROR, "Cannot use configuration pid=" + pid + " for bundle "<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                    + bundleLocation + " because it belongs to bundle " + cfg.getBundleLocation());<a name="line.283"></a>
+<span class="sourceLineNo">284</span>        } catch (IOException ioe) {<a name="line.284"></a>
+<span class="sourceLineNo">285</span>            m_logger.log(Log.WARNING, "Failed reading configuration for pid=" + pid, ioe);<a name="line.285"></a>
+<span class="sourceLineNo">286</span>        }<a name="line.286"></a>
+<span class="sourceLineNo">287</span><a name="line.287"></a>
+<span class="sourceLineNo">288</span>        return null;<a name="line.288"></a>
+<span class="sourceLineNo">289</span>    }<a name="line.289"></a>
+<span class="sourceLineNo">290</span><a name="line.290"></a>
+<span class="sourceLineNo">291</span>    public List&lt;Configuration&gt; findFactoryConfiguration(final ConfigurationAdmin admin, final IPojoFactory factory) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>        final String filter = "(service.factoryPid=" + factory.getFactoryName() + ")";<a name="line.292"></a>
+<span class="sourceLineNo">293</span>        return findConfigurations(admin, filter);<a name="line.293"></a>
+<span class="sourceLineNo">294</span>    }<a name="line.294"></a>
+<span class="sourceLineNo">295</span><a name="line.295"></a>
+<span class="sourceLineNo">296</span>    public Configuration findSingletonConfiguration(final ConfigurationAdmin admin, final String pid) {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>        final String filter = "(service.pid=" + pid + ")";<a name="line.297"></a>
+<span class="sourceLineNo">298</span>        List&lt;Configuration&gt; list = findConfigurations(admin, filter);<a name="line.298"></a>
+<span class="sourceLineNo">299</span>        if (list.isEmpty()) {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>            return null;<a name="line.300"></a>
+<span class="sourceLineNo">301</span>        } else {<a name="line.301"></a>
+<span class="sourceLineNo">302</span>            return list.get(0);<a name="line.302"></a>
+<span class="sourceLineNo">303</span>        }<a name="line.303"></a>
+<span class="sourceLineNo">304</span>    }<a name="line.304"></a>
+<span class="sourceLineNo">305</span><a name="line.305"></a>
+<span class="sourceLineNo">306</span>    private List&lt;Configuration&gt; findConfigurations(final ConfigurationAdmin admin, final String filter) {<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        List&lt;Configuration&gt; configurations = Collections.emptyList();<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        if (admin == null) {<a name="line.308"></a>
+<span class="sourceLineNo">309</span>            return configurations;<a name="line.309"></a>
+<span class="sourceLineNo">310</span>        }<a name="line.310"></a>
+<span class="sourceLineNo">311</span><a name="line.311"></a>
+<span class="sourceLineNo">312</span>        try {<a name="line.312"></a>
+<span class="sourceLineNo">313</span>            Configuration[] list = admin.listConfigurations(filter);<a name="line.313"></a>
+<span class="sourceLineNo">314</span>            if (list == null) {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                return configurations;<a name="line.315"></a>
+<span class="sourceLineNo">316</span>            } else {<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                return Arrays.asList(list);<a name="line.317"></a>
+<span class="sourceLineNo">318</span>            }<a name="line.318"></a>
+<span class="sourceLineNo">319</span>        } catch (InvalidSyntaxException e) {<a name="line.319"></a>
+<span class="sourceLineNo">320</span>            m_logger.log(Log.ERROR, "Invalid Configuration selection filter " + filter, e);<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        } catch (IOException e) {<a name="line.321"></a>
+<span class="sourceLineNo">322</span>            m_logger.log(Log.ERROR, "Error when retrieving configurations for filter=" + filter, e);<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        }<a name="line.323"></a>
+<span class="sourceLineNo">324</span>        return configurations;<a name="line.324"></a>
+<span class="sourceLineNo">325</span>    }<a name="line.325"></a>
+<span class="sourceLineNo">326</span><a name="line.326"></a>
+<span class="sourceLineNo">327</span>}<a name="line.327"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
