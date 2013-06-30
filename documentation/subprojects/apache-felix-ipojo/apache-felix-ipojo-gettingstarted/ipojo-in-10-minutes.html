@@ -162,9 +162,7 @@
     <div class="container">
         <div class="content">
             <h1 id="ipojo-in-10-minutes">iPOJO in 10 minutes</h1>
-<p>This page presents how to use the iPOJO runtime and its associated service component model. The concepts of the service component model are introduced, followed by a simple example that demonstrates the features of iPOJO. This tutorial uses XML to describe components.  However, iPOJO also supports
-    * <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.html">annotations</a>
-    * A Java [API|apache-felix-ipojo-api]</p>
+<p>This page presents how to use the iPOJO runtime and its associated service component model. The concepts of the service component model are introduced, followed by a simple example that demonstrates the features of iPOJO. This tutorial uses annotations to describe components.  However, you can also use XML or a programmatic API to create iPOJO applications.</p>
 <h2 id="introduction">Introduction</h2>
 <p>iPOJO aims to simplify service-oriented programming on OSGi frameworks; the name iPOJO is an abbreviation for <em>injected POJO</em>. iPOJO provides a new way to develop OSGi service components, simplifying service component implementation by transparently managing the dynamics of the environment as well as other non-functional requirements. The iPOJO framework allows developers to more clearly separate functional code (i.e., POJOs) from the non-functional code (i.e., dependency management, service provision, configuration, etc.).  At run time, iPOJO combines the functional and non-functional aspects. To achieve this, iPOJO provides a simple and extensible service component model based on POJOs.</p>
 <h2 id="the-pojo-concept">The POJO concept</h2>
@@ -173,10 +171,12 @@
 <p>A service component is able to provide and/or require services, where a service is an object that implements a given Java interface. In addition, iPOJO introduces a callback concept to notify a component about various state changes.</p>
 <p>The component is a central concept in iPOJO. In the core iPOJO model, a component describes service dependencies, provided services, and callbacks; this information is recorded in the component's metadata. After components, the next most important concept in iPOJO is the component instance. A component instance is a special <em>version</em> of a component. By merging component metadata and instance configuration, the iPOJO runtime is able to discover and inject required services, publish provided services, and manage the component's life cycle.</p>
 <h2 id="a-simple-example">A simple example</h2>
-<p>In this tutorial we will present how to:
-<em> Publish an OSGi service
-</em> Require an OSGi service
-* Use lifecycle callbacks to activate and deactivate components</p>
+<p>In this tutorial we will present how to:</p>
+<ul>
+<li>Publish an OSGi service</li>
+<li>Require an OSGi service</li>
+<li>Use lifecycle callbacks to activate and deactivate components</li>
+</ul>
 <h3 id="presentation-of-the-spell-application">Presentation of the <em>Spell</em> application</h3>
 <p>To illustrate iPOJO features, we will implement a very simple application. This application is composed by three components:
 <em> A component implementing a dictionary service
@@ -184,17 +184,19 @@
 * A component requiring the spellchecker and providing an user interface</p>
 <p><img src="spell.png"></p>
 <h3 id="preparing-the-tutorial">Preparing the tutorial</h3>
-<p>This tutorial is based on Ant. So, you need to have the Ant program accessible in your path (see <a href="http://ant.apache.org/">here</a> to download and install Ant). Download the tutorial archive available <a href="http://people.apache.org/~clement/ipojo/tutorials/10min/tutorial.zip">here</a> and then unzip it. The archive contains seven directories:
-<em> spell.services contains service interfaces used by the applications
-</em> spell.english contains an implementation of the Dictionary service (containing English words)
-<em> spell.checker contains an implementation of a Spell Checker. The spell checker requires a dictionary service and check if an input passage is correct (according to the words contained in the dictionary).
-</em> spell.gui contains a very simple user interface. This component uses a spell checker service. Then the user can interact with the spell checker with this user interface.
-<em> The task directory contains Ant tasks used to build the project
-</em> The solution directory contains an already developed version of the application.
-* Finally, the felix folder contains a configured version of the Felix runtime</p>
+<p>This tutorial is based on Ant. So, you need to have the Ant program accessible in your path (see <a href="http://ant.apache.org/">here</a> to download and install Ant). Download the tutorial archive available <a href="ipojo-10-min-tutorial.zip">here</a> and then unzip it. The archive contains seven directories:</p>
+<ul>
+<li>spell.services contains service interfaces used by the applications</li>
+<li>spell.english contains an implementation of the Dictionary service (containing English words)</li>
+<li>spell.checker contains an implementation of a Spell Checker. The spell checker requires a dictionary service and check if an input passage is correct (according to the words contained in the dictionary).</li>
+<li>spell.gui contains a very simple user interface. This component uses a spell checker service. Then the user can interact with the spell checker with this user interface.</li>
+<li>The task directory contains Ant tasks used to build the project</li>
+<li>The solution directory contains an already developed version of the application.</li>
+<li>Finally, the felix folder contains a configured version of the Felix runtime</li>
+</ul>
 <h3 id="the-spellservices-project">The spell.services project</h3>
 <p>The spell.services project contains only service interfaces. It is not an iPOJO powered bundle.</p>
-<p>Go inside the Spell.services directory and create the file "src/spell/services/DictionaryService.java" for the following <em>Dictionary</em> service interface:</p>
+<p>Go inside the spell.services directory and open the file "src/spell/services/DictionaryService.java". It's a very simple service interface with one method:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">services</span><span class="o">;</span>
 <span class="cm">/**</span>
 <span class="cm"> * A simple service interface that defines a dictionary service.</span>
@@ -212,7 +214,7 @@
 </pre></div>
 
 
-<p>Then, create the file <code>src/spell/services/SpellChecker.java</code> for the following <em>Spell Checker</em> service interface:</p>
+<p>Then, open the file <code>src/spell/services/SpellChecker.java</code>, and replace the <code>TODO</code> comment with for the following <code>check</code> method:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">services</span><span class="o">;</span>
 <span class="cm">/**</span>
 <span class="cm"> * A simple service interface that defines a spell checker service.</span>
@@ -241,33 +243,43 @@
 Buildfile: build.xml
 clean:
 compile:
-    <span class="o">[</span>mkdir<span class="o">]()</span> Created dir: d:<span class="se">\c</span>lement<span class="se">\w</span>orkspaces<span class="se">\s</span>andbox<span class="se">\i</span>pojo<span class="se">\e</span>xamples<span class="se">\t</span>utorial-ant<span class="se">\</span>
+    <span class="o">[</span>mkdir<span class="o">]</span> Created dir: d:<span class="se">\c</span>lement<span class="se">\w</span>orkspaces<span class="se">\s</span>andbox<span class="se">\i</span>pojo<span class="se">\e</span>xamples<span class="se">\t</span>utorial-ant<span class="se">\</span>
             spell.services<span class="se">\o</span>utput
-    <span class="o">[</span>mkdir<span class="o">]()</span> Created dir: d:<span class="se">\c</span>lement<span class="se">\w</span>orkspaces<span class="se">\s</span>andbox<span class="se">\i</span>pojo<span class="se">\e</span>xamples<span class="se">\t</span>utorial-ant<span class="se">\</span>
+    <span class="o">[</span>mkdir<span class="o">]</span> Created dir: d:<span class="se">\c</span>lement<span class="se">\w</span>orkspaces<span class="se">\s</span>andbox<span class="se">\i</span>pojo<span class="se">\e</span>xamples<span class="se">\t</span>utorial-ant<span class="se">\</span>
             spell.services<span class="se">\o</span>utput<span class="se">\c</span>lasses
-    <span class="o">[</span>javac<span class="o">]()</span> Compiling 2 <span class="nb">source </span>files to d:<span class="se">\c</span>lement<span class="se">\w</span>orkspaces<span class="se">\s</span>andbox<span class="se">\i</span>pojo<span class="se">\e</span>xamples<span class="se">\</span>
+    <span class="o">[</span>javac<span class="o">]</span> Compiling 2 <span class="nb">source </span>files to d:<span class="se">\c</span>lement<span class="se">\w</span>orkspaces<span class="se">\s</span>andbox<span class="se">\i</span>pojo<span class="se">\e</span>xamples<span class="se">\</span>
             tutorial-ant<span class="se">\s</span>pell.services<span class="se">\o</span>utput<span class="se">\c</span>lasses
 package:
-      <span class="o">[</span>bnd<span class="o">]()</span> spell.services 2
+      <span class="o">[</span>bnd<span class="o">]</span> spell.services 2
 BUILD SUCCESSFUL
 Total <span class="nb">time</span>: 0 seconds
 </pre></div>
 
 
-<p>The created bundle is inside the output directory (spell.services.jar). The build process use <a href="http://www.aqute.biz/Code/Bnd">BND</a>. The bundle manifest is described in the spell.services.bnd file.</p>
+<p>The created bundle is inside the output directory (spell.services.jar). The build process uses <a href="http://www.aqute.biz/Code/Bnd">BND</a>. The bundle manifest is described in the spell.services.bnd file.</p>
 <p>Once this project is done, we are able to implement a Dictionary service.</p>
 <h3 id="the-spellenglish-project-providing-an-osgi-service">The spell.english project: Providing an OSGi service</h3>
 <p>The spell.english project is a simple dictionary implementation of the Dictionary service. It contains few English words. This implementation is an iPOJO component.</p>
-<p>The first step is to implement the service. Create the "src/spell/english/EnglishDictionary.java" file for the following <em>Dictionary service</em> implementation:</p>
+<p>The first step is to implement the service. Go in the spell.english directory and open the "src/spell/english/EnglishDictionary.java" file. Replace its content with:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">english</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Component</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Instantiate</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Provides</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">spell.services.DictionaryService</span><span class="o">;</span>
+
 <span class="cm">/**</span>
 <span class="cm"> * An implementation of the Dictionary service containing English words</span>
 <span class="cm"> * see DictionaryService for details of the service.</span>
 <span class="cm"> **/</span>
+<span class="nd">@Component</span> <span class="c1">// It&#39;s an iPOJO Component</span>
+<span class="nd">@Provides</span> <span class="c1">// We provide a service</span>
+<span class="nd">@Instantiate</span> <span class="c1">// We declare an instance of our component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">EnglishDictionary</span> <span class="kd">implements</span> <span class="n">DictionaryService</span> <span class="o">{</span>
+
     <span class="c1">// The set of words contained in the dictionary.</span>
-    <span class="n">String</span><span class="o">[]</span> <span class="n">m_dictionary</span> <span class="o">=</span> <span class="o">{</span> <span class="s">&quot;welcome&quot;</span><span class="o">,</span> <span class="s">&quot;to&quot;</span><span class="o">,</span> <span class="s">&quot;the&quot;</span><span class="o">,</span> <span class="s">&quot;ipojo&quot;</span><span class="o">,</span> <span class="s">&quot;tutorial&quot;</span> <span class="o">};</span>
+    <span class="n">String</span><span class="o">[]</span> <span class="n">dictionary</span> <span class="o">=</span> <span class="o">{</span> <span class="s">&quot;welcome&quot;</span><span class="o">,</span> <span class="s">&quot;to&quot;</span><span class="o">,</span> <span class="s">&quot;the&quot;</span><span class="o">,</span> <span class="s">&quot;ipojo&quot;</span><span class="o">,</span> <span class="s">&quot;tutorial&quot;</span> <span class="o">};</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Implements DictionaryService.checkWord(). Determines</span>
 <span class="cm">     * if the passed in word is contained in the dictionary.</span>
@@ -277,9 +289,10 @@ Total <span class="nb">time</span>: 0 seconds
 <span class="cm">     **/</span>
     <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">checkWord</span><span class="o">(</span><span class="n">String</span> <span class="n">word</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">();</span>
+
         <span class="c1">// This is very inefficient</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_dictionary</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">m_dictionary</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">equals</span><span class="o">(</span><span class="n">word</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">dict</span> <span class="o">:</span> <span class="n">dictionary</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">dict</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">word</span><span class="o">))</span> <span class="o">{</span>
                 <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
             <span class="o">}</span>
         <span class="o">}</span>
@@ -289,136 +302,145 @@ Total <span class="nb">time</span>: 0 seconds
 </pre></div>
 
 
-<p>Notice that this class does not contains neither OSGi nor iPOJO specific code. It is just an implementation of the Dictionary Service interface.
-Once created, we need to describe this component to ask iPOJO to manage it. To achieve this, create the <code>metadata.xml</code> file in the spell.english directory:</p>
-<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
-<span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;spell.english.EnglishDictionary&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;provides/&gt;</span>
-<span class="nt">&lt;/component&gt;</span>
-<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.english.EnglishDictionary&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/ipojo&gt;</span>
-</pre></div>
-
-
-<p>This file describes the Dictionary service implementation. First it creates a <em>component</em>. This component has a <em>classname</em> attribute containing the implementation class name. The <em>'provides'</em> element indicates that the component provide a service. Provided service interfaces are computed by iPOJO, so it is not necessary to indicate them. The <em>instance</em> element asks iPOJO to create an instance of the described component when the bundle starts. The relation between components and instances is the same than between classes and objects in the object oriented programming. The <em>component</em> attribute indicates which component needs to be instantiated. By default, component type name is the implementation class (i.e. the classname attribute).</p>
+<p>Notice that this class does not contains neither OSGi nor iPOJO specific code except a few annotations. It is just an implementation of the Dictionary Service interface.</p>
+<p>The <code>@Component</code> annotation is used to declare an iPOJO component. The <code>@Provides</code> annotation indicates that the component provides a service. Provided service interfaces are computed by iPOJO, so it is not necessary to specify them. Finally, the <code>@Instantiate</code> annotation instructs iPOJO to create an instance of our component. The relation between components and instances is the same than between classes and objects in the object-oriented programming.</p>
 <p>Then, we are able to create the bundle. In the spell.english directory launch the ant command:</p>
-<div class="codehilite"><pre>$ ant
-Buildfile: build.xml
+<div class="codehilite"><pre><span class="nv">$ </span>ant
+Buildfile: /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/build.xml
+
 clean:
-   [delete]() Deleting directory d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\output\classes
-   [delete]() Deleting directory d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\output
+
 buildclasspath:
+     <span class="o">[</span>copy<span class="o">]</span> Copying 1 file to /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/libs
+     <span class="o">[</span>copy<span class="o">]</span> Copying 1 file to /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/libs
+
 compile:
-    [mkdir]() Created dir: d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\output
-    [mkdir]() Created dir: d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\output\classes
-    [javac]() Compiling 1 source file to d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\output\classes
+    <span class="o">[</span>mkdir<span class="o">]</span> Created dir: /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/output
+    <span class="o">[</span>mkdir<span class="o">]</span> Created dir: /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/output/classes
+    <span class="o">[</span>javac<span class="o">]</span> /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/build.xml:57: warning: <span class="s1">&#39;includeantruntime&#39;</span> was not <span class="nb">set</span>, defaulting to build.sysclasspath<span class="o">=</span>last; <span class="nb">set </span>to <span class="nb">false </span><span class="k">for </span>repeatable builds
+    <span class="o">[</span>javac<span class="o">]</span> Compiling 1 <span class="nb">source </span>file to /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/output/classes
+
 package:
-      [bnd]() spell.english 1
-    [ipojo]() Input Bundle File : d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\output\spell.english.jar
-    [ipojo]() Metadata File : d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\metadata.xml
-    [ipojo]() Start bundle manipulation
-    [ipojo]() Bundle manipulation - SUCCESS
-    [ipojo]() Output File : d:\clement\workspaces\sandbox\ipojo\examples\
-            tutorial-ant\spell.english\output\spell.english.jar
+      <span class="o">[</span>bnd<span class="o">]</span> <span class="c"># addAll &#39;output/classes&#39; with :,</span>
+      <span class="o">[</span>bnd<span class="o">]</span> <span class="c"># addAll &#39;spell.english.bnd&#39; with ,</span>
+      <span class="o">[</span>bnd<span class="o">]</span> Updating classpath after classpathref setting
+      <span class="o">[</span>bnd<span class="o">]</span> <span class="c"># spell.english (spell.english.jar) 1</span>
+    <span class="o">[</span>ipojo<span class="o">]</span> Input bundle file : /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/output/spell.english.jar
+    <span class="o">[</span>ipojo<span class="o">]</span> No metadata file found - trying to use only annotations
+    <span class="o">[</span>ipojo<span class="o">]</span> Start manipulation
+Apache Felix iPOJO Manipulator - 1.9.0-SNAPSHOT
+    <span class="o">[</span>ipojo<span class="o">]</span> Bundle manipulation - SUCCESS
+    <span class="o">[</span>ipojo<span class="o">]</span> Output file : /Users/clement/Projects/felix-trunk/ipojo/distributions/ten-minutes-tutorial/target/test/spell.english/output/spell.english.jar
+
 BUILD SUCCESSFUL
-Total time: 1 second
+Total <span class="nb">time</span>: 0 seconds
 </pre></div>
 
 
 <p>The created bundle is inside the output directory (spell.english.jar). The build process is based on BND and on the iPOJO Ant task. The manifest of the bundle is described in the <code>spell.english.bnd</code> file.</p>
 <h3 id="the-spellchecker-project-requiring-an-osgi-service">The spell.checker project: Requiring an OSGi service</h3>
 <p>The spell.checker project aims to provide a <em>spell checker</em> service. However, to serve this service, this implementation requires a <em>dictionary</em> service. During this step, we will create an iPOJO component requiring a Dictionary service and providing the Spell Checker service.</p>
-<p>First create the file <code>src/spell/checker/SpellCheck.java</code> in the spell.checker directory for the following <em>Check Speller service</em> implementation:</p>
+<p>First, go the the spell.checker directory and open the file <code>src/spell/checker/SpellCheck.java</code>. Replace its content with:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">checker</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Component</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Instantiate</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Provides</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.Requires</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">spell.services.DictionaryService</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">spell.services.SpellChecker</span><span class="o">;</span>
+
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.StringTokenizer</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">spell.services.DictionaryService</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">spell.services.SpellChecker</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="nd">@Provides</span>
+<span class="nd">@Instantiate</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpellCheck</span> <span class="kd">implements</span> <span class="n">SpellChecker</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">DictionaryService</span> <span class="n">m_dictionary</span><span class="o">;</span>
+
+    <span class="nd">@Requires</span> <span class="c1">// This is a service dependency.</span>
+    <span class="kd">private</span> <span class="n">DictionaryService</span> <span class="n">dictionary</span><span class="o">;</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Implements SpellChecker.check(). Checks the given passage for misspelled words.</span>
+<span class="cm">     *</span>
 <span class="cm">     * @param passage the passage to spell check.</span>
 <span class="cm">     * @return An array of misspelled words or null if no words are misspelled.</span>
 <span class="cm">     */</span>
     <span class="kd">public</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">check</span><span class="o">(</span><span class="n">String</span> <span class="n">passage</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// No misspelled words for an empty string.</span>
-        <span class="k">if</span> <span class="o">((</span><span class="n">passage</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">passage</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span> <span class="o">}</span>
-        <span class="n">List</span> <span class="n">errorList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">((</span><span class="n">passage</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">passage</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">errorList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+
         <span class="c1">// Tokenize the passage using spaces and punctuation.</span>
         <span class="n">StringTokenizer</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringTokenizer</span><span class="o">(</span><span class="n">passage</span><span class="o">,</span> <span class="s">&quot; ,.!?;:&quot;</span><span class="o">);</span>
+
         <span class="c1">// Loop through each word in the passage.</span>
         <span class="k">while</span> <span class="o">(</span><span class="n">st</span><span class="o">.</span><span class="na">hasMoreTokens</span><span class="o">())</span> <span class="o">{</span>
             <span class="n">String</span> <span class="n">word</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">();</span>
+
             <span class="c1">// Check the current word.</span>
-            <span class="k">if</span> <span class="o">(!</span> <span class="n">m_dictionary</span><span class="o">.</span><span class="na">checkWord</span><span class="o">(</span><span class="n">word</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">dictionary</span><span class="o">.</span><span class="na">checkWord</span><span class="o">(</span><span class="n">word</span><span class="o">))</span> <span class="o">{</span>
                 <span class="c1">// If the word is not correct, then add it</span>
                 <span class="c1">// to the incorrect word list.</span>
                 <span class="n">errorList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">word</span><span class="o">);</span>
             <span class="o">}</span>
         <span class="o">}</span>
+
         <span class="c1">// Return null if no words are incorrect.</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">errorList</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span> <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">errorList</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
         <span class="c1">// Return the array of incorrect words.</span>
-        <span class="k">return</span> <span class="o">(</span><span class="n">String</span><span class="o">[])</span> <span class="n">errorList</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">errorList</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Wrong words:&quot;</span> <span class="o">+</span> <span class="n">errorList</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">errorList</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">errorList</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
 
-<p>This class implements the SpellChecker service interface as it will provide it. Moreover, it has a <em>special</em> field <code>m_dictionary</code>. This field represents the required service. iPOJO will inject a Dictionary service when needed. So, the class can use it directly. Notice that this class as no OSGi specific code, both the service providing and the requiring are managed by iPOJO. If the used dictionary service leaves, iPOJO will try to find another provider. If no more providers are available, the instance is invalidated, and the provided service is withdrawn from the service registry.</p>
-<p>Once implemented, we need to describe this component. Create the <code>metadata.xml</code> file in the spell.checker directory for the following component descriptor:</p>
-<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
-<span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;spell.checker.SpellCheck&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;requires</span> <span class="na">field=</span><span class="s">&quot;m_dictionary&quot;</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;provides/&gt;</span>
-<span class="nt">&lt;/component&gt;</span>
-<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.checker.SpellCheck&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/ipojo&gt;</span>
-</pre></div>
-
-
-<p>This description contains a '<em>requires'</em> element. This element indicates to iPOJO to manage the service dependency. The <em>field</em> attributes describe in which member of the class the service need to be injected. It is not necessary to write the required service as it is computed by iPOJO. Notice that iPOJO can inject required service by invoking methods too.</p>
+<p>This class implements the SpellChecker service interface as it provides it. Moreover, it has a <em>special</em> field <code>dictionary</code>. This field represents the required service. iPOJO injects a Dictionary service when needed. So, the class can use it directly. Notice that this class as no OSGi specific code, both the service providing and the requiring are managed by iPOJO and described using annotations. When the used dictionary service leaves, iPOJO tries to find another provider. If no more providers are available, the instance is invalidated, and the provided service is withdrawn from the service registry.</p>
+<p>The @Component, @Instantiate and @Provides annotations were already presented. The <code>@Requires</code> annotation specifies a service dependency. This example shows field injection, but iPOJO also supports constructor injection and method injection (with <code>@Bind</code> and <code>@Unbind</code>).</p>
 <p>Finally, we are able to build the bundle. As for previous projects, launch Ant from the project directory.</p>
 <h3 id="the-spellcheckergui-project">The spell.checker.gui project</h3>
 <p>The spell.check.gui project contains a very simple user interface (in Swing) allowing a user to interact with a <em>spell checker</em> service.</p>
-<p>Create the <code>src\spell\gui\SpellCheckerGui.java</code> for the following implementation:</p>
+<p>Go to the spell.checker.gui directory. Open the <code>src\spell\gui\SpellCheckerGui.java</code>. Replace its content with:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">gui</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.swing.JButton</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.swing.JFrame</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.swing.JLabel</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.swing.JTextField</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.annotations.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">spell.services.SpellChecker</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+
 <span class="cm">/**</span>
 <span class="cm"> * A very simple Gui interacting with the CheckSpeller service</span>
 <span class="cm"> */</span>
+<span class="nd">@Component</span>
+<span class="nd">@Instantiate</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpellCheckerGui</span> <span class="kd">extends</span> <span class="n">JFrame</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1L</span><span class="o">;</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Swing component where the user write the passage to check.</span>
 <span class="cm">     */</span>
-    <span class="kd">private</span> <span class="n">JTextField</span> <span class="n">m_passage</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-
-    <span class="cm">/**</span>
-<span class="cm">     * Check button</span>
-<span class="cm">     */</span>
-    <span class="kd">private</span> <span class="n">JButton</span> <span class="n">m_checkButton</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">JTextField</span> <span class="n">passage</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 
     <span class="cm">/**</span>
 <span class="cm">     * Area where the result is displayed.</span>
 <span class="cm">     */</span>
-    <span class="kd">private</span> <span class="n">JLabel</span> <span class="n">m_result</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">JLabel</span> <span class="n">result</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Service dependency on the SpellChecker.</span>
 <span class="cm">     */</span>
-    <span class="kd">private</span> <span class="n">SpellChecker</span> <span class="n">m_checker</span><span class="o">;</span>
+    <span class="nd">@Requires</span>
+    <span class="kd">private</span> <span class="n">SpellChecker</span> <span class="n">checker</span><span class="o">;</span>
 
     <span class="cm">/**</span>
 <span class="cm">     * Constructor.</span>
@@ -429,18 +451,23 @@ Total time: 1 second
         <span class="n">initComponents</span><span class="o">();</span>
         <span class="k">this</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">&quot;Spellchecker Gui&quot;</span><span class="o">);</span>
     <span class="o">}</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Initialize the Swing Gui.</span>
 <span class="cm">     */</span>
     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initComponents</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">GridBagConstraints</span> <span class="n">gridBagConstraints</span><span class="o">;</span>
-        <span class="n">m_checkButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">javax</span><span class="o">.</span><span class="na">swing</span><span class="o">.</span><span class="na">JButton</span><span class="o">();</span>
-        <span class="n">m_result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">javax</span><span class="o">.</span><span class="na">swing</span><span class="o">.</span><span class="na">JLabel</span><span class="o">();</span>
-        <span class="n">m_passage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">javax</span><span class="o">.</span><span class="na">swing</span><span class="o">.</span><span class="na">JTextField</span><span class="o">();</span>
-        <span class="n">setDefaultCloseOperation</span><span class="o">(</span><span class="n">javax</span><span class="o">.</span><span class="na">swing</span><span class="o">.</span><span class="na">WindowConstants</span><span class="o">.</span><span class="na">EXIT</span><span class="o">*</span><span class="n">ON</span><span class="o">*</span><span class="n">CLOSE</span><span class="o">);</span> <span class="c1">//Stop Felix</span>
+
+        <span class="c1">// The check button</span>
+        <span class="n">JButton</span> <span class="n">checkButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JButton</span><span class="o">();</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JLabel</span><span class="o">();</span>
+        <span class="n">passage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JTextField</span><span class="o">();</span>
+
+        <span class="n">setDefaultCloseOperation</span><span class="o">(</span><span class="n">javax</span><span class="o">.</span><span class="na">swing</span><span class="o">.</span><span class="na">WindowConstants</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span> <span class="c1">// Stop Felix...</span>
         <span class="n">getContentPane</span><span class="o">().</span><span class="na">setLayout</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">GridBagLayout</span><span class="o">());</span>
-        <span class="n">m_checkButton</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;Check&quot;</span><span class="o">);</span>
-        <span class="n">m_checkButton</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">event</span><span class="o">.</span><span class="na">ActionListener</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="n">checkButton</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;Check&quot;</span><span class="o">);</span>
+        <span class="n">checkButton</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">event</span><span class="o">.</span><span class="na">ActionListener</span><span class="o">()</span> <span class="o">{</span>
             <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">event</span><span class="o">.</span><span class="na">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
                 <span class="n">check</span><span class="o">();</span>
             <span class="o">}</span>
@@ -449,48 +476,56 @@ Total time: 1 second
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">gridx</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">gridy</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">insets</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Insets</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">m_checkButton</span><span class="o">,</span> <span class="n">gridBagConstraints</span><span class="o">);</span>
-        <span class="n">m_result</span><span class="o">.</span><span class="na">setPreferredSize</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Dimension</span><span class="o">(</span><span class="mi">175</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>
+        <span class="n">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">checkButton</span><span class="o">,</span> <span class="n">gridBagConstraints</span><span class="o">);</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="na">setPreferredSize</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Dimension</span><span class="o">(</span><span class="mi">175</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>
         <span class="n">gridBagConstraints</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">GridBagConstraints</span><span class="o">();</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">gridx</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">gridy</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">fill</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">GridBagConstraints</span><span class="o">.</span><span class="na">HORIZONTAL</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">insets</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Insets</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">m_result</span><span class="o">,</span> <span class="n">gridBagConstraints</span><span class="o">);</span>
-        <span class="n">m_passage</span><span class="o">.</span><span class="na">setPreferredSize</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Dimension</span><span class="o">(</span><span class="mi">175</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>
+        <span class="n">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">gridBagConstraints</span><span class="o">);</span>
+
+        <span class="n">passage</span><span class="o">.</span><span class="na">setPreferredSize</span><span class="o">(</span><span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Dimension</span><span class="o">(</span><span class="mi">175</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>
         <span class="n">gridBagConstraints</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">GridBagConstraints</span><span class="o">();</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">gridx</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">gridy</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">fill</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">GridBagConstraints</span><span class="o">.</span><span class="na">HORIZONTAL</span><span class="o">;</span>
         <span class="n">gridBagConstraints</span><span class="o">.</span><span class="na">insets</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Insets</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
-        <span class="n">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">m_passage</span><span class="o">,</span> <span class="n">gridBagConstraints</span><span class="o">);</span>
+        <span class="n">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">passage</span><span class="o">,</span> <span class="n">gridBagConstraints</span><span class="o">);</span>
+
         <span class="n">pack</span><span class="o">();</span>
     <span class="o">}</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Check Button action.</span>
 <span class="cm">     * Collects the user input and checks it.</span>
 <span class="cm">     */</span>
     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">check</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">String</span><span class="o">[]()</span> <span class="n">result</span> <span class="o">=</span> <span class="n">m</span><span class="o">*</span><span class="n">checker</span><span class="o">.</span><span class="na">check</span><span class="o">(</span><span class="n">m</span><span class="o">*</span><span class="n">passage</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">result</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="na">check</span><span class="o">(</span><span class="n">passage</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">m_result</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">length</span> <span class="o">+</span> <span class="s">&quot; word(s) are mispelled&quot;</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">result</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">length</span> <span class="o">+</span> <span class="s">&quot; word(s) are misspelled&quot;</span><span class="o">);</span>
         <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-            <span class="n">m_result</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;All words are correct&quot;</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">result</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;All words are correct&quot;</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">}</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Start callback.</span>
 <span class="cm">     * This method will be called when the instance becomes valid.</span>
 <span class="cm">     * It set the Gui visibility to true.</span>
 <span class="cm">     */</span>
+    <span class="nd">@Validate</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
     <span class="o">}</span>
+
     <span class="cm">/**</span>
 <span class="cm">     * Stop callback.</span>
-<span class="cm">     *  This method will be called when the instance becomes invalid or stops.</span>
-<span class="cm">     *  It deletes the Gui.</span>
+<span class="cm">     * This method will be called when the instance becomes invalid or stops.</span>
+<span class="cm">     * It deletes the Gui.</span>
 <span class="cm">     */</span>
+    <span class="nd">@Invalidate</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">dispose</span><span class="o">();</span>
     <span class="o">}</span>
@@ -498,42 +533,34 @@ Total time: 1 second
 </pre></div>
 
 
-<p>Look at the three last methods. The <em>check</em> methods collect the user input and use a <em>Check speller</em> service to check this input. This method is called when the button is pressed by the user. The <em>start</em> and <em>stop</em> methods are lifecycle callbacks. As we need to display the user interface when the instance is created and to delete it when the instance stops, we need a way to be notified when we need to execute these actions. iPOJO provide an easy way to do this. The component provides two callback methods for its activation and deactivation, start and stop, respectively. Callbacks are used when the component needs to be informed about a component state change. In iPOJO, the component state is either <em>INVALID</em> (i.e., not all of the component's constraints are satisfied) or <em>VALID</em> (i.e., all of the component's constraints are satisfied). In this example, the start callback method set the GUI visibility to true; the stop callback method deletes the GUI. The component metadata will instruct iPOJO to invoke these methods when the component's state changes to <em>VALID</em> or <em>INVALID</em> respectively.</p>
-<p>Create the <em>metadata.xml</em> file in the spell.chercker.gui directory with the following content:</p>
-<div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
-<span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;spell.gui.SpellCheckerGui&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;requires</span> <span class="na">field=</span><span class="s">&quot;m_checker&quot;</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;callback</span> <span class="na">transition=</span><span class="s">&quot;validate&quot;</span> <span class="na">method=</span><span class="s">&quot;start&quot;</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;callback</span> <span class="na">transition=</span><span class="s">&quot;invalidate&quot;</span> <span class="na">method=</span><span class="s">&quot;stop&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/component&gt;</span>
-<span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;spell.gui.SpellCheckerGui&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/ipojo&gt;</span>
-</pre></div>
-
-
-<p>The component element again has the '<em>classname'</em> attribute that refers to the component implementation class. The '<em>requires</em>' element describes the <em>Check Speller</em> service dependency by simply specifying its associated component field. The '<em>callback'</em> elements describe which method to invoke when the component's state changes. Then the <em>'instance'</em> element asks iPOJO to create an instance of the component.</p>
+<p>Look at the three last methods. The <em>check</em> methods collects the user input and uses a <em>Check speller</em> service to check this input. The speller is injected into the <code>checker</code> field thanks to the <code>@Requires</code> annotation. This method is called when the user presses the button. The <em>start</em> and <em>stop</em> methods are lifecycle callbacks. As we display the user interface when the instance is created and to dispose it when the instance stops, we need a way to be notified when we need to execute these actions. iPOJO provides an easy way to do this. The component provides two callback methods for its activation and deactivation. Callbacks are used when the component needs to be informed about a component state change. In iPOJO, the component state is either <em>INVALID</em> (i.e., not all of the component's constraints are satisfied) or <em>VALID</em> (i.e., all of the component's constraints are satisfied). In this example, the start callback method sets the GUI visibility to true; the stop callback method deletes the GUI. The <code>@Validate</code> and <code>@Invalidate</code> annotations are used to specify these callbacks.</p>
 <p>Once this file is created, you can compile the project by launching <em>ant</em> in the spell.checker.gui directory.</p>
 <h2 id="running-the-application">Running the application</h2>
-<p>To run the example, start Felix. A distribution of Felix is provided in the felix directory. This version is configured to launch iPOJO automatically. From the Felix directory, launch the following command to start the framework. Then enter a profile name.</p>
+<p>We have all the bundles required to start playing with the application.</p>
+<p>To run the example, start Felix. A distribution of Felix is provided in the felix-framework-VERSION directory. This version is configured to launch iPOJO automatically. From the Felix directory, launch the following command to start the framework. Then enter a profile name.</p>
 <div class="codehilite"><pre>java -jar bin/felix.jar
 </pre></div>
 
 
-<p>You can check installed bundles by using the '<em>ps</em>' command:</p>
-<div class="codehilite"><pre>-&gt; ps
+<p>You can check installed bundles by using the '<em>lb</em>' command:</p>
+<div class="codehilite"><pre>____________________________
+Welcome to Apache Felix Gogo
+
+g! lb
 START LEVEL 1
-   ID   State        Level  Name
-<span class="o">[</span>   0<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    0<span class="o">]</span> System Bundle <span class="o">(</span>2.0.5<span class="o">)</span>
-<span class="o">[</span>   1<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix Bundle Repository <span class="o">(</span>1.4.3<span class="o">)</span>
-<span class="o">[</span>   2<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix iPOJO <span class="o">(</span>1.6.0<span class="o">)</span>
-<span class="o">[</span>   3<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix iPOJO Arch Command <span class="o">(</span>1.6.0<span class="o">)</span>
-<span class="o">[</span>   4<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix Shell Service <span class="o">(</span>1.4.2<span class="o">)</span>
-<span class="o">[</span>   5<span class="o">]</span> <span class="o">[</span>Active     <span class="o">]</span> <span class="o">[</span>    1<span class="o">]</span> Apache Felix Shell TUI <span class="o">(</span>1.4.1<span class="o">)</span>
--&gt;
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle <span class="o">(</span>4.2.1<span class="o">)</span>
+    1|Active     |    1|Apache Felix Bundle Repository <span class="o">(</span>1.6.6<span class="o">)</span>
+    2|Active     |    1|Apache Felix Gogo Command <span class="o">(</span>0.12.0<span class="o">)</span>
+    3|Active     |    1|Apache Felix Gogo Runtime <span class="o">(</span>0.10.0<span class="o">)</span>
+    4|Active     |    1|Apache Felix Gogo Shell <span class="o">(</span>0.10.0<span class="o">)</span>
+    5|Active     |    1|Apache Felix iPOJO <span class="o">(</span>1.9.0.SNAPSHOT<span class="o">)</span>
+    6|Active     |    1|Apache Felix iPOJO Gogo Command <span class="o">(</span>1.0.1<span class="o">)</span>
+g!
 </pre></div>
 
 
-<p>iPOJO runtime is the bundle 4. Once started, install the four created bundles as above:</p>
+<p>iPOJO runtime is the bundle 5. Once started, install the four created bundles as below:</p>
 <div class="codehilite"><pre>start file:../spell.services/output/spell.services.jar
 start file:../spell.english/output/spell.english.jar
 start file:../spell.checker/output/spell.checker.jar
@@ -541,25 +568,56 @@ start file:../spell.checker.gui/output/spell.checker.gui.jar
 </pre></div>
 
 
-<p>When starting the GUI bundle, the user interface appears. Indeed, the <em>Check Speller</em> service is provided. You can interact with this service by entering a passage and clicking on the check button:</p>
-<p><img src="ss.png"></p>
-<p>Then, stop the <em>Dictionary</em> service provider (with the <em>stop 7</em>) command. The GUI disappears. Indeed, Spell Checker service cannot be provided as it depends on the Dictionary service.</p>
-<p><img src="spell2.png"></p>
-<p>Then, restart the Dictionary service provider with the <em>start 7</em> command. The GUI reappears immediately. You can try to stop the <em>check speller</em> service provider without stopping the <em>dictionary</em> service provider with the <em>stop 8</em> command. As for the last manipulation, the GUI disappears.</p>
-<p><img src="spell3.png"></p>
-<p>To go further in the exploration, modify the spell.checker implementation. For example, add a simple trace, printing wrong words:</p>
-<div class="codehilite"><pre><span class="c1">// ...</span>
-<span class="c1">// Return null if no words are incorrect.</span>
-<span class="k">if</span> <span class="o">(</span><span class="n">errorList</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span> <span class="o">}</span>
-
-<span class="c1">// Return the array of incorrect words.</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Wrong words:&quot;</span> <span class="o">+</span> <span class="n">errorList</span><span class="o">);</span> <span class="c1">// &lt;-- Add this line</span>
-<span class="k">return</span> <span class="o">(</span><span class="n">String</span><span class="o">[])</span> <span class="n">errorList</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">errorList</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+<p>The new set of bundles is:</p>
+<div class="codehilite"><pre>g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle <span class="o">(</span>4.2.1<span class="o">)</span>
+    1|Active     |    1|Apache Felix Bundle Repository <span class="o">(</span>1.6.6<span class="o">)</span>
+    2|Active     |    1|Apache Felix Gogo Command <span class="o">(</span>0.12.0<span class="o">)</span>
+    3|Active     |    1|Apache Felix Gogo Runtime <span class="o">(</span>0.10.0<span class="o">)</span>
+    4|Active     |    1|Apache Felix Gogo Shell <span class="o">(</span>0.10.0<span class="o">)</span>
+    5|Active     |    1|Apache Felix iPOJO <span class="o">(</span>1.9.0.SNAPSHOT<span class="o">)</span>
+    6|Active     |    1|Apache Felix iPOJO Gogo Command <span class="o">(</span>1.0.1<span class="o">)</span>
+    7|Active     |    1|spell.services <span class="o">(</span>0.0.0<span class="o">)</span>
+    8|Active     |    1|spell.english <span class="o">(</span>0.0.0<span class="o">)</span>
+    9|Active     |    1|spell.checker <span class="o">(</span>0.0.0<span class="o">)</span>
+   10|Active     |    1|spell.checker.gui <span class="o">(</span>0.0.0<span class="o">)</span>
 </pre></div>
 
 
-<p>Then rebuild the spell.checker bundle and update it (with the 'update 8' command). You will see the gui "blinking". In fact, the gui was stopped as the required spell checker service was no more available. As soon as it was back, the gui restarts. The gui didn't lose its state. The other services weren't stopped during the update.</p>
-<p>You can uninstall the check service bundle and then re-install a new one (or the same one), you will see the same behavior.</p>
+<p>iPOJO provides a command to check created instances:</p>
+<div class="codehilite"><pre>g! instances
+Instance org.apache.felix.ipojo.arch.gogo.Arch-0 -&gt; valid
+Instance spell.checker.SpellCheck-0 -&gt; valid
+Instance spell.gui.SpellCheckerGui-0 -&gt; valid
+Instance spell.english.EnglishDictionary-0 -&gt; valid
+</pre></div>
+
+
+<p>As you can see, all our instances are valid.</p>
+<p>In the gui (that should have appeared), you can interact with the spell service by entering a passage and clicking on the check button:</p>
+<p><img src="ss.png"></p>
+<p>Then, stop the <em>Dictionary</em> service provider (with the <em>stop 8</em>) command. The GUI disappears. Indeed, Spell Checker service cannot be provided as it depends on the Dictionary service.</p>
+<p><img src="spell2.png"></p>
+<p>You can check the validity of the instances and see that the SpellChecker and the Gui are invalid.</p>
+<div class="codehilite"><pre>g! instances
+Instance org.apache.felix.ipojo.arch.gogo.Arch-0 -&gt; valid
+Instance spell.checker.SpellCheck-0 -&gt; invalid
+Instance spell.gui.SpellCheckerGui-0 -&gt; invalid
+</pre></div>
+
+
+<p>Then, restart the Dictionary service provider with the <em>start 8</em> command. The GUI reappears immediately. You can try to stop the <em>check speller</em> service provider without stopping the <em>dictionary</em> service provider with the <em>stop 9</em> command. As for the last manipulation, the GUI disappears.</p>
+<p><img src="spell3.png"></p>
+<p>This time, the Gui is invalid, but the English dictionary is valid:</p>
+<div class="codehilite"><pre>g! instances
+Instance org.apache.felix.ipojo.arch.gogo.Arch-0 -&gt; valid
+Instance spell.gui.SpellCheckerGui-0 -&gt; invalid
+Instance spell.english.EnglishDictionary-0 -&gt; valid
+</pre></div>
+
+
 <h2 id="conclusion">Conclusion</h2>
 <p>We saw how to use easily iPOJO to build service-oriented component. In this tutorial, we have demonstrated how to:</p>
 <ul>
@@ -582,7 +640,7 @@ start file:../spell.checker.gui/output/spell.checker.gui.jar
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1443044 by clement on Wed, 6 Feb 2013 16:25:48 +0000
+                Rev. 1498142 by clement on Sun, 30 Jun 2013 15:38:27 +0000
                 </div>
             </div>
         </footer>           
