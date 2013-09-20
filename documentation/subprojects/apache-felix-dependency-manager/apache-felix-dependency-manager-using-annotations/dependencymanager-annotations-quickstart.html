@@ -18,7 +18,7 @@
     limitations under the License.
 -->
   <head>
-    <title>Apache Felix - Apache Felix Dependency Manager - Using Annotations - Quick Start</title>
+    <title>Apache Felix - Dependency Manager Annotations Quick Start</title>
     <link rel="icon" href="/res/favicon.ico">
     <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
     <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
@@ -62,19 +62,18 @@
     
     <div class="main">
       <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager/apache-felix-dependency-manager-using-annotations.html">Apache Felix Dependency Manager - Using Annotations</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager/apache-felix-dependency-manager-using-annotations/apache-felix-dependency-manager-using-annotations-quick-tour.html">Apache Felix Dependency Manager - Using Annotations - Quick Tour</a>
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager/apache-felix-dependency-manager-using-annotations.html">Dependency Manager Annotations</a>
       </div>
 
       
       <div class="tip">
-           This page is a translated version of <a href="/site/apache-felix-dependency-manager-using-annotations-quick-start.html" target="felix_cwiki">/site/apache-felix-dependency-manager-using-annotations-quick-start.html</a>. In case of
+           This page is a translated version of <a href="/site/dependencymanager-annotations-quickstart.html" target="felix_cwiki">/site/dependencymanager-annotations-quickstart.html</a>. In case of
            doubt you might want to refer to the old page.
       </div>
       
       
-      <h1>Apache Felix Dependency Manager - Using Annotations - Quick Start</h1>
-      <h1 id="quick-start">Quick Start</h1>
-<p>This sections presents a simple "Hello World" component defined using annotations, and also explains how to build the bundle using either Bnd, Ant, or Maven.</p>
+      <h1>Dependency Manager Annotations Quick Start</h1>
+      <p>This section presents a simple "Hello World" component defined using annotations, and also explains how to build the bundle using either Bnd, Ant, or Maven.</p>
 <h2 id="hello-world-component">Hello World Component</h2>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dependencymanager</span><span class="p">.</span><span class="n">samples</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">hello</span><span class="p">;</span>
 
@@ -130,7 +129,7 @@
     <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;osgi</span><span class="err">.version</span><span class="nt">&gt;</span>4.2.0<span class="nt">&lt;/osgi.version&gt;</span>
+        <span class="nt">&lt;osgi.version&gt;</span>4.2.0<span class="nt">&lt;/osgi.version&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
     <span class="nt">&lt;name&gt;</span>Hello World Using Dependency Manager Annotations<span class="nt">&lt;/name&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
@@ -139,7 +138,7 @@
     <span class="nt">&lt;packaging&gt;</span>bundle<span class="nt">&lt;/packaging&gt;</span>
     <span class="nt">&lt;dependencies&gt;</span>
         <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span><span class="cp">${</span><span class="n">pom</span><span class="o">.</span><span class="n">groupId</span><span class="cp">}</span><span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>${pom.groupId}<span class="nt">&lt;/groupId&gt;</span>
             <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.dependencymanager.annotation<span class="nt">&lt;/artifactId&gt;</span>
             <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
         <span class="nt">&lt;/dependency&gt;</span>
@@ -161,10 +160,10 @@
                 <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
                 <span class="nt">&lt;configuration&gt;</span>
                     <span class="nt">&lt;instructions&gt;</span>
-                        <span class="nt">&lt;Bundle</span><span class="err">-Name</span><span class="nt">&gt;</span>Hello World Using Dependency Manager Annotations<span class="nt">&lt;/Bundle-Name&gt;</span>
-                        <span class="nt">&lt;Bundle</span><span class="err">-SymbolicName</span><span class="nt">&gt;</span>org.apache.felix.dependencymanager.samples.annotation.hello<span class="nt">&lt;/Bundle-SymbolicName&gt;</span>
-                        <span class="nt">&lt;Import</span><span class="err">-Package</span><span class="nt">&gt;</span>*<span class="nt">&lt;/Import-Package&gt;</span>
-                        <span class="nt">&lt;Private</span><span class="err">-Package</span><span class="nt">&gt;</span>org.apache.felix.dependencymanager.samples.annotation.hello<span class="nt">&lt;/Private-Package&gt;</span>
+                        <span class="nt">&lt;Bundle-Name&gt;</span>Hello World Using Dependency Manager Annotations<span class="nt">&lt;/Bundle-Name&gt;</span>
+                        <span class="nt">&lt;Bundle-SymbolicName&gt;</span>org.apache.felix.dependencymanager.samples.annotation.hello<span class="nt">&lt;/Bundle-SymbolicName&gt;</span>
+                        <span class="nt">&lt;Import-Package&gt;</span>*<span class="nt">&lt;/Import-Package&gt;</span>
+                        <span class="nt">&lt;Private-Package&gt;</span>org.apache.felix.dependencymanager.samples.annotation.hello<span class="nt">&lt;/Private-Package&gt;</span>
                     <span class="nt">&lt;/instructions&gt;</span>
                 <span class="nt">&lt;/configuration&gt;</span>
             <span class="nt">&lt;/plugin&gt;</span>
@@ -188,7 +187,7 @@
 <span class="nt">&lt;/project&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1525171 by pderop on Fri, 20 Sep 2013 23:10:33 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
