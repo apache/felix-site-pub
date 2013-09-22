@@ -73,28 +73,53 @@
       
       
       <h1>Dependency Manager Component Lifecycle</h1>
-      <p>A component has a lifecycle that controls when it is started or stopped. A bundle must be started before the DM Runtime can process its components. When the bundle is started, the DM Runtime then parses a specific <em>DependencyManager-Component</em> manifest header, which points to a list of descriptors describing all annotated components. Such descriptors are actually generated at compilation time, and annotation are not reflectively parsed at runtime. Only the descriptor is used to process the components. For each component, the DM Runtime first ensures that all dependencies are satisfied before activating it. Likewise, the component is deactivated when some of the required dependencies are not available anymore or when the bundle is stopped. Unless the bundle is stopped, components may be deactivated and reactivated, depending on the departure and arrival of required dependencies. The manager which is in charge of maintaining the state of components is implemented in the DM Runtime bundle (org.apache.felix.dm.runtime bundle).</p>
-<h2 id="lifecycle-callbacks">Lifecycle Callbacks</h2>
+      <p>A component has a lifecycle that controls when it is started or stopped. 
+A bundle must be started before the DM Runtime can process its components. 
+When the bundle is started, the DM Runtime then parses a specific 
+<em>DependencyManager-Component</em> manifest header, which points to a list of descriptors 
+describing all annotated components. Such descriptors are actually generated at 
+compilation time, and annotation are not reflectively parsed at runtime. 
+Only the descriptor is used to process the components. </p>
+<p>For each component, the DM Runtime 
+first ensures that all dependencies are satisfied before activating it. Likewise, the 
+component is deactivated when some of the required dependencies are not available anymore 
+or when the bundle is stopped. Unless the bundle is stopped, components may be deactivated 
+and reactivated, depending on the departure and arrival of required dependencies. The 
+manager which is in charge of maintaining the state of components is implemented in the 
+DM Runtime bundle (org.apache.felix.dm.runtime bundle).</p>
+<h2 id="lifecycle-callbacks">Lifecycle callbacks</h2>
 <h3 id="component-activation">Component Activation</h3>
-<p>Activating a component consists of the following steps:
-1. Wait for all required dependencies to be available. When all required dependencies are available:
-1. * Instantiate the component.
-1. * Inject all required dependencies (on class fields using reflection, or by invoking callback methods).
-1. * Inject all optional dependencies defined on class fields, <em>possibly with a NullObject</em> if the dependency is not available.
-1. * Call the component init method (annotated with <em>@Init</em>). In the  Init method, you are yet allowed to add some additional dependencies  (but using the API). Alternatively, you can also configure some  dependencies dynamically (explained later, in <a href="">#Dynamic Dependency Configuration</a>).
-1. Wait for extra dependencies optionally configured from the init() method.
-1. If the component is not using the @<em>LifecycleController</em> annotation (detailed in the <a href="">#Controlling the Lifecycle</a> section), then:
-1. * Invoke the component start method (annotated with <em>@Start</em>).
-1. * Publish some OSGi services (if the component provides some services).
-1. * Start tracking optional dependencies applied on method callbacks (useful for the whiteboard pattern). <em>Notice that NullObject pattern is not applied to optional callback dependencies</em>. In other words, if the dependency is not there, your callback won't be invoked at all. If you need the NullObject pattern, then apply optional dependencies on class fields, not on callback methods.
-1. Else do nothing because&nbsp; the component will trigger itself the startup using the lifecycle controller.</p>
+<p>Activating a component consists of the following steps:</p>
+<p>1) Wait for all required dependencies to be available. When all required dependencies are 
+available:</p>
+<ul>
+<li>Instantiate the component.</li>
+<li>Inject all required dependencies (on class fields using reflection, or by invoking 
+callback methods).</li>
+<li>Inject all optional dependencies defined on class fields, possibly with a <em>NullObject</em> if the dependency is not available.</li>
+<li>Call the component init method (annotated with <em>@Init</em>). In the  Init method, you are 
+yet allowed to add some additional dependencies  (but using the API). 
+Alternatively, you can also configure some  dependencies dynamically 
+(explained later, in <a href="#dynamic-dependency-configuration">#Dynamic Dependency Configuration</a>.</li>
+</ul>
+<p>2) Wait for extra dependencies optionally configured from the init() method.</p>
+<p>3) If the component is not using the @<em>LifecycleController</em> annotation (described in the 
+<a href="#controlling-the-lifecycle">#Controlling the Lifecycle</a> section), then:</p>
+<ul>
+<li>Invoke the component start method (annotated with <em>@Start</em>).</li>
+<li>Publish some OSGi services (if the component provides some services).</li>
+<li>Start tracking optional dependencies applied on method callbacks (useful for the whiteboard pattern). <em>Notice that NullObject pattern is not applied to optional callback dependencies</em>. In other words, if the dependency is not there, your callback won't be invoked at all. If you need the NullObject pattern, then apply optional dependencies on class fields, not on callback methods.</li>
+</ul>
+<p>4) Else do nothing because the component will trigger itself the startup using the lifecycle controller.</p>
 <h3 id="component-deactivation">Component Deactivation</h3>
-<p>Deactivating a component consists of the following steps:
-1. If the bundle is stopped or if some required dependencies are unavailable, or if the component is deactivated by a factorySet, then:
-1. * Unbind optional dependencies (defined on callback methods). Notice that any optional dependency unavailability does not trigger the component deactivation:&nbsp; the <em>removed</em> callbacks are just invoked, if declared in the annotation.
-1. * Invoke the stop method (annotated wit <em>@Stop</em>),  and unregister some OSGi services (if the components provides some services).
-1. * invoke destroy method (annotated with <em>@Destroy</em>).
-1. * invoke <em>removed</em> callbacks for required dependencies, if any.</p>
+<p>Deactivating a component consists of the following steps:</p>
+<p>If the bundle is stopped or if some required dependencies are unavailable, or if the component is deactivated by a factorySet, then:</p>
+<ul>
+<li>Unbind optional dependencies (defined on callback methods). Notice that any optional dependency unavailability does not trigger the component deactivation:&nbsp; the <em>removed</em> callbacks are just invoked, if declared in the annotation.</li>
+<li>Invoke the stop method (annotated wit <em>@Stop</em>),  and unregister some OSGi services (if the components provides some services).</li>
+<li>invoke destroy method (annotated with <em>@Destroy</em>).</li>
+<li>invoke <em>removed</em> callbacks for required dependencies, if any.</li>
+</ul>
 <h3 id="example">Example</h3>
 <p>The following example shows a basic component, which uses the @Start, @Stop, annotation:</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
@@ -121,9 +146,8 @@
 </pre></div>
 
 
-<h3></h3>
-<h3 id="dynamic-dependency-configuration">Dynamic Dependency Configuration</h3>
-<h4 id="rationale">Rationale</h4>
+<h2 id="dynamic-dependency-configuration">Dynamic Dependency Configuration</h2>
+<h3 id="rationale">Rationale</h3>
 <p>We have seen that a component may declare some dependencies and is  started when all required dependencies are available. But there are some  cases when you may need to define some dependencies filters  dynamically, possibly from data picked up from other  dependencies (like a configuration dependency for instance).</p>
 <p>So, all this is possible using <em>named</em> dependencies: When you assign a name to a dependency; for instance <em>@ServiceDependency(name="foo")</em>, then this has an impact on how the dependency is handled. Indeed, all named dependencies are calculated <em>after</em> the @Init method returns. So from your @Init method, you can then  configure your named dependencies, using data provided by  already injected dependencies.</p>
 <p>To do so, your @Init method is allowed to return a Map containing  the filters and required flags for each named dependencies. For a given  named dependency, the corresponding filter and required flag must be  stored in the Map, using the "<em>filter</em>" and "<em>required</em>" keys, prefixed with the name of the dependency.</p>
@@ -136,14 +160,25 @@
 <p>Then you can return this map from your @Init method:</p>
 <div class="codehilite"><pre><span class="nd">@Init</span>
 <span class="n">Map</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">HashMap</span><span class="o">()</span> <span class="o">;</span>
+    <span class="n">Map</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+    <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;foo.filter&quot;</span><span class="o">,</span> <span class="s">&quot;(foo=bar)&quot;</span><span class="o">);</span>
+    <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;foo.required&quot;</span><span class="o">,</span> <span class="s">&quot;false&quot;</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">;</span>
 <span class="o">}</span>
 </pre></div>
 
 
 <p>So, after the init method returns, the map will be used to configure  the dependency named "foo", which will then be evaluated. And once the  dependency is available, then your @Start callback will be invoked.</p>
-<h4 id="usage-example">Usage example:</h4>
-<p>This is an example of a component X whose dependency "foo" filter is  configured from ConfigAdmin. First, we defined a ConfigurationDependency  in order to get injected with our configuration. Next, we define a  dependency on the <em>FooService</em>, but this time, we declare the annotation  like this: <em>@ServiceDependency(</em>{<em>}{</em>}name="foo"<em>{</em>}<em>)</em>. As explained  above, The  ConfigurationDependency will be injected <em>before</em> the @Init method, and  the named dependency ("foo") will be calculated <em>after</em> the @Init method  returns. So, from our Init method, we just return a map which contains  the filter and required flag for the "foo" dependency, and we actually  use the configuration which has already been injected:</p>
+<h3 id="usage-example">Usage example:</h3>
+<p>This is an example of a component X whose dependency "foo" filter is  configured from 
+ConfigAdmin. First, we defined a ConfigurationDependency  in order to get injected with 
+our configuration. Next, we define a  dependency on the <em>FooService</em>, but this time, we 
+declare the annotation like this: <em>@ServiceDependency(name="foo")</em>. </p>
+<p>As explained  above, The  ConfigurationDependency will be injected <em>before</em> the @Init 
+method, and the named dependency ("foo") will be calculated <em>after</em> the @Init method 
+returns. So, from our Init method, we just return a map which contains 
+the filter and required flag for the "foo" dependency, and we actually 
+use the configuration which has already been injected:</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
 <span class="cm"> * A component whose FooService dependency filter is configured from ConfigAdmin</span>
 <span class="cm"> */</span>
@@ -166,7 +201,10 @@
 <span class="cm">     */</span>
     <span class="nd">@Init</span>
     <span class="n">Map</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="nf">HashMap</span><span class="o">()</span> <span class="o">;</span>
+        <span class="n">Map</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+        <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;foo.filter&quot;</span><span class="o">,</span> <span class="n">m_config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;filter&quot;</span><span class="o">));</span>
+        <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;foo.required&quot;</span><span class="o">,</span> <span class="n">m_config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;required&quot;</span><span class="o">));</span>
+        <span class="k">return</span> <span class="n">m</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="cm">/**</span>
@@ -186,7 +224,10 @@
 
 
 <h2 id="controlling-the-lifecycle">Controlling the Lifecycle</h2>
-<p>As explained in the <em>Component Activation</em> section, a  component which provides a service is automatically registered into the  OSGi registry, after the @Start method returns. But it is sometimes  required to control when the service is really started/published or  unpublished/stopped.</p>
+<p>As explained in the <em>Component Activation</em> section, a component which provides a service 
+is automatically registered into the  OSGi registry, after the @Start method returns. 
+But it is sometimes  required to control when the service is really started/published or<br />
+unpublished/stopped.</p>
 <p>This can be done using the @LifecycleController annotation. This  annotation injects a Runnable object that can be invoked once you want  to trigger your service startup and publication.</p>
 <p>For instance, imagine that your component publishes an OSGi service,  but before, it needs to register into a DHT (Distributed Hash Table),  whose API is asynchronous: that is: the DHT API will callback you once  you are inserted into a node in the DHT. In this case, what you would  like to do is to publish your OSGi service, but only after you are  inserted into the DHT (when the DHT callbacks you) ... Such a case  is supported using the @LifecyceController annotation, which gives you  full control of when your component is <em>started/published</em> and <em>unpublished/stopped</em>.</p>
 <p>Let's illustrate this use case with a concrete example: First here is the DHT asynchronous API:</p>
@@ -237,7 +278,8 @@
 
 
 <h2 id="dynamic-service-properties">Dynamic Service Properties</h2>
-<p>When a component provides an OSGi Service, the service properties are calculated as the following:</p>
+<p>When a component provides an OSGi Service, the service properties are calculated as the 
+following:</p>
 <ul>
 <li>Any properties specified in the @Component annotation are used to provide the OSGi Service</li>
 <li>Any properties provided by a FactorySet are also inserted in the published service</li>
@@ -257,7 +299,9 @@
         <span class="c1">// Return some extra properties to be inserted along with our published properties. This map takes</span>
         <span class="c1">// precedence, and may override some properties specified in our @Component annotation, or some properties</span>
         <span class="c1">// propagated from our @ConfigurationDependency dependency ...</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="nf">HashMap</span><span class="o">()</span> <span class="o">;</span>
+        <span class="n">Map</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+        <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;foo3&quot;</span><span class="o">,</span> <span class="s">&quot;bar3&quot;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">m</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
@@ -269,9 +313,10 @@
 <li>foo2=bar2 (propagated by our ConfigurationDependency dependency)</li>
 <li>foo3=bar3 (specified dynamically in the map returned from our start method)</li>
 </ul>
-<p>Notice that properties returned by the Map take precedence over other properties, and may override some of them.</p>
+<p>Notice that properties returned by the Map take precedence over other properties, and may 
+override some of them.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1525171 by pderop on Fri, 20 Sep 2013 23:10:33 +0000
+        Rev. 1525430 by pderop on Sun, 22 Sep 2013 20:17:37 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

@@ -83,17 +83,86 @@
 <li><em>Factory Configuration Adapter Service</em>: creates an OSGi service from ConfigAdmin, using a factoryPid, and a ManagedServiceFactory.</li>
 </ul>
 <h2 id="component">@Component</h2>
-<p>This annotation annotates an implementation class that optionally publishes an OSGi service, and optionally has some dependencies, with a managed lifecycle. The annotation has the following attributes:</p>
+<p>This annotation annotates an implementation class that optionally publishes 
+an OSGi service, and optionally has some dependencies, with a managed 
+lifecycle. </p>
+<h3 id="annotation-attributes">Annotation attributes</h3>
+<hr />
+<p><strong><code>provides</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: all implemented interfaces, if any.   </p>
+<p>By default, the component is registered into the OSGi registry under all 
+directly implemented interfaces. If no interfaces are implemented, then the 
+component is not registered, but it still has a managed lifecycle, and may 
+have some dependencies. If you need to  explicitly define the list of 
+interfaces (or classes) under which the  component must be registered in the 
+OSGi registry, then use the <em>provides</em> attribute. You can also set this 
+property to an empty array of classes  if you don't want at all your component 
+to be exposed in the OSGi  registry (even if it implements some interfaces).</p>
+<hr />
+<p><strong><code>properties</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>the <em>properties" attribute enumerates the list of properties that are part of 
+the Service exposed by the component in the OSGi Registry. 
+Each property is defined using the @Property annotation, which represents a<br />
+key/value pair. When a value is actually an array of strings, 
+then the </em>values* attribute of the @Property annotation can be used. 
+This attribute  is not the only way to specify OSGi Service properties 
+(see Setting Service properties in the lifecycle section).</p>
+<hr />
+<p><strong><code>factoryMethod</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>This attribute refers to a static method name from the annotated class which 
+can be used to instantiate the component instance. Normally, DependencyManager 
+instantiates the component using its class name, and with the default 
+constructor of the class, but there are some cases where it is required to 
+take control of  how the component is created. For instance, this method may 
+be used to create the component as a dynamic proxy ...</p>
+<hr />
+<p><strong><code>factorySet</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>This attribute is the identifier for a component factory. By default, a 
+component is automatically instantiated as a singleton when the bundle is 
+started, and when all required dependencies are satisfied. But when a 
+component must be created, configured, or disposed dynamically, and when 
+multiple instances of the same component are needed, a factorySet should  be 
+used. When you use this attribute, a java.util.Set<Dictionary>  object is 
+registered into the OSGi regitry, with a specific <em>dm.factory.name</em> service 
+property matching the ID you specify in the attribute. </p>
+<p>This Set<Dictionary> will act as a Factory API, and another component may 
+define a dependency on this Set and add some configuration dictionaries in it, 
+in order to fire some component instantiation/activation. There is one 
+component instantiated per added dictionary, which is passed to component 
+instances via a configurable callback method (using the <em>factoryConfigure</em> 
+attribute). All public properties will be propagated  along with eventual 
+published service. A public property is a property  which does not start with 
+a dot ("."). Properties starting with a dot are considered private to the 
+component, and won't be propagated to published service. This model is 
+actually similar to the Declarative Service "Component Factories" concept, 
+except that you don't have a dependency on a specific API, but rather on a 
+basic jdk class  (java.util.Set<Dictionary>). </p>
+<p>Notice that, unlike in Declarative Service, the component factory is provided once the component 
+bundle is started, even if required dependencies are not satisfied. This is 
+useful when the component want  to dynamically configure its dependency 
+filters. So, to summarize:</p>
 <ul>
-<li><em>provides</em>: By default, the component is registered into the OSGi registry under all directly implemented interfaces. If no interfaces are implemented, then the component is not registered, but it still has a managed lifecycle, and may have some dependencies. If you need to  explicitly define the list of interfaces (or classes) under which the  component must be registered in the OSGi registry, then use the <em>provides</em> attribute. You can also set this property to an empty array of classes  if you don't want at all your component to be exposed in the OSGi  registry (even if it implements some interfaces).</li>
-<li><em>properties</em>: enumerates the list of properties that are part of the Service exposed by the component in the OSGi Registry. Each property is defined using the @Property annotation, which represents a  key/value pair. When a value is actually an array of strings, then the <em>values</em> attribute of the @Property annotation can be used. This attribute  is not the only way to specify OSGi Service properties (see Setting Service properties in the lifecycle section).</li>
-<li><em>factoryMethod</em>: may match a static method name from the annotated class which can be used to instantiate the component instance. Normally, DependencyManager instantiates the component using its class name, and with the default constructor of the class, but there are some cases where it is required to take control of  how the component is created. For instance, this method may be used to create the component as a dynamic proxy ...</li>
-<li><em>factorySet</em>: The component factory ID. By default, a component is automatically instantiated as a singleton when the bundle is started, and when all required dependencies are satisfied. But when a component must be created, configured, or disposed dynamically, and when multiple instances of the same component are needed, a factorySet should  be used. When you use this attribute, a java.util.Set<Dictionary>  object is registered into the OSGi regitry, with a specific <em>{</em>}dm.factory.name{<em>}</em> property matching the ID you specify in the attribute. This Set<Dictionary> will act as a Factory API, and another component may define a dependency on this Set and add some configuration dictionaries in  it, in order to fire some component instantiation/activation. There is one component instantiated per added dictionary, which is passed to component instances via a configurable callback method (using the <em>{</em>}factoryConfigure{<em>}</em> attribute). All public properties will be propagated  along with eventual published service. A public property is a property  which does not start with a dot ("."). Properties starting with a dot are considered private to the component, and won't be propagated to published service. This model is actually similar to the Declarative Service "Component Factories" concept, except that you don't have a dependency on a specific API, but rather on a basic jdk class  (java.util.Set<Dictionary>). Notice that, unlike in Declarative Service, the component factory is provided once the component bundle is started, even if required dependencies are not satisfied. This is useful when the component want  to dynamically configure its dependency filters. So, to summarize:
-<strong> Each time a new Dictionary is added into the Set, then a new instance of the annotated component will be instantiated, and this dictionary is passed to the component callback specified with the factoryConfigure attribute.
-</strong> Each time an existing Dictionary is re-added into the Set, then the corresponding component instance is updated, and the updated dictionary is also passed to the callback specified in the factoryConfigure attribute.
-** Each time an existing Dictionary is removed from the Set, then the  corresponding component instance will be stopped and destroyed.</li>
-<li><em>factoryConfigure</em>: Sets the "configure" method name to be called with the factory configuration. This attribute only makes sense if the factorySet() attribute is used. If specified, then this attribute references a component callback method, which is called for providing the configuration supplied by the factory that instantiated this component. The current Service properties will be also updated with all public properties (which don't start with a dot).</li>
+<li>Each time a new Dictionary is added into the Set, then a new instance of the annotated component will be instantiated, and this dictionary is passed to the component callback specified with the factoryConfigure attribute.</li>
+<li>Each time an existing Dictionary is re-added into the Set, then the corresponding component instance is updated, and the updated dictionary is also passed to the callback specified in the factoryConfigure attribute.</li>
+<li>Each time an existing Dictionary is removed from the Set, then the  corresponding component instance will be stopped and destroyed.</li>
 </ul>
+<hr />
+<p><strong><code>factoryConfigure</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>This attributes sets the <em>configure</em> method name to be called with the factory 
+configuration. This attribute only makes sense if the factorySet() attribute 
+is used. If specified, then this attribute references a component callback 
+method, which is called for providing the configuration supplied by the 
+factory that instantiated this component. The current Service properties will 
+be also updated with all public properties (which don't start with a dot).</p>
 <p>Usage example:</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
 <span class="cm">  * This component will be activated once the bundle is started and when all required dependencies</span>
@@ -174,16 +243,46 @@
 
 <h2 id="aspectservice">@AspectService</h2>
 <p>Aspects allow you to define an interceptor, or chain of interceptors for a service (to add features like caching or logging, etc ...). The dependency manager intercepts the original service, and allows you to execute some code before invoking the original service ... The aspect will be applied to any service that matches the specified interface and filter and will be registered with the same interface and properties as the original service, plus any extra properties you supply here. It will also inherit all dependencies, and if you declare the original service as a member it will be injected.</p>
-<p>Annotation attributes:</p>
-<ul>
-<li><em>ranking</em>: Sets the ranking of this aspect. Since aspects are chained, the ranking defines the order in which they are chained. Chain ranking is implemented as a service ranking so service lookups automatically retrieve the top of the chain.</li>
-<li><em>service</em>: Sets the service interface to apply the aspect to. By default, the directly implemented interface is used.</li>
-<li><em>filter</em>: Sets the filter condition to use with the service interface this aspect is applying to.</li>
-<li><em>properties</em>: Sets Additional properties to use with the aspect service registration.</li>
-<li><em>field</em>: Sets the field name where to inject the original service. By default, the original service is injected in any attributes in the aspect implementation that are of the same type as the aspect interface.</li>
-<li><em>factoryMethod</em>: Sets the static method used to create the AspectService implementation instance. The default constructor of the annotated class is used. The factoryMethod can be used to provide a specific aspect implements, like a DynamicProxy.</li>
-</ul>
-<p>Usage example:</p>
+<h3 id="annotation-attributes_1">Annotation attributes</h3>
+<hr />
+<p><strong><code>ranking</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>Sets the ranking of this aspect. Since aspects are chained, the ranking 
+defines the order in which they are chained. Chain ranking is implemented as 
+a service ranking so service lookups automatically retrieve the top of the 
+chain.</p>
+<hr />
+<p><strong><code>service</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: all directly implemented interfaces.  </p>
+<p>Sets the service interface to apply the aspect to. By default, the directly 
+implemented interface is used.</p>
+<hr />
+<p><strong><code>filter</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --</p>
+<p>Sets the filter condition to use with the service interface this aspect is 
+applying to.</p>
+<hr />
+<p><strong><code>properties</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --</p>
+<p>Sets Additional properties to use with the aspect service registration.</p>
+<hr />
+<p><strong><code>field</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --</p>
+<p>Sets the field name where to inject the original service. By default, the original service is injected in any attributes in the aspect implementation that are of the same type as the aspect interface.</p>
+<hr />
+<p><strong><code>factoryMethod</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --</p>
+<p>Sets the static method used to create the aspect service implementation 
+instance. The default constructor of the annotated class is used. 
+The factoryMethod can be used to provide a specific aspect implements, 
+like a DynamicProxy.</p>
+<h3 id="usage-example">Usage example:</h3>
 <div class="codehilite"><pre> <span class="p">@</span><span class="n">AspectService</span><span class="p">(</span><span class="n">ranking</span><span class="p">=</span>10<span class="p">),</span> <span class="k">properties</span><span class="p">={@</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">param</span>&quot;<span class="p">,</span> <span class="n">value</span><span class="p">=</span>&quot;<span class="n">value</span>&quot;<span class="p">)})</span>
  <span class="n">class</span> <span class="n">AspectService</span> <span class="n">implements</span> <span class="n">InterceptedService</span> <span class="p">{</span>
      <span class="o">//</span> <span class="n">The</span> <span class="n">service</span> <span class="n">we</span> <span class="n">are</span> <span class="n">intercepting</span> <span class="p">(</span><span class="n">injected</span> <span class="n">by</span> <span class="n">reflection</span><span class="p">)</span>
@@ -197,16 +296,46 @@
 
 
 <h2 id="adapterservice">@AdapterService</h2>
-<p>Adapters, like with @AspectService, are used to "extend" existing services, and can publish different services based on the existing one. An example would be implementing a management interface for an existing service, etc .... When you annotate an adapter class with the @AdapterService annotation, it will be applied to any service that matches the implemented interface and filter. The adapter will be registered with the specified interface and existing properties from the original service plus any extra properties you supply here. If you declare the original service as a member it will be injected. </p>
-<p>Annotation attributes:</p>
-<ul>
-<li><em>adapteeService</em>: Sets the adaptee service interface this adapter is applying to.</li>
-<li><em>provides</em>: Sets the adapter service interface(s). By default, the directly implemented interface(s) is (are) used. </li>
-<li><em>properties</em>: Sets some additional properties to use with the adapter service registration. By default, the adapter will inherit all adaptee service properties.</li>
-<li><em>adapteeFilter</em>: Sets the filter condition to use with the adapted service interface.</li>
-<li><em>factoryMethod</em>: Sets the static method used to create the adapter service implementation instance. By default, the default constructor of the annotated class is used.</li>
-</ul>
-<p>Usage example: Here, the AdapterService is registered into the OSGI registry each time an AdapteeService is found from the registry. The AdapterImpl class adapts the AdapteeService to the AdapterService. The AdapterService will also have a service property (param=value), and will also include eventual service properties found from the AdapteeService:</p>
+<p>Adapters, like with <em>@AspectService</em>, are used to "extend" existing services, 
+and can publish different services based on the existing one. An example 
+would be implementing a management interface for an existing service, 
+etc .... When you annotate an adapter class with the <em>@AdapterService</em> 
+annotation, it will be applied to any service that matches the implemented 
+interface and filter. The adapter will be registered with the specified 
+interface and existing properties from the original service plus any extra
+properties you supply here. If you declare the original service as a member 
+it will be injected. </p>
+<h3 id="annotation-attributes_2">Annotation attributes:</h3>
+<hr />
+<p><strong><code>adapteeService</code></strong>  <br />
+<em>Required</em>: True  <br />
+<em>Default</em>: --</p>
+<p>Sets the adaptee service interface this adapter is applying to.</p>
+<hr />
+<p><strong><code>provides</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: all directly implemented interfaces.</p>
+<p>Sets the adapter service interface(s). By default, the directly implemented 
+interface(s) is (are) used. </p>
+<hr />
+<p><strong><code>properties</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: All inherited adaptee service properties.</p>
+<p>Sets some additional properties to use with the adapter service registration. 
+By default, the adapter will inherit all adaptee service properties.</p>
+<hr />
+<p><strong><code>adapteeFilter</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Sets the filter condition to use with the adapted service interface.</p>
+<hr />
+<p><strong><code>factoryMethod</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Sets the static method used to create the adapter service implementation 
+instance. By default, the default constructor of the annotated class is used.</p>
+<h3 id="usage-example_1">Usage example</h3>
+<p>Here, the AdapterService is registered into the OSGI registry each time an AdapteeService is found from the registry. The AdapterImpl class adapts the AdapteeService to the AdapterService. The AdapterService will also have a service property (param=value), and will also include eventual service properties found from the AdapteeService:</p>
 <div class="codehilite"><pre> <span class="p">@</span><span class="n">AdapterService</span><span class="p">(</span><span class="n">adapteeService</span> <span class="p">=</span> <span class="n">AdapteeService</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> <span class="k">properties</span><span class="p">={@</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">param</span>&quot;<span class="p">,</span> <span class="n">value</span><span class="p">=</span>&quot;<span class="n">value</span>&quot;<span class="p">)})</span>
  <span class="n">class</span> <span class="n">AdapterImpl</span> <span class="n">implements</span> <span class="n">AdapterService</span> <span class="p">{</span>
      <span class="o">//</span> <span class="n">The</span> <span class="n">service</span> <span class="n">we</span> <span class="n">are</span> <span class="n">adapting</span> <span class="p">(</span><span class="n">injected</span> <span class="n">by</span> <span class="n">reflection</span><span class="p">)</span>
@@ -221,193 +350,341 @@
 
 
 <h2 id="bundleadapterservice">@BundleAdapterService</h2>
-<p>Bundle adapters are similar to AdapterService, but instead of adapting a service, they adapt a bundle with a certain set of states (STARTED|INSTALLED|...), and provide a service on top of it.</p>
-<p>The bundle adapter will be applied to any bundle that matches the specified bundle state mask and filter conditions, which may match some of the bundle OSGi manifest headers. For each matching bundle an adapter will be created based on the adapter implementation class. The adapter will be registered with the specified interface and with service properties found from the original bundle OSGi manifest headers plus any extra properties you supply here. If you declare the original bundle as a member it will be injected. </p>
-<p>Annotation attributes:</p>
-<ul>
-<li><em>filter</em>: The filter used to match some OSGi manifest headers from a given bundle.</li>
-<li><em>provides</em>: The interface(s) to use when registering adapters. By default, the interface(s) directly implemented by the annotated class is (are) used.</li>
-<li><em>properties</em>: Additional properties to use with the service registration.</li>
-<li><em>stateMask</em>: the bundle state mask to apply. The mask is made up of the flags provided by the org.osgi.framework.Bundle states (UNINSTALLED | INSTALLED | RESOLVED | STARTING | STARTED | ACTIVE).</li>
-<li><em>propagate</em>: Specifies if manifest headers from the bundle should be propagated to the exposed service properties.</li>
-<li><em>factoryMethod</em>: Sets the static method used to create the BundleAdapterService implementation instance.</li>
-</ul>
-<p>Usage Examples</p>
+<p>Bundle adapters are similar to AdapterService, but instead of adapting a 
+service, they adapt a bundle with a certain set of states (STARTED|INSTALLED|...), and provide a service on top of it.</p>
+<p>The bundle adapter will be applied to any bundle that matches the specified 
+bundle state mask and filter conditions, which may match some of the bundle 
+OSGi manifest headers. For each matching bundle an adapter will be created 
+based on the adapter implementation class. The adapter will be registered 
+with the specified interface and with service properties found from the 
+original bundle OSGi manifest headers plus any extra properties you supply 
+here. If you declare the original bundle as a member it will be injected. </p>
+<h3 id="annotation-attributes_3">Annotation attributes:</h3>
+<hr />
+<p><strong><code>filter</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>The filter used to match some OSGi manifest headers from a given bundle.</p>
+<hr />
+<p><strong><code>provides</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: all directly implemented interfaces.</p>
+<p>The interface(s) to use when registering adapters.
+By default, the interface(s) directly implemented by the annotated class is (are) used.</p>
+<hr />
+<p><strong><code>properties</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Additional properties to use with the service registration.</p>
+<hr />
+<p><strong><code>stateMask</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: INSTALLED | RESOLVED | ACTIVE</p>
+<p>The bundle state mask to apply. The mask is made up of the flags provided by 
+the org.osgi.framework.Bundle states 
+(UNINSTALLED | INSTALLED | RESOLVED | STARTING | STARTED | ACTIVE).</p>
+<hr />
+<p><strong><code>propagate</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: true</p>
+<p>Specifies if manifest headers from the bundle should be propagated to the 
+exposed service properties.</p>
+<hr />
+<p><strong><code>factoryMethod</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Sets the static method used to create the BundleAdapterService implementation 
+instance.</p>
+<h3 id="usage-examples">Usage Examples</h3>
 <p>In the following example, a "VideoPlayer" Service is registered into the OSGi registry each time an active bundle containing a "Video-Path" manifest header is detected:</p>
-<div class="codehilite"><pre> <span class="p">@</span><span class="n">BundleAdapterService</span><span class="p">(</span><span class="n">filter</span> <span class="p">=</span> &quot;<span class="p">(</span><span class="n">Video</span><span class="o">-</span><span class="n">Path</span><span class="p">=</span><span class="o">*</span><span class="p">)</span>&quot;<span class="p">,</span> <span class="n">stateMask</span> <span class="p">=</span> <span class="n">Bundle</span><span class="p">.</span><span class="n">ACTIVE</span><span class="p">,</span> <span class="n">propagate</span><span class="p">=</span><span class="n">true</span><span class="p">)</span>
- <span class="n">public</span> <span class="n">class</span> <span class="n">VideoPlayerImpl</span> <span class="n">implements</span> <span class="n">VideoPlayer</span> <span class="p">{</span>
-     <span class="n">Bundle</span> <span class="n">bundle</span><span class="p">;</span> <span class="o">//</span> <span class="n">Injected</span> <span class="n">by</span> <span class="n">reflection</span>
+<div class="codehilite"><pre><span class="nd">@BundleAdapterService</span><span class="o">(</span><span class="n">filter</span> <span class="o">=</span> <span class="s">&quot;(Video-Path=*)&quot;</span><span class="o">,</span> <span class="n">stateMask</span> <span class="o">=</span> <span class="n">Bundle</span><span class="o">.</span><span class="na">ACTIVE</span><span class="o">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">VideoPlayerImpl</span> <span class="kd">implements</span> <span class="n">VideoPlayer</span> <span class="o">{</span>
+    <span class="n">Bundle</span> <span class="n">bundle</span><span class="o">;</span> <span class="c1">// Injected by reflection</span>
 
-     <span class="n">void</span> <span class="n">play</span><span class="p">()</span> <span class="p">{</span>
-         <span class="n">URL</span> <span class="n">mpegFile</span> <span class="p">=</span> <span class="n">bundle</span><span class="p">.</span><span class="n">getEntry</span><span class="p">(</span><span class="n">bundle</span><span class="p">.</span><span class="n">getHeaders</span><span class="p">().</span><span class="n">get</span><span class="p">(</span>&quot;<span class="n">Video</span><span class="o">-</span><span class="n">Path</span>&quot;<span class="p">));</span>
-         <span class="o">//</span> <span class="n">play</span> <span class="n">the</span> <span class="n">video</span> <span class="n">provided</span> <span class="n">by</span> <span class="n">the</span> <span class="n">bundle</span> <span class="p">...</span>
-     <span class="p">}</span>
+    <span class="kt">void</span> <span class="nf">play</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">URL</span> <span class="n">mpegFile</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="na">getEntry</span><span class="o">(</span><span class="n">bundle</span><span class="o">.</span><span class="na">getHeaders</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;Video-Path&quot;</span><span class="o">));</span>
+        <span class="c1">// play the video provided by the bundle ...</span>
+    <span class="o">}</span>
 
-     <span class="n">void</span> <span class="n">stop</span><span class="p">()</span> <span class="p">{}</span>
- <span class="p">}</span>
+    <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{}</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <h2 id="resourceadapterservice">@ResourceAdapterService</h2>
-<p>Resource adapters are things that adapt a resource instead of a service, and provide an adapter service on top of this resource. Resources are an abstraction that is introduced by the dependency manager, represented as a URL. They can be implemented to serve resources embedded in bundles, somewhere on a file system or in an http content repository server, or database.</p>
-<p>The adapter will be applied to any resource that matches the specified filter condition, which can match some part of the resource URL (with "path", "protocol", "port", or "host" filters). For each matching resource an adapter will be created based on the adapter implementation class. The adapter will be registered with the specified interface and with any extra service properties you supply here. Moreover, the following service properties will be propagated from the resource URL:</p>
+<p>Resource adapters are things that adapt a resource instead of a service, and 
+provide an adapter service on top of this resource. Resources are an 
+abstraction that is introduced by the dependency manager, represented as a URL. They can be implemented to serve resources embedded in bundles, somewhere on a file system or in an http content repository server, or database.</p>
+<p>The adapter will be applied to any resource that matches the specified filter 
+condition, which can match some part of the resource URL (with "path", 
+"protocol", "port", or "host" filters). For each matching resource an 
+adapter will be created based on the adapter implementation class. 
+The adapter will be registered with the specified interface and with any 
+extra service properties you supply here. Moreover, the following service 
+properties will be propagated from the resource URL:</p>
 <ul>
 <li><em>host</em>: this property exposes the host part of the resource URL</li>
 <li><em>path</em>: the resource URL path</li>
 <li><em>protocol</em>: the resource URL protocol</li>
 <li><em>port</em>: the resource URL port </li>
 </ul>
-<p>Usage Examples:</p>
-<p>Here, the "VideoPlayer" service provides a video service on top of any movie resources, with service properties "host"/"port"/"protocol"/"path" extracted from the resource URL:</p>
-<div class="codehilite"><pre> <span class="p">@</span><span class="n">ResourceAdapterService</span><span class="p">(</span><span class="n">filter</span> <span class="p">=</span> &quot;<span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">path</span><span class="p">=</span><span class="o">/</span><span class="n">videos</span><span class="o">/*</span><span class="p">.</span><span class="n">mkv</span><span class="p">)(</span><span class="n">host</span><span class="p">=</span><span class="n">localhost</span><span class="p">))</span>&quot;<span class="p">,</span> <span class="n">propagate</span> <span class="p">=</span> <span class="n">true</span><span class="p">)</span>
- <span class="n">public</span> <span class="n">class</span> <span class="n">VideoPlayerImpl</span> <span class="n">implements</span> <span class="n">VideoPlayer</span> <span class="p">{</span>
-     <span class="o">//</span> <span class="n">Injected</span> <span class="n">by</span> <span class="n">reflection</span>
-     <span class="n">URL</span> <span class="n">resource</span><span class="p">;</span>
+<h3 id="annotation-attributes_4">Annotation attributes</h3>
+<p>TBD</p>
+<h3 id="usage-examples_1">Usage Examples:</h3>
+<p>Here, the "VideoPlayer" service provides a video service on top of any movie 
+resources, with service properties "host"/"port"/"protocol"/"path" extracted 
+from the resource URL:</p>
+<div class="codehilite"><pre><span class="nd">@ResourceAdapterService</span><span class="o">(</span><span class="n">filter</span> <span class="o">=</span> <span class="s">&quot;(&amp;(path=/videos/*.mkv)(host=localhost))&quot;</span><span class="o">,</span> <span class="n">propagate</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">VideoPlayerImpl</span> <span class="kd">implements</span> <span class="n">VideoPlayer</span> <span class="o">{</span>
+    <span class="c1">// Injected by reflection</span>
+    <span class="n">URL</span> <span class="n">resource</span><span class="o">;</span>
 
-     <span class="n">void</span> <span class="n">play</span><span class="p">()</span> <span class="p">{}</span> <span class="o">//</span> <span class="n">play</span> <span class="n">video</span> <span class="n">referenced</span> <span class="n">by</span> <span class="n">this</span><span class="p">.</span><span class="n">resource</span>     
-     <span class="n">void</span> <span class="n">stop</span><span class="p">()</span> <span class="p">{}</span> <span class="o">//</span> <span class="n">stop</span> <span class="n">playing</span> <span class="n">the</span> <span class="n">video</span>
-     <span class="n">void</span> <span class="n">transcode</span><span class="p">()</span> <span class="p">{}</span> <span class="o">//</span> <span class="p">...</span>
- <span class="p">}</span>
+    <span class="kt">void</span> <span class="nf">play</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// play video referenced by this.resource     </span>
+    <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// stop playing the video</span>
+    <span class="kt">void</span> <span class="nf">transcode</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// ...</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <h2 id="factoryconfigurationadapterservice">@FactoryConfigurationAdapterService</h2>
-<p>Annotates a class that acts as a Factory Configuration Adapter Service. For each new Config Admin factory configuration matching the specified factoryPid, an instance of this service will be created. The adapter will be registered with the specified interface, and with the specified adapter service properties. Depending on the propagate parameter, every public factory configuration properties (which don't start with ".") will be propagated along with the adapter service properties.</p>
-<p>Like in @ConfigurationDependency, you can optionally specify the meta types of your configurations for Web Console GUI customization (configuration heading/descriptions/default values/etc ...). </p>
-<p>Annotation attributes:</p>
+<p>Annotates a class that acts as a Factory Configuration Adapter Service. 
+For each new Config Admin factory configuration matching the specified 
+factoryPid, an instance of this service will be created. The adapter will be 
+registered with the specified interface, and with the specified adapter 
+service properties. Depending on the propagate parameter, every public 
+factory configuration properties (which don't start with ".") will be 
+propagated along with the adapter service properties.</p>
+<p>Like in @ConfigurationDependency, you can optionally specify the meta types of 
+your configurations for Web Console GUI customization (configuration 
+heading/descriptions/default values/etc ...). </p>
+<h3 id="annotation-attributes_5">Annotation attributes:</h3>
+<hr />
+<p><strong><code>provides</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: all directly implemented interfaces.
+The interface(s) to use when registering adapters. By default, directly implemented interfaces will be registered in the OSGi registry. </p>
+<hr />
+<p><strong><code>properties</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Adapter Service properties. Notice that public factory configuration is also 
+registered in service properties, (only if propagate is true). 
+Public factory configuration properties are those which don't starts with a 
+dot (".").</p>
+<hr />
+<p><strong><code>factoryPid</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: The class name, including the package.</p>
+<p>Returns the factory pid whose configurations will instantiate the 
+annotated service class. 
+(By default, the pid is the service class name). </p>
+<hr />
+<p><strong><code>updated</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: "updated"</p>
+<p>The Update method to invoke (defaulting to "updated"), when a factory 
+configuration is created or updated </p>
+<hr />
+<p><strong><code>propagate</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: false</p>
+<p>Returns true if the configuration properties must be published 
+along with the service. Any additional service properties specified directly 
+are merged with these. </p>
+<hr />
+<p><strong><code>heading</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>The label used to display the tab name (or section) where the properties are 
+displayed. Example: "Printer Service". </p>
+<hr />
+<p><strong><code>description</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>A human readable description of the PID this annotation is associated with. 
+Example: "Configuration for the PrinterService bundle". </p>
+<hr />
+<p><strong><code>factoryMethod</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Sets the static method used to create the adapter instance.</p>
+<hr />
+<p><strong><code>metadata</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --
+An array of "PropertyMetaData annotations, specifying property types used to 
+expose properties in web console</p>
+<h3 id="propertymetadata-anotation-attributes">PropertyMetaData anotation attributes:</h3>
+<hr />
+<p><strong><code>description</code></strong>  <br />
+<em>Required</em>: True  <br />
+<em>Default</em>: --
+Returns the property description. The description may be localized and must 
+describe the semantics of this type and any constraints. 
+Example: "Select the log level for the Printer Service".</p>
+<hr />
+<p><strong><code>type</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: String</p>
+<p>Return the property primitive type (java.lang.String.class by default). 
+If must be either one of the following types:</p>
 <ul>
-<li><em>provides</em>: The interface(s) to use when registering adapters. By default, directly implemented interfaces will be registered in the OSGi registry. </li>
-<li><em>properties</em>: Adapter Service properties. Notice that public factory configuration is also registered in service properties, (only if propagate is true). Public factory configuration properties are those which don't starts with a dot (".").</li>
-<li><em>factoryPid</em>: Returns the factory pid whose configurations will instantiate the annotated service class. (By default, the pid is the service class name). </li>
-<li><em>updated</em>: The Update method to invoke (defaulting to "updated"), when a factory configuration is created or updated </li>
-<li><em>propagate</em>: Returns true if the configuration properties must be published along with the service. Any additional service properties specified directly are merged with these. </li>
-<li><em>heading</em>: The label used to display the tab name (or section) where the properties are displayed. Example: "Printer Service". </li>
-<li><em>description</em>: A human readable description of the PID this annotation is associated with. Example: "Configuration for the PrinterService bundle". </li>
-<li><em>factoryMethod</em>: Sets the static method used to create the adapter instance.</li>
-<li><em>metadata</em>: an array of  "PropertyMetaData<a href=""></a>" annotations, specifying property types used to expose properties in web console</li>
+<li>String.class</li>
+<li>Long.class</li>
+<li>Integer.class</li>
+<li>Character.class</li>
+<li>Byte.class</li>
+<li>Double.class</li>
+<li>Float.class</li>
+<li>Boolean.class</li>
 </ul>
-<p>PropertyMetaData anotation attribute: </p>
+<hr />
+<p><strong><code>defaults</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Return a default for this property. The object must be of the appropriate 
+type as defined by the cardinality and getType(). The return type is a list of 
+String objects that can be converted to the appropriate type. 
+The cardinality of the return array must follow the absolute cardinality of
+this type. E.g. if the cardinality = 0, the array must contain 1 element. If 
+the cardinality is 1, it must contain 0 or 1 elements. If it is -5, it must 
+contain from 0 to max 5 elements. Note that the special case of a 0 
+cardinality, meaning a single value, does not allow arrays or vectors of 0 
+elements. </p>
+<hr />
+<p><strong><code>cardinality</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Returns the cardinality of this property (0 by default). The OSGi environment
+handles multi valued properties in arrays or in Vector objects. 
+The return value is defined as follows:</p>
 <ul>
-<li><em>description</em>: Returns the property description. The description may be localized and must describe the semantics of this type and any constraints. Example: "Select the log level for the Printer Service".</li>
-<li><em>type</em>: Return the property primitive type (java.lang.String.class by default). If must be either one of the following types:
-<strong> String.class
-</strong> Long.class
-<strong> Integer.class
-</strong> Character.class
-<strong> Byte.class
-</strong> Double.class
-<strong> Float.class
-</strong> Boolean.class</li>
-<li><em>defaults</em>: Return a default for this property. The object must be of the appropriate type as defined by the cardinality and getType(). The return type is a list of String objects that can be converted to the appropriate type. The cardinality of the return array must follow the absolute cardinality of this type. E.g. if the cardinality = 0, the array must contain 1 element. If the cardinality is 1, it must contain 0 or 1 elements. If it is -5, it must contain from 0 to max 5 elements. Note that the special case of a 0 cardinality, meaning a single value, does not allow arrays or vectors of 0 elements. </li>
-<li><em>cardinality</em>: Return the cardinality of this property (0 by default). The OSGi environment handles multi valued properties in arrays (<a href=""></a>) or in Vector objects. The return value is defined as follows:
-<strong> x = Integer.MIN_VALUE no limit, but use Vector
-</strong> x &lt; 0 -x = max occurrences, store in Vector
-<strong> x &gt; 0 x = max occurrences, store in array <a href=""></a>
-</strong> x = Integer.MAX_VALUE no limit, but use array <a href=""></a>
-** x = 0 1 occurrence required</li>
-<li><em>required</em>: Tells if this property is required or not. </li>
-<li><em>optionLabels</em>: Return a list of valid option labels for this property. The purpose of this method is to allow menus with localized labels. It is associated with the <em>optionValues</em> attribute. The labels returned here are ordered in the same way as the <em>optionValues</em> attribute values. </li>
-<li><em>optionValues</em>: Return a list of option values that this property can take. This list must be in the same sequence as the <em>optionLabels</em> attribute. </li>
+<li>x = Integer.MIN_VALUE:  no limit, but use Vector</li>
+<li>x &lt; 0: -x = max occurrences, store in Vector</li>
+<li>x &gt; 0: x = max occurrences, store in array <a href=""></a></li>
+<li>x = Integer.MAX_VALUE: no limit, but use array <a href=""></a></li>
+<li>x = 0: 1 occurrence required</li>
 </ul>
-<p>Usage Examples
-Here, a "Dictionary" service instance is instantiated for each existing factory configuration instances matching the factory pid "DictionaryServiceFactory".</p>
-<div class="codehilite"><pre>     <span class="err">@</span><span class="nx">FactoryConfigurationAdapterService</span><span class="p">(</span><span class="nx">factoryPid</span><span class="o">=</span><span class="s2">&quot;DictionaryServiceFactory&quot;</span><span class="p">,</span> <span class="nx">updated</span><span class="o">=</span><span class="s2">&quot;updated&quot;</span><span class="p">)</span>
-     <span class="kr">public</span> <span class="kr">class</span> <span class="nx">DictionaryImpl</span> <span class="kr">implements</span> <span class="nx">DictionaryService</span>
-     <span class="p">{</span>
-         <span class="cm">/**</span>
-<span class="cm">          * The key of our config admin dictionary language.</span>
-<span class="cm">          */</span>
-         <span class="kr">final</span> <span class="kr">static</span> <span class="nb">String</span> <span class="nx">LANG</span> <span class="o">=</span> <span class="s2">&quot;lang&quot;</span><span class="p">;</span>
+<hr />
+<p><strong><code>required</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: true</p>
+<p>Tells if this property is required or not. </p>
+<hr />
+<p><strong><code>optionLabels</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Return a list of valid option labels for this property. The purpose of this 
+method is to allow menus with localized labels. It is associated with the 
+<em>optionValues</em> attribute. The labels returned here are ordered in the same 
+way as the <em>optionValues</em> attribute values. </p>
+<hr />
+<p><strong><code>optionValues</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Return a list of option values that this property can take. This list must be 
+in the same sequence as the <em>optionLabels</em> attribute. </p>
+<h3 id="usage-examples_2">Usage Examples</h3>
+<p>Here, a "Dictionary" service instance is instantiated for each existing 
+factory configuration instances matching the "DictionaryServiceFactory" 
+factory pid:</p>
+<div class="codehilite"><pre><span class="nd">@FactoryConfigurationAdapterService</span><span class="o">(</span><span class="n">factoryPid</span><span class="o">=</span><span class="s">&quot;DictionaryServiceFactory&quot;</span><span class="o">,</span> <span class="n">updated</span><span class="o">=</span><span class="s">&quot;updated&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DictionaryImpl</span> <span class="kd">implements</span> <span class="n">DictionaryService</span>
+<span class="o">{</span>
+    <span class="cm">/**</span>
+<span class="cm">      * The key of our config admin dictionary language.</span>
+<span class="cm">      */</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">LANG</span> <span class="o">=</span> <span class="s">&quot;lang&quot;</span><span class="o">;</span>
 
-         <span class="cm">/**</span>
-<span class="cm">          * The key of our config admin dictionary values.</span>
-<span class="cm">          */</span>
-         <span class="kr">final</span> <span class="kr">static</span> <span class="nb">String</span> <span class="nx">WORDS</span> <span class="o">=</span> <span class="s2">&quot;words&quot;</span><span class="p">;</span>
+    <span class="cm">/**</span>
+<span class="cm">      * The key of our config admin dictionary values.</span>
+<span class="cm">      */</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">WORDS</span> <span class="o">=</span> <span class="s">&quot;words&quot;</span><span class="o">;</span>
 
-         <span class="cm">/**</span>
-<span class="cm">          * We store all configured words in a thread-safe data structure, because ConfigAdmin</span>
-<span class="cm">          * may invoke our updated method at any time.</span>
-<span class="cm">          */</span>
-         <span class="kr">private</span> <span class="nx">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span> <span class="nx">m_words</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="p">();</span>
+    <span class="cm">/**</span>
+<span class="cm">      * We store all configured words in a thread-safe data structure, because ConfigAdmin</span>
+<span class="cm">      * may invoke our updated method at any time.</span>
+<span class="cm">      */</span>
+    <span class="kd">private</span> <span class="n">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">m_words</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
 
-         <span class="cm">/**</span>
-<span class="cm">          * Our Dictionary language.</span>
-<span class="cm">          */</span>
-         <span class="kr">private</span> <span class="nb">String</span> <span class="nx">m_lang</span><span class="p">;</span>
+    <span class="cm">/**</span>
+<span class="cm">      * Our Dictionary language.</span>
+<span class="cm">      */</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">m_lang</span><span class="o">;</span>
 
-         <span class="kr">protected</span> <span class="k">void</span> <span class="nx">updated</span><span class="p">(</span><span class="nx">Dictionary</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span> <span class="o">?&gt;</span> <span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
-             <span class="nx">m_lang</span> <span class="o">=</span> <span class="p">(</span><span class="nb">String</span><span class="p">)</span> <span class="nx">config</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">LANG</span><span class="p">);</span>
-             <span class="nx">m_words</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
-             <span class="nb">String</span><span class="p">[]</span> <span class="nx">words</span> <span class="o">=</span> <span class="p">(</span><span class="nb">String</span><span class="p">[])</span> <span class="nx">config</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">WORDS</span><span class="p">);</span>
-             <span class="k">for</span> <span class="p">(</span><span class="nb">String</span> <span class="nx">word</span> <span class="o">:</span> <span class="nx">words</span><span class="p">)</span> <span class="p">{</span>
-                 <span class="nx">m_words</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">word</span><span class="p">);</span>
-             <span class="p">}</span>
-         <span class="p">}</span>   
-         <span class="p">...</span>
-     <span class="p">}</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="o">?&gt;</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">m_lang</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LANG</span><span class="o">);</span>
+        <span class="n">m_words</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">words</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">[])</span> <span class="n">config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">WORDS</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">word</span> <span class="o">:</span> <span class="n">words</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">m_words</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">word</span><span class="o">);</span>
+        <span class="o">}</span>
+     <span class="o">}</span>   
+         <span class="c1">// ...</span>
+<span class="o">}</span>
 </pre></div>
 
 
 <p>Here, this is the same example as above, but using meta types:</p>
-<div class="codehilite"><pre>     <span class="err">@</span><span class="nx">FactoryConfigurationAdapterService</span><span class="p">(</span>
-         <span class="nx">factoryPid</span><span class="o">=</span><span class="s2">&quot;DictionaryServiceFactory&quot;</span><span class="p">,</span> 
-         <span class="nx">propagate</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> 
-         <span class="nx">updated</span><span class="o">=</span><span class="s2">&quot;updated&quot;</span><span class="p">,</span>
-         <span class="nx">heading</span><span class="o">=</span><span class="s2">&quot;Dictionary Services&quot;</span><span class="p">,</span>
-         <span class="nx">description</span><span class="o">=</span><span class="s2">&quot;Declare here some Dictionary instances, allowing to instantiates some DictionaryService services for a given dictionary language&quot;</span><span class="p">,</span>
-         <span class="nx">metadata</span><span class="o">=</span><span class="p">{</span>
-             <span class="err">@</span><span class="nx">PropertyMetaData</span><span class="p">(</span>
-                 <span class="nx">heading</span><span class="o">=</span><span class="s2">&quot;Dictionary Language&quot;</span><span class="p">,</span>
-                 <span class="nx">description</span><span class="o">=</span><span class="s2">&quot;Declare here the language supported by this dictionary. &quot;</span> <span class="o">+</span>
-                     <span class="s2">&quot;This property will be propagated with the Dictionary Service properties.&quot;</span><span class="p">,</span>
-                 <span class="nx">defaults</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;en&quot;</span><span class="p">},</span>
-                 <span class="nx">id</span><span class="o">=</span><span class="nx">DictionaryImpl</span><span class="p">.</span><span class="nx">LANG</span><span class="p">,</span>
-                 <span class="nx">cardinality</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-             <span class="err">@</span><span class="nx">PropertyMetaData</span><span class="p">(</span>
-                 <span class="nx">heading</span><span class="o">=</span><span class="s2">&quot;Dictionary words&quot;</span><span class="p">,</span>
-                 <span class="nx">description</span><span class="o">=</span><span class="s2">&quot;Declare here the list of words supported by this dictionary. This properties starts with a Dot and won&#39;t be propagated with Dictionary OSGi service properties.&quot;</span><span class="p">,</span>
-                 <span class="nx">defaults</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">},</span>
-                 <span class="nx">id</span><span class="o">=</span><span class="nx">DictionaryImpl</span><span class="p">.</span><span class="nx">WORDS</span><span class="p">,</span>
-                 <span class="nx">cardinality</span><span class="o">=</span><span class="nx">Integer</span><span class="p">.</span><span class="nx">MAX_VALUE</span><span class="p">)</span>
-         <span class="p">}</span>
-     <span class="p">)</span>  
-     <span class="kr">public</span> <span class="kr">class</span> <span class="nx">DictionaryImpl</span> <span class="kr">implements</span> <span class="nx">DictionaryService</span>
-     <span class="p">{</span>
-         <span class="cm">/**</span>
-<span class="cm">          * The key of our config admin dictionary language.</span>
-<span class="cm">          */</span>
-         <span class="kr">final</span> <span class="kr">static</span> <span class="nb">String</span> <span class="nx">LANG</span> <span class="o">=</span> <span class="s2">&quot;lang&quot;</span><span class="p">;</span>
+<div class="codehilite"><pre><span class="nd">@FactoryConfigurationAdapterService</span><span class="o">(</span>
+      <span class="n">factoryPid</span><span class="o">=</span><span class="s">&quot;DictionaryServiceFactory&quot;</span><span class="o">,</span> 
+      <span class="n">propagate</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> 
+      <span class="n">updated</span><span class="o">=</span><span class="s">&quot;updated&quot;</span><span class="o">,</span>
+      <span class="n">heading</span><span class="o">=</span><span class="s">&quot;Dictionary Services&quot;</span><span class="o">,</span>
+      <span class="n">description</span><span class="o">=</span><span class="s">&quot;Declare here some Dictionary instances, allowing to instantiates some DictionaryService services for a given dictionary language&quot;</span><span class="o">,</span>
+      <span class="n">metadata</span><span class="o">={</span>
+          <span class="nd">@PropertyMetaData</span><span class="o">(</span>
+                 <span class="n">heading</span><span class="o">=</span><span class="s">&quot;Dictionary Language&quot;</span><span class="o">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s">&quot;Declare here the language supported by this dictionary. &quot;</span> <span class="o">+</span>
+                     <span class="s">&quot;This property will be propagated with the Dictionary Service properties.&quot;</span><span class="o">,</span>
+                 <span class="n">defaults</span><span class="o">={</span><span class="s">&quot;en&quot;</span><span class="o">},</span>
+                 <span class="n">id</span><span class="o">=</span><span class="n">DictionaryImpl</span><span class="o">.</span><span class="na">LANG</span><span class="o">,</span>
+                 <span class="n">cardinality</span><span class="o">=</span><span class="mi">0</span><span class="o">),</span>
+          <span class="nd">@PropertyMetaData</span><span class="o">(</span>
+                 <span class="n">heading</span><span class="o">=</span><span class="s">&quot;Dictionary words&quot;</span><span class="o">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s">&quot;Declare here the list of words supported by this dictionary. This properties starts with a Dot and won&#39;t be propagated with Dictionary OSGi service properties.&quot;</span><span class="o">,</span>
+                 <span class="n">defaults</span><span class="o">={</span><span class="s">&quot;hello&quot;</span><span class="o">,</span> <span class="s">&quot;world&quot;</span><span class="o">},</span>
+                 <span class="n">id</span><span class="o">=</span><span class="n">DictionaryImpl</span><span class="o">.</span><span class="na">WORDS</span><span class="o">,</span>
+                 <span class="n">cardinality</span><span class="o">=</span><span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">)</span>
+      <span class="o">}</span>
+  <span class="o">)</span>  
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">DictionaryImpl</span> <span class="kd">implements</span> <span class="n">DictionaryService</span>
+  <span class="o">{</span>
+     <span class="cm">/**</span>
+<span class="cm">       * The key of our config admin dictionary language.</span>
+<span class="cm">       */</span>
+     <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">LANG</span> <span class="o">=</span> <span class="s">&quot;lang&quot;</span><span class="o">;</span>
 
-         <span class="cm">/**</span>
-<span class="cm">          * The key of our config admin dictionary values.</span>
-<span class="cm">          */</span>
-         <span class="kr">final</span> <span class="kr">static</span> <span class="nb">String</span> <span class="nx">WORDS</span> <span class="o">=</span> <span class="s2">&quot;words&quot;</span><span class="p">;</span>
+     <span class="cm">/**</span>
+<span class="cm">       * The key of our config admin dictionary values.</span>
+<span class="cm">       */</span>
+     <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">WORDS</span> <span class="o">=</span> <span class="s">&quot;words&quot;</span><span class="o">;</span>
 
-         <span class="cm">/**</span>
-<span class="cm">          * We store all configured words in a thread-safe data structure, because ConfigAdmin</span>
-<span class="cm">          * may invoke our updated method at any time.</span>
-<span class="cm">          */</span>
-         <span class="kr">private</span> <span class="nx">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span> <span class="nx">m_words</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="p">();</span>
+     <span class="cm">/**</span>
+<span class="cm">       * We store all configured words in a thread-safe data structure, because ConfigAdmin</span>
+<span class="cm">       * may invoke our updated method at any time.</span>
+<span class="cm">       */</span>
+     <span class="kd">private</span> <span class="n">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">m_words</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
 
-         <span class="cm">/**</span>
-<span class="cm">          * Our Dictionary language.</span>
-<span class="cm">          */</span>
-         <span class="kr">private</span> <span class="nb">String</span> <span class="nx">m_lang</span><span class="p">;</span>
+     <span class="cm">/**</span>
+<span class="cm">       * Our Dictionary language.</span>
+<span class="cm">       */</span>
+     <span class="kd">private</span> <span class="n">String</span> <span class="n">m_lang</span><span class="o">;</span>
 
-         <span class="kr">protected</span> <span class="k">void</span> <span class="nx">updated</span><span class="p">(</span><span class="nx">Dictionary</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span> <span class="o">?&gt;</span> <span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
-             <span class="nx">m_lang</span> <span class="o">=</span> <span class="p">(</span><span class="nb">String</span><span class="p">)</span> <span class="nx">config</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">LANG</span><span class="p">);</span>
-             <span class="nx">m_words</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
-             <span class="nb">String</span><span class="p">[]</span> <span class="nx">words</span> <span class="o">=</span> <span class="p">(</span><span class="nb">String</span><span class="p">[])</span> <span class="nx">config</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">WORDS</span><span class="p">);</span>
-             <span class="k">for</span> <span class="p">(</span><span class="nb">String</span> <span class="nx">word</span> <span class="o">:</span> <span class="nx">words</span><span class="p">)</span> <span class="p">{</span>
-                 <span class="nx">m_words</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">word</span><span class="p">);</span>
-             <span class="p">}</span>
-         <span class="p">}</span>
+     <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="o">?&gt;</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
+         <span class="n">m_lang</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LANG</span><span class="o">);</span>
+         <span class="n">m_words</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+         <span class="n">String</span><span class="o">[]</span> <span class="n">words</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">[])</span> <span class="n">config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">WORDS</span><span class="o">);</span>
+         <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">word</span> <span class="o">:</span> <span class="n">words</span><span class="o">)</span> <span class="o">{</span>
+             <span class="n">m_words</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">word</span><span class="o">);</span>
+         <span class="o">}</span>
+     <span class="o">}</span>
 
-         <span class="p">...</span>
-     <span class="p">}</span>
+     <span class="c1">// ...</span>
+<span class="o">}</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1525171 by pderop on Fri, 20 Sep 2013 23:10:33 +0000
+        Rev. 1525375 by pderop on Sun, 22 Sep 2013 15:19:30 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

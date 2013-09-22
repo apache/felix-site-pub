@@ -309,16 +309,17 @@ Aspects can be plugged to an existing service at   runtime, and can also be remo
 dynamically. This is transparent, and   the clients using the existing service are not 
 interrupted, they are  just rebound with the aspect service.</p>
 <p>As an example, we go back to our SpellChecker application, and we are now looking at the 
-DictionaryAspect class. This class uses the <em>@Aspect{</em>}Service annotation in order to add 
-some custom words to an English   DictionaryService (with the service property lang=en). 
-The Extra words   to add to the English Dictionary will be configured from ConfigAdmin.<br />
-That's why the class also uses a <em>@ConfigurationDependency</em> annotation:</p>
+DictionaryAspect class. This class uses the <em>@Aspect</em> Service annotation in 
+order to add some custom words to an English DictionaryService (with the 
+service property lang=en). 
+The Extra words to add to the English Dictionary will be configured from 
+ConfigAdmin.  That's why the class also uses a <em>@ConfigurationDependency</em> annotation:</p>
 <div class="codehilite"><pre><span class="nd">@AspectService</span><span class="o">(</span><span class="n">ranking</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">filter</span> <span class="o">=</span> <span class="s">&quot;(lang=en)&quot;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">DictionaryAspect</span> <span class="kd">implements</span> <span class="n">DictionaryService</span> <span class="o">{</span>
    <span class="cm">/**</span>
 <span class="cm">    * This is the service this aspect is applying to.</span>
 <span class="cm">    */</span>
-   <span class="kd">private</span> <span class="n">DictionaryService</span> <span class="n">m_originalDictionary</span><span class="o">;</span>
+   <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">DictionaryService</span> <span class="n">m_originalDictionary</span><span class="o">;</span>
 
    <span class="cm">/**</span>
 <span class="cm">    * We store all configured words in a thread-safe data structure, because ConfigAdmin may</span>
@@ -393,7 +394,7 @@ Then click on Save. At this point, the English  DictionaryService will be decora
 the aspect service. So, now, if  you type "spellcheck aspect", then the message 
 "word aspect is  correct" should be displayed.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1525171 by pderop on Fri, 20 Sep 2013 23:10:33 +0000
+        Rev. 1525358 by pderop on Sun, 22 Sep 2013 13:49:25 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
