@@ -84,162 +84,219 @@
 </div>
 <p>This is an implementation of the HTTP Service Specification as described in chapter 102 of the OSGi Compendium. The goal is to provide a standard and simplified way to register servlets and resources in a Servlet container, and to associate them with URIs. It also implement a non-standard extension for registering servlet filters as well as a whiteboard implementation. Complete set of features:</p>
 <ul>
-<li>Standard HTTP Service implementation.</li>
-<li>Extended HTTP Service implementation that allows for servlet filter registration.</li>
-<li>Run either with Jetty or inside your own application server using the servlet bridge.</li>
-<li>A whiteboard implementation for easy registration of servlets and filters.</li>
+<li>Standard HTTP Service implementation;</li>
+<li>Extended HTTP Service implementation that allows for servlet filter registration;</li>
+<li>Run either with Jetty or inside your own application server using the servlet bridge;</li>
+<li>A whiteboard implementation for easy registration of servlets and filters;</li>
 <li>One complete bundle that includes everything to simplify deployment.</li>
 </ul>
 <h2 id="installing">Installing</h2>
 <p>The Apache Felix HTTP Service project includes several bundles. </p>
 <ul>
-<li>org.apache.felix.http.jetty - HTTP Service implementation that is embedding Jetty server.</li>
-<li>org.apache.felix.http.whiteboard - Whiteboard implementation that uses any HTTP Service implementation. </li>
-<li>org.apache.felix.http.bridge - HTTP Service implementation that uses the host applicaiton server (bridged mode). Must be used with proxy.</li>
-<li>org.apache.felix.http.bundle - All in one bundle that includes all of the above.</li>
-<li>org.apache.felix.http.proxy - Proxy that is needed inside WAR when deployed inside an application server. </li>
+<li><code>org.apache.felix.http.jetty</code> - HTTP Service implementation that is embedding Jetty server;</li>
+<li><code>org.apache.felix.http.whiteboard</code> - Whiteboard implementation that uses any HTTP Service implementation;</li>
+<li><code>org.apache.felix.http.bridge</code> - HTTP Service implementation that uses the host application server (bridged mode). Must be used with proxy;</li>
+<li><code>org.apache.felix.http.bundle</code> - All in one bundle that includes all of the above;</li>
+<li><code>org.apache.felix.http.proxy</code> - Proxy that is needed inside WAR when deployed inside an application server. </li>
 </ul>
 <p>So, in most cases you could just use <strong>org.apache.felix.http.bundle</strong> and forget about all the other ones.</p>
 <h2 id="using-the-httpservice">Using the HttpService</h2>
 <p>The main components provided by the Apache Felix HTTP Service bundle are:</p>
 <ul>
-<li><code>HttpService</code> - Service used to dynamically register resources and servlets </li>
-<li><code>HttpContext</code> - Additional (optional) component to handle authentication, resource and mime type mappings</li>
+<li><code>HttpService</code> - Service used to dynamically register resources and servlets;</li>
+<li><code>HttpContext</code> - Additional (optional) component to handle authentication, resource and mime type mappings.</li>
 </ul>
 <p>Servlets created for the OSGi HTTP service don't need to have any reference to the OSGi specification (they only need to conform to the Servlet specification), like in the example:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld</span> <span class="kd">extends</span> <span class="n">HttpServlet</span>
-<span class="o">{</span>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
   <span class="nd">@Override</span>
-  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">resp</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> 
-  <span class="o">{</span>
+  <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">resp</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
     <span class="n">resp</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&quot;Hello World&quot;</span><span class="o">);</span>      
-  <span class="o">}</span> 
-<span class="o">}</span>
-</pre></div>
-
-
-<p>To register a Servlet and map it to a URI, you need to retrieve the <code>HttpService</code> and call its <code>registerServlet</code> method:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span>
-<span class="o">{</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> 
-  <span class="o">{</span>
-    <span class="n">ServiceReference</span> <span class="n">sRef</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getServiceReference</span><span class="o">(</span><span class="n">HttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">sRef</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
-    <span class="o">{</span>
-      <span class="n">HttpService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">sRef</span><span class="o">);</span>
-      <span class="n">service</span><span class="o">.</span><span class="na">registerServlet</span><span class="o">(</span><span class="s">&quot;/hello&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">(),</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-    <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
 
-<p>In the same way, you can unregister a Servlet (for instance, in the <code>stop</code> method of the Bundle Activator) calling the <code>HttpService.unregister</code> method.</p>
+<p>To register a Servlet and map it to a URI, you need to retrieve the <code>HttpService</code> and call its <code>registerServlet</code> method. For this example, a <code>ServiceTracker</code> is used to ensure that the registration occurs when a <code>HttpService</code> actually is available, and a deregistration occurs when the <code>HttpService</code> becomes unavailable. Alternatively, you can use more high-level dependency management libraries, like <a href="http://felix.apache.org/documentation/subprojects/apache-felix-service-component-runtime.html">Declarative Services</a>, <a href="http://felix.apache.org/site/apache-felix-dependency-manager.html">Felix Dependency Manager</a>, or Felix HTTP whiteboard service (see below).</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="n">ServiceTracker</span> <span class="n">httpTracker</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">httpTracker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceTracker</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">HttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removedService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">,</span> <span class="n">Object</span> <span class="n">service</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// HTTP service is no longer available, unregister our servlet...</span>
+        <span class="k">try</span> <span class="o">{</span>
+           <span class="o">((</span><span class="n">HttpService</span><span class="o">)</span> <span class="n">service</span><span class="o">).</span><span class="na">unregister</span><span class="o">(</span><span class="s">&quot;/hello&quot;</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
+           <span class="c1">// Ignore; servlet registration probably failed earlier on...</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+
+      <span class="kd">public</span> <span class="n">Object</span> <span class="nf">addingService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// HTTP service is available, register our servlet...</span>
+        <span class="n">HttpService</span> <span class="n">httpService</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpService</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+          <span class="n">httpService</span><span class="o">.</span><span class="na">registerServlet</span><span class="o">(</span><span class="s">&quot;/hello&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">HelloWorld</span><span class="o">(),</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">exception</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">httpService</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">};</span>
+    <span class="c1">// start tracking all HTTP services...</span>
+    <span class="n">httpTracker</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="c1">// stop tracking all HTTP services...</span>
+    <span class="n">httpTracker</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>In the same way, you can unregister a Servlet (for instance, in the <code>removedMethod</code> method in the former example) by calling the <code>HttpService.unregister</code> method.</p>
 <p>As you notice in the example above, the <code>registerServlet</code> method accepts four parameters:</p>
 <ul>
-<li>the Servlet alias</li>
-<li>the Servlet instance</li>
-<li>an additional configuration Map</li>
-<li>an HttpContext</li>
+<li>the servlet alias;</li>
+<li>the <code>Servlet</code> instance;</li>
+<li>an additional configuration <code>Dictionary</code>;</li>
+<li>a <code>HttpContext</code>.</li>
 </ul>
 <p>The Servlet alias must begin with a slash and must not end with a slash. When a request is processed, the HTTP Service will try to exact match the requested URI with a registered Servlet. If not existent, it will remove the last '/' in the URI and everything that follows, and try to match the remaining part, and so on.</p>
 <p>An additional configuration Map can be optionally specified; if present, all the parameters contained will be copied in the ServletContext object. </p>
 <p>Finally, an HttpContext object can be optionally specified to handle authentication, mime type and resource mapping. The <code>HttpContext</code> interface is quite simple:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">HttpContext</span>
-<span class="o">{</span>
-  <span class="n">String</span> <span class="nf">getMimeType</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="n">name</span><span class="o">);</span> <span class="c1">//Returns the mime type of the specified resource</span>
-  <span class="n">URL</span> <span class="nf">getResource</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="n">name</span><span class="o">);</span>   <span class="c1">//Returns the URL to retrieve the specified resource</span>
-  <span class="kt">boolean</span> <span class="nf">handleSecurity</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">);</span> <span class="c1">//Manages security for the specified request</span>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">HttpContext</span> <span class="o">{</span>
+  <span class="cm">/** Returns the mime type of the specified resource */</span>
+  <span class="n">String</span> <span class="nf">getMimeType</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="n">name</span><span class="o">);</span>
+
+  <span class="cm">/** Returns the URL to retrieve the specified resource */</span>
+  <span class="n">URL</span> <span class="nf">getResource</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">String</span> <span class="n">name</span><span class="o">);</span>
+
+  <span class="cm">/** Manages security for the specified request */</span>
+  <span class="kt">boolean</span> <span class="nf">handleSecurity</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">);</span> 
 <span class="o">}</span>
 </pre></div>
 
 
-<p>The use of a custom HttpContext is typical when you want to serve static contents with the HTTP Service. Let's see first the simplest example of resource registration (without <code>HttpContext</code>)</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span>
-<span class="o">{</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> 
-  <span class="o">{</span>
-    <span class="n">ServiceReference</span> <span class="n">sRef</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getServiceReference</span><span class="o">(</span><span class="n">HttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">sRef</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
-    <span class="o">{</span>
-      <span class="n">HttpService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">sRef</span><span class="o">);</span>
-      <span class="n">service</span><span class="o">.</span><span class="na">registerResources</span><span class="o">(</span><span class="s">&quot;/static&quot;</span><span class="o">,</span> <span class="s">&quot;/etc/www&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-    <span class="o">}</span>
+<p>The use of a custom <code>HttpContext</code> is typical when you want to serve static contents with the HTTP Service. Let's first see an example of resource registration <strong>without</strong> <code>HttpContext</code>:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="n">ServiceTracker</span> <span class="n">httpTracker</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">httpTracker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceTracker</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">HttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removedService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">,</span> <span class="n">Object</span> <span class="n">service</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// HTTP service is no longer available, unregister our resources...</span>
+        <span class="k">try</span> <span class="o">{</span>
+           <span class="o">((</span><span class="n">HttpService</span><span class="o">)</span> <span class="n">service</span><span class="o">).</span><span class="na">unregister</span><span class="o">(</span><span class="s">&quot;/static&quot;</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
+           <span class="c1">// Ignore; servlet registration probably failed earlier on...</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+
+      <span class="kd">public</span> <span class="n">Object</span> <span class="nf">addingService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// HTTP service is available, register our resources...</span>
+        <span class="n">HttpService</span> <span class="n">httpService</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpService</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+          <span class="n">httpService</span><span class="o">.</span><span class="na">registerResources</span><span class="o">(</span><span class="s">&quot;/static&quot;</span><span class="o">,</span> <span class="s">&quot;/etc/www&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">exception</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">httpService</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">};</span>
+    <span class="c1">// start tracking all HTTP services...</span>
+    <span class="n">httpTracker</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="c1">// stop tracking all HTTP services...</span>
+    <span class="n">httpTracker</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
 
-<p>As a result of the <code>service.registerResources("/static", "/etc/www", null)</code> code, all the files
+<p>As a result of the <code>httpService.registerResources("/static", "/etc/www", null)</code> code, all the files
 available under <code>/etc/www</code> will be exposed under <code>/static</code> (e.g. <code>http://localhost:8080/static/001.jpg</code>
 will render the <code>/etc/www/001.jpg</code>). However, the example above can be simplistic in practice; the
 <code>HttpContext</code> object is the solution to customize the resource handling.</p>
-<p>For instance, you can set the define more complex URI to file mappings overriding the
-<code>HttpContext.getResource</code> method, or the correct mime type implementing the method <code>HttpContext.getMimeType</code> like in the example:</p>
+<p>For instance, you can set the define more complex URI to file mappings overriding the <code>HttpContext.getResource</code> method, or the correct MIME type implementing the method <code>HttpContext.getMimeType</code> like in the example:</p>
 <div class="codehilite"><pre><span class="c1">//....</span>
-
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">getMimeType</span><span class="o">(</span><span class="n">String</span> <span class="n">file</span><span class="o">)</span> 
-<span class="o">{</span>  
-  <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;.jpg&quot;</span><span class="o">)</span>
-  <span class="o">{</span>  
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">getMimeType</span><span class="o">(</span><span class="n">String</span> <span class="n">file</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;.jpg&quot;</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">return</span> <span class="s">&quot;image/jpeg&quot;</span><span class="o">;</span>  
-  <span class="o">}</span> 
-  <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;.png&quot;</span><span class="o">))</span> 
-  <span class="o">{</span>  
+  <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;.png&quot;</span><span class="o">))</span> <span class="o">{</span>
     <span class="k">return</span> <span class="s">&quot;image/png&quot;</span><span class="o">;</span>  
-  <span class="o">}</span> 
-  <span class="k">else</span> 
-  <span class="o">{</span>  
+  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>  
     <span class="k">return</span> <span class="s">&quot;text/html&quot;</span><span class="o">;</span>  
-  <span class="o">}</span>  
+  <span class="o">}</span>
 <span class="o">}</span>
-
 <span class="c1">//....</span>
 </pre></div>
 
 
-<p>If you implement a customized HttpContext object, don't forget to specify it as third parameter of the <code>registerResources</code> method invocation:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span>
-<span class="o">{</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> 
-  <span class="o">{</span>
-    <span class="n">ServiceReference</span> <span class="n">sRef</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getServiceReference</span><span class="o">(</span><span class="n">HttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">sRef</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
-    <span class="o">{</span>
-      <span class="n">HttpService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">sRef</span><span class="o">);</span>
-      <span class="n">HttpContext</span> <span class="n">myHttpContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyHttpContext</span><span class="o">());</span>
-      <span class="n">service</span><span class="o">.</span><span class="na">registerResources</span><span class="o">(</span><span class="s">&quot;/static&quot;</span><span class="o">,</span> <span class="s">&quot;/etc/www&quot;</span><span class="o">,</span> <span class="n">myHttpContext</span><span class="o">);</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-<span class="o">}</span>
+<p>If you implement a customised <code>HttpContext</code> object, don't forget to specify it as third parameter of the <code>registerResources</code> method invocation:</p>
+<div class="codehilite"><pre><span class="c1">// ....</span>
+      <span class="kd">public</span> <span class="n">Object</span> <span class="nf">addingService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// HTTP service is available, register our resources...</span>
+        <span class="n">HttpService</span> <span class="n">httpService</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpService</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+          <span class="c1">// explicitly use our own context as 3rd parameter...</span>
+          <span class="n">httpService</span><span class="o">.</span><span class="na">registerResources</span><span class="o">(</span><span class="s">&quot;/static&quot;</span><span class="o">,</span> <span class="s">&quot;/etc/www&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">MyHttpContext</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">exception</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">httpService</span><span class="o">;</span>
+      <span class="o">}</span>
+<span class="c1">// ....</span>
 </pre></div>
 
 
 <h2 id="using-the-exthttpservice">Using the ExtHttpService</h2>
-<p>To be able to register filters, it is possible to get hold of <code>org.apache.felix.http.api.ExtHttpService</code>. This is exported by both jetty and the bridged implementation. Let's see the simplest example of a filter registration.</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span>
-<span class="o">{</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> 
-  <span class="o">{</span>
-    <span class="n">ServiceReference</span> <span class="n">sRef</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getServiceReference</span><span class="o">(</span><span class="n">ExtHttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">sRef</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span>
-    <span class="o">{</span>
-      <span class="n">ExtHttpService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">ExtHttpService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">sRef</span><span class="o">);</span>
-      <span class="n">service</span><span class="o">.</span><span class="na">registerFilter</span><span class="o">(</span><span class="k">new</span> <span class="n">HelloWorldFilter</span><span class="o">(),</span> <span class="s">&quot;/hello/.*&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-    <span class="o">}</span>
+<p>To be able to register filters, it is possible to get hold of <code>org.apache.felix.http.api.ExtHttpService</code>. This is exported by both Jetty and the bridged implementation. Let's see an example of a filter registration:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="n">ServiceTracker</span> <span class="n">httpTracker</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">httpTracker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceTracker</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">ExtHttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removedService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">,</span> <span class="n">Object</span> <span class="n">service</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// HTTP service is no longer available, unregister our resources...</span>
+        <span class="k">try</span> <span class="o">{</span>
+           <span class="o">((</span><span class="n">ExtHttpService</span><span class="o">)</span> <span class="n">service</span><span class="o">).</span><span class="na">unregister</span><span class="o">(</span><span class="s">&quot;/static&quot;</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
+           <span class="c1">// Ignore; servlet registration probably failed earlier on...</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+
+      <span class="kd">public</span> <span class="n">Object</span> <span class="nf">addingService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// HTTP service is available, register our resources...</span>
+        <span class="n">ExtHttpService</span> <span class="n">httpService</span> <span class="o">=</span> <span class="o">(</span><span class="n">ExtHttpService</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+          <span class="n">httpService</span><span class="o">.</span><span class="na">registerFilter</span><span class="o">(</span><span class="k">new</span> <span class="n">HelloWorldFilter</span><span class="o">(),</span> <span class="s">&quot;/hello/.*&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">exception</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">httpService</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">};</span>
+    <span class="c1">// start tracking all HTTP services...</span>
+    <span class="n">httpTracker</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="c1">// stop tracking all HTTP services...</span>
+    <span class="n">httpTracker</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
 
 <h2 id="using-the-whiteboard">Using the Whiteboard</h2>
-<p>The whiteboard implementation simplifies the task of registering servlets and filters. A servlet (or filter) can be registered by exporting it as a service. The whiteboard implementation detects all <code>javax.servlet.Servlet</code>, <code>javax.servlet.Filter</code> and <code>org.osgi.service.http.HttpContext</code> services with the right service properties. Let us illustrate the usage by registering a servlet:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span>
-<span class="o">{</span>
+<p>The whiteboard implementation simplifies the task of registering servlets and filters. A servlet (or filter) can be registered by exporting it as a service, making it no longer necessary to track and use the <code>HttpService</code> directly. The whiteboard implementation detects all <code>javax.servlet.Servlet</code>, <code>javax.servlet.Filter</code> and <code>org.osgi.service.http.HttpContext</code> services with the right service properties. Let us illustrate the usage by registering a servlet:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
   <span class="kd">private</span> <span class="n">ServiceRegistration</span> <span class="n">registration</span><span class="o">;</span>
 
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> 
-  <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
     <span class="n">Hashtable</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">();</span>
     <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;alias&quot;</span><span class="o">,</span> <span class="s">&quot;/hello&quot;</span><span class="o">);</span>
     <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;init.message&quot;</span><span class="o">,</span> <span class="s">&quot;Hello World!&quot;</span><span class="o">);</span>
@@ -247,8 +304,7 @@ will render the <code>/etc/www/001.jpg</code>). However, the example above can b
     <span class="k">this</span><span class="o">.</span><span class="na">registration</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">registerService</span><span class="o">(</span><span class="n">Servlet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="k">new</span> <span class="n">HelloWorldServlet</span><span class="o">(),</span> <span class="n">props</span><span class="o">);</span>
   <span class="o">}</span>
 
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> 
-  <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
     <span class="k">this</span><span class="o">.</span><span class="na">registration</span><span class="o">.</span><span class="na">unregister</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -439,7 +495,7 @@ applicaiton server. A little setup is needed for this to work:</p>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1526825 by jawi on Fri, 27 Sep 2013 08:09:38 +0000
+        Rev. 1527293 by jawi on Sun, 29 Sep 2013 10:09:56 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
