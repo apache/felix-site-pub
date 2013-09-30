@@ -161,14 +161,14 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="service-dependency-management">Service Dependency Management</h1>
+            <h1 id="requiring-services">Requiring services</h1>
 <p><em>One of the main iPOJO feature is the service injection. So, a component can consume a service without managing the service discovery, tracking and binding. iPOJO manages all these interactions and injects required service into the component. This page explains how to use services.</em></p>
 <div class="toc">
 <ul>
-<li><a href="#service-dependency-management">Service Dependency Management</a><ul>
-<li><a href="#service-requirement">Service Requirement</a><ul>
-<li><a href="#whats-a-service-requirement">What's a service requirement?</a></li>
-<li><a href="#dynamism-instance-lifecycle">Dynamism &amp; Instance Lifecycle</a></li>
+<li><a href="#requiring-services">Requiring services</a><ul>
+<li><a href="#service-dependency">Service Dependency</a><ul>
+<li><a href="#whats-a-service-dependency">What's a service dependency?</a></li>
+<li><a href="#dynamism-resilience-instance-lifecycle">Dynamism, Resilience &amp; Instance Lifecycle</a></li>
 </ul>
 </li>
 <li><a href="#service-requirement-injection-mechanisms">Service Requirement Injection Mechanisms</a><ul>
@@ -201,8 +201,9 @@
 <li><a href="#targeting-a-specific-provider">Targeting a specific provider</a></li>
 </ul>
 </li>
-<li><a href="#binding-policies">Binding Policies</a></li>
-<li><a href="#note-about-nullable-object-default-implementation">Note about nullable object &amp; default-implementation</a></li>
+<li><a href="#managing-resilience-to-dynamism-binding-policies">Managing resilience to dynamism - Binding Policies</a></li>
+<li><a href="#optional-scalar-dependencies-no-service-actions">Optional Scalar Dependencies - No Service actions</a></li>
+<li><a href="#wait-for-service-the-timeout-option">Wait for service : the timeout option</a></li>
 <li><a href="#note-about-callbacks">Note about Callbacks</a></li>
 <li><a href="#proxies">Proxies</a></li>
 <li><a href="#note-on-service-interface-discovery">Note on service interface discovery</a></li>
@@ -210,18 +211,16 @@
 </li>
 </ul>
 </div>
-<h2 id="service-requirement">Service Requirement</h2>
-<h3 id="whats-a-service-requirement">What's a service requirement?</h3>
-<p>A requirement represents a required service. Therefore, it manages the service lookup and the service binding. When an instance requires a service, the handler injects directly a service object inside a field, or invokes a method when a consistent service appears (or disappears). Service requirements can be:</p>
+<h2 id="service-dependency">Service Dependency</h2>
+<h3 id="whats-a-service-dependency">What's a service dependency?</h3>
+<p>A required service is described by a service dependency. The dependency defines what kind of service is required, how to select the it, the resilience to its dynamism... iPOJO handles all these aspects for you, just tell, iPOJO tracks, selects, binds and injects the matching services directly in your code. Service dependencies can be:</p>
 <ul>
-<li>Simple / Aggregate : the component can require      one or several service providers</li>
-<li>Mandatory / Optional : a component can declare an      optional dependency</li>
-<li>Filtered : a component can filter available      providers</li>
-<li>Dynamic / Static / Dynamic-Priority : the      component can specify the binding policy</li>
-<li>Specific : the dependency targets a specific service provider</li>
-<li>Proxy : by default, iPOJO injects a smart proxy, but it can also be a dynamic proxy or the direct references</li>
+<li>Scalar or Aggregate : the component can require one or several service providers</li>
+<li>Mandatory or Optional : a component can declare an optional dependency, and defined what should be done when no services are available</li>
+<li>Filtered : a component can filter available providers, and even choose a specific provider</li>
+<li>Resilient to dynamism : iPOJO supports three binding policy depending on your reaction to dynamism</li>
 </ul>
-<h3 id="dynamism-instance-lifecycle">Dynamism &amp; Instance Lifecycle</h3>
+<h3 id="dynamism-resilience-instance-lifecycle">Dynamism, Resilience &amp; Instance Lifecycle</h3>
 <p>In OSGi™, services can appear and disappear dynamically. This implies dependencies can target a provider which can appear or disappear dynamically. So, dependencies need to manage this dynamism by tracking every time available services. At any moment, a dependency can be unresolved (i.e. no more provider can fulfill the requirement). In the case of a mandatory requirement, the instance becomes invalid (an invalid instance is no more accessible externally, for example provided services are unpublished). If a service, resolving the unfilled dependency appears, the instance becomes valid. In consequence, dependencies affect directly the instance state, and must manage correctly OSGi dynamism to allow a complete unloading when a service goes away. As soon a mandatory dependency cannot be fulfilled, the instance is invalidated.</p>
 <p>By default, dependencies are managed dynamically (as previously explained). However, iPOJO supports two other types of binding policies:</p>
 <ul>
@@ -762,7 +761,7 @@ public class HelloConsumer {
 
 
 <p>The FOO component type declares a service dependency with the 'id1' id. This dependency has no 'from' attribute by default. The first instance is just an instance of the FOO component type and does not modify the dependency. The second one adds a 'from' attribute to the declared dependency to target the 'myprovider' provider. The last one adds another 'from' clause to the declared dependency.</p>
-<h2 id="binding-policies">Binding Policies</h2>
+<h2 id="managing-resilience-to-dynamism-binding-policies">Managing resilience to dynamism - Binding Policies</h2>
 <p>Three binding policies are supported inside iPOJO.</p>
 <ul>
 <li>Dynamic policy (default): the binding are managed dynamically. At each injection, the same provider is injected if the provider is always available. Else a new one is chosen. For aggregate dependency, the array order does not change; new providers are placed at the end of the array.</li>
@@ -802,16 +801,20 @@ public class HelloConsumer {
 </pre></div>
 
 
-<h2 id="note-about-nullable-object-default-implementation">Note about nullable object &amp; default-implementation</h2>
-<p>The instance implementation can use an optional dependency without any checking. Indeed, when an instance declares an optional dependency using field injection, iPOJO create on the fly a Nullable class implementing the service specification but doing nothing (mock object). Therefore, iPOJO cannot return a service to the instance, for an optional dependency, it returns a nullable object.</p>
-<p>A nullable object returns:</p>
+<h2 id="optional-scalar-dependencies-no-service-actions">Optional Scalar Dependencies - No Service actions</h2>
+<p>When using optional dependencies a special case needs to be handled for field and contructor injection: what happen when there are no service providers available. By default, iPOJO uses <code>nullable</code> objects. It has the advantage to not require any additional code. However, iPOJO supports other options:</p>
 <ul>
-<li>Null when the method returns an object</li>
-<li>0 when the method returns an int, log, byte, short, char, float or a double</li>
-<li>False when the method return a boolean</li>
+<li><code>null</code> : injects <code>null</code> instead of a nullable object, it requires <code>null</code> check before using the inject service</li>
+<li><code>default-implementation</code> : injects a specific implementation of the service that you provide. It must implement the same service interface.</li>
+<li><code>exception</code> : throws a runtime exception (that you specify), it requires a <code>try-catch</code> block for specific management.</li>
 </ul>
-<p>You can check if the returned object is a nullable object with the test: <em>"myservice instanceof Nullable"</em>.</p>
-<p>You can disable the Nullable pattern too (activated by default). In this case, iPOJO injects <code>null</code> instead of a <em>Nullable</em> object. So, you can just test if your field is equals to <em>null</em> to check if the service is available. To disable the Nullable pattern, you need to add the 'nullable="false"' attribute in your service dependency description as follows:</p>
+<p>By default, scalar optional dependencies injects a <code>nullable</code> object, i.e. a mock implementing the service interface but does not implement any behavior. A nullable object returns:</p>
+<ul>
+<li><code>null</code> when the method returns an object</li>
+<li><code>0</code> when the method returns an int, log, byte, short, char, float or a double</li>
+<li><code>false</code> when the method return a boolean</li>
+</ul>
+<p>To inject <code>null</code> instead of a <code>nullable</code> object, just set the <code>nullable</code> attribute to <code>false</code>. </p>
 <div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">optional</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
 <span class="kd">private</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span>
 </pre></div>
@@ -822,21 +825,50 @@ public class HelloConsumer {
 </pre></div>
 
 
-<p>However, you can also indicate a <em>default-implementation</em> for your optional service. In this case, if no providers are found, iPOJO creates an instance of the default-implementation and injects it. The default-implementation attribute describes the class name of your implementation. The given class <em>MUST</em> implement the required service interface.</p>
-<p>For example, the following component uses a default implementation for a Log Service dependency:</p>
+<p>However be aware that in this case, you must check for <code>null</code> before using the service:</p>
+<div class="codehilite"><pre><span class="k">if</span> <span class="o">(</span><span class="n">m_log</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">INFO</span><span class="o">,</span> <span class="s">&quot;an important message&quot;</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Don't worry about the synchronization, iPOJO keep the injected object consistent on the entire method flow.</p>
+<p>Sometimes you need to customize the behavior when a service is not available. You can do this directly in your code, but this can be very cumbersome. <code>default-implementation</code> let you inject a fake service when no providers are present. It's like a <code>nullable</code> object, but you can implement your own behavior. The given class <em>MUST</em> implement the required service interface.</p>
+<p>For example, the following component uses a <code>default-implementation</code> for a Log Service dependency:</p>
 <div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">optional</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="k">default</span><span class="o">-</span><span class="n">implementation</span><span class="o">=</span><span class="n">MyLogService</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">private</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span>
 </pre></div>
 
 
-<p>or</p>
+<p>or  </p>
 <div class="codehilite"><pre><span class="nt">&lt;requires</span> <span class="na">field=</span><span class="s">&quot;m_log&quot;</span> <span class="na">optional=</span><span class="s">&quot;true&quot;</span> 
     <span class="na">default-implementation=</span>
        <span class="s">&quot;org.apache.felix.ipojo.example.default.MyLogService&quot;</span><span class="nt">/&gt;</span>
 </pre></div>
 
 
-<p>If the log service is not available, iPOJO creates an object of the 'org.apache.felix.ipojo.example.default.MyLogService' class. This object is injected instead of a Nullable object. For instance, the default implementation can print messages on the System.err stream. The nullable object does no display anything.</p>
+<p>If the log service is not available, iPOJO creates an instance of the <code>org.apache.felix.ipojo.example.default.MyLogService</code>. This object is injected instead of the <code>Nullable</code> object. In the example, the default implementation can print messages on the <code>System.err</code>. In comparison, the <code>nullable</code> object would have done nothing.</p>
+<p>Finally, you can also instructs iPOJO to throw a runtime exception when there are no service providers available. This option is often use in combination with the <code>timeout</code> option, that delay the decision. To throw an exception, use the <code>exception</code> attribute specifying the exception class to use. It must be a subclass of <code>RuntimeException</code>. Obvisouly, you can use <code>java.lang.RuntimeException</code> directly.</p>
+<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">optional</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">exception</span><span class="o">=</span><span class="n">NoServiceException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">private</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span>
+</pre></div>
+
+
+<p>or   </p>
+<div class="codehilite"><pre><span class="nt">&lt;requires</span> <span class="na">field=</span><span class="s">&quot;m_log&quot;</span> <span class="na">optional=</span><span class="s">&quot;true&quot;</span> 
+  <span class="na">exception=</span>
+     <span class="s">&quot;org.apache.felix.ipojo.example.default.NoServiceException&quot;</span><span class="nt">/&gt;</span>
+</pre></div>
+
+
+<h2 id="wait-for-service-the-timeout-option">Wait for service : the timeout option</h2>
+<p>For scalar optional dependencies injected inside fields or constructors, you may want to wait for a service to arrive before injecting a <em>stub</em> (<code>nullable</code>, <code>null</code>, <code>default-implementation</code> or <code>exception</code>). The <code>timeout</code> attribute let you specify the amount of time (in milliseconds) to wait. If there are still no services available when the timeout is reached, then the no service action is applied.</p>
+<p>In the following example, the <code>AuthenticationService</code> is essential, but also may be subjected to updates. When the service is not there, you don't want to fail immediately, but give it a chance to re-appear <em>soon</em>:</p>
+<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">optional</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">exception</span><span class="o">=</span><span class="n">UpdateInProgessException</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1000</span><span class="o">)</span>
+<span class="kd">private</span> <span class="n">AuthenticationService</span> <span class="n">m_auth</span><span class="o">;</span>
+</pre></div>
+
+
 <h2 id="note-about-callbacks">Note about Callbacks</h2>
 <p>Dependency manages two type of callback: bind and unbind. A callback with a type "bind" is called each type that a service provider arrives and the binding is necessary. According to the cardinality of the dependency it means:</p>
 <ul>
@@ -854,7 +886,7 @@ public class HelloConsumer {
 <p>The goal of the proxies is to hide the dynamism and more particularly the dynamism. So, you can gives a service dependency to another object, using the service object still supports the dynamism. For collections, you can iterate over the collection without managing the potential departures and arrivals of services. The proxy also manage that the component class and the delegate objects shared the same services is they are accessed in the same Thread.</p>
 <p>By default iPOJO injects proxy except for arrays. Moreover, it is possible to disable the proxy injection by adding <code>proxy=false</code> to the <code>requires</code> element (or to the <code>@Requires</code> and <code>@Bind</code> annotations). It is also possible to inject dynamic proxies (if the platform does not support dynamically generated classes). To enable dynamic proxies, set the system or bundle property <code>ipojo.proxy.type</code> to <code>dynamic-proxy</code>. You can also disable completely the proxy injection by setting the system property <code>ipojo.proxy</code> to <code>disabled</code>.</p>
 <h2 id="note-on-service-interface-discovery">Note on service interface discovery</h2>
-<p>The <code>specification</code> attribute is generally optional except when iPOJO cannot discover the type of the service. iPOJO cannot infer the type when the dependency has no field and callbacks do not receive the service object in parameter. In this case, you must the service specification (i.e. interface).</p>
+<p>The <code>specification</code> attribute is generally optional except when iPOJO cannot discover the type of the service. iPOJO cannot deduce the servce specification when the dependency has no field and callbacks do not receive the service object in parameters. In this case, you must the service specification (i.e. interface).</p>
         </div>
     </div>
 
@@ -869,7 +901,7 @@ public class HelloConsumer {
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1478675 by guillaume on Fri, 3 May 2013 09:00:13 +0000
+                Rev. 1527484 by clement on Mon, 30 Sep 2013 08:19:33 +0000
                 </div>
             </div>
         </footer>           
