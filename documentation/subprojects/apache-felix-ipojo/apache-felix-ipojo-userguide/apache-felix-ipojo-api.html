@@ -108,6 +108,7 @@
                                     <a tabindex="-1" href="#">Advanced topics</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/instance-vs-service-controller.html">Instance vs. Service Controllers</a></li>
+                                        <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/service-binding-interceptors.html">Service Binding Interceptors</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.html">XML Schemas</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.html">Using the iPOJO API</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.html">Constructing service objects with factory methods</a></li>
@@ -117,7 +118,6 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.html">Eclipse Integration</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-extender-configuration.html">Configuring iPOJO's Extender</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.html">FAQ</a></li>
-                                        <li><a href="">Reference Card</a></li>
                                         <li class="divider"></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.html">Handler development</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
@@ -269,18 +269,20 @@ The Service object can be configured. By default, it exposed every implemented i
 <ul>
 <li>Add service property</li>
 <li>Set the creation strategy</li>
-<li>Set the exposed service specifications</li>
-</ul>
+<li>
+<p>Set the exposed service specifications</p>
 <p>:::java
-    new PrimitiveComponentType()
-        .setBundleContext(context)
-        .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
-        .addService(new Service()
-            .addProperty(new ServiceProperty()
-                .setField("myServiceProperty")
-                .setName("sample.myProperty"))
-            .setCreationStrategy(Service.INSTANCE_STRATEGY))
-        .createInstance();</p>
+new PrimitiveComponentType()
+    .setBundleContext(context)
+    .setClassName(org.example.service.impl.MyComponentImpl.class.getName())
+    .addService(new Service()
+        .addProperty(new ServiceProperty()
+            .setField("myServiceProperty")
+            .setName("sample.myProperty"))
+        .setCreationStrategy(Service.INSTANCE_STRATEGY))
+    .createInstance();</p>
+</li>
+</ul>
 <h2 id="service-dependencies">Service Dependencies</h2>
 <p>To declare a service dependency, create and add a Dependency object. The dependency object offers all the iPOJO service dependency features. You can set the injected field and/or bind/unbind methods. Here is an example:</p>
 <div class="codehilite"><pre><span class="k">new</span> <span class="nf">PrimitiveComponentType</span><span class="o">()</span>
@@ -501,7 +503,7 @@ You can also set the the managed service PID with the <code>setManagedServicePID
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1445514 by clement on Wed, 13 Feb 2013 09:20:49 +0000
+                Rev. 1530195 by guillaume on Tue, 8 Oct 2013 09:12:32 +0000
                 </div>
             </div>
         </footer>           
