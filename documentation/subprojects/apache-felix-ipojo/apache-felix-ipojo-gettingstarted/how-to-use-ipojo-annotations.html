@@ -122,7 +122,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.html">Handler development</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.html">Dive into the iPOJO Manipulation depths</a></li>
-                                        <li><a href="http://felix.apache.org/ipojo/api/1.10.1">Javadoc</a></li>
+                                        <li><a href="http://felix.apache.org/ipojo/api/1.11.0">Javadoc</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -136,6 +136,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">Architecture commands</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.html">Online Manipulator</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.html">Webconsole plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-karaf-feature.html">Apache Karaf Features</a></li>
                             </ul>
                         </li>
 
@@ -225,7 +226,7 @@ Once added to your class path / build path / dependencies, you can use the annot
 <div class="codehilite"><pre><span class="nt">&lt;dependency&gt;</span>
       <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
       <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.ipojo.annotations<span class="nt">&lt;/artifactId&gt;</span>
-      <span class="nt">&lt;version&gt;</span>1.10.1<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.11.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
 
@@ -356,7 +357,7 @@ Then, it uses the requires annotation to define a service dependency. Finally, i
 
 <h3 id="requires">@Requires</h3>
 <p><em>Goal:</em> Defines a service dependency
-<em>Target:</em> Field
+<em>Target:</em> Field, Constructor Parameter
 <em>Attributes:</em></p>
 <ul>
 <li>filter: defines the LDAP filter (optional)</li>
@@ -365,7 +366,7 @@ Then, it uses the requires annotation to define a service dependency. Finally, i
 <li>nullable: enable or disable the Null Object injection when the dependency is optional and no providers are available (optional, default = "true")</li>
 <li>defaultimplementation: set the Default-Implmentation (optional, by default iPOJO uses a Null object)</li>
 <li>exception : the class of the runtime exception to throw when no service providers are available </li>
-<li>policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = "dynamic")</li>
+<li>policy: defines the binding policy (optional)</li>
 <li>comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</li>
 <li>from : defines the specific provider to use</li>
 <li>specification : the required service specification. This attribute is required for Collection field. (optional, default = annotated field type). </li>
@@ -397,17 +398,17 @@ A mandatory property must receive a value either from the component type descrip
 </ul>
 <h3 id="property">@Property</h3>
 <p><em>Goal:</em> Defines a property
-<em>Target:</em> Field or Method
+<em>Target:</em> Field, Method, Constructor Parameter
 <em>Attributes:</em></p>
 <ul>
-<li>name: property name (optional, default=field name computed by removing "set" from the method name (for instance setFoo(String ff) will get the Foo name))</li>
+<li>name: property name (optional, default=field name computed by removing "set" from the method name (for instance setFoo(String ff) will get the Foo name), the argument name for constructor injection)</li>
 <li>value: property value (optional, default=no value)</li>
 <li>mandatory : is the property mandatory? (optional, default=false)</li>
 </ul>
 <div class="alert alert-warning">
-  <strong>Field and Method</strong>
+  <strong>Field, Method, Constructor</strong>
     <br/>
-  If another property with the same name is defined the method or the field is added to the existing property.
+  If another property with the same name is defined, the method or field or constructor argument is added to the existing property.
 </div>
 
 <h3 id="updated">@Updated</h3>
@@ -423,7 +424,7 @@ A mandatory property must receive a value either from the component type descrip
 <li>Aggregate : is the dependency an aggregate dependency (optional, default= "false")</li>
 <li>Optional: is the dependency an optional dependency (optional, default= "false")</li>
 <li>Filter: dependency LDAP filter (optional)</li>
-<li>Policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = "dynamic")</li>
+<li>Policy: defines the binding policy (optional)</li>
 <li>Comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</li>
 <li>From : defines the specific provider to use</li>
 </ul>
@@ -437,7 +438,7 @@ A mandatory property must receive a value either from the component type descrip
 <li>Aggregate : is the dependency an aggregate dependency (optional, default= "false")</li>
 <li>Optional: is the dependency an optional dependency (optional, default= "false")</li>
 <li>Filter: dependency LDAP filter (optional)</li>
-<li>Policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = "dynamic")</li>
+<li>Policy: defines the binding policy (optional)</li>
 <li>Comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</li>
 <li>From : defines the specific provider to use</li>
 </ul>
@@ -451,7 +452,7 @@ A mandatory property must receive a value either from the component type descrip
 <li>Aggregate : is the dependency an aggregate dependency (optional, default= "false")</li>
 <li>Optional: is the dependency an optional dependency (optional, default= "false")</li>
 <li>Filter: dependency LDAP filter (optional)</li>
-<li>Policy: defines the binding policy (accepted value : dynamic, static, dynamic-priority) (optional, default = "dynamic")</li>
+<li>Policy: defines the binding policy (optional)</li>
 <li>Comparator: defines the comparator to use to sort service references (optional, default = OSGi Service Reference Comparator)</li>
 <li>From : defines the specific provider to use</li>
 </ul>
@@ -536,7 +537,7 @@ The annotation is <code>org.apache.felix.ipojo.handler.temporal.Requires</code> 
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1530016 by clement on Mon, 7 Oct 2013 18:04:27 +0000
+                Rev. 1531515 by clement on Sat, 12 Oct 2013 08:32:37 +0000
                 </div>
             </div>
         </footer>           

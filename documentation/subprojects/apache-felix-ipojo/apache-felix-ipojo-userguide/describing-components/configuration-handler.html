@@ -122,7 +122,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.html">Handler development</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.html">Dive into the iPOJO Manipulation depths</a></li>
-                                        <li><a href="http://felix.apache.org/ipojo/api/1.10.1">Javadoc</a></li>
+                                        <li><a href="http://felix.apache.org/ipojo/api/1.11.0">Javadoc</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -136,6 +136,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">Architecture commands</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.html">Online Manipulator</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.html">Webconsole plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-karaf-feature.html">Apache Karaf Features</a></li>
                             </ul>
                         </li>
 
@@ -190,9 +191,12 @@
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="nd">@Provides</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
-    <span class="nd">@Property</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;foo&quot;</span><span class="o">)</span>
-    <span class="nd">@ServiceProperty</span>
+    <span class="nd">@Property</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;.foo&quot;</span><span class="o">)</span>
     <span class="kd">private</span> <span class="n">String</span> <span class="n">m_foo</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">MyComponent</span><span class="o">(</span><span class="nd">@Property</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//...</span>
+    <span class="o">}</span>
 
     <span class="nd">@Property</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;array&quot;</span><span class="o">)</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">updateArray</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">array</span><span class="o">)</span> <span class="o">{</span>
@@ -204,12 +208,10 @@
 
 <p>The previous component can also be described using XML:</p>
 <div class="codehilite"><pre><span class="nt">&lt;component</span> <span class="na">classname=</span><span class="s">&quot;...MyComponent&quot;</span><span class="nt">&gt;</span>
-   <span class="nt">&lt;provides&gt;</span>
-       <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;foo&quot;</span> <span class="na">field=</span><span class="s">&quot;m_foo&quot;</span><span class="nt">/&gt;</span>
-   <span class="nt">&lt;/provides&gt;</span>
    <span class="nt">&lt;properties</span> <span class="na">propagation=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
-       <span class="nt">&lt;Property</span> <span class="na">name=</span><span class="s">&quot;foo&quot;</span> <span class="na">field=</span><span class="s">&quot;m_foo&quot;</span><span class="nt">/&gt;</span>
-       <span class="nt">&lt;Property</span> <span class="na">name=</span><span class="s">&quot;array&quot;</span> <span class="na">method=</span><span class="s">&quot;updateArray&quot;</span><span class="nt">/&gt;</span>
+       <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;.foo&quot;</span> <span class="na">field=</span><span class="s">&quot;m_foo&quot;</span><span class="nt">/&gt;</span>
+       <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;array&quot;</span> <span class="na">method=</span><span class="s">&quot;updateArray&quot;</span><span class="nt">/&gt;</span>
+       <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">constructor-index=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/component&gt;</span>
 </pre></div>
@@ -219,13 +221,14 @@
 <div class="codehilite"><pre><span class="nt">&lt;instance</span> <span class="na">component=</span><span class="s">&quot;...MyComponent&quot;</span><span class="nt">&gt;</span>
    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;foo&quot;</span> <span class="na">value=</span><span class="s">&quot;bar&quot;</span><span class="nt">/&gt;</span>
    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;array&quot;</span> <span class="na">value=</span><span class="s">&quot;{1, 2, 3}&quot;</span><span class="nt">/&gt;</span>
+   <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;message&quot;</span> <span class="na">value=</span><span class="s">&quot;hello&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/instance&gt;</span>
 </pre></div>
 
 
 <p>In the previous snippet, you can see three configurable properties. The first is a configurable property attached to the field 'foo' that is a service property too. The second is an array property attached to a method (updatArray). These three properties are configured by the instance configuration.</p>
-<p>By setting the attribute <em>propagation</em> to <em>"true"</em>, you allow the property propagation to the service registration. It means that at each time that the configuration of the instance is updated; all properties contained in the configuration are propagated to the service registrations. For example, in the previous example, not only <code>foo</code> will be published but <code>array</code> are also published. To enable propagation use:</p>
-<div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">propagation</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span>
+<p>By default all properties that do not start with the <code>.</code> (such as <code>.foo</code>) are <em>propagated</em>. Thus, properties are propagated to the service registration. It means that at each time that the configuration of the instance is updated; all properties contained in the configuration are propagated to the service registrations. For example, in the previous example, not only <code>foo</code> will be published but <code>array</code> are also published. To disable propagation use:</p>
+<div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">propagation</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
 </pre></div>
 
 
@@ -325,7 +328,7 @@
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1443561 by clement on Thu, 7 Feb 2013 15:37:01 +0000
+                Rev. 1531515 by clement on Sat, 12 Oct 2013 08:32:37 +0000
                 </div>
             </div>
         </footer>           

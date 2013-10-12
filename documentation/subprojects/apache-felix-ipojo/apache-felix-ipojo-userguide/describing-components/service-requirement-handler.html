@@ -122,7 +122,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.html">Handler development</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.html">Dive into the iPOJO Manipulation depths</a></li>
-                                        <li><a href="http://felix.apache.org/ipojo/api/1.10.1">Javadoc</a></li>
+                                        <li><a href="http://felix.apache.org/ipojo/api/1.11.0">Javadoc</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -136,6 +136,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">Architecture commands</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.html">Online Manipulator</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.html">Webconsole plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-karaf-feature.html">Apache Karaf Features</a></li>
                             </ul>
                         </li>
 
@@ -315,7 +316,7 @@
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">ServiceReference</span><span class="o">&lt;</span><span class="n">HelloService</span><span class="o">&gt;</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
   <span class="c1">// ...</span>
 <span class="o">}</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">ServiceReference</span><span class="o">&lt;?&gt;</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
   <span class="c1">// ...</span>
 <span class="o">}</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bindService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
@@ -497,8 +498,7 @@
 <li>vector</li>
 <li>collection</li>
 <li>
-<p>set
-&nbsp;</p>
+<p>set</p>
 <p>:::java
 @Component
 public class HelloConsumer {
@@ -777,7 +777,7 @@ public class HelloConsumer {
 <li>Dynamic-priority policy: the binding is managed dynamically but the injected provider is selected by using a ranking policy. Two injections can return two different providers, is a new provider is 'better' than the previous one, despite the first one is always available. For aggregate dependency, the array is sorted.</li>
 </ul>
 <p>A static binding is declared as following:</p>
-<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">policy</span><span class="o">=</span><span class="s">&quot;static&quot;</span><span class="o">)</span>
+<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">policy</span><span class="o">=</span><span class="n">BindingPolicy</span><span class="o">.</span><span class="na">STATIC</span><span class="o">)</span>
 <span class="kd">private</span> <span class="n">Hello</span><span class="o">[]</span> <span class="n">m_hellos</span><span class="o">;</span>
 </pre></div>
 
@@ -788,7 +788,7 @@ public class HelloConsumer {
 
 
 <p>A dynamic-priority binding is declared as following:</p>
-<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">policy</span><span class="o">=</span><span class="s">&quot;dynamic-priority&quot;</span><span class="o">)</span>
+<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">policy</span><span class="o">=</span><span class="n">BindingPolicy</span><span class="o">.</span><span class="na">DYNAMIC_PRIORITY</span><span class="o">)</span>
 <span class="kd">private</span> <span class="n">Hello</span><span class="o">[]</span> <span class="n">m_hellos</span><span class="o">;</span>
 </pre></div>
 
@@ -799,7 +799,7 @@ public class HelloConsumer {
 
 
 <p>By default, the dynamic-priority policy uses the OSGi service ranking policy. However, it is possible to customize the policy by adding the '<em>comparator</em>' attribute. This attribute indicates the class name of a class implementing the <code>java.util.Comparator</code> interface. iPOJO creates an instance of your comparator and uses it to sort service references (so your customized comparator needs to be able to sort OSGi Service Reference).</p>
-<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">policy</span><span class="o">=</span><span class="s">&quot;dynamic-priority&quot;</span><span class="o">,</span> <span class="n">comparator</span><span class="o">=</span><span class="n">MyComparator</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<div class="codehilite"><pre><span class="nd">@Requires</span><span class="o">(</span><span class="n">policy</span><span class="o">=</span><span class="n">BindingPolicy</span><span class="o">.</span><span class="na">DYNAMIC_PRIORITY</span><span class="o">,</span> <span class="n">comparator</span><span class="o">=</span><span class="n">MyComparator</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">private</span> <span class="n">Hello</span><span class="o">[]</span> <span class="n">m_hellos</span><span class="o">;</span>
 </pre></div>
 
@@ -909,7 +909,7 @@ public class HelloConsumer {
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1527484 by clement on Mon, 30 Sep 2013 08:19:33 +0000
+                Rev. 1531515 by clement on Sat, 12 Oct 2013 08:32:37 +0000
                 </div>
             </div>
         </footer>           

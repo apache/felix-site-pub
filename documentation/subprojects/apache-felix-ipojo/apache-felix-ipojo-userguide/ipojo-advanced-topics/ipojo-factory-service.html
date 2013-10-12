@@ -122,7 +122,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.html">Handler development</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.html">Manipulation Metadata </a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.html">Dive into the iPOJO Manipulation depths</a></li>
-                                        <li><a href="http://felix.apache.org/ipojo/api/1.10.1">Javadoc</a></li>
+                                        <li><a href="http://felix.apache.org/ipojo/api/1.11.0">Javadoc</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -136,6 +136,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.html">Architecture commands</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.html">Online Manipulator</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.html">Webconsole plugin</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-karaf-feature.html">Apache Karaf Features</a></li>
                             </ul>
                         </li>
 
@@ -199,7 +200,7 @@
 
 <h2 id="the-factory-service">The Factory service</h2>
 <p>Every public factory is exposed as an OSGi service. The
-<a href="http://felix.apache.org/ipojo/api/1.10.1/org/apache/felix/ipojo/Factory.html">org.apache.felix.ipojo.Factory</a> service interface allows you to create and manage instance programmatically.</p>
+<a href="http://felix.apache.org/ipojo/api/1.11.0/org/apache/felix/ipojo/Factory.html">org.apache.felix.ipojo.Factory</a> service interface allows you to create and manage instance programmatically.</p>
 <h3 id="finding-and-using-a-factory-service">Finding and using a Factory service</h3>
 <p>Let's imagine you have the following class:</p>
 <div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;my-factory&quot;</span><span class="o">)</span>
@@ -224,7 +225,7 @@
 <h3 id="retrieving-factory-information">Retrieving factory information</h3>
 <p>Once you have the <code>factory</code> object, you can get a couple of additional metadata. The factory name can be retrieved with <code>getName</code>. Additionally, the factory version is retrieved with the <code>getVersion</code> method.</p>
 <p>The current factory state is accessible with the <code>getState</code> method. A factory can either be <code>VALID</code> or <code>INVALID</code>. A factory is valid only and only if all the required <em>handlers</em> are available (don't worry, you don't really need to know this definition). In other words, when a factory is not valid, it just means that a <em>handler</em> is not there (the bundle is not deployed).</p>
-<p>By using the <code>getComponentDescription()</code> method, you can retrieve additional information about the factory. Check the <a href="http://felix.apache.org/ipojo/api/1.10.1/org/apache/felix/ipojo/architecture/ComponentTypeDescription.html">ComponentTypeDescription 
+<p>By using the <code>getComponentDescription()</code> method, you can retrieve additional information about the factory. Check the <a href="http://felix.apache.org/ipojo/api/1.11.0/org/apache/felix/ipojo/architecture/ComponentTypeDescription.html">ComponentTypeDescription 
 API</a> for more information.</p>
 <p>To illustrate factory's state retrieval, let's look at the following code displaying the name, version and state of all the available factories.</p>
 <div class="codehilite"><pre><span class="nd">@Requires</span>
@@ -249,7 +250,7 @@ API</a> for more information.</p>
 </pre></div>
 
 
-<p>The <code>createComponentInstance</code> method returns a <a href="http://felix.apache.org/ipojo/api/1.10.1/org/apache/felix/ipojo/architecture/ComponentInstance.html">ComponentInstance</a> object. This object is representing the created instance, and let you manage it (to reconfigure it or to dispose it).</p>
+<p>The <code>createComponentInstance</code> method returns a <a href="http://felix.apache.org/ipojo/api/1.11.0/org/apache/felix/ipojo/architecture/ComponentInstance.html">ComponentInstance</a> object. This object is representing the created instance, and let you manage it (to reconfigure it or to dispose it).</p>
 <p>The configuration you can pass to the <code>createComponentInstance</code> method let you configure the instance properties. For example, you can gives a value to the <code>message</code> property (From the component example):</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">createMyInstance</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
     <span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;();</span>
@@ -274,10 +275,10 @@ API</a> for more information.</p>
 <h3 id="deleting-instances">Deleting instances</h3>
 <p>You can't delete an instance directly from the factory object. However, you can from the <code>ComponentInstance</code> object. In the case you already have this object, just call the <code>dispose()</code> method. Otherwise, retrieve the component instance from the factory object and then call the <code>dispose()</code> method.</p>
 <h3 id="observing-the-factory-state">Observing the factory state</h3>
-<p>As stated above, factory objects have a state. We already saw how to retrieve the current state of the factory. You can also register a <a href="http://felix.apache.org/ipojo/api/1.10.1/org/apache/felix/ipojo/architecture/FactoryStateListener.html">FactoryStateListener</a> to be notified when the state changes. The methods <code>addFactoryStateListener</code> and <code>removeFactoryStateListener</code> let you respectively register and unregister the listener.</p>
+<p>As stated above, factory objects have a state. We already saw how to retrieve the current state of the factory. You can also register a <a href="http://felix.apache.org/ipojo/api/1.11.0/org/apache/felix/ipojo/architecture/FactoryStateListener.html">FactoryStateListener</a> to be notified when the state changes. The methods <code>addFactoryStateListener</code> and <code>removeFactoryStateListener</code> let you respectively register and unregister the listener.</p>
 <h2 id="declaration-publication-vs-programatic-creation">Declaration publication vs. Programatic creation</h2>
 <p>This page has explained how to create an instance from the Factory service. However, when the factory leaves or become invalid your instance is disposed. The instance is <strong>not</strong> recreated when the factory comes back or is revalidated.</p>
-<p>To avoid to have to listen and manage these events, you can use an <a href="http://felix.apache.org/ipojo/api/1.10.1/org/apache/felix/ipojo/architecture/InstanceDeclaration.html">InstanceDeclaration</a>. An instance declaration is a service you publish to instruct iPOJO to create an instance and manage its life. </p>
+<p>To avoid to have to listen and manage these events, you can use an <a href="http://felix.apache.org/ipojo/api/1.11.0/org/apache/felix/ipojo/architecture/InstanceDeclaration.html">InstanceDeclaration</a>. An instance declaration is a service you publish to instruct iPOJO to create an instance and manage its life. </p>
 <div class="codehilite"><pre><span class="n">InstanceDeclaration</span> <span class="n">declaration</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultInstanceDeclaration</span><span class="o">(</span><span class="n">bundleContext</span><span class="o">,</span> <span class="s">&quot;my-factory&quot;</span><span class="o">,</span> <span class="n">configuration</span><span class="o">);</span>
 <span class="n">declaration</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
 </pre></div>
