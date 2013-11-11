@@ -327,6 +327,10 @@ will render the <code>/etc/www/001.jpg</code>). However, the example above can b
 <p>HttpContext service properties:</p>
 <ul>
 <li><code>contextId</code> - Id of context to be referenced by a servlet or filter service.</li>
+<li><code>context.shared</code> - Boolean property. If the <code>HttpContext</code> needs to be shared across bundles
+  then it should be set to <code>true</code>. Shared <code>HttpContext</code> services should  either not implement the
+  <code>getResource</code> at all or be registered  as service factories to ensure no access to foreign bundle
+  resources is not allowed through this backdoor.</li>
 </ul>
 <h2 id="using-the-servlet-bridge">Using the Servlet Bridge</h2>
 <p>The servlet bridge is used if you want to use the HTTP service inside a WAR deployed on a 3rd part
@@ -495,7 +499,7 @@ applicaiton server. A little setup is needed for this to work:</p>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1527293 by jawi on Sun, 29 Sep 2013 10:09:56 +0000
+        Rev. 1540609 by chetanm on Mon, 11 Nov 2013 04:47:33 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
