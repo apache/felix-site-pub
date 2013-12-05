@@ -95,10 +95,10 @@ Work in progress as part of FELIX-3980
 <li><a href="#logincontextfactory-mode">LoginContextFactory Mode</a></li>
 <li><a href="#configuration-spi-with-default-policy-mode">Configuration SPI with Default Policy Mode</a></li>
 <li><a href="#replace-global-configuration-mode">Replace Global Configuration Mode</a></li>
-<li><a href="#wzxhzdk10wzxhzdk11modified-boot-classpath-mode"><a name="boot-classpath"></a>Modified Boot Classpath Mode</a></li>
+<li><a href="#wzxhzdk11wzxhzdk12modified-boot-classpath-mode"><a name="boot-classpath"></a>Modified Boot Classpath Mode</a></li>
 </ul>
 </li>
-<li><a href="#wzxhzdk12wzxhzdk13jaas-configuration-spi-settings"><a name="configuration-spi"></a>JAAS Configuration SPI Settings</a></li>
+<li><a href="#wzxhzdk13wzxhzdk14jaas-configuration-spi-settings"><a name="configuration-spi"></a>JAAS Configuration SPI Settings</a></li>
 </ul>
 </li>
 <li><a href="#webconsole-plugin">WebConsole Plugin</a></li>
@@ -312,41 +312,47 @@ is set to <code>Replace Global Configuration</code>.</p>
 <li>Global configuration is modified. So it might cause issue while running in co deployed scenarios like Application Server.</li>
 </ul>
 <p>Refer to <a href="http://svn.apache.org/repos/asf/felix/trunk/examples/jaas/app/src/main/java/org/apache/felix/example/jaas/app/internal/GlobalConfigDemoServlet.java">GlobalConfigDemoServlet</a> for an example</p>
-<h4 id="wzxhzdk10wzxhzdk11modified-boot-classpath-mode"><a name="boot-classpath"></a>Modified Boot Classpath Mode</h4>
+<h4 id="wzxhzdk11wzxhzdk12modified-boot-classpath-mode"><a name="boot-classpath"></a>Modified Boot Classpath Mode</h4>
 <p>In previous modes (except the LoginContextFactory mode) the client code needs to switch the Thread Context Classloader (TCCL).
 This is due the way JAAS logic instantiates the <code>LoginModule</code>. The Felix JAAS Support provides a <code>ProxyLoginModule</code> which
 takes care of routing the LoginModule calls properly. However for this class to be visible to JAAS logic one of the
 two approaches can be used</p>
-<p><em>Manage TCCL Explicitly</em></p>
-<p>The client bundle  would need to
-1. Have an explicit import for <code>org.apache.felix.jaas.boot</code> package and
-2. Manage TCCL explicitly which making JAAS related calls.</p>
+<p><strong>Manage TCCL Explicitly</strong></p>
+<p>The client bundle  would need to</p>
+<ol>
+<li>Have an explicit import for <code>org.apache.felix.jaas.boot</code> package and</li>
+<li>
+<p>Manage TCCL explicitly which making JAAS related calls.</p>
 <div class="codehilite"><pre><span class="kd">final</span> <span class="n">Thread</span> <span class="n">current</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
 <span class="kd">final</span> <span class="n">ClassLoader</span> <span class="n">orig</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="na">getContextClassLoader</span><span class="o">();</span>
 <span class="k">try</span> <span class="o">{</span>
   <span class="n">current</span><span class="o">.</span><span class="na">setContextClassLoader</span><span class="o">(</span><span class="n">getClass</span><span class="o">().</span><span class="na">getClassLoader</span><span class="o">());</span>
-  <span class="n">loginContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LoginContext</span><span class="o">(</span><span class="n">appName</span><span class="o">,</span> <span class="n">subject</span><span class="o">,</span><span class="n">callbackHandler</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
-<span class="o">}</span> <span class="k">finally</span><span class="o">{</span>
-  <span class="n">current</span><span class="o">.</span><span class="na">setContextClassLoader</span><span class="o">(</span><span class="n">orig</span><span class="o">);</span>
-<span class="o">}</span>
+ <span class="n">loginContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LoginContext</span><span class="o">(</span><span class="n">appName</span><span class="o">,</span> <span class="n">subject</span><span class="o">,</span><span class="n">callbackHandler</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
 </pre></div>
 
 
+<p>} finally{
+      current.setContextClassLoader(orig);
+   }</p>
+</li>
+</ol>
 <p>Note that in above flow the TCCL is managed explicitly</p>
-<p><em>Modify Boot Classpath</em></p>
+<p><strong>Modify Boot Classpath</strong></p>
 <p>Another way would involve modifying the boot classpath.</p>
 <ol>
 <li>Place the <code>org.apache.felix.jaas-xxx-boot.jar</code> in the boot classpath via <code>-Xbootclasspath:bootclasspath</code> option</li>
 <li>
 <p>Make the <code>org.apache.felix.jaas.boot</code> part of boot delegation list</p>
-<p>:::java
-LoginContext lc = new LoginContext("sample", subject, handler);
-lc.login();</p>
+<div class="codehilite"><pre><span class="n">LoginContext</span> <span class="n">lc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LoginContext</span><span class="o">(</span><span class="s">&quot;sample&quot;</span><span class="o">,</span> <span class="n">subject</span><span class="o">,</span> <span class="n">handler</span><span class="o">);</span>
+<span class="n">lc</span><span class="o">.</span><span class="na">login</span><span class="o">();</span>
+</pre></div>
+
+
 </li>
 </ol>
 <p>Note that in above code we do not have to manage TCCL and neither add an import to <code>org.apache.felix.jaas.boot</code> package</p>
 <p>Refer to <a href="http://svn.apache.org/repos/asf/felix/trunk/examples/jaas/app/src/main/java/org/apache/felix/example/jaas/app/internal/BootClasspathDemoServlet.java">BootClasspathDemoServlet</a> for code sample</p>
-<h3 id="wzxhzdk12wzxhzdk13jaas-configuration-spi-settings"><a name="configuration-spi"></a>JAAS Configuration SPI Settings</h3>
+<h3 id="wzxhzdk13wzxhzdk14jaas-configuration-spi-settings"><a name="configuration-spi"></a>JAAS Configuration SPI Settings</h3>
 <p>There are various ways in which LoginContext can be created depending on the usage mode. The JAAS support exposes
 following properties</p>
 <p><img src="jaas-spi-config.png" align="center" /></p>
@@ -355,12 +361,14 @@ following properties</p>
    This is useful for single application mode where all LoginModule in an OSGi container are to be used. Usage of realm
    help in global settings because same config file is used to capture settings for all applications running on same JVM</li>
 <li><code>JAAS Config Provider name</code> - Name against which the Configuration SPI provider should register</li>
-<li><code>Configuration Policy</code> - This would be explained in next section
-  <strong> <code>Default</code> - Global configuration is not touched. Client code are expected to use the Configuration Spi mode
-  </strong> <code>Replace Global Configuration</code> - In this the global configuration is replaced with OSGi configuration. Client code
-      need not perform any special configuration handling. At most they need to switch the Thread Context Classloader
-  ** <code>Proxy Global Configuration</code> - Similar to previous one  but it saves the default configuration and does a fallback
-      check on that also. This should minimize any disruption in shared mode</li>
+<li><code>Configuration Policy</code> - This would be explained in next section<ul>
+<li><code>Default</code> - Global configuration is not touched. Client code are expected to use the Configuration Spi mode</li>
+<li><code>Replace Global Configuration</code> - In this the global configuration is replaced with OSGi configuration. Client code
+  need not perform any special configuration handling. At most they need to switch the Thread Context Classloader</li>
+<li><code>Proxy Global Configuration</code> - Similar to previous one  but it saves the default configuration and does a fallback
+  check on that also. This should minimize any disruption in shared mode</li>
+</ul>
+</li>
 </ul>
 <h2 id="webconsole-plugin">WebConsole Plugin</h2>
 <p>The runtime JAAS realm is exposed via a WebConsole Plugin.</p>
@@ -371,7 +379,7 @@ following properties</p>
 <li><a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jaas/tutorials/LoginConfigFile.html">JAAS Login Configuration File</a></li>
 </ol>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1543042 by chetanm on Mon, 18 Nov 2013 14:41:56 +0000
+        Rev. 1543044 by chetanm on Mon, 18 Nov 2013 14:49:23 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
