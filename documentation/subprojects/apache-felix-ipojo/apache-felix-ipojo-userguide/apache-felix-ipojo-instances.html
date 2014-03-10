@@ -20,12 +20,12 @@
 <head>
     <title>Apache Felix - Creating instances</title>
     <link rel="icon" href="/res/favicon.ico">
-    
+
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="The most powerful component model for OSGi">
 
-    
+
     <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
     <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
@@ -39,7 +39,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
-    
+
 </head>
 
 <body data-spy="scroll" data-target=".subnav">
@@ -52,12 +52,12 @@
                  <span class="icon-bar"></span>
                 </a>
                 <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
-         
+
                  <div class="nav-collapse" id="main-menu">
                     <ul class="nav" id="main-menu-left">
                         <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
                         <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
-                    
+
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="tutorials-menu">
@@ -83,6 +83,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/injecting-bundle-context.html">Accessing the Bundle Context</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-instances.html">Creating instances</a></li>
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
@@ -94,7 +95,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html">Whiteboard pattern</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html">Temporal dependencies</a></li>
                                     </ul>
-                                </li>                    
+                                </li>
                                 <li class="dropdown-submenu">
                                    <a tabindex="-1" href="#">Configuration Admin &amp; Factories</a>
                                     <ul class="dropdown-menu">
@@ -102,7 +103,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-factory-service.html">Using the iPOJO Factory service</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
                                     </ul>
-                                </li>                        
+                                </li>
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">Advanced topics</a>
@@ -165,7 +166,7 @@
                     </ul>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
 
     <div class="container">
@@ -203,6 +204,7 @@
 <li><a href="#disposing-instances">Disposing instances</a></li>
 </ul>
 </li>
+<li><a href="#creating-instances-with-declarations">Creating instances with declarations</a></li>
 </ul>
 </div>
 <h1 id="component-types-and-instances">Component types and instances</h1>
@@ -214,6 +216,7 @@
 <li>using <instance> in the XML metadata</li>
 <li>using the iPOJO Factory service</li>
 <li>using the OSGi Configuration Admin</li>
+<li>using the <code>DeclarationBuilderService</code></li>
 </ul>
 <h1 id="instantiate">@Instantiate</h1>
 <p>The @Instantiate annotation is the simplest way to declare an instance. In a class annotated with @Component, you just add the @Instantiate annotation. It instructs iPOJO to declare an instance of the component type described by the current class. </p>
@@ -492,6 +495,43 @@
 <p>If the instance was already created, you can configure it using a <em>regular</em> configuration. The pid given to this configuration is the instance name.</p>
 <h2 id="disposing-instances">Disposing instances</h2>
 <p>To dispose an instance, just call the <code>delete</code> method on the configuration object you used to configure the instance.</p>
+<h1 id="creating-instances-with-declarations">Creating instances with declarations</h1>
+<p>Declarations offer a nice way to declares instances in a programmatic way. If not retracted by hand,
+they're bound to the declaring bundle lifecycle (i.e. are unregistered when the bundle is not <code>ACTIVE</code>
+anymore).</p>
+<p>Declarations can be build using the <code>DeclarationBuilderService</code> (see interface below). Instances (of
+components), types (components) and iPOJO extensions can also be build using this service.</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">DeclarationBuilderService</span> <span class="o">{</span>
+    <span class="n">InstanceBuilder</span> <span class="nf">newInstance</span><span class="o">(</span><span class="n">String</span> <span class="n">type</span><span class="o">);</span>
+    <span class="n">InstanceBuilder</span> <span class="nf">newInstance</span><span class="o">(</span><span class="n">String</span> <span class="n">type</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+    <span class="n">InstanceBuilder</span> <span class="nf">newInstance</span><span class="o">(</span><span class="n">String</span> <span class="n">type</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">String</span> <span class="n">version</span><span class="o">);</span>
+    <span class="n">DeclarationHandle</span> <span class="nf">newExtension</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">FactoryBuilder</span> <span class="n">builder</span><span class="o">);</span>
+    <span class="n">DeclarationHandle</span> <span class="nf">newType</span><span class="o">(</span><span class="n">Element</span> <span class="n">description</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Instances created through declaration can indeed be configured.</p>
+<div class="codehilite"><pre><span class="c1">// Obtain the service through the service registry</span>
+<span class="n">DeclarationBuilderService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">// Get a fresh instance builder</span>
+<span class="n">InstanceBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&quot;my-factory&quot;</span><span class="o">);</span>
+
+<span class="n">DeclarationHandle</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;a-unique-name&quot;</span><span class="o">)</span> <span class="c1">// Make sure name is unique for the expected type</span>
+                                  <span class="o">.</span><span class="na">configure</span><span class="o">()</span>
+                                      <span class="o">.</span><span class="na">property</span><span class="o">(</span><span class="s">&quot;a-property&quot;</span><span class="o">,</span> <span class="s">&quot;a-value&quot;</span><span class="o">)</span>
+                                      <span class="o">.</span><span class="na">property</span><span class="o">(</span><span class="s">&quot;another-property&quot;</span><span class="o">,</span> <span class="s">&quot;another-value&quot;</span><span class="o">)</span>
+                                      <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+<span class="c1">// Push the InstanceDeclaration service in the registry</span>
+<span class="n">handle</span><span class="o">.</span><span class="na">publish</span><span class="o">();</span>
+</pre></div>
+
+
+<p>The builder ultimately produces handles to declarations. Handles are the live link to the underlying
+declarations: service publication and un-registration are done through the <code>handle.publish()</code> and
+<code>handle.retract()</code> methods. Declaration status (is it bound or not) is also accessible with <code>handle.getStatus()</code>.</p>
         </div>
     </div>
 
@@ -500,16 +540,16 @@
     <div class="container">
         <footer id="footer">
             <div class="row">
-                <div class="trademarkFooter span7"> 
+                <div class="trademarkFooter span7">
                 Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
                 logo are trademarks of The Apache Software Foundation. All other marks mentioned
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1530004 by clement on Mon, 7 Oct 2013 17:16:39 +0000
+                Rev. 1571278 by guillaume on Mon, 24 Feb 2014 13:20:49 +0000
                 </div>
             </div>
-        </footer>           
+        </footer>
     </div>
 </body>
 

@@ -18,7 +18,7 @@
 -->
 
 <head>
-    <title>Apache Felix - iPOJO Karaf Features</title>
+    <title>Apache Felix - Accessing the Bundle Context</title>
     <link rel="icon" href="/res/favicon.ico">
 
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
@@ -171,24 +171,67 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="ipojo-karaf-features">iPOJO Karaf Features</h1>
-<p>If you are using <a href="http://karaf.apache.org">Apache Karaf</a>, there is a set of <em>features</em> easing the deployment of iPOJO bundles and related tools on Karaf.</p>
-<h2 id="add-the-features-file">Add the features file</h2>
-<p>First, launch Karaf and add the <a href="http://repo1.maven.org/maven2/org/apache/felix/org.apache.felix.ipojo.features/1.11.1/org.apache.felix.ipojo.features-1.11.1.xml">iPOJO Feature</a> file:</p>
-<div class="codehilite"><pre>features:addurl http://repo1.maven.org/maven2/org/apache/felix/org.apache.felix.ipojo.features/1.11.1/org.apache.felix.ipojo.features-1.11.1.xml
+            <h1 id="accessing-the-bundle-context">Accessing the bundle context</h1>
+<p><em>Despite iPOJO hides most of the OSGi mechanisms, you often need to access the <code>Bundle Context</code>. This page explains how you can access to the bundle context from your component code.</em></p>
+<div class="toc">
+<ul>
+<li><a href="#accessing-the-bundle-context">Accessing the bundle context</a><ul>
+<li><a href="#bundle-context">Bundle Context</a></li>
+<li><a href="#retrieving-the-bundle-context-as-constructor-parameter">Retrieving the Bundle Context as constructor parameter</a></li>
+<li><a href="#using-context-version-1112">Using @Context (version 1.11.2+)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="bundle-context">Bundle Context</h2>
+<p>The <code>BundleContext</code> is an object provided by the OSGi Framework to access services as well as resources contained in bundles. Using the bundle context is often required in the later case, i.e. loading files contained in the bundle.
+The API of the bundle context is available <a href="http://www.osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleContext.html">here</a>.</p>
+<h2 id="retrieving-the-bundle-context-as-constructor-parameter">Retrieving the Bundle Context as constructor parameter</h2>
+<p>The first way to retrieve the bundle context is as a constructor parameter:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="nf">MyComponent</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// context is the bundle context</span>
+<span class="o">}</span>
 </pre></div>
 
 
-<h2 id="installing-features">Installing features:</h2>
-<p>Several features are available:</p>
-<ul>
-<li><code>ipojo</code>: contains the iPOJO Core Runtime</li>
-<li><code>ipojo-command</code>: extends the <code>ipojo</code> feature with the iPOJO Shell Commands</li>
-<li><code>ipojo-all</code>: contains the iPOJO Core Runtime, Shell Commands, Composition Model, and API</li>
-<li><code>ipojo-webconsole</code>: install the Apache Felix WebConsole, iPOJO Core Runtime and the iPOJO Plugin for the Web Console.</li>
-</ul>
-<p>Installing a feature is quite simple:</p>
-<div class="codehilite"><pre>features:install ipojo-command
+<p>With such way, the bundle context of the bundle declaring the component is injected. Notice that such injection can be mixed with other constructor injection such as <code>@Requires</code> for service dependencies and <code>@Property</code> to configuration property.</p>
+<h2 id="using-context-version-1112">Using <code>@Context</code> (version 1.11.2+)</h2>
+<p>The second way to retrieve the <code>Bundle Context</code> uses a <em>bundle context handler</em> responsible for injecting the bundle context. This handler let you inject the bundle context in a field, in a setter method or as constructor parameter:</p>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="n">MyComponent</span> <span class="o">{</span>
+    <span class="cm">/**</span>
+<span class="cm">     * Field injection.</span>
+<span class="cm">     */</span>
+    <span class="nd">@Context</span>
+    <span class="kd">private</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="o">;</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Constructor injection, equivalent to the the previous approach.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="nf">MyComponent</span><span class="o">(</span><span class="nd">@Context</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Method injection.</span>
+<span class="cm">     */</span>
+    <span class="nd">@Context</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setBundleContext</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>The <code>@Context</code> annotation takes an optional parameter indicating which <code>Bundle Context</code> has to be injected. By default it injects the <code>component</code> bundle context, meaning the bundle context of the bundle declaring the component. But, you can asks iPOJO to injects the <code>instance</code> bundle context, i.e. the bundle context of the bundle declaring the instance:</p>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="n">MyComponent</span> <span class="o">{</span>
+    <span class="cm">/**</span>
+<span class="cm">     * Injects the instance bundle context</span>
+<span class="cm">     */</span>
+    <span class="nd">@Context</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">Source</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="o">;</span>
+<span class="o">}</span>
 </pre></div>
         </div>
     </div>
@@ -204,7 +247,7 @@
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1531515 by clement on Sat, 12 Oct 2013 08:32:37 +0000
+                Rev. 1575940 by clement on Mon, 10 Mar 2014 13:42:23 +0000
                 </div>
             </div>
         </footer>

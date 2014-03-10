@@ -20,12 +20,12 @@
 <head>
     <title>Apache Felix - iPOJO Factory Service</title>
     <link rel="icon" href="/res/favicon.ico">
-    
+
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="The most powerful component model for OSGi">
 
-    
+
     <link href="/ipojo/web/bootstrap/css/bootstrap-cerulean.css" rel="stylesheet">
     <link href="/ipojo/web/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="/ipojo/web/bootstrap/css/font-awesome.min.css" rel="stylesheet">
@@ -39,7 +39,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/ipojo/web/bootstrap/js/bootstrap.min.js"></script>
-    
+
 </head>
 
 <body data-spy="scroll" data-target=".subnav">
@@ -52,12 +52,12 @@
                  <span class="icon-bar"></span>
                 </a>
                 <a class="brand" href="/documentation/subprojects/apache-felix-ipojo.html">Apache Felix iPOJO</a>
-         
+
                  <div class="nav-collapse" id="main-menu">
                     <ul class="nav" id="main-menu-left">
                         <li><a href="/documentation/subprojects/apache-felix-ipojo/ipojo-news.html">News</a></li>
                         <li><a href="http://felix.apache.org/downloads.cgi">Downloads</a></li>
-                    
+
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tutorials <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="tutorials-menu">
@@ -83,6 +83,7 @@
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.html">Configuration</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.html">Introspection</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.html">Impacting the lifecycle</a></li>
+                                <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/injecting-bundle-context.html">Accessing the Bundle Context</a></li>
                                 <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-instances.html">Creating instances</a></li>
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
@@ -94,7 +95,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.html">Whiteboard pattern</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.html">Temporal dependencies</a></li>
                                     </ul>
-                                </li>                    
+                                </li>
                                 <li class="dropdown-submenu">
                                    <a tabindex="-1" href="#">Configuration Admin &amp; Factories</a>
                                     <ul class="dropdown-menu">
@@ -102,7 +103,7 @@
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-factory-service.html">Using the iPOJO Factory service</a></li>
                                         <li><a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factories and Instances</a></li>
                                     </ul>
-                                </li>                        
+                                </li>
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#">Advanced topics</a>
@@ -165,7 +166,7 @@
                     </ul>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
 
     <div class="container">
@@ -184,7 +185,7 @@
 <li><a href="#observing-the-factory-state">Observing the factory state</a></li>
 </ul>
 </li>
-<li><a href="#declaration-publication-vs-programatic-creation">Declaration publication vs. Programatic creation</a></li>
+<li><a href="#declaration-publication-vs-programmatic-creation">Declaration publication vs. Programmatic creation</a></li>
 </ul>
 </li>
 </ul>
@@ -276,16 +277,35 @@ API</a> for more information.</p>
 <p>You can't delete an instance directly from the factory object. However, you can from the <code>ComponentInstance</code> object. In the case you already have this object, just call the <code>dispose()</code> method. Otherwise, retrieve the component instance from the factory object and then call the <code>dispose()</code> method.</p>
 <h3 id="observing-the-factory-state">Observing the factory state</h3>
 <p>As stated above, factory objects have a state. We already saw how to retrieve the current state of the factory. You can also register a <a href="http://felix.apache.org/ipojo/api/1.11.1/org/apache/felix/ipojo/architecture/FactoryStateListener.html">FactoryStateListener</a> to be notified when the state changes. The methods <code>addFactoryStateListener</code> and <code>removeFactoryStateListener</code> let you respectively register and unregister the listener.</p>
-<h2 id="declaration-publication-vs-programatic-creation">Declaration publication vs. Programatic creation</h2>
+<h2 id="declaration-publication-vs-programmatic-creation">Declaration publication vs. Programmatic creation</h2>
 <p>This page has explained how to create an instance from the Factory service. However, when the factory leaves or become invalid your instance is disposed. The instance is <strong>not</strong> recreated when the factory comes back or is revalidated.</p>
-<p>To avoid to have to listen and manage these events, you can use an <a href="http://felix.apache.org/ipojo/api/1.11.1/org/apache/felix/ipojo/architecture/InstanceDeclaration.html">InstanceDeclaration</a>. An instance declaration is a service you publish to instruct iPOJO to create an instance and manage its life. </p>
-<div class="codehilite"><pre><span class="n">InstanceDeclaration</span> <span class="n">declaration</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DefaultInstanceDeclaration</span><span class="o">(</span><span class="n">bundleContext</span><span class="o">,</span> <span class="s">&quot;my-factory&quot;</span><span class="o">,</span> <span class="n">configuration</span><span class="o">);</span>
-<span class="n">declaration</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<p>To avoid to have to listen and manage these events, you can use an <a href="http://felix.apache.org/ipojo/api/1.11.1/org/apache/felix/ipojo/architecture/InstanceDeclaration.html">InstanceDeclaration</a>.
+An instance declaration is a service you publish to instruct iPOJO to create an instance
+and manage its lifecycle. <code>InstanceDeclaration</code> are created through the <code>DeclarationBuilderService</code>
+(since 1.12):</p>
+<div class="codehilite"><pre><span class="c1">// Obtain the service through the service registry</span>
+<span class="n">DeclarationBuilderService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">// Get a fresh instance builder</span>
+<span class="n">InstanceBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&quot;my-factory&quot;</span><span class="o">);</span>
+
+<span class="n">DeclarationHandle</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;a-unique-name&quot;</span><span class="o">)</span> <span class="c1">// Make sure name is unique for the expected type</span>
+                                  <span class="o">.</span><span class="na">configure</span><span class="o">()</span>
+                                      <span class="o">.</span><span class="na">property</span><span class="o">(</span><span class="s">&quot;a-property&quot;</span><span class="o">,</span> <span class="s">&quot;a-value&quot;</span><span class="o">)</span>
+                                      <span class="o">.</span><span class="na">property</span><span class="o">(</span><span class="s">&quot;another-property&quot;</span><span class="o">,</span> <span class="s">&quot;another-value&quot;</span><span class="o">)</span>
+                                      <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+<span class="c1">// Push the InstanceDeclaration service in the registry</span>
+<span class="n">handle</span><span class="o">.</span><span class="na">publish</span><span class="o">();</span>
 </pre></div>
 
 
-<p>In this snippet, we create an instance declaration <em>declaring</em> an instance of <code>my-factory</code> with the given (potentially <code>null</code>) configuration. Notice that you must provide an OSGi bundle context. Once created, call the <code>start</code> method to register the service and delegate the task to iPOJO.</p>
-<p>Call the <code>stop</code> method on the instance declaration to dispose the instance.</p>
+<p>In this snippet, we've registered a named <code>InstanceDeclaration</code> service for the <code>my-factory</code> component type, we've
+created a handle though an <code>InstanceBuilder</code> object. The builder helps to configure and produce an
+InstanceDeclaration that is controllable through the handle. By default, the declaration service will be registered with
+the BundleContext of the user (this is configurable with the <code>context(BundleContext)</code> method). Once
+created, call the <code>publish</code> method to register the declaration service and let iPOJO do its usual work.</p>
+<p>Call the <code>retract</code> method on the handle to dispose the service.</p>
         </div>
     </div>
 
@@ -294,16 +314,16 @@ API</a> for more information.</p>
     <div class="container">
         <footer id="footer">
             <div class="row">
-                <div class="trademarkFooter span7"> 
+                <div class="trademarkFooter span7">
                 Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
                 logo are trademarks of The Apache Software Foundation. All other marks mentioned
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1530248 by clement on Tue, 8 Oct 2013 12:13:27 +0000
+                Rev. 1571278 by guillaume on Mon, 24 Feb 2014 13:20:49 +0000
                 </div>
             </div>
-        </footer>           
+        </footer>
     </div>
 </body>
 
