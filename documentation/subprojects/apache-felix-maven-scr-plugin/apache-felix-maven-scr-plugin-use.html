@@ -78,7 +78,7 @@
       <span class="nt">&lt;plugin&gt;</span>
         <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
         <span class="nt">&lt;artifactId&gt;</span>maven-scr-plugin<span class="nt">&lt;/artifactId&gt;</span>
-        <span class="nt">&lt;version&gt;</span>1.14.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;version&gt;</span>1.15.0<span class="nt">&lt;/version&gt;</span>
         <span class="nt">&lt;executions&gt;</span>
           <span class="nt">&lt;execution&gt;</span>
             <span class="nt">&lt;id&gt;</span>generate-scr-scrdescriptor<span class="nt">&lt;/id&gt;</span>
@@ -98,7 +98,45 @@
 
 
 <p>The <code>scr</code> goal is bound to the <code>generate-resources</code> phase and will generate a separate descriptor file for each component as well as a separate meta type file for each component which has metatype support enabled in the project. </p>
-<p>The plugin may be configured with the following properties (Check the version column to make sure you use at least this version for the mentioned feature):</p>
+<p>However, in order to be able to process annotations, a dependency to an annotation processor needs to be added as well. There are two sets of annotations: the standard annotations as defined in the Declarative Services specification and the annotations defined in the Apache Felix project.
+If you want to use the annotations from the Apache Felix project, add this dependency to your pom:</p>
+<div class="codehilite"><pre><span class="nt">&lt;project&gt;</span>
+  ...
+  <span class="nt">&lt;dependencies&gt;</span>
+    ...
+    <span class="nt">&lt;dependency&gt;</span>
+         <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+         <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.scr.annotations<span class="nt">&lt;/artifactId&gt;</span>
+         <span class="nt">&lt;version&gt;</span>1.9.6<span class="nt">&lt;/version&gt;</span>
+         <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    ...
+  <span class="nt">&lt;/dependencies&gt;</span>
+  ...
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>If you want to process the standard annotations with the <code>maven-scr-plugin</code> add this dependency:</p>
+<div class="codehilite"><pre><span class="nt">&lt;project&gt;</span>
+  ...
+  <span class="nt">&lt;dependencies&gt;</span>
+    ...
+    <span class="nt">&lt;dependency&gt;</span>
+         <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+         <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.scr.ds-annotations<span class="nt">&lt;/artifactId&gt;</span>
+         <span class="nt">&lt;version&gt;</span>1.2.4<span class="nt">&lt;/version&gt;</span>
+         <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    ...
+  <span class="nt">&lt;/dependencies&gt;</span>
+  ...
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>These dependencies needs to be specified in order to have an easy way to opt-out the processing of one set or use other tools to process them. It's possible to specify both dependencies and use both annotations within a single project (however it's better to stay with one set).
+The plugin may be configured with the following properties (Check the version column to make sure you use at least this version for the mentioned feature):</p>
 <hr />
 <p><strong><code>specVersion</code></strong>      <br />
 <em>Default</em>: Automatically detected  <br />
@@ -161,7 +199,7 @@ Project types which this plugin supports.</p>
 ...
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1524011 by cziegeler on Tue, 17 Sep 2013 12:41:10 +0000
+        Rev. 1576638 by cziegeler on Wed, 12 Mar 2014 08:43:16 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
