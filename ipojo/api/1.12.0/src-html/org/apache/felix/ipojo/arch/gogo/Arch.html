@@ -1,0 +1,427 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/* <a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * or more contributor license agreements.  See the NOTICE file<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * distributed with this work for additional information<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * regarding copyright ownership.  The ASF licenses this file<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * to you under the Apache License, Version 2.0 (the<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * "License"); you may not use this file except in compliance<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * with the License.  You may obtain a copy of the License at<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *   http://www.apache.org/licenses/LICENSE-2.0<a name="line.10"></a>
+<span class="sourceLineNo">011</span> *<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * Unless required by applicable law or agreed to in writing,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * software distributed under the License is distributed on an<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * KIND, either express or implied.  See the License for the<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * specific language governing permissions and limitations<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * under the License.<a name="line.17"></a>
+<span class="sourceLineNo">018</span> */<a name="line.18"></a>
+<span class="sourceLineNo">019</span>package org.apache.felix.ipojo.arch.gogo;<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>import static java.lang.String.format;<a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span>import java.io.ByteArrayOutputStream;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import java.io.PrintStream;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import java.util.ArrayList;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import java.util.Dictionary;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import java.util.List;<a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.apache.felix.ipojo.ComponentInstance;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.apache.felix.ipojo.Factory;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.apache.felix.ipojo.HandlerFactory;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.apache.felix.ipojo.annotations.Component;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.apache.felix.ipojo.annotations.Instantiate;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import org.apache.felix.ipojo.annotations.Provides;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.apache.felix.ipojo.annotations.Requires;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import org.apache.felix.ipojo.annotations.ServiceProperty;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>import org.apache.felix.ipojo.architecture.Architecture;<a name="line.37"></a>
+<span class="sourceLineNo">038</span>import org.apache.felix.ipojo.architecture.InstanceDescription;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>import org.apache.felix.ipojo.extender.ExtensionDeclaration;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>import org.apache.felix.ipojo.extender.InstanceDeclaration;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>import org.apache.felix.ipojo.extender.TypeDeclaration;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>import org.apache.felix.service.command.Descriptor;<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>/**<a name="line.44"></a>
+<span class="sourceLineNo">045</span> * iPOJO Arch command giving information about the current<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * system architecture. This is a Gogo command.<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * @author &lt;a href="mailto:dev@felix.apache.org"&gt;Felix Project Team&lt;/a&gt;<a name="line.47"></a>
+<span class="sourceLineNo">048</span> */<a name="line.48"></a>
+<span class="sourceLineNo">049</span>@Component(public_factory = false, immediate = true)<a name="line.49"></a>
+<span class="sourceLineNo">050</span>@Instantiate<a name="line.50"></a>
+<span class="sourceLineNo">051</span>@Provides(specifications = Arch.class)<a name="line.51"></a>
+<span class="sourceLineNo">052</span>public class Arch {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    <a name="line.53"></a>
+<span class="sourceLineNo">054</span>    /**<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * Defines the command scope (ipojo).<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     */<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    @ServiceProperty(name = "osgi.command.scope", value = "ipojo")<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    String m_scope;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    <a name="line.59"></a>
+<span class="sourceLineNo">060</span>    /**<a name="line.60"></a>
+<span class="sourceLineNo">061</span>     * Defines the functions (commands). <a name="line.61"></a>
+<span class="sourceLineNo">062</span>     */<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    @ServiceProperty(name = "osgi.command.function", value = "{}")<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    String[] m_function = new String[] {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        "instances",<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        "instance",<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        "factory",<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        "component",<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        "factories",<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        "components",<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        "handlers",<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        "extensions"<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    };<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    <a name="line.74"></a>
+<span class="sourceLineNo">075</span>    /**<a name="line.75"></a>
+<span class="sourceLineNo">076</span>     * Instance architecture services.<a name="line.76"></a>
+<span class="sourceLineNo">077</span>     */<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    @Requires(optional = true)<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    private Architecture[] m_archs;<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    <a name="line.80"></a>
+<span class="sourceLineNo">081</span>    /**<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * Factory services.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     */<a name="line.83"></a>
+<span class="sourceLineNo">084</span>    @Requires(optional = true)<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    private Factory[] m_factories;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>    <a name="line.86"></a>
+<span class="sourceLineNo">087</span>    /**<a name="line.87"></a>
+<span class="sourceLineNo">088</span>     * Handler Factory services.<a name="line.88"></a>
+<span class="sourceLineNo">089</span>     */<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    @Requires(optional = true)<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    private HandlerFactory[] m_handlers;<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>    /**<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     * The instance declaration services.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     */<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    @Requires(optional = true)<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    private InstanceDeclaration[] m_instances;<a name="line.97"></a>
+<span class="sourceLineNo">098</span><a name="line.98"></a>
+<span class="sourceLineNo">099</span>    /**<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     * The type declaration services.<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     */<a name="line.101"></a>
+<span class="sourceLineNo">102</span>    @Requires(optional = true)<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    private TypeDeclaration[] m_types;<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>    /**<a name="line.105"></a>
+<span class="sourceLineNo">106</span>     * The extension declaration services.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>     */<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    @Requires(optional = true)<a name="line.108"></a>
+<span class="sourceLineNo">109</span>    private ExtensionDeclaration[] m_extensions;<a name="line.109"></a>
+<span class="sourceLineNo">110</span><a name="line.110"></a>
+<span class="sourceLineNo">111</span>    /**<a name="line.111"></a>
+<span class="sourceLineNo">112</span>     * Displays iPOJO instances.<a name="line.112"></a>
+<span class="sourceLineNo">113</span>     */<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    @Descriptor("Display iPOJO instances")<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    public void instances() {<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        StringBuilder buffer = new StringBuilder();<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        for (Architecture m_arch : m_archs) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>            InstanceDescription instance = m_arch.getInstanceDescription();<a name="line.118"></a>
+<span class="sourceLineNo">119</span>            if (instance.getState() == ComponentInstance.VALID) {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                buffer.append(format("Instance %s -&gt; valid%n", instance.getName()));<a name="line.120"></a>
+<span class="sourceLineNo">121</span>            }<a name="line.121"></a>
+<span class="sourceLineNo">122</span>            if (instance.getState() == ComponentInstance.INVALID) {<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                buffer.append(format("Instance %s -&gt; invalid%n", instance.getName()));<a name="line.123"></a>
+<span class="sourceLineNo">124</span>            }<a name="line.124"></a>
+<span class="sourceLineNo">125</span>            if (instance.getState() == ComponentInstance.STOPPED) {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                buffer.append(format("Instance %s -&gt; stopped%n", instance.getName()));<a name="line.126"></a>
+<span class="sourceLineNo">127</span>            }<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        }<a name="line.128"></a>
+<span class="sourceLineNo">129</span><a name="line.129"></a>
+<span class="sourceLineNo">130</span>        for (InstanceDeclaration instance : m_instances) {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>            // Only print unbound instances (others already printed above)<a name="line.131"></a>
+<span class="sourceLineNo">132</span>            if (!instance.getStatus().isBound()) {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                buffer.append(format("Instance %s of type %s is not bound.%n",<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                        name(instance.getConfiguration()),<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                        instance.getConfiguration().get("component")));<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                buffer.append(format("  Reason: %s", instance.getStatus().getMessage()));<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                buffer.append("\n");<a name="line.137"></a>
+<span class="sourceLineNo">138</span>            }<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        }<a name="line.139"></a>
+<span class="sourceLineNo">140</span>        <a name="line.140"></a>
+<span class="sourceLineNo">141</span>        if (buffer.length() == 0) {<a name="line.141"></a>
+<span class="sourceLineNo">142</span>            buffer.append("No instances \n");<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        }<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        <a name="line.144"></a>
+<span class="sourceLineNo">145</span>        System.out.println(buffer.toString());   <a name="line.145"></a>
+<span class="sourceLineNo">146</span>    }<a name="line.146"></a>
+<span class="sourceLineNo">147</span><a name="line.147"></a>
+<span class="sourceLineNo">148</span>    private String name(Dictionary&lt;String, Object&gt; configuration) {<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        String name = (String) configuration.get("instance.name");<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        if (name == null) {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>            name = "unnamed";<a name="line.151"></a>
+<span class="sourceLineNo">152</span>        }<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        return name;<a name="line.153"></a>
+<span class="sourceLineNo">154</span>    }<a name="line.154"></a>
+<span class="sourceLineNo">155</span><a name="line.155"></a>
+<span class="sourceLineNo">156</span>    /**<a name="line.156"></a>
+<span class="sourceLineNo">157</span>     * Displays the architecture of a specific instance.<a name="line.157"></a>
+<span class="sourceLineNo">158</span>     * @param instance the instance name<a name="line.158"></a>
+<span class="sourceLineNo">159</span>     */<a name="line.159"></a>
+<span class="sourceLineNo">160</span>    @Descriptor("Display the architecture of a specific instance")<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    public void instance(@Descriptor("target instance name") String instance) {<a name="line.161"></a>
+<span class="sourceLineNo">162</span><a name="line.162"></a>
+<span class="sourceLineNo">163</span>        StringBuilder sb = new StringBuilder();<a name="line.163"></a>
+<span class="sourceLineNo">164</span><a name="line.164"></a>
+<span class="sourceLineNo">165</span>        for (Architecture m_arch : m_archs) {<a name="line.165"></a>
+<span class="sourceLineNo">166</span>            InstanceDescription id = m_arch.getInstanceDescription();<a name="line.166"></a>
+<span class="sourceLineNo">167</span>            if (id.getName().equalsIgnoreCase(instance)) {<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                sb.append(id.getDescription());<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                sb.append('\n');<a name="line.169"></a>
+<span class="sourceLineNo">170</span>            }<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span>        for (InstanceDeclaration instanceDeclaration : m_instances) {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            if (!instanceDeclaration.getStatus().isBound()) {<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                if (instance.equals(name(instanceDeclaration.getConfiguration()))) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                    sb.append(format("InstanceDeclaration %s not bound to its factory%n", instance));<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                    sb.append(format(" type: %s%n", instanceDeclaration.getComponentName()));<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                    sb.append(format(" reason: %s%n", instanceDeclaration.getStatus().getMessage()));<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                    Throwable throwable = instanceDeclaration.getStatus().getThrowable();<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                    if (throwable != null) {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                        ByteArrayOutputStream os = new ByteArrayOutputStream();<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                        throwable.printStackTrace(new PrintStream(os));<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                        sb.append(" throwable: ");<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                        sb.append(os.toString());<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                    }<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                }<a name="line.186"></a>
+<span class="sourceLineNo">187</span>            }<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        }<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>        if (sb.length() == 0) {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            System.err.printf("Instance named '%s' not found", instance);<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        } else {<a name="line.192"></a>
+<span class="sourceLineNo">193</span>            System.out.print(sb);<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        }<a name="line.194"></a>
+<span class="sourceLineNo">195</span><a name="line.195"></a>
+<span class="sourceLineNo">196</span>    }<a name="line.196"></a>
+<span class="sourceLineNo">197</span><a name="line.197"></a>
+<span class="sourceLineNo">198</span>    /**<a name="line.198"></a>
+<span class="sourceLineNo">199</span>     * Displays the information about a specific factory.<a name="line.199"></a>
+<span class="sourceLineNo">200</span>     * Note that factory name are not unique, so all matching<a name="line.200"></a>
+<span class="sourceLineNo">201</span>     * factories are displayed.<a name="line.201"></a>
+<span class="sourceLineNo">202</span>     * @param name the factory name<a name="line.202"></a>
+<span class="sourceLineNo">203</span>     */<a name="line.203"></a>
+<span class="sourceLineNo">204</span>    @Descriptor("Display the information about a specific factory / component")<a name="line.204"></a>
+<span class="sourceLineNo">205</span>    public void component(@Descriptor("target factory name") String name) {<a name="line.205"></a>
+<span class="sourceLineNo">206</span>        factory(name);<a name="line.206"></a>
+<span class="sourceLineNo">207</span>    }<a name="line.207"></a>
+<span class="sourceLineNo">208</span>    <a name="line.208"></a>
+<span class="sourceLineNo">209</span>    /**<a name="line.209"></a>
+<span class="sourceLineNo">210</span>     * Displays the information about a specific factory.<a name="line.210"></a>
+<span class="sourceLineNo">211</span>     * Note that factory name are not unique, so all matching<a name="line.211"></a>
+<span class="sourceLineNo">212</span>     * factories are displayed.<a name="line.212"></a>
+<span class="sourceLineNo">213</span>     * @param name the factory name<a name="line.213"></a>
+<span class="sourceLineNo">214</span>     */<a name="line.214"></a>
+<span class="sourceLineNo">215</span>    @Descriptor("Display the information about a specific factory")<a name="line.215"></a>
+<span class="sourceLineNo">216</span>    public void factory(@Descriptor("target factory name") String name) {<a name="line.216"></a>
+<span class="sourceLineNo">217</span><a name="line.217"></a>
+<span class="sourceLineNo">218</span>        List&lt;Factory&gt; factories = new ArrayList&lt;Factory&gt;();<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        List&lt;TypeDeclaration&gt; types = new ArrayList&lt;TypeDeclaration&gt;();<a name="line.219"></a>
+<span class="sourceLineNo">220</span><a name="line.220"></a>
+<span class="sourceLineNo">221</span>        // Looking for public factories<a name="line.221"></a>
+<span class="sourceLineNo">222</span>        for (Factory factory : m_factories) {<a name="line.222"></a>
+<span class="sourceLineNo">223</span>            if (factory.getName().equalsIgnoreCase(name)) {<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                factories.add(factory);<a name="line.224"></a>
+<span class="sourceLineNo">225</span>            }<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        }<a name="line.226"></a>
+<span class="sourceLineNo">227</span><a name="line.227"></a>
+<span class="sourceLineNo">228</span>        // Looking for all unbound or private bound types<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        for (TypeDeclaration type : m_types) {<a name="line.229"></a>
+<span class="sourceLineNo">230</span>            if (name.equalsIgnoreCase(type.getComponentName())) {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>                // (Public + Unbound) or private types have no exported factories<a name="line.231"></a>
+<span class="sourceLineNo">232</span>                if (!type.isPublic() || (!type.getStatus().isBound() &amp;&amp; type.isPublic())) {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                    types.add(type);<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                }<a name="line.234"></a>
+<span class="sourceLineNo">235</span>            }<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>        if (factories.isEmpty() &amp;&amp; types.isEmpty()) {<a name="line.238"></a>
+<span class="sourceLineNo">239</span>            System.err.println("Factory " + name + " not found");<a name="line.239"></a>
+<span class="sourceLineNo">240</span>            return;<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        }<a name="line.241"></a>
+<span class="sourceLineNo">242</span><a name="line.242"></a>
+<span class="sourceLineNo">243</span>        // Display found factories and types<a name="line.243"></a>
+<span class="sourceLineNo">244</span>        for (Factory factory : factories) {<a name="line.244"></a>
+<span class="sourceLineNo">245</span>            System.out.println(factory.getComponentDescription());<a name="line.245"></a>
+<span class="sourceLineNo">246</span>        }<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        for (TypeDeclaration type : types) {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>            if (!type.getStatus().isBound()) {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                // Unbound: maybe private or public type<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                System.out.printf("Factory %s is not bound%n", type.getComponentName());<a name="line.250"></a>
+<span class="sourceLineNo">251</span>                System.out.printf("  reason: %s%n", type.getStatus().getMessage());<a name="line.251"></a>
+<span class="sourceLineNo">252</span>                Throwable throwable = type.getStatus().getThrowable();<a name="line.252"></a>
+<span class="sourceLineNo">253</span>                if (throwable != null) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>                    System.out.print("  throwable: ");<a name="line.254"></a>
+<span class="sourceLineNo">255</span>                    throwable.printStackTrace(System.out);<a name="line.255"></a>
+<span class="sourceLineNo">256</span>                }<a name="line.256"></a>
+<span class="sourceLineNo">257</span>            } else {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                // Bound, this is only a private factory<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                System.out.printf("Factory %s is bound - Private%n", type.getComponentName());<a name="line.259"></a>
+<span class="sourceLineNo">260</span>            }<a name="line.260"></a>
+<span class="sourceLineNo">261</span>        }<a name="line.261"></a>
+<span class="sourceLineNo">262</span><a name="line.262"></a>
+<span class="sourceLineNo">263</span>    }<a name="line.263"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
+<span class="sourceLineNo">265</span>    /**<a name="line.265"></a>
+<span class="sourceLineNo">266</span>     * Displays the list of public iPOJO factories.<a name="line.266"></a>
+<span class="sourceLineNo">267</span>     */<a name="line.267"></a>
+<span class="sourceLineNo">268</span>    @Descriptor("Display iPOJO factories / components")<a name="line.268"></a>
+<span class="sourceLineNo">269</span>    public void components() {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        factories();<a name="line.270"></a>
+<span class="sourceLineNo">271</span>    }<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    <a name="line.272"></a>
+<span class="sourceLineNo">273</span>    /**<a name="line.273"></a>
+<span class="sourceLineNo">274</span>     * Displays the list of public iPOJO factories.<a name="line.274"></a>
+<span class="sourceLineNo">275</span>     */<a name="line.275"></a>
+<span class="sourceLineNo">276</span>    @Descriptor("Display iPOJO factories")<a name="line.276"></a>
+<span class="sourceLineNo">277</span>    public void factories() {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>        StringBuilder buffer = new StringBuilder();<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        for (Factory m_factory : m_factories) {<a name="line.279"></a>
+<span class="sourceLineNo">280</span>            if (m_factory.getMissingHandlers().size() == 0) {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                buffer.append(format("Factory %s (VALID)%n", m_factory.getName()));<a name="line.281"></a>
+<span class="sourceLineNo">282</span>            } else {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                buffer.append(format("Factory %s (INVALID: %s)%n",<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                        m_factory.getName(),<a name="line.284"></a>
+<span class="sourceLineNo">285</span>                        m_factory.getMissingHandlers()));<a name="line.285"></a>
+<span class="sourceLineNo">286</span>            }<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        }<a name="line.287"></a>
+<span class="sourceLineNo">288</span><a name="line.288"></a>
+<span class="sourceLineNo">289</span>        for (TypeDeclaration type : m_types) {<a name="line.289"></a>
+<span class="sourceLineNo">290</span>            if (!type.isPublic()) {<a name="line.290"></a>
+<span class="sourceLineNo">291</span>                // Private factories: always display them<a name="line.291"></a>
+<span class="sourceLineNo">292</span>                // Cannot display much more than presence/absence since the TypeDeclaration API does not<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                // give access to the underlying Factory or description (if valid)<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                if (type.getStatus().isBound()) {<a name="line.294"></a>
+<span class="sourceLineNo">295</span>                    buffer.append(format("Factory %s (UNKNOWN) - Private%n", type.getComponentName()));<a name="line.295"></a>
+<span class="sourceLineNo">296</span>                } else {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                    // Unbound type means that required extension is not available<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                    // We'll say that the factory is INVALID even if in reality it's not even instantiated<a name="line.298"></a>
+<span class="sourceLineNo">299</span>                    buffer.append(format("Factory %s (INVALID) - Private%n", type.getComponentName()));<a name="line.299"></a>
+<span class="sourceLineNo">300</span>                    buffer.append(format("  -&gt; %s", type.getStatus().getMessage()));<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                }<a name="line.301"></a>
+<span class="sourceLineNo">302</span>            } else {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                if (!type.getStatus().isBound()) {<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                    buffer.append(format("Factory %s is not bound%n", type.getComponentName()));<a name="line.304"></a>
+<span class="sourceLineNo">305</span>                    buffer.append(format("  -&gt; %s%n", type.getStatus().getMessage()));<a name="line.305"></a>
+<span class="sourceLineNo">306</span>                }<a name="line.306"></a>
+<span class="sourceLineNo">307</span>            }<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        }<a name="line.308"></a>
+<span class="sourceLineNo">309</span>        <a name="line.309"></a>
+<span class="sourceLineNo">310</span>        if (buffer.length() == 0) {<a name="line.310"></a>
+<span class="sourceLineNo">311</span>            buffer.append("No factories \n");<a name="line.311"></a>
+<span class="sourceLineNo">312</span>        }<a name="line.312"></a>
+<span class="sourceLineNo">313</span>        <a name="line.313"></a>
+<span class="sourceLineNo">314</span>        System.out.println(buffer.toString());<a name="line.314"></a>
+<span class="sourceLineNo">315</span>    }<a name="line.315"></a>
+<span class="sourceLineNo">316</span><a name="line.316"></a>
+<span class="sourceLineNo">317</span>    /**<a name="line.317"></a>
+<span class="sourceLineNo">318</span>     * Displays the list of available handlers.<a name="line.318"></a>
+<span class="sourceLineNo">319</span>     */<a name="line.319"></a>
+<span class="sourceLineNo">320</span>    @Descriptor("Display iPOJO handlers")<a name="line.320"></a>
+<span class="sourceLineNo">321</span>    public void handlers() {<a name="line.321"></a>
+<span class="sourceLineNo">322</span>        PrintStream out = System.out;<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        for (HandlerFactory m_handler : m_handlers) {<a name="line.323"></a>
+<span class="sourceLineNo">324</span>            String name = m_handler.getHandlerName();<a name="line.324"></a>
+<span class="sourceLineNo">325</span>            if ("composite".equals(m_handler.getType())) {<a name="line.325"></a>
+<span class="sourceLineNo">326</span>                name = name + " [composite]";<a name="line.326"></a>
+<span class="sourceLineNo">327</span>            }<a name="line.327"></a>
+<span class="sourceLineNo">328</span>            if (m_handler.getMissingHandlers().size() == 0) {<a name="line.328"></a>
+<span class="sourceLineNo">329</span>                out.println("Handler " + name + " (VALID)");<a name="line.329"></a>
+<span class="sourceLineNo">330</span>            } else {<a name="line.330"></a>
+<span class="sourceLineNo">331</span>                out.println("Handler " + name + " (INVALID : " + m_handler.getMissingHandlers() + ")");<a name="line.331"></a>
+<span class="sourceLineNo">332</span>            }<a name="line.332"></a>
+<span class="sourceLineNo">333</span>        }<a name="line.333"></a>
+<span class="sourceLineNo">334</span><a name="line.334"></a>
+<span class="sourceLineNo">335</span>        for (TypeDeclaration type : m_types) {<a name="line.335"></a>
+<span class="sourceLineNo">336</span>            if (!type.getStatus().isBound()) {<a name="line.336"></a>
+<span class="sourceLineNo">337</span>                out.println("HandlerFactory " + type.getComponentName() + " is not bound");<a name="line.337"></a>
+<span class="sourceLineNo">338</span>                out.println("  -&gt; " + type.getStatus().getMessage());<a name="line.338"></a>
+<span class="sourceLineNo">339</span>            }<a name="line.339"></a>
+<span class="sourceLineNo">340</span>        }<a name="line.340"></a>
+<span class="sourceLineNo">341</span>    }<a name="line.341"></a>
+<span class="sourceLineNo">342</span><a name="line.342"></a>
+<span class="sourceLineNo">343</span>    /**<a name="line.343"></a>
+<span class="sourceLineNo">344</span>     * Displays the list of available extensions.<a name="line.344"></a>
+<span class="sourceLineNo">345</span>     */<a name="line.345"></a>
+<span class="sourceLineNo">346</span>    @Descriptor("Display iPOJO extensions")<a name="line.346"></a>
+<span class="sourceLineNo">347</span>    public void extensions() {<a name="line.347"></a>
+<span class="sourceLineNo">348</span>        PrintStream out = System.out;<a name="line.348"></a>
+<span class="sourceLineNo">349</span>        out.println("Available extensions:");<a name="line.349"></a>
+<span class="sourceLineNo">350</span>        for (ExtensionDeclaration extension : m_extensions) {<a name="line.350"></a>
+<span class="sourceLineNo">351</span>            out.println("  * " + extension.getExtensionName());<a name="line.351"></a>
+<span class="sourceLineNo">352</span>        }<a name="line.352"></a>
+<span class="sourceLineNo">353</span>    }<a name="line.353"></a>
+<span class="sourceLineNo">354</span><a name="line.354"></a>
+<span class="sourceLineNo">355</span>}<a name="line.355"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
