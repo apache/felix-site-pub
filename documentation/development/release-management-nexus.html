@@ -132,13 +132,14 @@ In this case please ask a member of the PMC to actually publish the release arti
 <ol>
 <li>Make sure you have correct NOTICE, <a href="/documentation/development/dependencies-file-template.html">DEPENDENCIES</a>, and LICENSE files. Remember to update the copyright year.</li>
 <li>Make sure you have an updated change log file, typically in <code>doc/changelog.txt</code> but in the project root is also acceptable.</li>
-<li>make sure there are no snapshots in the POMs to be released</li>
-<li>check that your POMs will not lose content when they are rewritten during the release process<ul>
+<li>Make sure there are no snapshots in the POMs to be released</li>
+<li>Check that your POMs will not lose content when they are rewritten during the release process<ul>
 <li><code>mvn release:prepare -DdryRun=true</code></li>
 <li>diff the original <code>pom.xml</code> with the one called <code>pom.xml.tag</code> to see if the license or any other info has been removed. This has been known to happen if the starting <code>&lt;project&gt;</code> tag is not on a single line. The only things that should be different between these files are the <code>&lt;version&gt;</code> and <code>&lt;scm&gt;</code> elements. If there are any other changes, you must fix the original <code>pom.xml</code> file and commit before proceeding with the release</li>
 </ul>
 </li>
-<li>publish a snapshot
+<li>Publish a snapshot. This is useful for existing builds that still depend on a snapshot version of this artifact. It means that the snapshot they will be getting is effectively the same as
+the released version.
     <div class="codehilite"><code>$ mvn deploy <br />
     ...<br />
     [INFO] [deploy:deploy]<br />
@@ -149,23 +150,23 @@ In this case please ask a member of the PMC to actually publish the release arti
 <li>you should verify the deployment under the <a href="https://repository.apache.org/content/groups/snapshots/org/apache/felix">snapshot</a> repository on Apache</li>
 </ul>
 </li>
-<li>prepare the release
+<li>Prepare the release
     <div class="codehilite"><code>$ mvn release:clean  <br />
     $ mvn release:prepare</code></div><ul>
 <li>preparing the release will create the new tag in SVN, automatically checking in on your behalf</li>
 </ul>
 </li>
-<li>stage the release for a vote
+<li>Stage the release for a vote
     <div class="codehilite"><code>$ mvn release:perform</code></div><ul>
 <li>the release will automatically be inserted into a temporary staging repository for you, see the Nexus <a href="http://www.sonatype.com/books/nexus-book/reference/staging.html">staging documentation</a> for full details</li>
 <li>you can continue to use <code>mvn release:prepare</code> and <code>mvn release:perform</code> on other sub-projects as necessary on the same machine and they will be combined in the same staging repository - this is useful when making a release of the Felix framework and its associated bundles.</li>
 </ul>
 </li>
-<li>close the staging repository<ul>
+<li>Close the staging repository<ul>
 <li>login to <a href="https://repository.apache.org">https://repository.apache.org</a> using your Apache SVN credentials. Click on <em>Staging</em> on the left. Then click on <em>org.apache.felix</em> in the list of repositories. In the panel below you should see an open repository that is linked to your username and IP. Right click on this repository and select <em>Close</em>. This will close the repository from future deployments and make it available for others to view. If you are staging multiple releases together, skip this step until you have staged everything</li>
 </ul>
 </li>
-<li>verify the staged artifacts<ul>
+<li>Verify the staged artifacts<ul>
 <li>if you click on your repository, a tree view will appear below. You can then browse the contents to ensure the artifacts are as you expect them. Pay particular attention to the existence of *.asc (signature) files. If you don't like the content of the repository, right click your repository and choose <em>Drop</em>. You can then rollback your release (see <em>Canceling the Release</em>) and repeat the process</li>
 <li>note the staging repository URL (especially the number at the end of the URL) you will need this in your vote email</li>
 </ul>
@@ -382,7 +383,7 @@ svn: MKACTIVITY of &#39;/repos/asf/!svn/act/4f11ad5d-9161-0410-b4dd-cb727141ea8c
 
 <p>This is due to a bug in Subversion on the Mac, as described by Brett Porter in his [blog|http://blogs.exist.com/bporter/2008/02/25/working-around-non-interactive-problems-in-leopards-subversion/]. He proposes putting an "svn" script at the head of your path to fix the issue.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1512225 by fmeschbe on Fri, 9 Aug 2013 09:40:22 +0000
+        Rev. 1603149 by davidb on Tue, 17 Jun 2014 12:22:00 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
