@@ -73,6 +73,7 @@
 <li><a href="#why-are-the-standard-annotations-not-processed">Why are the (standard) annotations not processed?</a></li>
 <li><a href="#syntax-error-when-enums-are-used">Syntax Error when Enums are used?</a></li>
 <li><a href="#noclassdeffounderror-during-build">NoClassDefFoundError during build</a></li>
+<li><a href="#no-components-or-services-available-at-runtime">No components or services available at runtime</a></li>
 </ul>
 </div>
 <p>This page provides answers to frequently asked questions using the Maven
@@ -112,7 +113,7 @@ In both cases, the scanned classes have to be loaded and static fields have to b
 <div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>maven-scr-plugin<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>1.9.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>...<span class="nt">&lt;/version&gt;</span>
     <span class="nt">&lt;dependencies&gt;</span>
         <span class="nt">&lt;dependency&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
@@ -126,8 +127,11 @@ In both cases, the scanned classes have to be loaded and static fields have to b
 
 
 <p>or in the special case of slf4j, using slf4j API 1.6 or higher solves the problem as well</p>
+<h2 id="no-components-or-services-available-at-runtime">No components or services available at runtime</h2>
+<p>The SCR plugin generates a descriptor for Declarative Services (see OSGi compendium specification). Therefore at runtime, you must have an implementation of DS running in your OSGi framework, like the SCR implementation from the Apache Felix project.</p>
+<p>Otherwise your bundle might resolve fine, however no services are registered with the service registry and no components are activated.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1576639 by cziegeler on Wed, 12 Mar 2014 08:46:12 +0000
+        Rev. 1619329 by cziegeler on Thu, 21 Aug 2014 09:47:17 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
