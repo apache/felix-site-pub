@@ -256,24 +256,24 @@ the PMC to execute this step.
 
 <p>We use the distribution mechanism as described in <a href="http://www.apache.org/dev/release.html#upload-ci">How do I upload a release (newer way)?</a></p>
 <ol>
-<li>Checkout (https://dist.apache.org/repos/dist/release/felix)</li>
-<li><code>svn add</code> the artifacts to your checkout</li>
+<li>Check out the <a href="https://dist.apache.org/repos/dist/release/felix">Felix releases repository</a>;</li>
+<li><code>svn add</code> the artifacts to your checkout;</li>
 <li><code>svn rm</code> the artifacts from the previous release from your checkout. This
 will remove the artifacts from the main distribution and the mirrors. They
-are still kept in the archive.</li>
-<li><code>svn commit</code> your changes</li>
+are still kept in the archive;</li>
+<li><code>svn commit</code> your changes.</li>
 </ol>
 <p>After committing your changes, the <a href="http://www.apache.org/dist/felix">Apache Felix Dist</a>
 folder is immediately updated. Updating the mirrors takes another few hours
 (up to a day).</p>
 <h3 id="release-to-the-maven-repository">Release to the Maven Repository</h3>
 <ol>
-<li>Login to (https://repository.apache.org) with your Apache SVN credentials.</li>
-<li>Click on <em>Staging</em>.</li>
-<li>Find your closed staging repository, select it, and click the <em>Release</em> button.</li>
-<li>Click on <em>Repositories</em></li>
-<li>Select the <em>Releases</em> repository</li>
-<li>Validate that your artifacts are all there</li>
+<li>Login to <a href="https://repository.apache.org">Apache Nexus Repository</a> with your Apache SVN credentials;</li>
+<li>Click on <em>Staging</em>;</li>
+<li>Find your closed staging repository, select it, and click the <em>Release</em> button;</li>
+<li>Click on <em>Repositories</em>;</li>
+<li>Select the <em>Releases</em> repository;</li>
+<li>Validate that your artifacts are all there.</li>
 </ol>
 <h3 id="release-bundles-to-the-obr">Release Bundles to the OBR</h3>
 <p>If you're releasing bundles, you can also add them to the Felix Release OBR. To do this, execute the following command:</p>
@@ -288,11 +288,9 @@ folder is immediately updated. Updating the mirrors takes another few hours
 </pre></div>
 
 
-<p>After committing the site must be published. If you release to OBR before
-<a href="update-the-site">updating the site</a> you can defer publishing until after that.
-Otherwise publish the site by visiting the <a href="https://cms.apache.org/felix/publish">Site Publication</a>
-link.</p>
-<p>The (http://felix.apache.org/obr/releases.xml) page immediately updated.</p>
+<p>After committing the site must be published. If you release to OBR before <a href="update-the-site">updating the site</a> you can defer publishing until after that.
+Otherwise publish the site by visiting the <a href="https://cms.apache.org/felix/publish">Site Publication</a> link.</p>
+<p>The <a href="http://felix.apache.org/obr/releases.xml">releases</a> page is updated immediately.</p>
 <p><strong>Note</strong>: the project building the bundle must use the <a href=""></a> and use a version equal to or higher than 1.4.2.</p>
 <p><strong>Note</strong>: with Maven 3, you must add an extension to your <code>&lt;build&gt;</code> providing the SCP/SSH protocol:</p>
 <div class="codehilite"><pre><span class="nt">&lt;build&gt;</span>
@@ -310,10 +308,10 @@ link.</p>
 
 <h3 id="update-the-site">Update the Site</h3>
 <ol>
-<li>Update the news section on the website at <a href="https://cms.apache.org/redirect?uri=http%3A//felix.apache.org/news.html">news</a></li>
-<li>Update the download page on the website at <a href="https://cms.apache.org/redirect?uri=http%3A//felix.apache.org/downloads.list">downloads</a> to point to the new release.</li>
-<li>Commit your changes (click the commit link)</li>
-<li>Publish the site (https://cms.apache.org/felix/publish)</li>
+<li>Update the news section on the website at <a href="https://cms.apache.org/redirect?uri=http%3A//felix.apache.org/news.html">news</a>;</li>
+<li>Update the download page on the website at <a href="https://cms.apache.org/redirect?uri=http%3A//felix.apache.org/downloads.list">downloads</a> to point to the new release;</li>
+<li>Commit your changes (click the commit link);</li>
+<li><a href="https://cms.apache.org/felix/publish">Publish the site</a>.</li>
 </ol>
 <p>For the last two tasks, it's better to give the mirrors some time to distribute the uploaded artifacts (one day should be fine). This ensures that once the website (news and download page) is updated, people can actually download the artifacts.</p>
 <h2 id="update-jira">Update JIRA</h2>
@@ -346,8 +344,8 @@ Enjoy!
 </pre></div>
 
 
-<p>Remember to forward this announcement to <code>users@felix.apache.org</code> - try not to cross-post (CC:) announcements to both user and dev lists.</p>
-<p><em>Remind Felix about this release when he writes the next board report ;)</em></p>
+<p>Remember to forward this announcement to <code>users@felix.apache.org</code> - try <em>not</em> to cross-post (CC:) announcements to both user and dev lists.</p>
+<p><em>Remind Carsten about this release when he writes the next board report ;)</em></p>
 <h2 id="appendix-a-create-and-add-your-key-to-httpwwwapacheorgdistfelixkeys">Appendix A: create and add your key to http://www.apache.org/dist/felix/KEYS</h2>
 <p>If you are using a *nix system with a working OpenSSH, GnuPG, and bash you can create and add your own key with the following command:</p>
 <div class="codehilite"><pre><span class="nv">$ </span>gpg --gen-key
@@ -383,7 +381,7 @@ svn: MKACTIVITY of &#39;/repos/asf/!svn/act/4f11ad5d-9161-0410-b4dd-cb727141ea8c
 
 <p>This is due to a bug in Subversion on the Mac, as described by Brett Porter in his [blog|http://blogs.exist.com/bporter/2008/02/25/working-around-non-interactive-problems-in-leopards-subversion/]. He proposes putting an "svn" script at the head of your path to fix the issue.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1603149 by davidb on Tue, 17 Jun 2014 12:22:00 +0000
+        Rev. 1638125 by jawi on Tue, 11 Nov 2014 14:33:11 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
