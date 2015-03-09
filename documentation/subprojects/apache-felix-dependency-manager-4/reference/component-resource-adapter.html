@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - </title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager-4.html">Apache Felix Dependency Manager 4</a>
+      </div>
+
+      
+      
+      <h1></h1>
+      <h4 id="resource-adapters">Resource Adapters</h4>
+<p>Resource adapters work just like adapters, but instead of working with services, they work with resources. Resources, represented as a URL, are an abstraction introduced to provide a generic way of dealing with "blobs" and can be resources inside a bundle, filesystem or some kind of data store.</p>
+<h2 id="resourceadapterservice">@ResourceAdapterService</h2>
+<p>Resource adapters are things that adapt a resource instead of a service, and 
+provide an adapter service on top of this resource. Resources are an 
+abstraction that is introduced by the dependency manager, represented as a URL. They can be implemented to serve resources embedded in bundles, somewhere on a file system or in an http content repository server, or database.</p>
+<p>The adapter will be applied to any resource that matches the specified filter 
+condition, which can match some part of the resource URL (with "path", 
+"protocol", "port", or "host" filters). For each matching resource an 
+adapter will be created based on the adapter implementation class. 
+The adapter will be registered with the specified interface and with any 
+extra service properties you supply here. Moreover, the following service 
+properties will be propagated from the resource URL:</p>
+<ul>
+<li><em>host</em>: this property exposes the host part of the resource URL</li>
+<li><em>path</em>: the resource URL path</li>
+<li><em>protocol</em>: the resource URL protocol</li>
+<li><em>port</em>: the resource URL port </li>
+</ul>
+<h3 id="annotation-attributes">Annotation attributes</h3>
+<p>TBD</p>
+<h3 id="usage-examples">Usage Examples:</h3>
+<p>Here, the "VideoPlayer" service provides a video service on top of any movie 
+resources, with service properties "host"/"port"/"protocol"/"path" extracted 
+from the resource URL:</p>
+<div class="codehilite"><pre><span class="nd">@ResourceAdapterService</span><span class="o">(</span><span class="n">filter</span> <span class="o">=</span> <span class="s">&quot;(&amp;(path=/videos/*.mkv)(host=localhost))&quot;</span><span class="o">,</span> <span class="n">propagate</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">VideoPlayerImpl</span> <span class="kd">implements</span> <span class="n">VideoPlayer</span> <span class="o">{</span>
+    <span class="c1">// Injected by reflection</span>
+    <span class="n">URL</span> <span class="n">resource</span><span class="o">;</span>
+
+    <span class="kt">void</span> <span class="nf">play</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// play video referenced by this.resource     </span>
+    <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// stop playing the video</span>
+    <span class="kt">void</span> <span class="nf">transcode</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1664040 by marrs on Wed, 4 Mar 2015 15:21:58 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

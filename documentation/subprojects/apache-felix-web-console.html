@@ -83,6 +83,10 @@
 <li><a href="#configuration-of-the-osgi-http-service">Configuration of the OSGi Http Service</a></li>
 </ul>
 </li>
+<li><a href="#configuration-manager">Configuration Manager</a><ul>
+<li><a href="#configuration-factories">Configuration factories</a></li>
+</ul>
+</li>
 <li><a href="#security">Security</a></li>
 <li><a href="#browser-compliance">Browser Compliance</a></li>
 <li><a href="#extending-the-web-console">Extending the Web Console</a></li>
@@ -229,6 +233,17 @@
 <p>As said above, the configuration of the OSGi Http Service used by the Web Console to register itself is outside of the scope of the Web Console. Lets just say, the OSGi Http Service specification defines a system propety -- <code>org.osgi.service.http.port</code> -- which may be set to define the port at which the Http Service should listen for HTTP requests. The respective Http Service implementation may define additional properties to define the actual interface on which to listen or to define a servlet context path.</p>
 <p>By default it is probably safe to assume, that having set the <code>org.osgi.service.http.port</code> to a defined value, the Http Service implementation will listen on all interfaces for requests at the set port number and that no servlet context path actually exists. For example, given the <code>org.osgi.service.http.port</code> property is set to <em>8888</em> the Web Console in the local system can be reached at : <code>http://localhost:8888/system/console</code>, where the <code>/system/console</code> path is configured using the <code>manager.root</code> configuration property (see the Configuration section).</p>
 <p>If you happen to deploy an OSGi framework instance inside a traditional web application and thus the Http Service implementation is actually a bridge into the existing servlet container (see for example <a href="http://www.eclipse.org/equinox/server/http*in*container.php">Equinox in a Servlet Container</a> or the Apache Sling Launchpad Web application), the host, port and context path are defined by your servlet container and web application deployment. For example, if the servlet container listens on host <code>sample.org</code> at port <code>8888</code> and the web application with your OSGi container is available in the <code>/osgi</code> context, the Web Console would be accessible at <code>http://sample.org:8888/osgi/system/console</code>.</p>
+<h2 id="configuration-manager">Configuration Manager</h2>
+<p>The Configuration Manager is available via <code>http://localhost:8888/system/console/configMgr</code>. It display all OSGi services which can be configured.</p>
+<h3 id="configuration-factories">Configuration factories</h3>
+<p>The Configuration Manager has special support for configuration factories by allowing to add new items via the "plus" buttons or editing or removing existing ones.</p>
+<p>By default for each confguration factory item a unique ID is displayed, which is quite cryptic. Example: <code>org.apache.felix.jaas.Configuration.factory.18a6be2a-3173-4120-8f56-77fabff7b7ea</code>.</p>
+<p>The developer of the service with configuration factory can define a special "name hint" configuration propery which defines a name template which is used to build the configuration factory item name when displayed in the Configuration Manager. The name of this property is <code>webconsole.configurationFactory.nameHint</code>. It allows referencing other service property names as placeholders by enclosing in brackets.</p>
+<p>Example:
+<code>webconsole.configurationFactory.nameHint = "{jaas.realmName}, {jaas.classname}"
+jaas.realmName = "myRealm"
+jaas.classname = "myClass"</code></p>
+<p>In this case the Configuration Manager displays the name "myRealm, myClass" as display name for the configuration entry which is much more human-readable than the cryptic name. Please not that the OSGi configuration property <code>webconsole.configurationFactory.nameHint</code> must not be set to "private". It is never displayed by the Configuration Manager.</p>
 <h2 id="security">Security</h2>
 <p><a href="">Top</a></p>
 <p>The Web Console only has very basic security at the moment supporting only HTTP Basic authentication. This security is enabled by default and may be disabled by simply clearing the <code>username</code> property.</p>
@@ -257,7 +272,7 @@
 | !console-config.png|thumbnail! | !console-status.png|thumbnail! | !console-system-info.png|thumbnail! |
 | Configuration Admin | System Status | System Information |</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1430430 by fmeschbe on Tue, 8 Jan 2013 18:20:29 +0000
+        Rev. 1654730 by cziegeler on Mon, 26 Jan 2015 07:22:38 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

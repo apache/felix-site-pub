@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - </title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager-4.html">Apache Felix Dependency Manager 4</a>
+      </div>
+
+      
+      
+      <h1></h1>
+      <h5 id="service">Service</h5>
+<p>A service dependency allows you to depend on a service, either by type or by using an additional filter condition. You can even depend on an existing service directly by providing a reference to it.</p>
+<h2 id="servicedependency">@ServiceDependency</h2>
+<p>Annotates a method or a field for injecting a Service Dependency on it. When applied on a class field, optional unavailable dependencies are injected with a NullObject.</p>
+<p>Annotation attributes:</p>
+<ul>
+<li><em>added</em>: The callback method to be invoked when the service is available. This attribute is only meaningful when the annotation is applied on a class field.</li>
+<li><em>changed</em>: The callback method to be invoked when the service properties have changed.</li>
+<li><em>removed</em>: The callback method to invoke when the service is lost.</li>
+<li><em>timeout</em>: The max time in millis to wait for when the dependency is temporarily unavailable. Specifying a positive number allow to block the caller thread between service updates. Only useful for required stateless dependencies that can be replaced transparently. A Dynamic Proxy is used to wrap the actual service dependency (which must be an interface). When the dependency goes away, an attempt is made to replace it with another one which satisfies the service dependency criteria. If no service replacement is available, then any method invocation (through the dynamic proxy) will block during a configurable timeout. On timeout, an unchecked IllegalStateException exception is raised (but the service is not deactivated).
+Notice that the changed/removed callbacks are not used when the timeout parameter is &gt; -1.
+-1 means no timeout at all (default). 0 means that invocation on a missing service will fail immediately. A positive number represents the max timeout in millis to wait for the service availability.</li>
+<li><em>name</em>: The name used when dynamically configuring this dependency from the init method. Specifying this attribute allows to dynamically configure the dependency filter and required flag from the Service's init method. All unnamed dependencies will be injected before the init() method; so from the init() method, you can then pick up whatever information needed from already injected (unnamed) dependencies, and configure dynamically your named dependencies, which will then be calculated once the init() method returns. Please refer to <a href="/documentation/subprojects/apache-felix-dependency-manager/apache-felix-dependency-manager-using-annotations/dependencymanager-annotations-lifecycle.html">Here</a> for more informations about named dependencies.</li>
+<li><em>propagate</em>: Returns true if the dependency service properties must be published along with the service. Any additional service properties specified directly are merged with these.</li>
+</ul>
+<p>Usage Example: Here, the MyComponent component is injected with a dependency over a "MyDependency" service.</p>
+<div class="codehilite"><pre><span class="nd">@Component</span>
+<span class="kd">class</span> <span class="nc">MyComponent</span> <span class="o">{</span>
+     <span class="nd">@ServiceDependency</span><span class="o">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">15000</span><span class="o">)</span>
+     <span class="n">MyDependency</span> <span class="n">dependency</span><span class="o">;</span>
+     <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Usage example of a Service whose dependency filter is configured from ConfigAdmin, using a "named" dependency
+(please check <a href="/documentation/subprojects/apache-felix-dependency-manager/apache-felix-dependency-manager-using-annotations/dependencymanager-annotations-lifecycle.html">Here</a> for more informations about "named" dependencies):</p>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm">  * A Service whose service dependency &quot;otherService&quot; filter is configured from ConfigAdmin</span>
+<span class="cm">  */</span>
+<span class="nd">@Service</span>
+<span class="kd">class</span> <span class="nc">X</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Dictionary</span> <span class="n">m_config</span><span class="o">;</span>
+
+     <span class="cm">/**</span>
+<span class="cm">       * Initialize our service from config ... and store the config for later usage (from our init method)</span>
+<span class="cm">       */</span>
+     <span class="nd">@ConfigurationDependency</span><span class="o">(</span><span class="n">pid</span><span class="o">=</span><span class="s">&quot;MyPid&quot;</span><span class="o">)</span>
+     <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">conf</span><span class="o">)</span> <span class="o">{</span>
+           <span class="n">m_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">;</span>
+     <span class="o">}</span>
+
+     <span class="cm">/**</span>
+<span class="cm">      * All unnamed dependencies are injected: we can now configure other named</span>
+<span class="cm">      * dependencies, using the already injected configuration.</span>
+<span class="cm">      * The returned Map will be used to configure our &quot;otherService&quot; Dependency.</span>
+<span class="cm">      */</span>
+     <span class="nd">@Init</span>
+     <span class="n">Map</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+         <span class="k">return</span> <span class="k">new</span> <span class="nf">HashMap</span><span class="o">()</span> <span class="o">;</span>
+     <span class="o">}</span>
+
+     <span class="cm">/**</span>
+<span class="cm">      * This named dependency filter/required flag will be configured by our init method (see above).</span>
+<span class="cm">      */</span>
+     <span class="nd">@ServiceDependency</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;otherService&quot;</span><span class="o">)</span>
+         <span class="kt">void</span> <span class="nf">bindOtherService</span><span class="o">(</span><span class="n">OtherService</span> <span class="n">other</span><span class="o">)</span> <span class="o">{</span>
+     <span class="o">}</span>
+
+     <span class="cm">/**</span>
+<span class="cm">      * All dependencies are injected and our service is now ready to be published.</span>
+<span class="cm">      * Notice that you can also use the publisher service attribute if you need</span>
+<span class="cm">      * to take control on service exposition.</span>
+<span class="cm">      */</span>
+     <span class="nd">@Start</span>
+     <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+     <span class="o">}</span>
+ <span class="o">}</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1664040 by marrs on Wed, 4 Mar 2015 15:21:58 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

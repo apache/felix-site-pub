@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - </title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager-4.html">Apache Felix Dependency Manager 4</a>
+      </div>
+
+      
+      
+      <h1></h1>
+      <h4 id="adapters">Adapters</h4>
+<p>Adapters, like aspects, are used to "extend" existing services, and can publish different services based on the existing one. An example would be implementing a management interface.</p>
+<h2 id="adapterservice">@AdapterService</h2>
+<p>Adapters, like with <em>@AspectService</em>, are used to "extend" existing services, 
+and can publish different services based on the existing one. An example 
+would be implementing a management interface for an existing service, 
+etc .... When you annotate an adapter class with the <em>@AdapterService</em> 
+annotation, it will be applied to any service that matches the implemented 
+interface and filter. The adapter will be registered with the specified 
+interface and existing properties from the original service plus any extra
+properties you supply here. If you declare the original service as a member 
+it will be injected. </p>
+<h3 id="annotation-attributes">Annotation attributes:</h3>
+<hr />
+<p><strong><code>adapteeService</code></strong>  <br />
+<em>Required</em>: True  <br />
+<em>Default</em>: --</p>
+<p>Sets the adaptee service interface this adapter is applying to.</p>
+<hr />
+<p><strong><code>provides</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: all directly implemented interfaces.</p>
+<p>Sets the adapter service interface(s). By default, the directly implemented 
+interface(s) is (are) used. </p>
+<hr />
+<p><strong><code>properties</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: All inherited adaptee service properties.</p>
+<p>Sets some additional properties to use with the adapter service registration. 
+By default, the adapter will inherit all adaptee service properties.</p>
+<hr />
+<p><strong><code>adapteeFilter</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Sets the filter condition to use with the adapted service interface.</p>
+<hr />
+<p><strong><code>factoryMethod</code></strong>  <br />
+<em>Required</em>: False  <br />
+<em>Default</em>: --</p>
+<p>Sets the static method used to create the adapter service implementation 
+instance. By default, the default constructor of the annotated class is used.</p>
+<h3 id="usage-example">Usage example</h3>
+<p>Here, the AdapterService is registered into the OSGI registry each time an AdapteeService is found from the registry. The AdapterImpl class adapts the AdapteeService to the AdapterService. The AdapterService will also have a service property (param=value), and will also include eventual service properties found from the AdapteeService:</p>
+<div class="codehilite"><pre> <span class="p">@</span><span class="n">AdapterService</span><span class="p">(</span><span class="n">adapteeService</span> <span class="p">=</span> <span class="n">AdapteeService</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> <span class="k">properties</span><span class="p">={@</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="p">=</span>&quot;<span class="n">param</span>&quot;<span class="p">,</span> <span class="n">value</span><span class="p">=</span>&quot;<span class="n">value</span>&quot;<span class="p">)})</span>
+ <span class="n">class</span> <span class="n">AdapterImpl</span> <span class="n">implements</span> <span class="n">AdapterService</span> <span class="p">{</span>
+     <span class="o">//</span> <span class="n">The</span> <span class="n">service</span> <span class="n">we</span> <span class="n">are</span> <span class="n">adapting</span> <span class="p">(</span><span class="n">injected</span> <span class="n">by</span> <span class="n">reflection</span><span class="p">)</span>
+     <span class="n">protected</span> <span class="n">AdapteeService</span> <span class="n">adaptee</span><span class="p">;</span>
+
+     <span class="n">public</span> <span class="n">void</span> <span class="n">doWork</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">adaptee</span><span class="p">.</span><span class="n">mehod1</span><span class="p">();</span>
+        <span class="n">adaptee</span><span class="p">.</span><span class="n">method2</span><span class="p">();</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1664040 by marrs on Wed, 4 Mar 2015 15:21:58 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

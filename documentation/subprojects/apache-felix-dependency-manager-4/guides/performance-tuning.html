@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Dependency Manager - Performance Tuning</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager-4.html">Apache Felix Dependency Manager 4</a>
+      </div>
+
+      
+      
+      <h1>Apache Felix Dependency Manager - Performance Tuning</h1>
+      <h3 id="filter-indices">Filter Indices</h3>
+<p>Filter indices allow you to speed up the service resolution process by skipping the services registry, in favor of a fast index on given service properties.</p>
+<p>The Dependency Manager will look for a set of filter indices in the <code>org.apache.felix.dependencymanager.filterindex</code> system property. This system property uses the following syntax,</p>
+<div class="codehilite"><pre><span class="n">property</span><span class="o">-</span><span class="n">index</span> <span class="p">::=</span> <span class="n">service</span><span class="o">-</span><span class="n">property</span> <span class="o">|</span> <span class="n">service</span><span class="o">-</span><span class="n">property</span> <span class="s">&#39;,&#39;</span> <span class="n">property</span><span class="o">-</span><span class="n">index</span>
+<span class="n">index</span> <span class="p">::=</span> <span class="s">&#39;*aspect*&#39;</span> <span class="o">|</span> <span class="s">&#39;*adapter*&#39;</span> <span class="o">|</span> <span class="n">property</span><span class="o">-</span><span class="n">index</span>
+<span class="n">indices</span> <span class="p">::=</span> <span class="n">index</span> <span class="o">|</span> <span class="n">indices</span> <span class="s">&#39;;&#39;</span> <span class="n">index</span>
+</pre></div>
+
+
+<p>The implementation ships with three kinds of index implementations.</p>
+<ul>
+<li><em>Service property indices</em> are based on a set of service properties, like a multi-column index in a database. </li>
+<li><em>Aspect indices</em> work with Dependency Manager Aspect services, and will provide indexing for the specific filters that they use.</li>
+<li><em>Adapter indices</em> work like Aspect indices, but for Adapter services.</li>
+</ul>
+<h4 id="performance">Performance</h4>
+<p>The index isn't free, but reduces the linear (and wasteful) filter-based lookup to an indexed log(n) lookup. You can expect noticeable speedup if you have at least several hundred services.</p>
+<h4 id="examples">Examples</h4>
+<div class="codehilite"><pre><span class="o">-</span><span class="n">Dorg</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dependencymanager</span><span class="p">.</span><span class="n">filterindex</span><span class="p">=</span><span class="n">objectClass</span>
+</pre></div>
+
+
+<p>Sets an index on <code>objectClass</code>, speeding up lookups for any filter that contains an <code>objectClass</code> in its filter (all regular services do).</p>
+<div class="codehilite"><pre><span class="o">-</span><span class="n">Dorg</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dependencymanager</span><span class="p">.</span><span class="n">filterindex</span><span class="p">=</span><span class="n">objectClass</span><span class="p">,</span><span class="n">id</span>
+</pre></div>
+
+
+<p>This filter helps if you have a lot of similar services, identified by some <code>id</code>.</p>
+<div class="codehilite"><pre><span class="o">-</span><span class="n">Dorg</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dependencymanager</span><span class="p">.</span><span class="n">filterindex</span><span class="p">=</span><span class="n">objectClass</span><span class="p">,</span><span class="n">id</span><span class="p">;</span><span class="n">objectClass</span><span class="p">,</span><span class="n">ipAddress</span>
+</pre></div>
+
+
+<p>This is a set of two filter indices, helping when you have one set of services that has an <code>id</code>, and another set that uses an <code>ipAddress</code> for identification.</p>
+<div class="codehilite"><pre><span class="o">-</span><span class="n">Dorg</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dependencymanager</span><span class="p">.</span><span class="n">filterindex</span><span class="p">=</span><span class="o">*</span><span class="n">aspect</span><span class="o">*</span>
+</pre></div>
+
+
+<p>Provides indexing for all Aspect services.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1664040 by marrs on Wed, 4 Mar 2015 15:21:58 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>
