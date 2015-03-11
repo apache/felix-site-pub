@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Dependency Manager - Annotations</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Dependency Manager 4</a>
+      </div>
+
+      
+      
+      <h1>Dependency Manager - Annotations</h1>
+      <p>The Dependency Manager provides a compact and versatile Java API that allows you to declaratively and programmatically register, acquire, and manage dynamic OSGi components. This has many advantages, but also means you need to implement your own <code>BundleActivator</code>. In cases where your dependencies are not that dynamic, an alternative is to use annotations on your component.</p>
+<p>This tutorial outlines how to setup and use such annotations to describe your components and dependencies. We present a simple "Hello World" component defined using annotations, and also explain how to build the bundle using either Bnd, Ant, or Maven.</p>
+<h2 id="hello-world-component">Hello World Component</h2>
+<div class="codehilite"><pre><span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dependencymanager</span><span class="p">.</span><span class="n">samples</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">hello</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">Component</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">Start</span><span class="p">;</span>
+
+<span class="p">@</span><span class="n">Component</span>
+<span class="n">public</span> <span class="n">class</span> <span class="n">HelloWorld</span> <span class="p">{</span>
+    <span class="p">@</span><span class="n">Start</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">activate</span><span class="p">()</span> <span class="p">{</span>
+       <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Hello</span> <span class="n">world</span> !&quot;<span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="compiling-with-bndtools">Compiling with BndTools:</h2>
+<p>This section is a step-by-step tutorial showing how to create a "greeting" project under BndTools and how to use Dependency Manager annotations.
+BndTools is a nice Eclipse plugin on top of the popular "Bnd" builder tool (<a href="http://bndtools.org/">See The BndTools home page</a>).</p>
+<p>It is assumed that you have installed bndtools with a properly configured cnf project (using Bundle-Hub configuration).</p>
+<h3 id="add-dm-annotationjar-to-the-build-repository-and-to-the-buildpath">Add DM annotation.jar to the build repository and to the buildpath</h3>
+<p>Before creating a project that uses the DM annotations, you first have to add the DM annotation jar in the "cnd/buildrepo".
+(In the future, we'll push the DM annotation.jar to the Felix OBR, so you will then simply only have to create
+a bndtools remote repository that will point to the remote Felix OBR).</p>
+<ul>
+<li>Select the "Repositories" Window</li>
+<li>Select the "Build" repository</li>
+<li>Then click on the "Add Bundles to Repository" -&gt; "Add External Jar" and point the org.apache.felix.dependencymanager.anntation.jar.</li>
+<li>Then click on "Finish" button</li>
+</ul>
+<p>Now, declare the DM annotation plugin in the BndTools plugin path:</p>
+<ul>
+<li>Select "BndTools/Open ext/pluginpaths.bnd</li>
+<li>Select the "+" button of the "Plugin Path" section, and select "buildrepo/org.apache.felix.dependencymanager.annotation/org.apache.felix.dependencymanager.annotation-X.Y.Z.jar (replace X.Y.Z by the actual version)</li>
+<li>Then press "Ctrl-s" to save the configuration</li>
+</ul>
+<h3 id="create-the-greeting-project">Create the greeting project</h3>
+<p>Now we have properly configured the DM annotation plugin in bndtools, we can then create our "greeting" project.</p>
+<ul>
+<li>From the File menu, select "New -&gt; Bndtools OSGi Project" for creating an empty project, and call it "greeting".</li>
+<li>Click on bnd.bnd file of the greeting project, and click on the "Build" tab, then click on the "+" button, near the "Build Path" section.</li>
+<li>Then select "Build/org.apache.felix.dependencymanager.annotation" bundle and click on "Add --&gt;".</li>
+<li>Click on Finish, and save the project (press Ctrl-s).</li>
+</ul>
+<h3 id="creating-the-helloworld-component">Creating the HelloWorld component</h3>
+<p>Since we have configured the buildpath, we are now ready to create our first HelloWorld component using annotations.
+Create the following class in the greeting project:</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">greeting</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.felix.dm.annotation.api.Component</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.felix.dm.annotation.api.Start</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld</span> <span class="o">{</span>
+    <span class="nd">@Start</span>
+    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Hello World&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="finalize-the-bnd-configuration">Finalize the bnd configuration</h3>
+<p>We have created our first HelloWorld component. We now have to finish the bnd configuration by specifying a Private-Package directive,
+and we also add the -plugin bnd directive in order to ask bnd to call the DM annotation plugin during compilation:</p>
+<ul>
+<li>Click on the bnd.bnd file of the greeting project</li>
+<li>Click on Contents and add the "greeting" package in the Private Packages</li>
+<li>Finally, declare the DM annotation plugin by clicking on the "source" tab, and add the following:<ul>
+<li>-plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug</li>
+</ul>
+</li>
+<li>Save configuration (Press Ctrl-s)</li>
+<li>Click on "Build" and on "Rebuild"</li>
+</ul>
+<p>The greeting.jar should now be generated with a META-INF/dependencymanager/ directory. The plugin logs debug messages in /tmp/dmplugin/*</p>
+<p>So, the final bnd.bnd file should look like this:</p>
+<div class="codehilite"><pre>Bundle-Version: 0.0.0.<span class="cp">${</span><span class="n">tstamp</span><span class="cp">}</span>
+-buildpath: org.apache.felix.dependencymanager.annotation
+Private-Package: greeting
+-plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
+</pre></div>
+
+
+<h3 id="testing-the-bundle-under-bndtools">Testing the bundle under bndtools:</h3>
+<p>We are now going to execute a Felix framework under Eclipse/BndTools, and run our HelloWorld example.</p>
+<p>First, install the following necessary bundles in the "Local" repository:
+(in the future, we'll release the DM bundles in the Felix OBR, so you will only have to declare a remote repository, instead of doing this): </p>
+<ul>
+<li>Click on Repositories</li>
+<li>Add the following DM bundles in the "Local" Repository:<ul>
+<li>org.apache.felix.dependencymanager.jar</li>
+<li>org.apache.felix.dependencymanager.shell.jar</li>
+<li>org.apache.felix.dependencymanager.runtime.jar</li>
+</ul>
+</li>
+</ul>
+<p>Now, configure the Felix framework, as well as the list of the bundles to be executed:</p>
+<ul>
+<li>Click on the bnd.bnd file of the greeting project</li>
+<li>Click on the "Run" tab</li>
+<li>In the Core Runtime, Select the latest version of Felix currently available</li>
+<li>Select Execution Env=JavaSE-1.7</li>
+<li>In the "Run Bundles" section, add the following list:<ul>
+<li>org.apache.felix.configadmin.jar</li>
+<li>org.apache.felix.metatype.jar</li>
+<li>org.apache.felix.log.jar</li>
+<li>org.apache.felix.gogo.command</li>
+<li>org.apache.felix.gogo.runtime</li>
+<li>org.apache.felix.gogo.shell</li>
+<li>org.apache.felix.dependencymanager</li>
+<li>org.apache.felix.dependencymanager.runtime</li>
+<li>org.apache.felix.dependencymanager.shell</li>
+</ul>
+</li>
+<li>Then save the configuration (Press Ctrl-s).</li>
+</ul>
+<p>Now, Click on "Run OSGi". You should now see in the Console the Gogo Shell prompt with the
+message displayed by the HelloWorld component:</p>
+<div class="codehilite"><pre><span class="n">Hello</span> <span class="n">World</span>
+<span class="n">Welcome</span> <span class="n">to</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Gogo</span>
+<span class="n">g</span>!
+</pre></div>
+
+
+<p>Just type "dm" in the console, and you should see:</p>
+<div class="codehilite"><pre><span class="p">[</span>2<span class="p">]</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dependencymanager</span><span class="p">.</span><span class="n">runtime</span>
+ <span class="p">[</span>0<span class="p">]</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="n">DependencyManagerRuntime</span> <span class="n">registered</span>
+    <span class="n">active</span> <span class="p">(</span><span class="n">DependencyManager</span><span class="o">-</span><span class="n">Component</span><span class="p">=</span><span class="o">*</span><span class="p">)</span> <span class="n">bundle</span> <span class="n">optional</span> <span class="n">available</span>
+    <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">packageadmin</span><span class="p">.</span><span class="n">PackageAdmin</span> <span class="n">service</span> <span class="n">required</span> <span class="n">available</span>
+    <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="nb">log</span><span class="p">.</span><span class="n">LogService</span> <span class="n">service</span> <span class="n">optional</span> <span class="n">available</span>
+<span class="p">[</span>10<span class="p">]</span> <span class="n">greeting</span>
+ <span class="p">[</span>1<span class="p">]</span> <span class="n">greeting</span><span class="p">.</span><span class="n">HelloWorld</span> <span class="n">registered</span>
+</pre></div>
+
+
+<p>The bundle [2] is the dependency manager runtime bundle that is in charge of managing all bundles containing annotated components.
+And the bundle [10] is our greeting bundle (and the "greeting.HelloWorld" component is registered).</p>
+<h2 id="compiling-with-ant">Compiling with Ant:</h2>
+<p>Since Bnd provides a Ant task, you can use the bnd directives above with the following build.xml:
+(it is assumed that directives.bnd, bnd.jar, json-20070829.jar and org.apache.felix.dependencymanager.annotation.jar are in the current directory)</p>
+<div class="codehilite"><pre><span class="nt">&lt;project</span> <span class="na">name=</span><span class="s">&quot;TestDM&quot;</span> <span class="na">default=</span><span class="s">&quot;bnd&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;bnd&quot;</span> <span class="na">value=</span><span class="s">&quot;bnd.jar&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;json&quot;</span> <span class="na">value=</span><span class="s">&quot;json-20070829.jar&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;dmannot&quot;</span> <span class="na">value=</span><span class="s">&quot;org.apache.felix.dependencymanager.annotation.jar&quot;</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;compile&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;delete</span> <span class="na">dir=</span><span class="s">&quot;target/classes&quot;</span> <span class="na">quiet=</span><span class="s">&quot;yes&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;mkdir</span> <span class="na">dir=</span><span class="s">&quot;target/classes&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;javac</span> <span class="na">srcdir=</span><span class="s">&quot;src/main/java&quot;</span> <span class="na">destdir=</span><span class="s">&quot;target/classes&quot;</span> <span class="na">classpath=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">dmannot</span><span class="cp">}</span><span class="s">&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/target&gt;</span>
+
+    <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;bnd&quot;</span> <span class="na">depends=</span><span class="s">&quot;compile&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;taskdef</span> <span class="na">resource=</span><span class="s">&quot;aQute/bnd/ant/taskdef.properties&quot;</span> <span class="na">classpath=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">dmannot</span><span class="cp">}</span><span class="s">:</span><span class="cp">${</span><span class="n">bnd</span><span class="cp">}</span><span class="s">:</span><span class="cp">${</span><span class="n">json</span><span class="cp">}</span><span class="s">&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;bnd</span> <span class="na">classpath=</span><span class="s">&quot;target/classes&quot;</span> <span class="na">eclipse=</span><span class="s">&quot;false&quot;</span> <span class="na">files=</span><span class="s">&quot;directives.bnd&quot;</span> <span class="na">output=</span><span class="s">&quot;org.apache.felix.dependencymanager.samples.annotation.hello.jar&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/target&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<h2 id="compiling-with-maven">Compiling with Maven:</h2>
+<p>When compiling with Maven, you have to invoke the Dependency Manager Bnd plugin, using the special "_plugin" directive.
+In the R1 Dependency Manager distribution, the bundles are not published to maven central, and you
+have to manually install the org.apache.felix.dependencymanager.annotation.jar file to your local repository, or to your own corporate nexus server.
+(<a href="http://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html">See this link</a> to manually install the dm annotation jar to your local repository.)</p>
+<div class="codehilite"><pre><span class="nt">&lt;project</span> <span class="err">...</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    ...
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.dependencymanager.annotation<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>4.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      ...    
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-bundle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.5.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+           <span class="nt">&lt;instructions&gt;</span>
+           <span class="nt">&lt;Bundle-Name&gt;</span>Test<span class="nt">&lt;/Bundle-Name&gt;</span>
+           <span class="nt">&lt;Bundle-SymbolicName&gt;</span>test<span class="nt">&lt;/Bundle-SymbolicName&gt;</span>
+           <span class="nt">&lt;Import-Package&gt;</span>*<span class="nt">&lt;/Import-Package&gt;</span>
+           <span class="nt">&lt;Private-Package&gt;</span>test.dmannotations<span class="nt">&lt;/Private-Package&gt;</span>
+           <span class="c">&lt;!-- when setting log=debug, logs are writen to /tmp/dmplugin/ directory --&gt;</span>
+           <span class="nt">&lt;_plugin&gt;</span>org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug<span class="nt">&lt;/_plugin&gt;</span>
+           <span class="nt">&lt;/instructions&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+        <span class="nt">&lt;dependencies&gt;</span>
+          <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.dependencymanager.annotation<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.0.0<span class="nt">&lt;/version&gt;</span>
+          <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;/dependencies&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1665705 by marrs on Tue, 10 Mar 2015 21:24:23 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

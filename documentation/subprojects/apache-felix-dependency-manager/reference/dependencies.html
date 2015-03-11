@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Dependency Manager - Dependencies</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+      </div>
+
+      
+      
+      <h1>Dependency Manager - Dependencies</h1>
+      <p>The dependency manager supports many different types of dependencies, all of which can be required or optional. A dependency can be added to one or more components and it is possible to add them dynamically (even from within the component itself if necessary, which allows for some really dynamic dependency configuration).</p>
+<h2 id="injection">Injection</h2>
+<p>One way to deal with dependencies is to have them injected into your component instances automatically. All you need to do is simply declare a field of the same type as your dependency, make the member volatile so any changes will become visible immediately and you're done. If a dependency is optional, a null object will be injected if the dependency is not available.</p>
+<p>Sometimes you need more control over injection, so optionally you can even specify the name of the field to inject into. This allows you to depend on different dependencies of the same type, or simply to prevent injection into more than one field.</p>
+<h2 id="callbacks">Callbacks</h2>
+<p>When keeping track of multiple instances of a dependency, or when you simply want something to happen whenever a dependency becomes (un)available or changes, you can define callbacks, like <code>added</code>, <code>changed</code> and <code>removed</code>. Optionally, you can provide the dependency manager with an instance to invoke these callback methods on. If you don't, they'll be invoked on the component instance.</p>
+<h2 id="types-of-dependencies">Types of Dependencies</h2>
+<p>Out of the box, several types of dependencies are supported:</p>
+<ul>
+<li><a href="dependency-service.html">Service</a></li>
+<li><a href="dependency-configuration.html">Configuration</a></li>
+<li><a href="dependency-bundle.html">Bundle</a></li>
+<li><a href="dependency-resource.html">Resource</a></li>
+</ul>
+<p>However, it's quite easy to add your own custom type of dependency too, as is described below.</p>
+<h2 id="implementing-your-own-dependency">Implementing Your Own Dependency</h2>
+<p>All dependencies share a common API which you can implement yourself if you need a special type of dependency. Whilst not entirely trivial, this allows you to create your own types of dependencies. This can be useful for various scenarios where you want to have components that depend on things that are not services, bundles or configuration.</p>
+<p>An example implementation can be found in the samples available in the source distribution. 
+In the org.apache.felix.dependencymanager.samples module, you can refer to src/org/apache/felix/dependencymanager/samples/customdep/README file,
+which describes a custom "PathDependency" that tracks files that are added or removed from /tmp/ directory.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

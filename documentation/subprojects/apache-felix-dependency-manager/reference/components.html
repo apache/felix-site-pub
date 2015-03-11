@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Dependency Manager - Components</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+      </div>
+
+      
+      
+      <h1>Dependency Manager - Components</h1>
+      <p>Components are declared by the dependency manager and can be implemented by POJOs that contain no references to the OSGi framework whatsoever. Components are the main building blocks of your OSGi application. They have a life cycle, can register themselves as services and have zero or more dependencies.</p>
+<p>You can either use the Java API or the Java Annotations and this reference section describes both.</p>
+<h2 id="types-of-components">Types of Components</h2>
+<p>There are different types of Dependency Manager components:</p>
+<ul>
+<li><a href="component-singleton.html"><em>Component</em></a>: Components are the main building blocks for OSGi applications. They can publish themselves as a service, and/or they can have dependencies. These dependencies will influence their life cycle as component will only be activated when all required dependencies are available.</li>
+<li><a href="component-aspect.html"><em>Aspect Service</em></a>: A service that provides a non-functional aspect on top of an existing service. In aspect oriented programming, an aspect, or interceptor can sit between a client and another target service used by the client. An Aspect Service first tracks a target service and is created once the target service is detected. Then the Aspect Service is provided, but with a higher  ranking, and the client is transparently updated with the aspect. Aspects can be chained and may apply to the same target service (and in this case, the ranking of the Aspect service is used to chain aspects in  the proper order).</li>
+<li><a href="component-adapter.html"><em>Adapter Service</em></a>: A Service that adapts another existing service into a new one. Like with aspects, sometimes you want to create adapters for certain services, which add certain behavior that results in the publication of (in this case) a different service. Adapters can dynamically be added and removed and allow you to keep your basic services implementations clean and simple, adding extra features on top of them in a modular way.</li>
+<li><a href="component-bundle-adapter.html"><em>Bundle Adapter Service</em></a>: creates an OSGi service a service on top of a given bundle.</li>
+<li><a href="component-resource-adapter.html"><em>Resource Adapter Service</em></a>: creates an OSGi service on top of a specific Resource.</li>
+<li><a href="component-factory-configuration-adapter.html"><em>Factory Configuration Adapter Service</em></a>: creates an OSGi service from ConfigAdmin, using a factoryPid, and a ManagedServiceFactory.</li>
+</ul>
+<h2 id="life-cycle">Life cycle</h2>
+<p>The dependency manager, as part of a bundle, shares the generic bundle life cycle explained in the OSGi specification. The life cycle of the dependency manager itself, and the components it manages, can be located inside the <em>active</em> state of the hosting bundle.</p>
+<p>Each component you define gets its own life cycle, which is explained in the state diagram below.</p>
+<p><img src="./diagrams/statediagram.png" alt="State diagram" style="width: 430px"/></p>
+<p>A component is associated with an instance. This instance can either be specified directly, or you can specify its class. If you do the latter, the actual instance will be created lazily. </p>
+<p>Changes in the state of the component will trigger the following life cycle methods:</p>
+<ul>
+<li><code>init</code>, </li>
+<li><code>start</code>, </li>
+<li><code>stop</code> and </li>
+<li><code>destroy</code>.</li>
+</ul>
+<p>The dependency manager will look for methods with these names and one of the following signatures in this order:</p>
+<ul>
+<li><code>(Component)</code>,</li>
+<li><code>()</code>.</li>
+</ul>
+<p>If you don't specify anything, the methods with these names will be invoked on the instance. By using <code>setCallbacks()</code> you can however change this behavior: You can change the names of the methods to look for. Any methods that are set to <code>null</code> will not be invoked at all. Another thing you can do is to specify a different instance to invoke these methods on. If you do that, you will usually want to use the first signature, which gives you a reference to the <code>Component</code> whose life cycle method was invoked.</p>
+<h2 id="interfaces-and-properties">Interfaces and properties</h2>
+<p>Components in the context of the dependency manager can be published as OSGi services under one or more interface names, plus optionally a set of properties. This is no different than a normal OSGi service. It's important to mention that you don't have to register a service. If you don't, you basically created a component that can do work and have dependencies and a managed life cycle.</p>
+<h2 id="composition">Composition</h2>
+<p>When implementing more complex components, you often find yourself using more than one instance. However, several of these instances might want to have dependencies injected. In such cases you need to tell the dependency manager which instances to consider. This has to be a fixed set of instances however.</p>
+<h2 id="factories">Factories</h2>
+<p>Out of the box, there already is support for lazy instantiation, meaning that the dependency manager can create component instances for you when their required dependencies are resolved. However, sometimes creating a single instance using a default constructor is not enough. In those cases, you can tell the dependency manager to delegate the creation process to a factory.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Dependency Manager - Singleton Component</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+      </div>
+
+      
+      
+      <h1>Dependency Manager - Singleton Component</h1>
+      <p>Components are the main building blocks for OSGi applications. They can publish themselves as a service, and they can have dependencies. These dependencies will influence their life cycle as component will only be activated when all required dependencies are available.</p>
+<p>Usage example:</p>
+<div class="codehilite"><pre><span class="n">dm</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
+    <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">TranslationService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">GoogleBasedTranslationService</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">LocalizationService</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> &quot;<span class="p">(</span><span class="n">language</span><span class="p">=</span><span class="n">en</span><span class="p">)</span>&quot;<span class="p">)</span>
+        <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">true</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">setService</span><span class="p">(</span><span class="n">LogService</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">setRequired</span><span class="p">(</span><span class="n">false</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+
+
+<h2 id="component">@Component</h2>
+<p>This annotation annotates an implementation class that optionally publishes 
+an OSGi service, and optionally has some dependencies, with a managed 
+lifecycle. </p>
+<h3 id="annotation-attributes">Annotation attributes</h3>
+<hr />
+<p><strong><code>provides</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: all implemented interfaces, if any.   </p>
+<p>By default, the component is registered into the OSGi registry under all 
+directly implemented interfaces. If no interfaces are implemented, then the 
+component is not registered, but it still has a managed lifecycle, and may 
+have some dependencies. If you need to  explicitly define the list of 
+interfaces (or classes) under which the  component must be registered in the 
+OSGi registry, then use the <em>provides</em> attribute. You can also set this 
+property to an empty array of classes  if you don't want at all your component 
+to be exposed in the OSGi  registry (even if it implements some interfaces).</p>
+<hr />
+<p><strong><code>properties</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>the <em>properties" attribute enumerates the list of properties that are part of 
+the Service exposed by the component in the OSGi Registry. 
+Each property is defined using the @Property annotation, which represents a<br />
+key/value pair. When a value is actually an array of strings, 
+then the </em>values* attribute of the @Property annotation can be used. 
+This attribute  is not the only way to specify OSGi Service properties 
+(see Setting Service properties in the lifecycle section).</p>
+<hr />
+<p><strong><code>factoryMethod</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>This attribute refers to a static method name from the annotated class which 
+can be used to instantiate the component instance. Normally, DependencyManager 
+instantiates the component using its class name, and with the default 
+constructor of the class, but there are some cases where it is required to 
+take control of  how the component is created. For instance, this method may 
+be used to create the component as a dynamic proxy ...</p>
+<hr />
+<p><strong><code>factoryName</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>This attribute is the identifier for a component factory. By default, a 
+component is automatically instantiated as a singleton when the bundle is 
+started, and when all required dependencies are satisfied. But when a 
+component must be created, configured, or disposed dynamically, and when 
+multiple instances of the same component are needed, a factoryName can  be 
+used. When you use this attribute, a <em>org.apache.felix.dm.runtime.api.ComponentFactory</em> 
+OSGi Service will be provided with a <em>dm.factory.name</em> service property matching your 
+specified factoryName attribute. The ComponentFactory will be provided once the 
+component bundle is started, even if required dependencies are not available, 
+and the ComponentFactory will be unregistered from the OSGi registry once the component 
+bundle is stopped or disposed using the <em>ComponentInstance.dispose()</em> method.</p>
+<hr />
+<p><strong><code>factoryConfigure</code></strong>  <br />
+<em>Required</em>: No  <br />
+<em>Default</em>: --  </p>
+<p>This attributes sets the <em>configure</em> method name to be called with the factory 
+configuration. This attribute only makes sense if the <em>factoryName</em> attribute 
+is used. If specified, then this attribute references a component callback 
+method, which is called for providing the configuration supplied by the 
+factory that instantiated this component. The current Service properties will 
+be also updated with all public properties (which don't start with a dot).</p>
+<h3 id="usage-example">Usage example:</h3>
+<div class="codehilite"><pre><span class="cm">/**</span>
+<span class="cm"> * This component will be activated once the bundle is started and when all required dependencies</span>
+<span class="cm"> * are available.</span>
+<span class="cm"> */</span>
+<span class="nd">@Component</span>
+<span class="kd">class</span> <span class="nc">X</span> <span class="kd">implements</span> <span class="n">Z</span> <span class="o">{</span>
+    <span class="nd">@ConfigurationDependency</span><span class="o">(</span><span class="n">pid</span><span class="o">=</span><span class="s">&quot;MyPid&quot;</span><span class="o">)</span>
+    <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">conf</span><span class="o">)</span> <span class="o">{</span>
+         <span class="c1">// Configure or reconfigure our service.</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Start</span>
+    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Our component is starting and is about to be registered in the OSGi registry as a Z service.</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Example using a factoryName, where the X component is instantiated/updated/disposed by another Y component:</p>
+<div class="codehilite"><pre> <span class="kn">import</span> <span class="nn">org.apache.felix.dm.runtime.api.ComponentFactory</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.apache.felix.dm.runtime.api.ComponentInstance</span><span class="o">;</span>
+
+ <span class="nd">@Component</span><span class="o">(</span><span class="n">factoryName</span><span class="o">=</span><span class="s">&quot;MyComponentFactory&quot;</span><span class="o">,</span> <span class="n">factoryConfigure</span><span class="o">=</span><span class="s">&quot;configure&quot;</span><span class="o">)</span>
+ <span class="kd">class</span> <span class="nc">X</span> <span class="kd">implements</span> <span class="n">Z</span> <span class="o">{</span>
+     <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">conf</span><span class="o">)</span> <span class="o">{</span>
+         <span class="c1">// Configure or reconfigure our component. The conf is provided by </span>
+         <span class="c1">// the factory, and all public properties (which don&#39;t</span>
+         <span class="c1">// start with a dot) are propagated with the Service</span>
+         <span class="c1">// properties eventually specified in the properties</span>
+         <span class="c1">// annotation attribute.</span>
+     <span class="o">}</span>
+
+     <span class="nd">@ServiceDependency</span>
+     <span class="kt">void</span> <span class="nf">bindOtherService</span><span class="o">(</span><span class="n">OtherService</span> <span class="n">other</span><span class="o">)</span> <span class="o">{</span>
+         <span class="c1">// store this require dependency</span>
+     <span class="o">}</span>
+
+     <span class="nd">@Start</span>
+     <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">// Our component is starting and is about to be registered</span>
+         <span class="c1">// in the OSGi registry as a Z service.</span>
+     <span class="o">}</span>
+
+     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doService</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">// ... part of Z interface</span>
+     <span class="o">}</span>
+ <span class="o">}</span>
+
+ <span class="cm">/**</span>
+<span class="cm">  * This class will instantiate some X component instances</span>
+<span class="cm">  */</span>
+ <span class="nd">@Component</span>
+ <span class="kd">class</span> <span class="nc">Y</span> <span class="o">{</span>
+     <span class="c1">// This Set acts as a Factory API for creating X component instances.</span>
+     <span class="nd">@ServiceDependency</span><span class="o">(</span><span class="n">filter</span><span class="o">=</span><span class="s">&quot;(dm.factory.name=MyComponentFactory)&quot;</span><span class="o">)</span>
+     <span class="n">ComponentFactory</span> <span class="n">_XFactory</span><span class="o">;</span>
+
+     <span class="nd">@Start</span>
+     <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">// Instantiate a X component instance</span>
+         <span class="n">Dictionary</span> <span class="n">x1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">()</span> <span class="o">;</span>
+         <span class="n">ComponentInstance</span> <span class="n">i1</span> <span class="o">=</span> <span class="n">_XFactory</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">x1</span><span class="o">);</span>
+
+         <span class="c1">// Instantiate another X component instance</span>
+         <span class="n">Dictionary</span> <span class="n">x2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">()</span> <span class="o">;</span>
+         <span class="n">ComponentInstance</span> <span class="n">i2</span> <span class="o">=</span> <span class="n">_XFactory</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">x2</span><span class="o">);</span>
+
+         <span class="c1">// Update the first X component instance</span>
+         <span class="n">x1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">()</span> <span class="o">;</span>
+         <span class="n">i1</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">x1</span><span class="o">);</span>
+
+         <span class="c1">// Destroy components</span>
+         <span class="n">i1</span><span class="o">.</span><span class="na">dispose</span><span class="o">();</span>
+         <span class="n">i2</span><span class="o">.</span><span class="na">dispose</span><span class="o">();</span>
+     <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

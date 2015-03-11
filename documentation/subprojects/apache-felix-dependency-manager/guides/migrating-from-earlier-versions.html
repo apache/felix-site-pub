@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Apache Felix Dependency Manager - Migrating from earlier versions</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+      </div>
+
+      
+      
+      <h1>Apache Felix Dependency Manager - Migrating from earlier versions</h1>
+      <p>Below is a guide to help you migrate from version 3. Whilst older versions obviously still exist, we don't think people are still actively using them.</p>
+<h2 id="migrating-from-version-3">Migrating from version 3</h2>
+<p>DependencyManager 4.0 has some API changes that need to be taken into account when migrating from DependencyManager 3. </p>
+<ul>
+<li>A dependency can no longer be shared accross components. </li>
+<li>You no longer have to call setInstanceBound() when adding a dependency from within the init() method of a component. Therefore the setInstanceBound() method has been removed from all Dependency interfaces.</li>
+<li>in the Dependency interface, the following method have been removed: isInstanceBound, invokeAdded, invokeRemoved, createCopy.</li>
+<li>In the Component interface, the "Object Component.getService()" method has been replaced by the "<T> T getInstance()" method.</li>
+<li>In the Component interface, the "void addStateListener(ComponentStateListener listener) method" has been replaced by the "add(ComponentStateListener listener)" method.</li>
+<li>In the Component interface, the "start", "stop", "getDependencies" methods have been removed.</li>
+<li>In the Component interface and in the DependencyManager class, the createTemporalServiceDependency() method is now taking a timeout parameter: createTemporalServiceDependency(long timeout).</li>
+<li>The ComponentStateListener interface has changed: it is now providing a single "changed(Component c, ComponentState state)" method.</li>
+<li>The DependencyManager 4 Shell commands are no longer available for framework specific shell implementations, and support the gogo shell only.</li>
+<li>The TemporalServiceDependency interface has been removed.</li>
+<li>The Annotations processor is not generating anymore the Import-Service/Export Service by default (no need to specify the "build-import-export-service=false" option in the
+annotations plugin if you don't need to generate automatically the deprecated headers).</li>
+<li>The Dependency Manager metatype annotations are now deprecated and it is encouraged to use standard bnd metatypes annotation instead.
+See org.apache.felix.dependencymanager.samples/src/org/apache/felix/dependencymanager/samples/dictionary/annot/DictionaryConfiguration.java for an example.
+You can also check http://www.aqute.biz/Bnd/MetaType for more information about the bnd metatypes annotations.</li>
+<li>Dependency Manager is now fully built using bndtools, and there is no Maven annotation plugin anymore. However, the workaround is simply the 
+use a "_plugin" option in the pom, and to declare a dependency inside the "plugin" configuration.
+Notice that in the R1 version, we are not pushing DM distribution to maven, so you have to do manually push the DM artifacts in your own nexus server. 
+We'll try to release DM artifacts to maven central in the next release (R2).</li>
+</ul>
+<p>For example:</p>
+<div class="codehilite"><pre><span class="nt">&lt;project</span> <span class="err">...</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    ...
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.dependencymanager.annotation<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>4.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      ...    
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-bundle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.5.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+           <span class="nt">&lt;instructions&gt;</span>
+           <span class="nt">&lt;Bundle-Name&gt;</span>Test<span class="nt">&lt;/Bundle-Name&gt;</span>
+           <span class="nt">&lt;Bundle-SymbolicName&gt;</span>test<span class="nt">&lt;/Bundle-SymbolicName&gt;</span>
+           <span class="nt">&lt;Import-Package&gt;</span>*<span class="nt">&lt;/Import-Package&gt;</span>
+           <span class="nt">&lt;Private-Package&gt;</span>test.dmannotations.withbndplugininvokedfrompom<span class="nt">&lt;/Private-Package&gt;</span>
+           <span class="nt">&lt;_plugin&gt;</span>org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug<span class="nt">&lt;/_plugin&gt;</span>
+           <span class="nt">&lt;/instructions&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+        <span class="nt">&lt;dependencies&gt;</span>
+          <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.dependencymanager.annotation<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.0.0<span class="nt">&lt;/version&gt;</span>
+          <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;/dependencies&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

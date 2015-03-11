@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Dependency Manager - Resource adapters</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Dependency Manager 4</a>
+      </div>
+
+      
+      
+      <h1>Dependency Manager - Resource adapters</h1>
+      <p>Resource adapters are a special type of adapters which can adapt a resource into an OSGi service. These resources can be all kinds of resources, e.g. bundle resources, files, database records, anything as long as it can be resolved though a URL.</p>
+<p>The diagram below illustrates the classes involved in the resource adapter pattern:</p>
+<p><img src="./diagrams/resources.png" alt="Resource adapters" style="width: 780px"/></p>
+<p>The yellow elements have to be implemented in order to use the pattern.</p>
+<p>A resource adapter is configured as follows:</p>
+<div class="codehilite"><pre><span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createResourceAdapter</span><span class="p">(</span>&quot;<span class="o">*</span><span class="p">.</span><span class="n">MF</span>&quot;<span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span> &quot;<span class="n">changed</span>&quot;<span class="p">)</span>
+            <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">ManifestAdapter</span><span class="p">.</span><span class="n">class</span><span class="p">));</span>
+</pre></div>
+
+
+<p>The filter semantics depend on the resource repository. In this example the resource repository will be serving bundle resources, so we're using a standard file wildcard filter. As the filter specifies in this case the resource of interest is the bundle manifest. For each MANIFEST.MF found a new instance of ManifestAdapter will be created and registered. Each instance gets access to the resource by injecting the URL of the resource into the implementation object.</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">ManifestAdapter</span> <span class="p">{</span>
+
+    <span class="n">private</span> <span class="n">volatile</span> <span class="n">URL</span> <span class="n">url</span><span class="p">;</span>
+
+    <span class="n">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">started</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">url</span><span class="p">);</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+
+
+<p>But how does DM know where to go looking for manifest files? We'll it does not automatically. It requires you to implement a resource repository component. For each resource adapter service DM launches a ResourceHandler service tracking the resources the resource adapter is interested in. A resource repository is responsible for tracking resources and notifying adding / changing and removal of the resources from the repository. Notifying these resource 'events' is done by invoking the corresponding method on the ResourceHandler service.</p>
+<p>We'll explain how to implement a resource repository by an example. The example resource repository is a bundle resource repository which as it's name says, is capable of serving bundle resources.</p>
+<p>A simplified bundle resource repository looks as follows:</p>
+<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">BundleResourceRepositoryImpl</span> <span class="p">{</span>
+
+    <span class="n">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">ServiceReference</span><span class="p">,</span> <span class="n">ResourceHandler</span><span class="o">&gt;</span> <span class="n">handlers</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ConcurrentHashMap</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+    <span class="n">private</span> <span class="n">volatile</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="p">;</span>
+
+    <span class="o">//</span> <span class="n">added</span> <span class="n">callback</span>
+    <span class="n">void</span> <span class="n">addHandler</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">handlers</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">handler</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ref</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">URL</span><span class="p">)</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">URL</span> <span class="n">url</span> <span class="p">=</span> <span class="p">(</span><span class="n">URL</span><span class="p">)</span> <span class="n">ref</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">URL</span><span class="p">);</span>
+            <span class="n">notifyMatchingInitialResource</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">handler</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">String</span> <span class="n">filter</span> <span class="p">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">ref</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">FILTER</span><span class="p">);</span>
+            <span class="n">notifyMatchingInitialResources</span><span class="p">(</span><span class="n">filter</span><span class="p">,</span> <span class="n">handler</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="o">//</span> <span class="n">removed</span> <span class="n">callback</span>
+    <span class="n">void</span> <span class="n">removeHandler</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">handlers</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">private</span> <span class="n">void</span> <span class="n">notifyMatchingInitialResource</span><span class="p">(</span><span class="n">URL</span> <span class="n">url</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">bundleContainsResource</span><span class="p">(</span><span class="n">url</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">handler</span><span class="p">.</span><span class="n">added</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="p">());</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="p">@</span><span class="n">SuppressWarnings</span><span class="p">(</span>&quot;<span class="n">unchecked</span>&quot;<span class="p">)</span>
+    <span class="n">private</span> <span class="n">void</span> <span class="n">notifyMatchingInitialResources</span><span class="p">(</span><span class="n">String</span> <span class="n">filter</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Enumeration</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="n">entries</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">getBundle</span><span class="p">().</span><span class="n">findEntries</span><span class="p">(</span>&quot;<span class="o">/</span>&quot;<span class="p">,</span> <span class="n">filter</span><span class="p">,</span> <span class="n">true</span><span class="p">);</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">entries</span><span class="p">.</span><span class="n">hasMoreElements</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">URL</span> <span class="n">entry</span> <span class="p">=</span> <span class="n">entries</span><span class="p">.</span><span class="n">nextElement</span><span class="p">();</span>
+            <span class="n">handler</span><span class="p">.</span><span class="n">added</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="p">());</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">private</span> <span class="n">boolean</span> <span class="n">bundleContainsResource</span><span class="p">(</span><span class="n">URL</span> <span class="n">url</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">true</span><span class="p">;</span> <span class="o">//</span> <span class="n">more</span> <span class="n">specific</span> <span class="n">checks</span> <span class="n">required</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The resource repository is registered in the bundle activator as follows:</p>
+<div class="codehilite"><pre>    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">().</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">BundleResourceRepositoryImpl</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">().</span><span class="n">setService</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">class</span><span class="p">).</span><span class="n">setCallbacks</span><span class="p">(</span>&quot;<span class="n">addHandler</span>&quot;<span class="p">,</span> &quot;<span class="n">removeHandler</span>&quot;<span class="p">)));</span>
+</pre></div>
+
+
+<p>A resource repository implementation must have a dependency on resource handlers. The ResourceHandler service has two important service properties:</p>
+<ul>
+<li>"filter" (<code>ResourceHandler.FILTER</code>)</li>
+<li>"url" (<code>ResourceHandler.URL</code>)</li>
+</ul>
+<p>A resource handler service has either one of these properties, not both! A resource handler with a filter can match multiple resources whereas a resource handler with a url only matches a single resource. It's important the resource repository handles both situations.</p>
+<p>When a new handler is being added, the resource repository should inform the resource handler on the resources it has that match the handler's filter or url. This is done by invoking the <code>added(url, properties)</code> method on the ResourceHandler. This callback results in the ResourceAdapter's ResourceDependency being satisfied, the url being injected into the resource adapter implementation object and the resource adapter implementation component being started.</p>
+<p>Besides the added() callback the resource repository is also responsible for handling the changed() and removed() methods on change or removal of the resource from the resource repository. For a bundle resource repository that's not likely to happen, but for a filesystem resource repository this can very well be the case.</p>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1665701 by marrs on Tue, 10 Mar 2015 21:16:26 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>

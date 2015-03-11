@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE- 2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+  <head>
+    <title>Apache Felix - Dependency Manager - Configuration Dependency</title>
+    <link rel="icon" href="/res/favicon.ico">
+    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  </head>
+  <body>
+    <div class="title">
+      <div class="logo">
+        <a href="http://felix.apache.org/">
+          <img border="0" alt="Apache Felix" src="/res/logo.png">
+        </a>
+      </div>
+      <div class="header">
+        <a href="http://www.apache.org/">
+          <img border="0" alt="Apache" src="/res/apache.png">
+        </a>
+      </div>
+    </div>
+    
+    <div class="menu"> 
+      <p><a href="/news.html">news</a>  <br />
+<a href="/license.html">license</a>  <br />
+<a href="/downloads.cgi">downloads</a>  <br />
+<a href="/documentation.html">documentation</a>  <br />
+<a href="/mailinglists.html">mailing lists</a>  <br />
+<a href="/documentation/community/contributing.html">contributing</a>  <br />
+<a href="/sitemap.html">site map</a>  <br />
+<a href="http://www.apache.org/">asf</a>  <br />
+<a href="http://www.apache.org/security/">security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+<iframe
+    src="http://www.apache.org/ads/button.html"
+    style="border-width:0; float: left"
+    frameborder="0"
+    scrolling="no"
+    width="135"
+    height="135">
+</iframe>
+    </div>
+    
+    <div class="main">
+      <div class="breadcrump" style="font-size: 80%;">
+        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects.html">Apache Felix Subproject Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+      </div>
+
+      
+      
+      <h1>Dependency Manager - Configuration Dependency</h1>
+      <p>A configuration dependency is always required, and allows you to depend on the availability of a valid configuration for your component. Optional configuration dependencies are not supported because in that case you can just as well register as a <code>ManagedService</code> yourself.</p>
+<h2 id="configurationdependency">@ConfigurationDependency</h2>
+<p>A configuration dependency is always required, and allows you to depend on the availability of a valid configuration for your component. This dependency requires the OSGi Configuration Admin Service.</p>
+<p>Annotation attributes:</p>
+<ul>
+<li><em>pid</em>: Returns the pid for a given service (by default, the pid is the service class name).</li>
+<li><em>pidClass</em>: Will the the name of the specified class as the the pid for a given service (by default, the pid is the service class name).</li>
+<li><em>propagate</em>: Returns true if the configuration properties must be published along with the service. Any additional service properties specified directly are merged with these.</li>
+<li><em>name</em>: The name for this configuration dependency. When you give a name a dependency, it won't be evaluated immediately, but after the component's init method has been called, 
+and from the init method, you can then return a map in order to dynamically configure the 
+configuration dependency (the map has to contain a "pid" and/or "propagate" flag, prefixed 
+with the dependency name). Then the dependency will be evaluated after the component init 
+method, and will be injected before the start method. </li>
+</ul>
+<h2 id="usage-examples">Usage Examples</h2>
+<p>In the following example, the "Printer" component depends on a configuration whose PID name is "org.apache.felix.sample.Printer". This service will initialize its ip/port number from the provided configuration:</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">felix</span><span class="o">.</span><span class="na">sample</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Printer</span> <span class="o">{</span>
+    <span class="nd">@ConfigurationDependency</span>
+    <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// load printer ip/port from the provided dictionary.</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>This other example shows how to specify a configuration dependency, as well as meta data used to customize the 
+WebConsole GUI. Using these meta data, you can specify for example the default value for your 
+configurations data, some descriptions, the cardinality of configuration values, etc ...
+(we use here standard bnd metatype annotations, <a href="http://www.aqute.biz/Bnd/MetaType">see bnd metatype documentation here</a>.</p>
+<p>First, we define the configuration metadata, using standard bndtools metatatype annotations:</p>
+<div class="codehilite"><pre> <span class="p">:::</span><span class="n">java</span>
+ <span class="n">package</span> <span class="n">sample</span><span class="p">;</span>
+ <span class="n">import</span> <span class="n">aQute</span><span class="p">.</span><span class="n">bnd</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">metatype</span><span class="p">.</span><span class="n">Meta</span><span class="p">.</span><span class="n">AD</span><span class="p">;</span>
+ <span class="n">import</span> <span class="n">aQute</span><span class="p">.</span><span class="n">bnd</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">metatype</span><span class="p">.</span><span class="n">Meta</span><span class="p">.</span><span class="n">OCD</span><span class="p">;</span>
+
+ <span class="p">@</span><span class="n">OCD</span><span class="p">(</span><span class="n">description</span> <span class="p">=</span> &quot;<span class="n">Declare</span> <span class="n">here</span> <span class="n">the</span> <span class="n">Printer</span> <span class="n">Configuration</span><span class="p">.</span>&quot;<span class="p">)</span>
+ <span class="n">public</span> <span class="n">interface</span> <span class="n">PrinterConfiguration</span> <span class="p">{</span>
+     <span class="p">@</span><span class="n">AD</span><span class="p">(</span><span class="n">description</span> <span class="p">=</span> &quot;<span class="n">Enter</span> <span class="n">the</span> <span class="n">printer</span> <span class="n">ip</span> <span class="n">address</span>&quot;<span class="p">)</span>
+     <span class="n">String</span> <span class="n">ipAddress</span><span class="p">();</span>
+
+     <span class="p">@</span><span class="n">AD</span><span class="p">(</span><span class="n">description</span> <span class="p">=</span> &quot;<span class="n">Enter</span> <span class="n">the</span> <span class="n">printer</span> <span class="n">address</span> <span class="n">port</span> <span class="n">number</span><span class="p">.</span>&quot;<span class="p">)</span>
+     <span class="n">int</span> <span class="n">portNumber</span><span class="p">();</span>
+ <span class="p">}</span>
+</pre></div>
+
+
+<p>Next, we define our Printer service which instantiates the PrinterConfiguration using the *Configurable" bndlib helper:</p>
+<div class="codehilite"><pre> <span class="p">:::</span><span class="n">java</span>
+ <span class="n">package</span> <span class="n">sample</span><span class="p">;</span>
+ <span class="n">import</span> <span class="n">aQute</span><span class="p">.</span><span class="n">bnd</span><span class="p">.</span><span class="n">annotation</span><span class="p">.</span><span class="n">metatype</span><span class="o">.*</span><span class="p">;</span>
+
+ <span class="p">@</span><span class="n">Component</span>
+ <span class="n">public</span> <span class="n">class</span> <span class="n">Printer</span> <span class="p">{</span>
+     <span class="p">@</span><span class="n">ConfigurationDependency</span><span class="p">(</span><span class="n">pidClass</span> <span class="p">=</span> <span class="n">PrinterConfiguration</span><span class="p">.</span><span class="n">class</span><span class="p">)</span> <span class="o">//</span> <span class="n">Will</span> <span class="n">use</span> <span class="n">pid</span> &quot;<span class="n">sample</span><span class="p">.</span><span class="n">PrinterConfiguration</span>&quot;
+     <span class="n">void</span> <span class="n">updated</span><span class="p">(</span><span class="n">Dictionary</span> <span class="n">props</span><span class="p">)</span> <span class="p">{</span>
+         <span class="o">//</span> <span class="n">load</span> <span class="n">configuration</span> <span class="n">from</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">or</span> <span class="n">throw</span> <span class="n">an</span> <span class="n">exception</span> <span class="n">of</span> <span class="n">any</span> <span class="n">configuration</span> <span class="n">error</span><span class="p">.</span>
+         <span class="n">PrinterConfig</span> <span class="n">cnf</span> <span class="p">=</span> <span class="n">Configurable</span><span class="p">.</span><span class="n">createConfigurable</span><span class="p">(</span><span class="n">PrinterConfig</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> <span class="n">props</span><span class="p">);</span>
+         <span class="n">String</span> <span class="n">ip</span> <span class="p">=</span> <span class="n">cnf</span><span class="p">.</span><span class="n">ipAddress</span><span class="p">();</span>
+         <span class="n">int</span> <span class="n">port</span> <span class="p">=</span> <span class="n">cnf</span><span class="p">.</span><span class="n">portNumber</span><span class="p">();</span>
+         <span class="p">...</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+
+
+<p>Finally, the last example shows how to dynamically configure a configuration dependency pid from the init method.
+The following component first depends on a "sample.MyComponent" configuration pid. Then the init method gets from that configuration 
+another pid for a second "global" configuration:</p>
+<div class="codehilite"><pre><span class="kn">package</span> <span class="n">sample</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">  * A Service that dynamically defines an extra dynamic configuration dependency from its init method. </span>
+<span class="cm">  */</span>
+<span class="nd">@Component</span>
+<span class="kd">class</span> <span class="nc">MyComponent</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Dictionary</span> <span class="n">m_config</span><span class="o">;</span>
+
+    <span class="c1">// Inject initial Configuration (injected before any other required dependencies)</span>
+    <span class="nd">@ConfigurationDependency</span>
+    <span class="kt">void</span> <span class="nf">componentConfiguration</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// you must throw an exception if the configuration is not valid</span>
+        <span class="n">m_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * All unnamed dependencies are injected: we can now configure our dynamic configuration whose dependency name is &quot;global&quot;.</span>
+<span class="cm">     */</span>
+    <span class="nd">@Init</span>
+    <span class="n">Map</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Map</span> <span class="n">properties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+        <span class="n">properties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;global.pid&quot;</span><span class="o">,</span> <span class="n">m_config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;globalConfig.pid&quot;</span><span class="o">));</span>
+        <span class="n">properties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;global.propagate&quot;</span><span class="o">,</span> <span class="n">m_config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;globalConfig.propagate&quot;</span><span class="o">));</span>
+        <span class="k">return</span> <span class="n">properties</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Injected after init, and dynamically configured by the init method.</span>
+    <span class="nd">@ConfigurationDependency</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;global&quot;</span><span class="o">)</span>
+    <span class="kt">void</span> <span class="nf">globalConfiguration</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">globalConfig</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// you must throw an exception if the configuration is not valid</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * All dependencies are injected and our service is now ready to be published.</span>
+<span class="cm">     */</span>
+    <span class="nd">@Start</span>
+    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
+        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+      </div>
+      <div class="trademarkFooter"> 
+        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
+        logo are trademarks of The Apache Software Foundation. All other marks mentioned
+        may be trademarks or registered trademarks of their respective owners.
+      </div>
+    </div>
+  </body>
+</html>
