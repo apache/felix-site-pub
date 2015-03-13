@@ -105,14 +105,13 @@ DependencyManager object) and the required dependencies declared in the Activato
 tracked. The component remains in the current state until all required dependencies are
 available.</li>
 <li><em>Instantiated and waiting for required</em> state: All required dependencies declared
-in the Activator are available. The Component has been instantiated, has been injected 
-with all required dependencies, including optional dependencies on class fields (autoconfig).
+in the Activator are available. The Component has been instantiated with required dependencies injected,
 and has been invoked in the <em>init</em> callback. Now, if some extra required dependencies have
 been dynamically added in the <em>init</em> callback, then the component remains in the
 current state until all extra required dependencies become available.</li>
-<li><em>Tracking optional</em>: All Required dependencies are available (including the ones
-that have been dynamically declared from the init component callback). The component has 
-been invoked in the <em>start</em> callback and the optional dependencies (with callbacks) are 
+<li><em>Tracking optional</em>: All Required dependencies are injected (including the ones
+you dynamically added from the <em>init</em> method), the component <em>start</em> callback
+is called, the component service is registered in the OSGi registry, and finally the optional dependencies (with callbacks) are 
 then tracked.</li>
 </ul>
 <h2 id="what-happens-during-component-instantiation">What happens during component instantiation ?</h2>
@@ -213,31 +212,31 @@ that is internally implemented using three Pojos: <em>ProviderImpl</em>, <em>Pro
     <span class="kd">private</span> <span class="kd">final</span> <span class="n">ProviderParticipant2</span> <span class="n">m_participant2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProviderParticipant2</span><span class="o">();</span>
     <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span> <span class="c1">// injected</span>
 
-    <span class="nd">@CompositioncompositionMngr</span><span class="o">,</span> <span class="s">&quot;getComposition</span>
-<span class="s">    Object[] getComposition() {</span>
-<span class="s">        return new Object[] { this, m_participant1, m_participant2 };</span>
-<span class="s">    }</span>
+    <span class="nd">@Composition</span>
+    <span class="n">Object</span><span class="o">[]</span> <span class="nf">getComposition</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span> <span class="k">this</span><span class="o">,</span> <span class="n">m_participant1</span><span class="o">,</span> <span class="n">m_participant2</span> <span class="o">};</span>
+    <span class="o">}</span>
 
-<span class="s">    @Start</span>
-<span class="s">    void start() {</span>
-<span class="s">        m_log.log(LogService.LOG_INFO, &quot;</span><span class="n">ProviderImpl</span><span class="o">.</span><span class="na">start</span><span class="o">():</span> <span class="n">participants</span><span class="o">=</span><span class="s">&quot; + m_participant1 + &quot;</span><span class="o">,</span><span class="s">&quot; + m_participant2</span>
-<span class="s">            + &quot;</span><span class="o">,</span> <span class="n">conf</span><span class="o">=</span><span class="s">&quot; + m_conf);</span>
-<span class="s">    }      </span>
-<span class="s">}</span>
+    <span class="nd">@Start</span>
+    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">,</span> <span class="s">&quot;ProviderImpl.start(): participants=&quot;</span> <span class="o">+</span> <span class="n">m_participant1</span> <span class="o">+</span> <span class="s">&quot;,&quot;</span> <span class="o">+</span> <span class="n">m_participant2</span>
+            <span class="o">+</span> <span class="s">&quot;, conf=&quot;</span> <span class="o">+</span> <span class="n">m_conf</span><span class="o">);</span>
+    <span class="o">}</span>      
+<span class="o">}</span>
 
-<span class="s">public class ProviderParticipant1 {</span>
-<span class="s">    private volatile LogService m_log; // also injected, since we are part of the composition</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProviderParticipant1</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span> <span class="c1">// also injected, since we are part of the composition</span>
 
-<span class="s">    void start() {</span>
-<span class="s">        m_log.log(LogService.LOG_INFO, &quot;</span><span class="n">ProviderParticipant1</span><span class="o">.</span><span class="na">start</span><span class="o">()</span><span class="s">&quot;);</span>
-<span class="s">    }</span>
-<span class="s">}</span>
+    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">,</span> <span class="s">&quot;ProviderParticipant1.start()&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 
-<span class="s">public class ProviderParticipant2 {</span>
-<span class="s">    private volatile LogService m_log; // also injected, since we are part of the composition</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProviderParticipant2</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span> <span class="c1">// also injected, since we are part of the composition</span>
 
-<span class="s">    void start() {</span>
-<span class="s">        m_log.log(LogService.LOG_INFO, &quot;</span><span class="n">ProviderParticipant2</span><span class="o">.</span><span class="na">start</span><span class="o">()</span><span class="err">&quot;</span><span class="o">);</span>
+    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">,</span> <span class="s">&quot;ProviderParticipant2.start()&quot;</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
@@ -247,9 +246,9 @@ that is internally implemented using three Pojos: <em>ProviderImpl</em>, <em>Pro
 <p>Out of the box, there already is support for lazy instantiation, meaning that the dependency manager can create component instances for you when their required dependencies are resolved. However, sometimes creating a single instance using a default constructor is not enough. In those cases, you can tell the dependency manager to delegate the creation process to a factory.</p>
 <p>Interestingly, you can also mix the usage of a Factory object and a Composition of objects returned by the Factory.
 The following is the same example as in the previous section (Composition), but using a Factory approach in order to instantiate a composition of objects: 
-The "ProviderFactory" is first injected with a Configuration that can be possibly be used to create
-and configure all the other objects that are part of the composition; each object will also injected with
-the depenencies defined in the Activator.</p>
+The "ProviderFactory" is first injected with a Configuration that can possibly be used to create
+and configure all the other objects that are part of the composition; each object will also be injected with
+the dependencies defined in the Activator.</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProviderFactory</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">ProviderParticipant1</span> <span class="n">m_participant1</span><span class="o">;</span>
     <span class="kd">private</span> <span class="n">ProviderParticipant2</span> <span class="n">m_participant2</span><span class="o">;</span>
@@ -289,12 +288,17 @@ the depenencies defined in the Activator.</p>
         <span class="k">return</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span> <span class="n">m_providerImpl</span><span class="o">,</span> <span class="n">m_participant1</span><span class="o">,</span> <span class="n">m_participant2</span> <span class="o">};</span>
     <span class="o">}</span>
 <span class="o">}</span>
+</pre></div>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">extends</span> <span class="n">DependencyActivatorBase</span> <span class="o">{</span>
+
+<p>And here is the Activator: notice the <em>setFactory</em> method that specifies the factory to use to create the implementation.
+Also pay attention to the <em>setComposition</em> method, which indicates the method to call in order to get all instances that 
+are part of a composition and need dependencies injected:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">extends</span> <span class="n">DependencyActivatorBase</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">DependencyManager</span> <span class="n">m</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
         <span class="n">ProviderFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProviderFactory</span><span class="o">();</span>
         <span class="n">m</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">createComponent</span><span class="o">()</span>
-            <span class="o">.</span><span class="na">setFactory</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="s">&quot;create&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setFactory</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="s">&quot;create&quot;</span><span class="o">)</span> <span class="c1">// factory.create() will return the implementation instance</span>
             <span class="o">.</span><span class="na">setComposition</span><span class="o">(</span><span class="n">factory</span><span class="o">,</span> <span class="s">&quot;getComposition&quot;</span><span class="o">)</span>
             <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">createConfigurationDependency</span><span class="o">()</span>
                 <span class="o">.</span><span class="na">setPid</span><span class="o">(</span><span class="s">&quot;some.pid&quot;</span><span class="o">)</span>
@@ -307,7 +311,7 @@ the depenencies defined in the Activator.</p>
 
 <p>You can refer to this <a href="https://svn.apache.org/repos/asf/felix/trunk/dependencymanager/org.apache.felix.dependencymanager.samples/src/org/apache/felix/dependencymanager/samples/compositefactory/">sample code</a>, which is part of the source distribution.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1666336 by pderop on Thu, 12 Mar 2015 23:44:41 +0000
+        Rev. 1666366 by pderop on Fri, 13 Mar 2015 07:59:18 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
