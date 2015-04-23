@@ -142,15 +142,16 @@ is registered (In this way, it is not necessary to use the StartLevel service if
    <span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">dm</span><span class="p">.</span><span class="n">ComponentExecutorFactory</span><span class="p">;</span>
 
    <span class="n">public</span> <span class="n">class</span> <span class="n">ComponentExecutorFactoryImpl</span> <span class="n">implements</span> <span class="n">ComponentExecutorFactory</span> <span class="p">{</span>
-      <span class="n">volatile</span> <span class="n">Executor</span> <span class="n">m_sharedThreadPool</span><span class="p">;</span>
+      <span class="n">volatile</span> <span class="n">Executor</span> <span class="n">sharedThreadPool</span><span class="p">;</span>
 
       <span class="n">void</span> <span class="n">updated</span><span class="p">(</span><span class="n">Dictionary</span> <span class="n">conf</span><span class="p">)</span> <span class="p">{</span>
-          <span class="n">m_sharedThreadPool</span> <span class="p">=</span> <span class="n">Executors</span><span class="p">.</span><span class="n">newFixedThreadPool</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="n">parseInt</span><span class="p">(</span>&quot;<span class="n">threadpool</span><span class="p">.</span><span class="nb">size</span>&quot;<span class="p">));</span>
+          <span class="n">int</span> <span class="nb">size</span> <span class="p">=</span> <span class="n">Integer</span><span class="p">.</span><span class="n">parseInt</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="n">conf</span><span class="p">.</span><span class="n">get</span><span class="p">(</span>&quot;<span class="n">threadpool</span><span class="p">.</span><span class="nb">size</span>&quot;<span class="p">));</span>
+          <span class="n">sharedThreadPool</span> <span class="p">=</span> <span class="n">Executors</span><span class="p">.</span><span class="n">newFixedThreadPool</span><span class="p">(</span><span class="nb">size</span><span class="p">);</span>
       <span class="p">}</span>
 
       <span class="p">@</span><span class="n">Override</span>
       <span class="n">public</span> <span class="n">Executor</span> <span class="n">getExecutorFor</span><span class="p">(</span><span class="n">Component</span> <span class="n">component</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="n">m_sharedThreadPool</span><span class="p">;</span> <span class="o">//</span> <span class="n">Use</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">threadpool</span> <span class="k">for</span> <span class="n">all</span> <span class="n">Components</span>
+          <span class="k">return</span> <span class="n">sharedThreadPool</span><span class="p">;</span> <span class="o">//</span> <span class="n">Use</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">threadpool</span> <span class="k">for</span> <span class="n">all</span> <span class="n">Components</span>
       <span class="p">}</span>
   <span class="p">}</span>
 </pre></div>
@@ -162,7 +163,7 @@ is registered (In this way, it is not necessary to use the StartLevel service if
 <li><a href="https://svn.apache.org/repos/asf/felix/trunk/dependencymanager/org.apache.felix.dependencymanager.samples/src/org/apache/felix/dependencymanager/samples/tpool/">see the executor factory</a> sample code and README file to up-to-date informations.</li>
 </ul>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+        Rev. 1675665 by pderop on Thu, 23 Apr 2015 15:59:23 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
