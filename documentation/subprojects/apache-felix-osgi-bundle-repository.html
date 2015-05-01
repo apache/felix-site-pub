@@ -104,6 +104,7 @@
 <p>OBR achieves the first goal by providing a service that can automatically install a bundle, with its deployment dependencies, from a bundle repository. This makes it easier for people to experiment with existing bundles. The second goal is achieved by raising the visibility of the available bundles and providing access to both the executable bundle and its source code. Hopefully, by making OBR and the bundles themselves more visible, community members will be encouraged to provide or improve service implementations.</p>
 <p>Note: OBR provides access to the Felix' default bundle repository, but you can also use it to deploy your own bundles by creating a bundle repository meta-data file for your local bundles; see the <code>obr list-url</code>, <code>obr add-url</code>, and <code>obr remove-url</code> commands for more details.</p>
 <h2 id="overview">Overview</h2>
+<p>As of release 2.0.x Felix OBR also supports the OSGi Repository 1.0 specification. Chapter 132 in the <a href="http://www.osgi.org/Download/Release5">OSGi R5 Enterprise specification</a>. A client can look up the <a href="http://www.osgi.org/javadoc/r5/enterprise/org/osgi/service/repository/package-summary.html">OSGi Repository Service</a> in the service registry to interact with Felix OBR in a specification compliant way.</p>
 <p>For the most part, OBR is quite simple. An OBR "repository server" is not necessary, since all functionality may reside on the client side. OBR is able to provide its functionality by reading an XML-based meta-data file that describes the bundles available to it. The meta-data file essentially contains an XML encoding of the bundles' manifest information. From the meta-data, OBR is able to construct dependency information for deploying (i.e., installing and updating) bundles.</p>
 <p>OBR defines the following entities:</p>
 <ul>
@@ -116,11 +117,16 @@
 <li><strong>Repository file</strong> - XML file containing resource meta-data.</li>
 </ul>
 <p>The following diagram illustrates the relationships among these entities:</p>
-<p>!obr-entities.png!</p>
+<p><img alt="alt text" src="obr-entities.png" /></p>
 <p>The client has access to a federated set of repositories via the Repository Admin service; such as depicted in this view:</p>
-<p>!obr-high-level.png!</p>
+<p><img alt="alt text" src="obr-high-level.png" /></p>
 <h2 id="obr-repository-file">OBR Repository File</h2>
-<p>The OBR repository file is an XML-based representation of bundle meta-data. The goal is provide a generic model for describing dependencies among resources; as such, the term <strong>resource</strong> is used instead of <strong>bundle</strong> in the OBR repository syntax; a detailed description of the OBR meta-data format is available in the <a href="http://www2.osgi.org/download/rfc-0112_BundleRepository.pdf">OSGi RFC 112</a> document; this document is not completely in sync with the implementation, but the concepts are still correct. The following XML snippet depicts the overall structure of a repository file:</p>
+<p>The OBR repository file is an XML-based representation of bundle meta-data. The goal is provide a generic model for describing dependencies among resources; as such, the term <strong>resource</strong> is used instead of <strong>bundle</strong> in the OBR repository syntax. As of OBR release 2.0.2 two forms of metadata are supported:</p>
+<ul>
+<li>Repository XML as defined by the OSGi Repository Specification 1.0. Such an XML file is in the http://www.osgi.org/xmlns/repository/v1.0.0 name space.</li>
+<li>A Felix OBR-specific metadata format is also supported. This format predates the format from the specification.</li>
+</ul>
+<p>A detailed description of the standard XML format is described in chapter 132 in the <a href="http://www.osgi.org/Download/Release5">OSGi R5 Enterprise specification</a>. The following XML snippet depicts the overall structure of a repository file, using the proprietary Felix OBR format:</p>
 <div class="codehilite"><pre><span class="nt">&lt;repository</span> <span class="na">presentationname=</span><span class="s">&quot;...&quot;</span> <span class="na">symbolicname=</span><span class="s">&quot;...&quot;</span> <span class="err">...</span> <span class="nt">&gt;</span>
     <span class="nt">&lt;resource&gt;</span>
         <span class="nt">&lt;description&gt;</span>...<span class="nt">&lt;/description&gt;</span>
@@ -329,7 +335,7 @@
 <h2 id="feedback">Feedback</h2>
 <p>Subscribe to the Felix users mailing list by sending a message to <a href="">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [users@felix.apache.org|mailto:users@felix.apache.org].</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1677150 by davidb on Fri, 1 May 2015 14:31:20 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
