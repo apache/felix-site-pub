@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Apache Felix HTTP Service</h1>
-      <div class="toc">
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<div class="toc">
 <ul>
 <li><a href="#installing">Installing</a></li>
 <li><a href="#using-the-httpservice">Using the HttpService</a></li>
@@ -105,7 +127,7 @@ implementation. Complete set of features:</p>
 <li>One complete bundle that includes everything to simplify deployment;</li>
 <li>Correctly versioned Servlet API.</li>
 </ul>
-<h2 id="installing">Installing</h2>
+<h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
 <p>The Apache Felix HTTP Service project includes several bundles. </p>
 <ul>
 <li><code>org.apache.felix.http.servlet-api</code> - Provides the Servlet API (versions 2.6 and 3.0 of the Servlet specification);</li>
@@ -125,7 +147,7 @@ classpath and deployment!</p>
 <p>So, in most cases you could just use <strong>org.apache.felix.http.bundle</strong> and forget about all the other ones. Note that <em>by
 default</em>, this bundle operates in "bridged mode" and needs explicit configuration to enable or operate in other modes.
 See <a href="#using-the-all-in-one-bundle">this section</a> for more information.</p>
-<h2 id="using-the-httpservice">Using the HttpService</h2>
+<h2 id="using-the-httpservice">Using the HttpService<a class="headerlink" href="#using-the-httpservice" title="Permanent link">&para;</a></h2>
 <p>The main components provided by the Apache Felix HTTP Service bundle are:</p>
 <ul>
 <li><code>HttpService</code> - Service used to dynamically register resources and servlets;</li>
@@ -290,7 +312,7 @@ or the correct MIME type implementing the method <code>HttpContext.getMimeType</
 </pre></div>
 
 
-<h2 id="using-the-exthttpservice">Using the ExtHttpService</h2>
+<h2 id="using-the-exthttpservice">Using the ExtHttpService<a class="headerlink" href="#using-the-exthttpservice" title="Permanent link">&para;</a></h2>
 <p>To be able to register filters, it is possible to get hold of <code>org.apache.felix.http.api.ExtHttpService</code>. This service
 is exported by both Jetty and the bridged implementation. Let's see an example of how you would register a filter:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
@@ -330,7 +352,7 @@ is exported by both Jetty and the bridged implementation. Let's see an example o
 </pre></div>
 
 
-<h2 id="using-the-whiteboard">Using the Whiteboard</h2>
+<h2 id="using-the-whiteboard">Using the Whiteboard<a class="headerlink" href="#using-the-whiteboard" title="Permanent link">&para;</a></h2>
 <p>The whiteboard implementation simplifies the task of registering servlets and filters. A servlet (or filter) can be
 registered by exporting it as a service, making it no longer necessary to track and use the <code>HttpService</code> directly. The
 whiteboard implementation detects all <code>javax.servlet.Servlet</code>, <code>javax.servlet.Filter</code> and
@@ -357,25 +379,25 @@ registering a servlet:</p>
 <p>To ensure the HTTP whiteboard service picks up your HTTP context, servlet and filter correctly, your service
 registration <em>must</em> provide several service properties. These properties are used for the actual registration with the
 <code>HttpService</code> (or <code>ExtHttpService</code>).</p>
-<h3 id="servlet-service-properties">Servlet service properties</h3>
+<h3 id="servlet-service-properties">Servlet service properties<a class="headerlink" href="#servlet-service-properties" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>alias</code> - defines the servlet alias to register the servlet under, should be a path as defined in the Servlet specification. Note that wildcards are <strong>not</strong> supported yet; </li>
 <li><code>contextId</code> - the optional identifier of the HTTP context to associate the servlet with. If omitted, a default HTTP context will be associated;</li>
 <li><code>init.*</code> - these properties (sans the <code>init.</code> prefix) are made available throught the <code>ServletConfig</code> object of your servlet. This allows you to supply your servlet initialization parameters as you would normally do in the web descriptor (web.xml).</li>
 </ul>
-<h3 id="filter-service-properties">Filter service properties</h3>
+<h3 id="filter-service-properties">Filter service properties<a class="headerlink" href="#filter-service-properties" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>pattern</code> - The regular expression pattern to register filter with;</li>
 <li><code>service.ranking</code> - an integer value that allows you to specify where in the filter chain the filter should be registered. Higher rankings will be placed first in the chain, that is, filter chains are sorted in descending order. If omitted, a ranking of zero (0) is used;</li>
 <li><code>contextId</code> - the optional identifier of the HTTP context to associate the filter with. If omitted, a default HTTP context will be associated;</li>
 <li><code>init.*</code> - these properties (sans the <code>init.</code> prefix) are made available throught the <code>FilterConfig</code> object of your filter. This allows you to supply your filter initialization parameters as you would normally do in the web descriptor (web.xml).</li>
 </ul>
-<h3 id="httpcontext-service-properties">HttpContext service properties</h3>
+<h3 id="httpcontext-service-properties">HttpContext service properties<a class="headerlink" href="#httpcontext-service-properties" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>contextId</code> - the identifier of the registered HTTP context to be referenced by a servlet or filter service;</li>
 <li><code>context.shared</code> - if the HTTP context needs to be shared across bundles then this property should be set to <code>true</code>. Shared <code>HttpContext</code> services should  either not implement the <code>getResource</code> at all or be registered as service factories to ensure access to foreign bundle resources is not allowed through this backdoor.</li>
 </ul>
-<h2 id="using-the-servlet-bridge">Using the Servlet Bridge</h2>
+<h2 id="using-the-servlet-bridge">Using the Servlet Bridge<a class="headerlink" href="#using-the-servlet-bridge" title="Permanent link">&para;</a></h2>
 <p>The servlet bridge is used if you want to use the HTTP service inside a WAR deployed on a 3rd part applicaiton server. A
 little setup is needed for this to work:</p>
 <ol>
@@ -387,19 +409,19 @@ little setup is needed for this to work:</p>
 <li>deploy <code>org.apache.felix.http.bridge</code> (or <code>org.apache.felix.http.bundle</code>) inside the OSGi framework.</li>
 </ol>
 <p>A detailed example can be found <a href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge">here</a>.</p>
-<h2 id="using-the-all-in-one-bundle">Using the all-in-one bundle</h2>
+<h2 id="using-the-all-in-one-bundle">Using the all-in-one bundle<a class="headerlink" href="#using-the-all-in-one-bundle" title="Permanent link">&para;</a></h2>
 <p>The all-in-one bundle combines the the Jetty server, the whiteboard implementation, the servlet bridge and the CometD
 functionality in a single, easy to use bundle. By default its functionality is equivalent to the Servlet Bridge, meaning
 that the Jetty, Whiteboard and CometD features are <em>disabled</em>. To <em>enable</em> these features, you need to supply one or
 more configuration properties as described in the <a href="#configuration-properties">next section</a>.</p>
-<h2 id="using-the-ssl-filter">Using the SSL filter</h2>
+<h2 id="using-the-ssl-filter">Using the SSL filter<a class="headerlink" href="#using-the-ssl-filter" title="Permanent link">&para;</a></h2>
 <p>This filter provides you means to transparently handle <a href="http://en.wikipedia.org/wiki/SSL_termination_proxy">SSL termination proxies</a>, 
 allowing your servlets and filters to work <em>like they were accessed directly through HTTPS</em>. This filter is useful when
 deploying applications in large datacenters where frontend load-balancers distribute the load among several servers in
 the same datacenter by stripping the SSL encryption.</p>
 <p>The SSL filter can be <a href="#ssl-filter-configuration-properties">configured</a> to let it detect whether the request was originating from
 an SSL connection. There are several non-standard request headers in use:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Header name</th>
@@ -432,7 +454,7 @@ an SSL connection. There are several non-standard request headers in use:</p>
 </table>
 <p>In case a client connected using a certificate, this certificate can be forwarded as well by the SSL filter. Several
 non-standard request headers are used for this:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Header</th>
@@ -450,11 +472,11 @@ non-standard request headers are used for this:</p>
 </tr>
 </tbody>
 </table>
-<h2 id="configuration-properties">Configuration Properties</h2>
+<h2 id="configuration-properties">Configuration Properties<a class="headerlink" href="#configuration-properties" title="Permanent link">&para;</a></h2>
 <p>The service can both be configured using OSGi environment properties and using Configuration Admin. The service PID for
 this service is <code>"org.apache.felix.http"</code>. If you use both methods, Configuration Admin takes precedence. The following
 properties can be used (some legacy property names still exist but are not documented here on purpose):</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Property</th>
@@ -564,7 +586,7 @@ properties can be used (some legacy property names still exist but are not docum
 </tr>
 <tr>
 <td><code>org.apache.felix.http.jetty.sendServerHeader</code></td>
-<td>If <code>false</code>, the <code>Server</code> HTTP header is no longer included in responses. The default is <code>false</code>.</td>
+<td>If <code>false</code>, the <code>Server</code> HTTP header is no longer included in responses. The default is <code>true</code>.</td>
 </tr>
 <tr>
 <td><code>org.eclipse.jetty.servlet.SessionCookie</code></td>
@@ -588,9 +610,9 @@ properties can be used (some legacy property names still exist but are not docum
 </tr>
 </tbody>
 </table>
-<h3 id="all-in-one-bundle-configuration-properties">All-in-one-bundle configuration properties</h3>
+<h3 id="all-in-one-bundle-configuration-properties">All-in-one-bundle configuration properties<a class="headerlink" href="#all-in-one-bundle-configuration-properties" title="Permanent link">&para;</a></h3>
 <p>Additionally, the all-in-one bundle uses the following environment properties (no support for Configuration Admin):</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Property</th>
@@ -612,10 +634,10 @@ properties can be used (some legacy property names still exist but are not docum
 </tr>
 </tbody>
 </table>
-<h3 id="cometd-configuration-properties">CometD configuration properties</h3>
+<h3 id="cometd-configuration-properties">CometD configuration properties<a class="headerlink" href="#cometd-configuration-properties" title="Permanent link">&para;</a></h3>
 <p>The CometD bundle supports the following configuration options, using the PID <code>org.apache.felix.http.cometd</code> or through
 environment properties:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Property</th>
@@ -629,10 +651,10 @@ environment properties:</p>
 </tr>
 </tbody>
 </table>
-<h3 id="ssl-filter-configuration-properties">SSL filter configuration properties</h3>
+<h3 id="ssl-filter-configuration-properties">SSL filter configuration properties<a class="headerlink" href="#ssl-filter-configuration-properties" title="Permanent link">&para;</a></h3>
 <p>The SSL-filter bundle supports the following configuration options, using the PID
 <code>org.apache.felix.http.sslfilter.SslFilter</code> (no fallback to environment properties!):</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Property</th>
@@ -654,7 +676,7 @@ environment properties:</p>
 </tr>
 </tbody>
 </table>
-<h3 id="http-port-settings">HTTP port settings</h3>
+<h3 id="http-port-settings">HTTP port settings<a class="headerlink" href="#http-port-settings" title="Permanent link">&para;</a></h3>
 <p>As of HTTP Jetty version 2.2.2, it is possible to assign a free port for HTTP or HTTPS automatically, based on certain
 rules, for example, a range between 8000 and 9000. The syntax is based on the version ranges, as described in the OSGi
 specification. The following forms are supported:</p>
@@ -670,11 +692,11 @@ specification. The following forms are supported:</p>
 </ul>
 <p>Note that picking a port is <em>not</em> performed atomically and multiple instances can try to bind to the same port at the
 same time.</p>
-<h2 id="servlet-api-events">Servlet API Events</h2>
+<h2 id="servlet-api-events">Servlet API Events<a class="headerlink" href="#servlet-api-events" title="Permanent link">&para;</a></h2>
 <p>The Servlet API defines a number of <code>EventListener</code> interfaces to catch servlet or filter related events. As of HTTP
 Service 2.1.0 most events generated by the servlet container are forwarded to interested service. To be registered to
 receive events services must be registered with the respective <code>EventListener</code> interface:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Interface</th>
@@ -709,13 +731,13 @@ currently not support (but will be in the near future). For one thing they do no
 environment. On the other hand they are hard to capture and propagate. For example in a bridged environment the
 <code>contextInitialized</code> event may be sent before the framework and any of the contained bundles are actually ready to act.
 Likewise the <code>contextDestroyed</code> event may come to late.</p>
-<h2 id="servlet-context-notes">Servlet Context Notes</h2>
+<h2 id="servlet-context-notes">Servlet Context Notes<a class="headerlink" href="#servlet-context-notes" title="Permanent link">&para;</a></h2>
 <p><code>ServletContext</code> instances are managed internally by the Http Service implementation. For each <code>HttpContext</code> instance
 used to register one or more servlets and/or resources a corresponding <code>ServletContext</code> instance is created. These
 <code>ServletContext</code> instances is partly based on the single <code>ServletContext</code> instance received from the Servlet Container
 --- either embedded Jetty or some external Servlet Container when using the Http Service Bridge --- and partly based on
 the provided <code>HttpContext</code> instance:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th>Method(s)</th>
@@ -753,7 +775,7 @@ the provided <code>HttpContext</code> instance:</p>
 </tr>
 </tbody>
 </table>
-<h2 id="examples">Examples</h2>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <p>A set of simple examples illustrating the various features are available. </p>
 <ul>
 <li>Filter registration sample: <a href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/filter/">http://svn.apache.org/repos/asf/felix/trunk/http/samples/filter/</a>;</li>
@@ -761,7 +783,7 @@ the provided <code>HttpContext</code> instance:</p>
 <li>CometD sample: <a href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/cometd/">http://svn.apache.org/repos/asf/felix/trunk/http/samples/cometd/</a>;</li>
 <li>Whiteboard sample: <a href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/whiteboard/">http://svn.apache.org/repos/asf/felix/trunk/http/samples/whiteboard/</a>.</li>
 </ul>
-<h2 id="maven-artifacts">Maven Artifacts</h2>
+<h2 id="maven-artifacts">Maven Artifacts<a class="headerlink" href="#maven-artifacts" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.servlet-api<span class="nt">&lt;/artifactId&gt;</span>
@@ -814,7 +836,7 @@ the provided <code>HttpContext</code> instance:</p>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1602350 by jawi on Fri, 13 Jun 2014 09:17:53 +0000
+        Rev. 1693437 by cziegeler on Thu, 30 Jul 2015 15:17:33 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
