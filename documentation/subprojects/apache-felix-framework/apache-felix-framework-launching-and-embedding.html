@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Apache Felix Framework Launching and Embedding</h1>
-      <h1 id="apache-felix-framework-launching-and-embedding">Apache Felix Framework Launching and Embedding</h1>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="apache-felix-framework-launching-and-embedding">Apache Felix Framework Launching and Embedding<a class="headerlink" href="#apache-felix-framework-launching-and-embedding" title="Permanent link">&para;</a></h1>
 <p><em>[This document describes framework launching introduced in Felix Framework 2.0.0 and continuing with the latest releases; it is incompatible with older versions of the Felix framework.]()</em></p>
 <ul>
 <li><a href="">Introduction</a></li>
@@ -86,9 +108,9 @@
 <li><a href="">Caveat</a></li>
 <li><a href="">Feedback</a></li>
 </ul>
-<h1 id="introduction">Introduction</h1>
+<h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
 <p>The Apache Felix Framework is intended to be easily launchable and embeddable. For example, the Felix framework implementation avoids the use of system properties for configuration, since these are globals and can cause interference if multiple framework instances are created in the same VM. The framework also tries to multiplex singleton facilities, like the URL stream handler factory. The goal is to make it possible to use the framework in a variety of scenarios; however, this is still just a goal. In other words, this is a work in progress and if any issues arise, it would be greatly appreciated if they are brought to the attention of the Felix community. The next section provides an overview of the standard OSGi launching and embedding API for frameworks, while the remainder of the document is divided into two sections, one focusing on how to launch Felix and one focusing on how to embed Felix into a host application.</p>
-<h1 id="osgi-launching-and-embedding-api-overview">OSGi Launching and Embedding API Overview</h1>
+<h1 id="osgi-launching-and-embedding-api-overview">OSGi Launching and Embedding API Overview<a class="headerlink" href="#osgi-launching-and-embedding-api-overview" title="Permanent link">&para;</a></h1>
 <p>The Felix framework is implemented by the <code>org.apache.felix.framework.Felix</code> class or just <code>Felix</code> for short. As part of the R4.2 OSGi specification, the launching and embedding API of the OSGi framework has been standardized. The approach is to have the framework implement the <code>org.osgi.framework.launch.Framework</code> interface, which extends the <code>org.osgi.framework.Bundle</code> interface. These interfaces provide the necessary means to launch and manage framework instances. The <code>Bundle</code> interface is defined as:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Bundle</span>
 <span class="p">{</span>
@@ -137,14 +159,14 @@
 
 
 <p>The framework factory can be used to create configured framework instances. It is obtained following the standard <code>META-INF/services</code> approach.</p>
-<h2 id="creating-and-configuring-the-framework-instance">Creating and Configuring the Framework Instance</h2>
+<h2 id="creating-and-configuring-the-framework-instance">Creating and Configuring the Framework Instance<a class="headerlink" href="#creating-and-configuring-the-framework-instance" title="Permanent link">&para;</a></h2>
 <p>You use the framework factory to construct and configure a framework instance (or by directly instantiating the Felix class). The configuration map may contain any of the framework configuration properties listed in the <a href="/documentation/subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a> document, not the launcher configuration properties. The configuration map is copied and the keys are treated as case insensitive. You are not able to change the framework's configuration after construction. If you need a different configuration, you must create a new framework instance.</p>
 <div class="warning" markdown="1">
 **WARNING**
 Felix configuration properties have change considerably starting from `1.4.0`; if you are upgrading from an earlier version, the [configuration property document]() describes the configuration property changes.
 </div>
 
-<h2 id="starting-the-framework-instance">Starting the Framework Instance</h2>
+<h2 id="starting-the-framework-instance">Starting the Framework Instance<a class="headerlink" href="#starting-the-framework-instance" title="Permanent link">&para;</a></h2>
 <p>The <code>start()</code> method is used to start the framework instance. If the <code>init()</code> method was not invoked prior to calling <code>start()</code>, then it is invoked by <code>start()</code>. The two methods result in two different framework state transitions:</p>
 <ul>
 <li><code>init()</code> results in the framework instance in the <code>Bundle.STARTING</code> state.</li>
@@ -161,9 +183,9 @@ Felix configuration properties have change considerably starting from `1.4.0`; i
 <li>The framework enters the <code>Bundle.STARTING</code> state.</li>
 </ul>
 <p>A call to <code>start()</code> is necessary to start the framework instance, if the <code>init()</code> method is invoked manually. Invoking <code>init()</code> or <code>start()</code> on an already started framework as no effect.</p>
-<h2 id="stopping-the-framework-instance">Stopping the Framework Instance</h2>
+<h2 id="stopping-the-framework-instance">Stopping the Framework Instance<a class="headerlink" href="#stopping-the-framework-instance" title="Permanent link">&para;</a></h2>
 <p>To stop the framework instance, invoke the <code>stop()</code> method, which will asynchronously stop the framework. To know when the framework has finished its shutdown sequence, use the <code>waitForStop()</code> method to wait until it is complete. A stopped framework will be in the <code>Bundle.RESOLVED</code> state. It is possible to restart the framework, using the normal combination of <code>init()</code>/<code>start()</code> methods as previously described.</p>
-<h1 id="launching-a-framework">Launching a Framework</h1>
+<h1 id="launching-a-framework">Launching a Framework<a class="headerlink" href="#launching-a-framework" title="Permanent link">&para;</a></h1>
 <p>Launching a framework is fairly simple and involves only four steps:</p>
 <ol>
 <li>Define some configuration properties.</li>
@@ -173,7 +195,7 @@ Felix configuration properties have change considerably starting from `1.4.0`; i
 </ol>
 <p>In reality, the first step is optional, since all properties will have reasonable defaults, but if you are creating a launcher you will generally want to more than that, such as automatically installing and starting bundles when you start the framework instance. The default Felix launcher defines reusable functionality to automatically install and/or start bundles upon framework startup; see the <a href="">usage document</a> for more information on configuring the Felix framework and on the various configuration properties.</p>
 <p>The remainder of this section describes how the standard Felix launcher works as well as how to create a custom launcher.</p>
-<h2 id="standard-felix-framework-launcher">Standard Felix Framework Launcher</h2>
+<h2 id="standard-felix-framework-launcher">Standard Felix Framework Launcher<a class="headerlink" href="#standard-felix-framework-launcher" title="Permanent link">&para;</a></h2>
 <p>The standard Felix framework launcher is very simple and is not intended to solve every possible requirement; it is intended to work for most standard situations. Most special launching requirements should be resolved by creating a custom launcher. This section describes how the standard launcher works. The following code represents the complete <code>main()</code> method of the standard launcher, each numbered comment will be described in more detail below:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
 <span class="p">{</span>
@@ -292,7 +314,7 @@ Felix configuration properties have change considerably starting from `1.4.0`; i
 <li>Invoke <code>waitForStop()</code> to wait for the framework to stop to force the VM to exit; this is necessary because the framework never calls <code>System.exit()</code> and some libraries (e.g., Swing) create threads that will not allow the VM to exit.</li>
 </ol>
 <p>The framework is not active until the <code>start()</code> method is called. If no shell bundles are installed and started or if there is difficulty locating the shell bundles specified in the auto-start property, then it will appear as if the framework is hung, but it is actually running without any way to interact with it since the shell bundles provide the only means of interaction.</p>
-<h2 id="custom-framework-launcher">Custom Framework Launcher</h2>
+<h2 id="custom-framework-launcher">Custom Framework Launcher<a class="headerlink" href="#custom-framework-launcher" title="Permanent link">&para;</a></h2>
 <p>This section creates a bare-bones launcher to demonstrate the minimum requirements for creating an interactive launcher for the Felix framework. This example uses the standard Gogo shell bundles for interactivity, but any other bundles could be used instead. This example launcher project has the following directory structure:</p>
 <div class="codehilite"><pre><span class="n">launcher</span><span class="o">/</span>
    <span class="n">lib</span><span class="o">/</span>
@@ -411,9 +433,9 @@ Felix configuration properties have change considerably starting from `1.4.0`; i
 
 
 <p>After executing this command, a "<code>felix-cache/</code>" directory is created that contains the cached bundles, which were installed from the <code>bundle/</code> directory.</p>
-<h1 id="embedding-the-felix-framework">Embedding the Felix Framework</h1>
+<h1 id="embedding-the-felix-framework">Embedding the Felix Framework<a class="headerlink" href="#embedding-the-felix-framework" title="Permanent link">&para;</a></h1>
 <p>Embedding the Felix framework into a host application is a simple way to provide a sophisticated extensibility mechanism (i.e., a plugin system) to the host application. Embedding the Felix framework is very similar to launching it as described above, the main difference is that the host application typically wants to interact with the framework instance and/or installed bundles/services from the outside. This is fairly easy to achieve, but there are some subtle issues to understand. This section presents the mechanisms for embedding Felix into a host application and the issues in doing so.</p>
-<h2 id="hostfelix-interaction">Host/Felix Interaction</h2>
+<h2 id="hostfelix-interaction">Host/Felix Interaction<a class="headerlink" href="#hostfelix-interaction" title="Permanent link">&para;</a></h2>
 <p>In the section on <a href="">launching</a> the framework above, the <code>Felix</code> class accepts a configuration property called <code>felix.systembundle.activators</code>, which is a list of bundle activator instances. These bundle activator instances provide a convenient way for host applications to interact with the Felix framework.</p>
 <div class="warning" markdown="1">
 **WARNING**
@@ -497,7 +519,7 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 
 
 <p>Notice how the <code>HostApplication.getInstalledBundles()</code> method uses its activator instance to get access to the system bundle's context in order to interact with the embedded Felix framework instance. This approach provides the foundation for all interaction between the host application and the embedded framework instance.</p>
-<h2 id="providing-host-application-services">Providing Host Application Services</h2>
+<h2 id="providing-host-application-services">Providing Host Application Services<a class="headerlink" href="#providing-host-application-services" title="Permanent link">&para;</a></h2>
 <p>Providing services from the host application to bundles inside the embedded Felix framework instance follows the basic approach laid out in <a href="">above</a>. The main complication for providing a host application service to bundles is the fact that both the host application and the bundles must be using the same class definitions for the service interface classes. Since the host application cannot import classes from a bundle, this means that the service interface classes <em>must</em> be accessible on the class path, typically as part of the host application itself. The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it. This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
 <p>Consider the follow simple property lookup service:</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">;</span>
@@ -622,7 +644,7 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 
 
 <p>Rather than having the host application bundle activator register the service, it is also possible for the the host application to simply get the bundle context from the bundle activator and register the service directly, but the presented approach is perhaps a little cleaner since it allows the host application to register/unregister the service when the system bundle starts/stops.</p>
-<h2 id="using-services-provided-by-bundles">Using Services Provided by Bundles</h2>
+<h2 id="using-services-provided-by-bundles">Using Services Provided by Bundles<a class="headerlink" href="#using-services-provided-by-bundles" title="Permanent link">&para;</a></h2>
 <p>Using services provided by bundles follows the same general approach of using a host application bundle activator. The main complication for the host application using a service from a bundle is the fact that both the host application and the bundle must be using the same class definitions for the service interface classes. Since the host application cannot import classes from a bundle, this means that the service interface classes <em>must</em> be accessible on the class path, typically as part of the host application itself. The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it. This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
 <p>Consider the following simple command service interface for which bundles provide implementations, such as might be used to create an extensible interactive shell:</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">command</span><span class="p">;</span>
@@ -752,16 +774,16 @@ The `felix.systembundle.activators` configuration property is specific to the Fe
 
 
 <p>The above example is overly simplistic with respect to concurrency issues and error conditions, but it demonstrates the overall approach for using bundle-provided services from the host application.</p>
-<h3 id="using-bundle-services-via-reflection">Using Bundle Services via Reflection</h3>
+<h3 id="using-bundle-services-via-reflection">Using Bundle Services via Reflection<a class="headerlink" href="#using-bundle-services-via-reflection" title="Permanent link">&para;</a></h3>
 <p>It possible for the host application to use services provided by bundles without having access to the service interface classes and thus not needing to put the service interface classes on the class path. To do this, the host application uses the same general approach to acquire the system bundle context object, which it can use to look up service objects. Using either an LDAP filter or the service interface class name, the host application can retrieve the service object and then use standard Java reflection to invoke methods on the service object.</p>
-<h3 id="other-approaches">Other Approaches</h3>
+<h3 id="other-approaches">Other Approaches<a class="headerlink" href="#other-approaches" title="Permanent link">&para;</a></h3>
 <p>The <a href="http://code.google.com/p/transloader/">Transloader</a> project is another attempt at dealing with issues of classes loaded from different class loaders and may be of interest.</p>
-<h1 id="caveat">Caveat</h1>
+<h1 id="caveat">Caveat<a class="headerlink" href="#caveat" title="Permanent link">&para;</a></h1>
 <p>The code in this document has not been thoroughly tested nor even compiled and may be out of date with respect to the current Felix source code. If you find errors please report them so the that they can be corrected.</p>
-<h2 id="feedback">Feedback</h2>
+<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h2>
 <p>Subscribe to the Felix users mailing list by sending a message to <a href="">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [users@felix.apache.org|mailto:users@felix.apache.org].</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

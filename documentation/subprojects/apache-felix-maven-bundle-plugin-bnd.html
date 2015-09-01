@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Apache Felix Maven Bundle Plugin (BND)</h1>
-      <h1 id="bundle-plugin-for-maven">Bundle Plugin for Maven</h1>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="bundle-plugin-for-maven">Bundle Plugin for Maven<a class="headerlink" href="#bundle-plugin-for-maven" title="Permanent link">&para;</a></h1>
 <p>This plugin for Maven 2 is based on the <a href="http://www.aqute.biz/Bnd/Bnd">BND</a> tool from Peter Kriens. The way BND works is by treating your project as a big collection of classes (e.g., project code, dependencies, and the class path). The way you create a bundle with BND is to tell it the content of the bundle's JAR file as a subset of the available classes. This plugin wraps BND to make it work specifically with the Maven 2 project structure and to provide it with reasonable default behavior for Maven 2 projects.</p>
 <div class="info" markdown="1">If you have questions about the maven-bundle-plugin please read the <a href="http://felix.apache.org/site/apache-felix-bundle-plugin-faq.html" class="external-link" rel="nofollow">FAQ</a> first. If you still have questions you can ask them on the <a href="http://felix.apache.org/site/mailinglists.html" class="external-link" rel="nofollow">Felix user list</a>.</div>
 
@@ -76,7 +98,7 @@
 
 <div class="tip" markdown="1"><a href="http://www.aqute.biz/Bnd/Format" class="external-link" rel="nofollow">A complete list of instructions and their format is available from the BND website</a></div>
 
-<h1 id="simple-example">Simple Example</h1>
+<h1 id="simple-example">Simple Example<a class="headerlink" href="#simple-example" title="Permanent link">&para;</a></h1>
 <p>Rather than going straight to a detailed list of plugin features, we will first look at a simple example of how to use the plugin to give an immediate flavor. A detailed "<a href="#detailed-how-to">how to</a>" will follow.</p>
 <p>Assume that we have a simple bundle project that has a pubic API package an several implementation packages, such as:</p>
 <div class="codehilite"><pre><span class="n">org</span><span class="p">.</span><span class="n">foo</span><span class="p">.</span><span class="n">myproject</span><span class="p">.</span><span class="n">api</span>
@@ -107,7 +129,7 @@
 
 
 <p>The <code>&lt;Export-Package&gt;</code> and <code>&lt;Private-Package&gt;</code> instructions tell the plugin about the contents of the resulting bundle JAR file. The <code>&lt;Export-Package&gt;</code> instruction tells the plugin which of the available packages to copy into the bundle <em>and</em> export, while the <code>&lt;Private-Package&gt;</code> instruction indicates which of the available packages to copy into the bundle <em>but not</em> export. If the two sets overlap, as they do in the case, then the export takes precedence. Since we did not specify any values for any other bundle manifest headers, they will assume default values which are described <a href="#default-behavior">below</a>. One specific behavior to highlight is that the plugin generates the <code>Import-Package</code> bundle manifest header based on the contents of the bundle, which means that you generally do not ever need to explicitly specify it yourself. That's it.</p>
-<h1 id="features">Features</h1>
+<h1 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h1>
 <p>The BND library underlying the plugin defines instructions to direct its behavior. For this Maven plugin, these instructions are issued in the plugin configuration section of the POM file, as was illustrated <a href="#simple-example">above</a>. BND recognizes three types of instructions:</p>
 <ol>
 <li><em>Manifest headers</em> - Any instruction that starts with a capital letter will appear in the resulting bundle's manifest file; the value for the header will either be copied, augmented, or generated by BND depending on the instruction.</li>
@@ -115,14 +137,14 @@
 <li><em>Directives</em> - Any instruction starting with a '-' character is considered to be a directive that informs BND to perform some special processing and is not copied to the manifest.</li>
 </ol>
 <p>The remainder of this section covers the most important aspects of BND's instructions; for complete details refer to the <a href="http://www.aqute.biz/Code/Bnd">BND documentation</a>.</p>
-<h2 id="instructions">Instructions</h2>
-<h3 id="export-package"><code>&lt;Export-Package&gt;</code></h3>
+<h2 id="instructions">Instructions<a class="headerlink" href="#instructions" title="Permanent link">&para;</a></h2>
+<h3 id="export-package"><code>&lt;Export-Package&gt;</code><a class="headerlink" href="#export-package" title="Permanent link">&para;</a></h3>
 <p>The <code>&lt;Export-Package&gt;</code> instruction is a list of packages for the bundle to export. These packages are copied into the resulting bundle JAR file from the available classes (i.e., project classes, dependencies, and class path); thus, it is possible to include classes into your bundle that are not associated with source files in your project. <code>&lt;Export-Package&gt;</code> can be specified with package patterns using the '*' wildcard. Also, it is possible to exclude packages using negation by starting the package pattern with '!'. Thus, non-negated patterns indicate which of the available packages to include in the bundle, whereas negated patterns indicate which should not be included in the bundle.</p>
 <p>The list of package patterns is ordered and earlier patterns are applied before later patterns. For example, if you specify "<code>org.foo.*,!org.foo.impl</code>" the second pattern has no effect since all <code>org.foo</code> packages have already been selected by the first pattern. Instead, you should specify "<code>!org.foo.impl,org.foo.*</code>", which will export all <code>org.foo</code> packages except <code>org.foo.impl</code>.</p>
 <p>Following standard OSGi R4 syntax, package patterns can include both directives and attributes, which will be copied appropriately into the generated Export-Package manifest header. Besides explicitly listing package version attributes, BND will also determine package versions by examining the source JAR file or from <code>packageinfo</code> files in the package directory.</p>
-<h3 id="private-package"><code>&lt;Private-Package&gt;</code></h3>
+<h3 id="private-package"><code>&lt;Private-Package&gt;</code><a class="headerlink" href="#private-package" title="Permanent link">&para;</a></h3>
 <p>The <code>&lt;Private-Package&gt;</code> instruction is similar in every way to the <code>&lt;Export-Package&gt;</code> instruction, except for the fact that these packages will <em>not</em> be exported by the bundle. If a package is selected by both the export and private package headers, then the export takes precedence.</p>
-<h3 id="include-resource"><code>&lt;Include-Resource&gt;</code></h3>
+<h3 id="include-resource"><code>&lt;Include-Resource&gt;</code><a class="headerlink" href="#include-resource" title="Permanent link">&para;</a></h3>
 <p>The <code>&lt;Include-Resource&gt;</code> instruction is a list of arbitrary resources that should be copied into the bundle JAR file. The specified resources are declared as clauses that can have the following forms:</p>
 <div class="codehilite"><pre><span class="n">clause</span> <span class="p">::=</span> <span class="n">assignment</span> <span class="o">|</span> <span class="n">inline</span> <span class="o">|</span> <span class="n">simple</span>
 <span class="n">assignment</span> <span class="p">::=</span> <span class="n">PATH</span> <span class="s">&#39;=&#39;</span> <span class="n">PATH</span>
@@ -134,9 +156,9 @@
 <p>For the <code>&lt;Include-Resource&gt;</code> instruction, actual file paths are relative to the <code>pom.xml</code>, while file copy destinations are relative to the root of the resulting bundle JAR file. In the case of <code>assignment</code> or <code>simple</code> forms, the <code>PATH</code> parameter can point to a file or directory. The <code>simple</code> form will place the resource in the bundle JAR with only the file name, i.e., without any path component. For example, including <code>src/main/resources/a/b.c</code> will result in a resource <code>b.c</code> in the root of the bundle JAR. If the <code>PATH</code> points to a directory, the entire directory hierarchy is copied into the resulting bundle JAR file relative to the specified directory.  If a specific resource must be placed into a subdirectory of the bundle jar, then use the <code>assignment</code> form, where the first path is the the destination path (including file name if the resource is a file) and the second path is the resource to copy. The <code>inline</code> form requires a ZIP or JAR file, which will be completely expanded in the bundle JAR.</p>
 <p>If a resource clause is specified inside of "{ ... }" brackets, then variable substitution will be performed on the resource, where variables in the resources are denoted with "${ ... }" syntax.</p>
 <p>By default the bundle plugin converts the project's Maven resource directories into a single <code>&lt;Include-Resource&gt;</code> instruction. If you specify your own <code>&lt;Include-Resource&gt;</code> instruction, this will replace the generated one. To include the generated list of Maven resources in your own <code>&lt;Include-Resource&gt;</code> instruction just add <code>{maven-resources}</code> to the list and it will be expanded automatically.</p>
-<h3 id="import-package"><code>&lt;Import-Package&gt;</code></h3>
+<h3 id="import-package"><code>&lt;Import-Package&gt;</code><a class="headerlink" href="#import-package" title="Permanent link">&para;</a></h3>
 <p>The <code>&lt;Import-Package&gt;</code> instruction is a list of packages that are required by the bundle's contained packages. The default for this header is "*", resulting in importing all referred packages. This header rarely has to be explicitly specified. However, in certain cases when there is an unwanted import, such an import can be removed by using a negation package pattern. The package patterns work in the same way as for <code>&lt;Export-Package&gt;</code>, which means they are ordered. For example, if you wanted to import all packages except <code>org.foo.impl</code> you would specify "<code>!org.foo.impl,*</code>"</p>
-<h2 id="default-behavior">Default Behavior</h2>
+<h2 id="default-behavior">Default Behavior<a class="headerlink" href="#default-behavior" title="Permanent link">&para;</a></h2>
 <p>To use this plugin, very little information is required by BND. As part of the Maven integration, the plugin tries to set reasonable defaults for various instructions. For example:</p>
 <ul>
 <li>
@@ -168,10 +190,10 @@ The computed symbolic name is also stored in the <code>$(maven-symbolicname)</co
 <li><code>&lt;Bundle-DocURL&gt;</code> is assumed to be "<code>${pom.organization.url}</code>".</li>
 </ul>
 <p>Since the plugin creates bundles for OSGi R4, it hard-codes <code>Bundle-ManifestVersion</code> to be '2'. Additionally, it generates imports for every export to ensure package substitutability, which is very important when working with collaborating services. It is possible to override any of these values (except <code>Bundle-ManifestVersion</code>) just by specifying the desired value in the plugin configuration section of the POM file.</p>
-<h1 id="detailed-how-to">Detailed "How To"</h1>
-<h2 id="get-maven2">Get Maven2</h2>
+<h1 id="detailed-how-to">Detailed "How To"<a class="headerlink" href="#detailed-how-to" title="Permanent link">&para;</a></h1>
+<h2 id="get-maven2">Get Maven2<a class="headerlink" href="#get-maven2" title="Permanent link">&para;</a></h2>
 <p>The first step in the process of using the plugin is downloading and installing the latest version of the Maven2 runtime. The latest Maven2 release and instuctions for getting started with Maven2 can be found at the <a href="http://maven.apache.org/index.html">Maven website</a>.</p>
-<h2 id="using-the-plugin">Using the Plugin</h2>
+<h2 id="using-the-plugin">Using the Plugin<a class="headerlink" href="#using-the-plugin" title="Permanent link">&para;</a></h2>
 <p>To use the maven-bundle-plugin, you first need to add the plugin and some appropriate plugin configuration to your bundle project's POM. Below is an example of a simple OSGi bundle POM for Maven2:</p>
 <div class="codehilite"><pre><span class="nt">&lt;project&gt;</span>
   <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
@@ -208,7 +230,7 @@ The computed symbolic name is also stored in the <code>$(maven-symbolicname)</co
 
 
 <p>There are two main things to note: (1) the <code>&lt;packaging&gt;</code> specifier must be "bundle" and (2) the plugin and configuration must be specified (the configuration section is where you will issue instructions to the plugin).</p>
-<h2 id="real-world-example">Real-World Example</h2>
+<h2 id="real-world-example">Real-World Example<a class="headerlink" href="#real-world-example" title="Permanent link">&para;</a></h2>
 <p>Consider this more real-world example using Felix' Log Service implementation. The Log Service project is comprised of a single package: <code>org.apache.felix.log.impl</code>. It has a dependency on the core OSGi interfaces as well as a dependency on the compendium OSGi interfaces for the specific log service interfaces. The following is its POM file:</p>
 <div class="codehilite"><pre><span class="nt">&lt;project&gt;</span>
   <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
@@ -313,7 +335,7 @@ The computed symbolic name is also stored in the <code>$(maven-symbolicname)</co
 </pre></div>
 
 
-<h2 id="adding-osgi-metadata-to-existing-projects-without-changing-the-packaging-type">Adding OSGi metadata to existing projects without changing the packaging type</h2>
+<h2 id="adding-osgi-metadata-to-existing-projects-without-changing-the-packaging-type">Adding OSGi metadata to existing projects without changing the packaging type<a class="headerlink" href="#adding-osgi-metadata-to-existing-projects-without-changing-the-packaging-type" title="Permanent link">&para;</a></h2>
 <p>If you want to keep your project packaging type (for example "jar") but would like to add OSGi metadata
 you can use the manifest goal to generate a bundle manifest. The maven-jar-plugin can then be used to
 add this manifest to the final artifact. For example:</p>
@@ -382,7 +404,7 @@ for them in the bundleplugin configuration, for example if you want to use the p
 </pre></div>
 
 
-<h2 id="building-the-plugin">Building the Plugin</h2>
+<h2 id="building-the-plugin">Building the Plugin<a class="headerlink" href="#building-the-plugin" title="Permanent link">&para;</a></h2>
 <p>The plugin is hosted at the Apache Felix project. The following steps describe how to build and install the plugin into your local Maven2 repository.</p>
 <p>Using the SVN client of your choice, checkout the maven-bundle-plugin project.</p>
 <div class="codehilite"><pre>$ <span class="n">svn</span> <span class="n">co</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">svn</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">asf</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">trunk</span><span class="o">/</span><span class="n">bundleplugin</span>
@@ -394,7 +416,7 @@ for them in the bundleplugin configuration, for example if you want to use the p
 </pre></div>
 
 
-<h1 id="goals">Goals</h1>
+<h1 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h1>
 <p>The maven-bundle-plugin also provides additional functionality via some Maven goals. Command-line execution of a goal is performed as follows:</p>
 <div class="codehilite"><pre><span class="n">mvn</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">:</span><span class="n">maven</span><span class="o">-</span><span class="n">bundle</span><span class="o">-</span><span class="n">plugin</span><span class="p">:</span><span class="n">GOAL</span>
 </pre></div>
@@ -523,8 +545,8 @@ configuration options:</p>
 </ul>
 <p>There are also new instructions available from the underlying BND tool, which continues to be improved independently; for the latest see <a href="http://aqute.biz/Code/Bnd">BND documentation</a>.</p>
 <p>The default goal <em><code>bundle</code></em> will be initialized by setting the <packaging> entry to "bundle".</p>
-<h1 id="the-following-features-are-only-available-from-version-120-onwards">The following features are only available from version 1.2.0 onwards</h1>
-<h2 id="embedding-dependencies">Embedding dependencies</h2>
+<h1 id="the-following-features-are-only-available-from-version-120-onwards">The following features are only available from version 1.2.0 onwards<a class="headerlink" href="#the-following-features-are-only-available-from-version-120-onwards" title="Permanent link">&para;</a></h1>
+<h2 id="embedding-dependencies">Embedding dependencies<a class="headerlink" href="#embedding-dependencies" title="Permanent link">&para;</a></h2>
 <p>The Maven Bundle Plugin supports embedding of selected project dependencies inside the bundle by using the <code>&lt;Embed-Dependency&gt;</code> instruction:</p>
 <div class="codehilite"><pre><span class="nt">&lt;Embed-Dependency&gt;</span>dependencies<span class="nt">&lt;/Embed-Dependency&gt;</span>
 </pre></div>
@@ -586,10 +608,10 @@ configuration options:</p>
 </pre></div>
 
 
-<h3 id="embed-dependency-and-export-package">Embed-Dependency and Export-Package</h3>
+<h3 id="embed-dependency-and-export-package">Embed-Dependency and Export-Package<a class="headerlink" href="#embed-dependency-and-export-package" title="Permanent link">&para;</a></h3>
 <p>If you embed a dependency with <code>&lt;Embed-Dependency&gt;</code>, and your <code>&lt;Export-Package&gt;</code> or <code>&lt;Private-Package&gt;</code> instructions match packages inside the embedded jar, you will see some duplication inside the bundle. This is because the <code>&lt;Export-Package&gt;</code> and <code>&lt;Private-Package&gt;</code> instructions will result in classes being inlined in the bundle, even though they also exist inside the embedded jar. If you want to export packages from an embedded dependency without such duplication then you can either inline the dependency, or use a new BND instruction called <code>&lt;_exportcontents&gt;</code>.</p>
 <p><code>&lt;_exportcontents&gt;</code> behaves just like Export-Package, except it doesn't change the content of the bundle, just what content should be exported.</p>
-<h2 id="obr-integration">OBR integration</h2>
+<h2 id="obr-integration">OBR integration<a class="headerlink" href="#obr-integration" title="Permanent link">&para;</a></h2>
 <p>The latest Maven Bundle Plugin automatically updates the local OBR repository.xml file during the install phase, using a default location of:</p>
 <div class="codehilite"><pre><span class="o">&lt;</span><span class="n">LOCAL</span><span class="o">-</span><span class="n">MAVEN</span><span class="o">-</span><span class="n">REPOSITORY</span><span class="o">&gt;/</span><span class="n">repository</span><span class="p">.</span><span class="n">xml</span>
 </pre></div>
@@ -626,7 +648,7 @@ configuration options:</p>
 </pre></div>
 
 
-<h2 id="eclipsepde-integration">Eclipse/PDE integration</h2>
+<h2 id="eclipsepde-integration">Eclipse/PDE integration<a class="headerlink" href="#eclipsepde-integration" title="Permanent link">&para;</a></h2>
 <p>It is possible to configure the Maven Bundle Plugin to put the bundle manifest where Eclipse/PDE expects it, and use the Maven Dependency Plugin to arrange for any embedded dependencies to appear in a local directory that matches the Bundle-ClassPath entries. Here is an example POM that does this:</p>
 <div class="codehilite"><pre><span class="nt">&lt;project&gt;</span>
 
@@ -741,7 +763,7 @@ configuration options:</p>
 
 
 <p>to create the appropriate Eclipse files and manifest, and also handle any embedded entries. The pax:eclipse goal extends eclipse:eclipse, and supports the same parameters.</p>
-<h2 id="unpacking-bundle-contents-to-targetclasses">Unpacking bundle contents to 'target/classes'</h2>
+<h2 id="unpacking-bundle-contents-to-targetclasses">Unpacking bundle contents to 'target/classes'<a class="headerlink" href="#unpacking-bundle-contents-to-targetclasses" title="Permanent link">&para;</a></h2>
 <p>Once in a while you may create a bundle which contains additional classes to the ones compiled from <code>src/main/java</code>, for example when you embed the classes from another jar. This can sometimes cause unforeseen problems in Maven, as it will use the output directory (<code>target/classes</code>) rather than the final bundle, when compiling against projects in the same reactor (ie. the same build).</p>
 <p>The easiest way to get around this Maven 'feature' is to unpack the contents of the bundle to the output directory after the packaging step, so the additional classes will be found where Maven expects them. Thankfully there is now an easy option to do this in the bundle-plugin:</p>
 <div class="codehilite"><pre><span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
@@ -756,7 +778,7 @@ configuration options:</p>
 </pre></div>
 
 
-<h2 id="using-an-existing-manifestmf-file">Using an existing MANIFEST.MF file</h2>
+<h2 id="using-an-existing-manifestmf-file">Using an existing MANIFEST.MF file<a class="headerlink" href="#using-an-existing-manifestmf-file" title="Permanent link">&para;</a></h2>
 <p>If you have an existing manifest, you can add this to the Bnd instructions, like so:</p>
 <div class="codehilite"><pre><span class="nt">&lt;_include&gt;</span>src/main/resources/META-INF/MANIFEST.MF<span class="nt">&lt;/_include&gt;</span>
 <span class="nt">&lt;Export-Package&gt;</span>org.example.*<span class="nt">&lt;/Export-Package&gt;</span>
@@ -765,8 +787,8 @@ configuration options:</p>
 
 <p>Bnd will use it when calculating the bundle contents, and will also copy across all manifest attributes starting with a capital letter.
 As shown in the above example, you could use this to include a non-OSGi manifest which you then customize with extra OSGi attributes.</p>
-<h1 id="the-following-features-are-only-available-from-version-140-onwards">The following features are only available from version 1.4.0 onwards</h1>
-<h2 id="bundleant">bundle:ant</h2>
+<h1 id="the-following-features-are-only-available-from-version-140-onwards">The following features are only available from version 1.4.0 onwards<a class="headerlink" href="#the-following-features-are-only-available-from-version-140-onwards" title="Permanent link">&para;</a></h1>
+<h2 id="bundleant">bundle:ant<a class="headerlink" href="#bundleant" title="Permanent link">&para;</a></h2>
 <p>The <em>ant</em> goal creates a customized <code>build.xml</code> Ant script along with a collection of BND instructions and properties, taken from the current project and stored in <code>maven-build.bnd</code>. You also need to run <em><code>ant:ant</code></em> to create the standard Ant support tasks to download Maven dependencies and perform compilation, etc.</p>
 <p>The customized Ant script uses the BND tool to rebuild the bundle, so any source changes should be reflected in the (re)generated manifest.</p>
 <p>Example:</p>
@@ -776,7 +798,7 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 </pre></div>
 
 
-<h2 id="bundleinstall-file">bundle:install-file</h2>
+<h2 id="bundleinstall-file">bundle:install-file<a class="headerlink" href="#bundleinstall-file" title="Permanent link">&para;</a></h2>
 <p>The <em>install-file</em> goal updates the local OBR with the details of a bundle from the local filesystem.</p>
 <p>Configuration:</p>
 <ul>
@@ -796,7 +818,7 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 </pre></div>
 
 
-<h2 id="bundledeploy">bundle:deploy</h2>
+<h2 id="bundledeploy">bundle:deploy<a class="headerlink" href="#bundledeploy" title="Permanent link">&para;</a></h2>
 <p>The <em>deploy goal</em> updates the remote OBR with the details of the deployed bundle from the local Maven repository. The remote OBR is found by querying the <code>&lt;distributionManagement&gt;</code> section of the project, unless <code>-DaltDeploymentRepository</code> is set. See <a href="http://maven.apache.org/plugins/maven-deploy-plugin/deploy-mojo.html">http://maven.apache.org/plugins/maven-deploy-plugin/deploy-mojo.html</a> for more details about these particular settings.</p>
 <p>(If the project has an <code>obr.xml</code> file somewhere in its resources, then it will be automatically detected and applied.)</p>
 <p>Configuration:</p>
@@ -807,7 +829,7 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 <li><em>ignoreLock</em> ignore remote locking when updating the OBR</li>
 </ul>
 <p>This goal is part of the "bundle" packaging lifecycle, but is disabled by default - to enable just set the <code>remoteOBR</code> parameter.</p>
-<h2 id="bundledeploy-file">bundle:deploy-file</h2>
+<h2 id="bundledeploy-file">bundle:deploy-file<a class="headerlink" href="#bundledeploy-file" title="Permanent link">&para;</a></h2>
 <p>The <em>deploy-file</em> goal updates the remote OBR with the details of a deployed bundle from the local filesystem. The remote OBR is found using the <code>-DrepositoryId</code> and <code>-Durl</code> parameters. See <a href="http://maven.apache.org/plugins/maven-deploy-plugin/deploy-file-mojo.html">http://maven.apache.org/plugins/maven-deploy-plugin/deploy-file-mojo.html</a> for more details about these particular settings.</p>
 <p>You can use the <code>-DbundleUrl</code> parameter to give the public location of the deployed bundle, which may differ from the remote OBR location.</p>
 <p>Configuration:</p>
@@ -834,7 +856,7 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 </pre></div>
 
 
-<h2 id="bundleclean">bundle:clean</h2>
+<h2 id="bundleclean">bundle:clean<a class="headerlink" href="#bundleclean" title="Permanent link">&para;</a></h2>
 <p>Sometimes you would like to clean your local OBR because it contains bundles that are no longer in your local Maven repository. This case often occurs when artifacts were deleted manually. The maven-bundle-plugin provides a simple goal to check for missing bundles, and remove them from the local OBR.</p>
 <p>Configuration:</p>
 <ul>
@@ -845,7 +867,7 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 </pre></div>
 
 
-<h2 id="bundleindex">bundle:index</h2>
+<h2 id="bundleindex">bundle:index<a class="headerlink" href="#bundleindex" title="Permanent link">&para;</a></h2>
 <p>The <code>index</code> goal allows the creation of an OBR repository based on a set of jars in a maven repository.</p>
 <p>Configuration:</p>
 <ul>
@@ -866,9 +888,9 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 </ul>
 </li>
 </ul>
-<h2 id="concurrent-updates">Concurrent updates</h2>
+<h2 id="concurrent-updates">Concurrent updates<a class="headerlink" href="#concurrent-updates" title="Permanent link">&para;</a></h2>
 <p>With a remote OBR, several uploads may occur at the same time. However, the remote OBR is centralized in one file, so concurrent modification must be avoided. To achieve this, the plug-in implements a locking system. Each time the plug-in tries to modify the file it sets a file based lock. If it can't take the lock, it will wait and retry. After 3 attempts the upload process fails. To bypass this lock add <code>-DignoreLock</code> to the command-line (or add <code>&lt;ignoreLock&gt;true&lt;ignoreLock&gt;</code> to the configuration section of your Pom).</p>
-<h2 id="ftp-protocol">FTP protocol</h2>
+<h2 id="ftp-protocol">FTP protocol<a class="headerlink" href="#ftp-protocol" title="Permanent link">&para;</a></h2>
 <p>Not all protocols are supported by Maven out of the box. For example the ftp protocol requires the <em>wagon-ftp</em> component. To enable the ftp protocol add this to your Pom:</p>
 <div class="codehilite"><pre><span class="nt">&lt;build&gt;</span>
   <span class="nt">&lt;extensions&gt;</span>
@@ -882,7 +904,7 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 </pre></div>
 
 
-<h2 id="how-the-plug-in-computes-the-description-of-the-bundle">How the plug-in computes the description of the bundle</h2>
+<h2 id="how-the-plug-in-computes-the-description-of-the-bundle">How the plug-in computes the description of the bundle<a class="headerlink" href="#how-the-plug-in-computes-the-description-of-the-bundle" title="Permanent link">&para;</a></h2>
 <p>The description of the bundle comes from three different sources:</p>
 <ul>
 <li>Bindex : Bindex is a tool that analyzes a bundle manifest to generate OBR description</li>
@@ -899,14 +921,14 @@ As shown in the above example, you could use this to include a non-OSGi manifest
 
 
 <p>A warning message is displayed when existing information is overridden.</p>
-<h2 id="known-issues-limitations">Known issues &amp; limitations</h2>
+<h2 id="known-issues-limitations">Known issues &amp; limitations<a class="headerlink" href="#known-issues-limitations" title="Permanent link">&para;</a></h2>
 <ol>
 <li>obr.xml (file given by the user to add properties not found by Bindex) must be correct, because the plug-in does not check its syntax.</li>
 </ol>
-<h1 id="feedback">Feedback</h1>
+<h1 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h1>
 <p>Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to <a href="mailto:users@felix.apache.org">users@felix.apache.org</a>.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1605921 by mcculls on Thu, 26 Jun 2014 22:35:44 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

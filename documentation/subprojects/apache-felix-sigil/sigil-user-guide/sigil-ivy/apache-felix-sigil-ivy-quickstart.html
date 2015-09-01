@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Apache Felix Sigil Ivy Quickstart</h1>
-      <div class="toc">
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<div class="toc">
 <ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#shared-configuration">Shared Configuration</a><ul>
@@ -85,14 +107,14 @@
 <li><a href="#next-steps">Next Steps</a></li>
 </ul>
 </div>
-<h2 id="overview">Overview</h2>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The sigil-ivy-plugin integrates Sigil with <a href="http://ant.apache.org/ivy/">Apache Ivy</a>. If you are not familiar with Ivy, you should visit their [tutorial|http://ant.apache.org/ivy/history/latest-milestone/tutorial.html].</p>
 <p>Sigil provides a custom Ivy resolver, which allows Ivy to resolve dependencies specified as OSGi Package-Imports, rather than as specific jar artifacts. This avoids the duplication and possible error of having to specify build dependencies separately from OSGi runtime dependencies.</p>
 <p>The plugin works by intercepting the ivy.xml parser and dynamically replacing any dependencies with the results of resolving the OSGi Package-Imports specified in sigil.properties. Sigil can resolve dependencies using a local directory of OSGi bundles, or using an <a href="http://www.osgi.org/Repository/">OBR repository</a>.</p>
 <p>The plugin also provides an Ant task to generate (multiple) OSGi bundles from each sigil.properties file using <a href="http://www.aqute.biz/Code/Bnd">Bnd</a>. sigil.properties is similar to .bnd instruction files, but it supports multiple bundles.</p>
 <p>This Quick Start is based on the Ivy <a href="http://ant.apache.org/ivy/history/latest-milestone/tutorial/dependence.html">project dependencies</a> tutorial, modified to use Sigil. The modified example is in <code>example/dependence</code> in the Sigil download.</p>
-<h2 id="shared-configuration">Shared Configuration</h2>
-<h3 id="ivysettingsproperties">ivysettings.properties</h3>
+<h2 id="shared-configuration">Shared Configuration<a class="headerlink" href="#shared-configuration" title="Permanent link">&para;</a></h2>
+<h3 id="ivysettingsproperties">ivysettings.properties<a class="headerlink" href="#ivysettingsproperties" title="Permanent link">&para;</a></h3>
 <p>You will need to change ivy.jar to point to the location of your Ivy jar. If you don't have Ivy, you can download it from http://ant.apache.org/ivy/download.cgi.</p>
 <div class="codehilite"><pre>repository.dir=<span class="cp">${</span><span class="n">ivy</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span>/repository
 sigil-ivy-plugin.jar=<span class="cp">${</span><span class="n">ivy</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">dir</span><span class="cp">}</span>/../../../lib/sigil-ivy-plugin.jar
@@ -100,7 +122,7 @@ ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
 </pre></div>
 
 
-<h3 id="ivysettingsxml">ivysettings.xml</h3>
+<h3 id="ivysettingsxml">ivysettings.xml<a class="headerlink" href="#ivysettingsxml" title="Permanent link">&para;</a></h3>
 <p>The lines containing "sigil" need to be added to your ivysettings.xml:</p>
 <ul>
 <li><em>classpath</em> - this references the location of the sigil-ivy-plugin.jar</li>
@@ -138,7 +160,7 @@ ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
 <p></ivysettings></p>
 </li>
 </ul>
-<h3 id="sigil-reposproperties">sigil-repos.properties</h3>
+<h3 id="sigil-reposproperties">sigil-repos.properties<a class="headerlink" href="#sigil-reposproperties" title="Permanent link">&para;</a></h3>
 <p>This file contains the definition of the Sigil repositories. It is referenced via the config attribute on the sigil-resolver in ivysettings.xml.</p>
 <p>The repositories defined are:</p>
 <ul>
@@ -165,8 +187,8 @@ ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
 </pre></div>
 
 
-<h2 id="project-configuration">Project Configuration</h2>
-<h3 id="buildxml">build.xml</h3>
+<h2 id="project-configuration">Project Configuration<a class="headerlink" href="#project-configuration" title="Permanent link">&para;</a></h2>
+<h3 id="buildxml">build.xml<a class="headerlink" href="#buildxml" title="Permanent link">&para;</a></h3>
 <p>The sigil-ivy-plugin provides an Ant task to build bundles using Bnd. It requires bndlib.jar, which is on the manifest Class-Path, so you don't need to explicitly add bndlib.jar to the classpath, as long as it is present in the same directory as sigil-ivy-plugin.jar.</p>
 <div class="codehilite"><pre><span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">&quot;sigil.bundle&quot;</span>
     <span class="na">classname=</span><span class="s">&quot;org.cauldron.bld.ant.BundleTask&quot;</span>
@@ -179,7 +201,7 @@ ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
 </pre></div>
 
 
-<h3 id="ivyxml">ivy.xml</h3>
+<h3 id="ivyxml">ivy.xml<a class="headerlink" href="#ivyxml" title="Permanent link">&para;</a></h3>
 <p>The ivy.xml for the dependee project is unchanged (but, by default, Sigil ignores any dependences it contains).</p>
 <div class="codehilite"><pre><span class="nt">&lt;ivy-module</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;info</span> <span class="na">organisation=</span><span class="s">&quot;org.apache&quot;</span> <span class="na">module=</span><span class="s">&quot;dependee&quot;</span><span class="nt">/&gt;</span>
@@ -190,7 +212,7 @@ ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
 </pre></div>
 
 
-<h3 id="sigilproperties">sigil.properties</h3>
+<h3 id="sigilproperties">sigil.properties<a class="headerlink" href="#sigilproperties" title="Permanent link">&para;</a></h3>
 <p>Placing a sigil.properties file next to an ivy.xml file, causes the sigil-parser to dynamically replace the dependencies contained in ivy.xml with dependencies determined from the -imports property in sigil.properties.</p>
 <div class="codehilite"><pre><span class="c"># dependee sigil.properties</span>
 
@@ -208,7 +230,7 @@ ivy.jar=/opt/apache-ivy-2.0.0-rc2/ivy-2.0.0-rc2.jar
 </pre></div>
 
 
-<h2 id="project-build">Project Build</h2>
+<h2 id="project-build">Project Build<a class="headerlink" href="#project-build" title="Permanent link">&para;</a></h2>
 <p>{code:bgColor=#FFFFCE}
 $ cd dependee
 $ ant jar
@@ -319,10 +341,10 @@ $ <span class="n">ant</span> <span class="n">jar</span>
 
 
 <p>Notice that the additional dependencies have been resolved against the OBR repository. The warning from Bnd, is because those additional imports are not actually used.</p>
-<h2 id="next-steps">Next Steps</h2>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>This Quick Start has shown how easily Sigil can integrate with existing Ivy builds. You should now examine the other examples, which give more details of the Sigil configuration and show some real-world examples.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

@@ -171,7 +171,18 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="dive-into-the-ipojo-manipulation-depths">Dive into the iPOJO Manipulation depths</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="dive-into-the-ipojo-manipulation-depths">Dive into the iPOJO Manipulation depths<a class="headerlink" href="#dive-into-the-ipojo-manipulation-depths" title="Permanent link">&para;</a></h1>
 <p>iPOJO (primitive) components are managed using byte code manipulation. Don't be afraid, you don't have to be fluent in byte code to understand components. This page explains how the manipulation works and how your class file is transformed. This manipulation takes care to <strong>NOT</strong> change the behavior of the manipulated class.</p>
 <div class="toc">
 <ul>
@@ -193,7 +204,7 @@
 </li>
 </ul>
 </div>
-<h2 id="why-manipulate-bundle-byte-code">Why manipulate bundle byte code?</h2>
+<h2 id="why-manipulate-bundle-byte-code">Why manipulate bundle byte code?<a class="headerlink" href="#why-manipulate-bundle-byte-code" title="Permanent link">&para;</a></h2>
 <p>The iPOJO byte code manipulation goals are two-fold:</p>
 <ul>
 <li>Preparing classes to be managed at run time and</li>
@@ -203,7 +214,7 @@
 <p>iPOJO follows a container approach and more specially employs <a href="http://en.wikipedia.org/wiki/Inversion_of_control">inversion of control</a> and [dependency injections|http://en.wikipedia.org/wiki/Dependency_injection]. The iPOJO container manages component instantiation and injection (service, properties and so on...). To inject values and supervise the execution inside component implementation class, iPOJO uses an interception and injection framework. To facilitate this, iPOJO uses class byte code manipulation. </p>
 <p><img src="injection.png"></p>
 <p>Besides manipulating byte code, iPOJO translates the XML or annotation metadata to an internal syntax. This eliminates any run-time dependencies on the particular metadata format. </p>
-<h2 id="how-bundle-byte-code-is-manipulated">How bundle byte code is manipulated</h2>
+<h2 id="how-bundle-byte-code-is-manipulated">How bundle byte code is manipulated<a class="headerlink" href="#how-bundle-byte-code-is-manipulated" title="Permanent link">&para;</a></h2>
 <p>For each class used as a component implementation class, the manipulation process prepares the class to be managed at run time. This means providing the ability to intercept methods and field accesses. This manipulation is independent of the component metadata. A component class will always result in the same final manipulated class, regardless of its metadata. This means it is possible to use a class as the implementation of several component types. As illustrated in the following image, the manipulated class instance interacts with an instance manager that delegates to handlers. The metadata impacts the set of handlers; it does not impact the manipulated class, nor the instance manager (which is the iPOJO container foundation).</p>
 <p><img src="principles.png"></p>
 <p>The following image explains what happens during the manipulation.</p>
@@ -212,7 +223,7 @@
 <p>For each field, getter and setter methods are generated. They are called <code>\*\*get$FIELD*NAME</code> and <code>\*\*set$FIELD*NAME</code>. A boolean field is injected named <code>\*\*F$FIELD_NAME</code>. This flag enables or disables the container delegation for this field. When delegation is disabled, the field is managed as a regular field: getter and setter methods just return and set the field value. When delegation is enabled, the field never receives a value, the container stores the field value. The getter method asks the container to get the value. The setter method asks to the container to update the stored value. All the field accesses (except ones from specific constructors) of the class are adapted to call the getter or the setter method.</p>
 <p>In order to intercept methods, each method is substituted by a generated method. Each method is renamed to <code>\*\*METHOD_NAME</code> and becomes private. The original method is replaced by iPOJO code. This code allows method interception. As with fields, method delegation is enabled or disabled by an injected boolean field. If the method is not to be intercepted, the iPOJO-generated method just calls the original method. Otherwise, the iPOJO-generated method notifies the container of method entries, exits, and potential errors.</p>
 <p>Finally, the constructors are also manipulated. Empty constructors and constructors receiving a <code>BundleContext</code> object are manipulated as others methods. However, they receive another argument: the <code>InstanceManager</code>. This instance manager is set just after the call to the super constructor. While setting the instance manager, all flags enabling/disabling delegation are set. This allows the component to use injected values inside the constructor code itself. Constructors receiving other kind of arguments are not manipulated, and so can be used to create non-managed instance. In this case, fields won't be delegated, and methods won't be intercepted.</p>
-<h3 id="the-annotation-special-case">The annotation special case</h3>
+<h3 id="the-annotation-special-case">The annotation special case<a class="headerlink" href="#the-annotation-special-case" title="Permanent link">&para;</a></h3>
 <p>The manipulation has a special behavior when a visible (at run time) method or constructor annotation is detected. As the methods are replaced by private methods, the annotations are moved to the iPOJO-generated methods, such as in:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
   <span class="nd">@MyAnnotation</span>
@@ -235,16 +246,16 @@
 </pre></div>
 
 
-<h2 id="avoiding-xml-at-run-time">Avoiding XML at run time</h2>
+<h2 id="avoiding-xml-at-run-time">Avoiding XML at run time<a class="headerlink" href="#avoiding-xml-at-run-time" title="Permanent link">&para;</a></h2>
 <p>iPOJO does not use XML or annotations at run time. The manipulation process replaces the XML or annotation metadata by an internal format (between LISP and XML). The XML or annotation metadata are translated and written into the bundle manifest. Additionally, various type information in the component metadata is computed during the byte code manipulation phase to avoid having to use reflection at run time (which would require loading the class) to get class elements (such as available fields, methods, implemented interfaces, and so on).</p>
 <p>If you want to see how XML or annotation metadata are <em>tortured</em>, just open the manifest file of a manipulated bundle, and look at the <code>iPOJO-COMPONENTS</code> entry (and appreciate the Lisp-like syntax :-))...</p>
-<h2 id="extending-manipulator">Extending manipulator</h2>
+<h2 id="extending-manipulator">Extending manipulator<a class="headerlink" href="#extending-manipulator" title="Permanent link">&para;</a></h2>
 <p>Annotations are more and more used to provide a simple and elegant programming model. iPOJO had supported generic annotations (<code>@Component</code>, <code>@Handler</code>, ...) for a long time.
 But supporting your own annotations and bind them to a particular handler in iPOJO was awkward (naming conventions, id and parent resolution, ...).</p>
 <p>For example, how to re-use an external annotation (let's say <code>@javax.inject.Inject</code>) that do not respect the iPOJO naming convention ?
 Or how can you contribute information to the component's metadata when an annotation is found ?</p>
 <p>The solution is to extend the manipulator with new annotation' support.</p>
-<h3 id="annotation-binding-module">Annotation Binding Module</h3>
+<h3 id="annotation-binding-module">Annotation Binding Module<a class="headerlink" href="#annotation-binding-module" title="Permanent link">&para;</a></h3>
 <p>That can be done through the implementation of a <code>Module</code>:</p>
 <div class="codehilite"><pre><span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.manipulator.spi.AbsBindingModule</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.apache.felix.ipojo.manipulator.spi.AnnotationVisitorFactory</span><span class="o">;</span>
@@ -269,7 +280,7 @@ Or how can you contribute information to the component's metadata when an annota
 <p>The <code>AbsBindingModule.configure()</code> method has to be implemented by each new Module. It contains the annotation binding specification(s).
 An annotation binding simply declares what to do when a given annotation is found.</p>
 <p>In the example case, when the <code>@Hello</code> annotation is encountered in a class' bytecode, the manipulator will find an annotation binding for <code>@Hello</code> and call it's <code>AnnotationVisitorFactory.newAnnotationVisitor()</code> method to obtain a dedicated <code>AnnotationVisitor</code> (here <code>HelloVisitor</code>).</p>
-<h3 id="visitors">Visitors</h3>
+<h3 id="visitors">Visitors<a class="headerlink" href="#visitors" title="Permanent link">&para;</a></h3>
 <p>Here are the <code>@Hello</code> annotation and <code>HelloVisitor</code> class for better understanding:</p>
 <div class="codehilite"><pre><span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">)</span>
 <span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Hello</span> <span class="o">{</span>
@@ -312,7 +323,7 @@ An annotation binding simply declares what to do when a given annotation is foun
 <p>The <code>HelloVisitor</code> is an ASM <code>AnnotationVisitor</code>. <code>AnnotationVisitor.visit(String, Object)</code> is called for each declared attribute of the annotation. Declared means that if an attribute is non-mandatory and was not part of the annotation declaration, it will not be visible by the <code>AnnotationVisitor</code>. Each attribute is visited only once.
 In HelloVisitor we only react to the <code>name</code> attribute, and store its value as an Attribute in the Element.</p>
 <p>Finally, in <code>visitEnd()</code>, we contribute our Element to the workbench.</p>
-<h3 id="declaring-the-module">Declaring the Module</h3>
+<h3 id="declaring-the-module">Declaring the Module<a class="headerlink" href="#declaring-the-module" title="Permanent link">&para;</a></h3>
 <p>Last work to do: declare the new <code>Module</code> in a <code>META-INF/services/org.apache.felix.ipojo.manipulator.spi.Module</code> file:</p>
 <div class="codehilite"><pre>org.apache.felix.ipojo.sample.SampleBindingModule
 </pre></div>
@@ -321,7 +332,7 @@ In HelloVisitor we only react to the <code>name</code> attribute, and store its 
 <p>At this point, we can use the jar file that contains the extension within the manipulator.
 In maven, it's as simple as adding a plugin dependency to the <code>maven-bundle-plugin</code> (in addition of the <code>bnd-ipojo-plugin</code>).
 In ant, It's probably a matter of changing the classpath.</p>
-<h3 id="finally">Finally</h3>
+<h3 id="finally">Finally<a class="headerlink" href="#finally" title="Permanent link">&para;</a></h3>
 <p>At the end, all this mechanics will help you to simply your code from:</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo</span> <span class="na">xmlns:s=</span><span class="s">&quot;org.apache.felix.ipojo.sample&quot;</span><span class="nt">&gt;</span>
   <span class="nt">&lt;component</span> <span class="err">...</span><span class="nt">&gt;</span>
@@ -359,7 +370,7 @@ In ant, It's probably a matter of changing the classpath.</p>
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1531524 by clement on Sat, 12 Oct 2013 09:57:48 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

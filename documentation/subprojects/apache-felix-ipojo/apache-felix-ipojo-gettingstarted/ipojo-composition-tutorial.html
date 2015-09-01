@@ -171,7 +171,18 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="ipojo-composition-tutorial">iPOJO Composition Tutorial</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="ipojo-composition-tutorial">iPOJO Composition Tutorial<a class="headerlink" href="#ipojo-composition-tutorial" title="Permanent link">&para;</a></h1>
 <p><em>This page describes how works the composition mechanisms provided by iPOJO and how to use it. this feature allows you to design applications that will natively support the dynamism and the evolution.</em></p>
 <div class="toc">
 <ul>
@@ -198,7 +209,7 @@
 </li>
 </ul>
 </div>
-<h2 id="why-providing-a-composition-layer">Why providing a composition layer?</h2>
+<h2 id="why-providing-a-composition-layer">Why providing a composition layer?<a class="headerlink" href="#why-providing-a-composition-layer" title="Permanent link">&para;</a></h2>
 <p>iPOJO aims to simplify the creation of OSGi (dynamic) applications. Creating such as applications is basically a two steps process:</p>
 <ul>
 <li>Developing services and components</li>
@@ -210,18 +221,18 @@
 <li>Assert service isolation inside a composition</li>
 <li>Hide/Abstract implementations </li>
 </ul>
-<h3 id="what-about-privacy">What about privacy?</h3>
+<h3 id="what-about-privacy">What about privacy?<a class="headerlink" href="#what-about-privacy" title="Permanent link">&para;</a></h3>
 <p>Service or component composition has a stringent requirement. How to isolate components and services of an application to avoid side effects as an unexpected access to a used service ...iPOJO composites just provide an isolation mechanism. Services provided inside a composite ARE NOT published globally (inside the OSGi service registry). So, only the component instances living in the same composite can access to those services.
 However, it is also possible to import a service from the parent/global service registry, as well as to export a service to the parent (i.e. superior) composite.</p>
-<h2 id="the-different-types-of-composition-in-the-osgi-world">The different types of composition in the OSGi world</h2>
+<h2 id="the-different-types-of-composition-in-the-osgi-world">The different types of composition in the OSGi world<a class="headerlink" href="#the-different-types-of-composition-in-the-osgi-world" title="Permanent link">&para;</a></h2>
 <p>Basically there is two types of composition in OSGi:</p>
 <ul>
 <li>The intra-bundle composition</li>
 <li>The service-based composition</li>
 </ul>
-<h3 id="intra-bundle-composition">Intra-bundle composition</h3>
+<h3 id="intra-bundle-composition">Intra-bundle composition<a class="headerlink" href="#intra-bundle-composition" title="Permanent link">&para;</a></h3>
 <p>The intra-bundle composition is the policy followed by Spring-DM. Each bundle contains components. These components can require and provide services from the global (OSGi) registry. Moreover, these components can collaborate together inside the bundle without providing/requiring services. So the isolation scope of intra-bundle composition is the <em>bundle</em>. This type of composition allows providing coarse-grain services provided by the collaboration of several components. However, it is not possible to update one of those components, as the update unity is the bundle.</p>
-<h3 id="service-based-composition">Service-based composition</h3>
+<h3 id="service-based-composition">Service-based composition<a class="headerlink" href="#service-based-composition" title="Permanent link">&para;</a></h3>
 <p>There are two types of service composition. The behavioral service composition is like <a href="http://www.ibm.com/developerworks/library/specification/ws-bpel/">BPEL</a> for the web services. An orchestrator supervises the execution and the collaboration of services like:</p>
 <ol>
 <li>Call service A</li>
@@ -234,13 +245,13 @@ However, it is also possible to import a service from the parent/global service 
 <li>Allows the evolution of used services and components at runtime</li>
 </ul>
 <p>This is also the way followed by <a href="http://www.ibm.com/developerworks/library/specification/ws-sca/">SCA</a>. However, SCA does not specify how the dynamism should be handled.</p>
-<h2 id="the-ipojo-composition-theory-for-the-dummies">The iPOJO composition theory for the dummies</h2>
+<h2 id="the-ipojo-composition-theory-for-the-dummies">The iPOJO composition theory for the dummies<a class="headerlink" href="#the-ipojo-composition-theory-for-the-dummies" title="Permanent link">&para;</a></h2>
 <p>The distinction between component types and instances
 When you declare a <code>&lt;component&gt;</code> (or a <code>&lt;composite&gt;</code>) in your metadata, you're declaring a component type. Then you declare instances from these component types. This mechanism is critic for the iPOJO composition. Indeed, inside a composite, you're able to create instances from any (public) component types (Refer to the <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.html">Factory</a> web page for further details). 
 On the top of this mechanism, we can define the concept of service implementation. A service implementation is just a component type where the instances provide a service. For example, if the instance from a component type provides the service S, the component type is a service implementation of S, and so can be used to create a provider of S. </p>
-<h2 id="the-service-context-concept">The service context concept</h2>
+<h2 id="the-service-context-concept">The service context concept<a class="headerlink" href="#the-service-context-concept" title="Permanent link">&para;</a></h2>
 <p>The service context is the concept allowing service isolation. OSGi bundle context allows accessing both to bundle-based functionality (like <code>loadClass</code>) and to the service registry. However, OSGi defines only one service registry, accessible by any bundles. iPOJO splits these two interaction types. Instances receive an iPOJO Bundle Context delegating bundle-related methods to the "regular" bundle context, and service-related methods to a service context. This service context can access to the OSGi service registry or to a new one. Each composition instances have a service registry. Instances creates inside the composition used this service registry through received the iPOJO Bundle Context. </p>
-<h2 id="downloads">Downloads</h2>
+<h2 id="downloads">Downloads<a class="headerlink" href="#downloads" title="Permanent link">&para;</a></h2>
 <p>Download the <a href="http://people.apache.org/~clement/ipojo/tutorials/composite/composite-tutorial.zip">archive</a>. This archive contains:</p>
 <ul>
 <li>The different applications and component types implemented in this tutorial</li>
@@ -248,7 +259,7 @@ On the top of this mechanism, we can define the concept of service implementatio
 <li>Deployment scripts</li>
 </ul>
 <p>Launch <code>ant</code> from the base directory of the unzipped archive to create every bundles. Then, you can test the different examples by copying and pasting commands from the <code>script.txt</code> file (in the felix folder) in the Felix shell.</p>
-<h2 id="lets-start-with-a-first-composition">Let's start with a first composition</h2>
+<h2 id="lets-start-with-a-first-composition">Let's start with a first composition<a class="headerlink" href="#lets-start-with-a-first-composition" title="Permanent link">&para;</a></h2>
 <p>In the <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.html">iPOJO in 10 minutes</a> tutorial, we created an application checking a sentence against dictionaries. We'll reuse this simple application in this tutorial. 
 So first, we need to implements several component types:</p>
 <ul>
@@ -375,7 +386,7 @@ org.apache.felix.ipojo.Factory, org.osgi.service.cm.ManagedServiceFactory
 
 
 <p>Then, the application also supports component type update. However the component type name must not change. We will see later how we can avoid this issue by abstracting implementations.</p>
-<h2 id="importing-a-service-inside-a-composite">Importing a service inside a composite</h2>
+<h2 id="importing-a-service-inside-a-composite">Importing a service inside a composite<a class="headerlink" href="#importing-a-service-inside-a-composite" title="Permanent link">&para;</a></h2>
 <p>Let's imagine a second version of the checker service implementation (spell.checker-v2). This implementation removes the trace when wrong words are detected. Indeed, this implementation uses a log service to store such kind of errors. </p>
 <p>If we use this implementation, we need to make a log service available inside the composite. Else, the checker will not be valid. To achieve this, use the following composite:</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
@@ -434,7 +445,7 @@ To tackle implementation service dependency resolution issues, iPOJO instances t
     </p>
 </div>
 
-<h2 id="abstracting-implementation-composing-services">Abstracting implementation... Composing services</h2>
+<h2 id="abstracting-implementation-composing-services">Abstracting implementation... Composing services<a class="headerlink" href="#abstracting-implementation-composing-services" title="Permanent link">&para;</a></h2>
 <p>We saw in the first composition that we depend on specific component types. This can be avoided by specifying the composition in term of services instead of component types. So, every available service implementation can be used. Moreover, if the used one disappears, another one can be immediately used to replace the missing service. Let's illustrate this.</p>
 <p>In the first composition, we create an instance of the English dictionary service implementation. We can remove this coupling to this specific implementation. To do this, we will target any implementation of the dictionary service regardless the language. </p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
@@ -500,7 +511,7 @@ Now deploy another implementation of the dictionary service, such as the French 
 
 
 <p>Write <code>welcome</code> in the GUI, and check. The word is misspelled! Try to write <code>bienvenue</code> and check. The word is correctly spelled. This means that the composite has substitutes the previous English dictionary by the French one. This one will be use until it disappears. If you stop the bundle containing this implementation, the composite becomes invalid.</p>
-<h2 id="publishing-services">Publishing services</h2>
+<h2 id="publishing-services">Publishing services<a class="headerlink" href="#publishing-services" title="Permanent link">&para;</a></h2>
 <p>A composition can also provide services. iPOJO composites support two methods to provide services :</p>
 <ul>
 <li>The service export: re-export a service from the composite to the parent context</li>
@@ -592,7 +603,7 @@ service.id <span class="o">=</span> 41
 </pre></div>
 
 
-<h2 id="hierarchical-composites">Hierarchical composites</h2>
+<h2 id="hierarchical-composites">Hierarchical composites<a class="headerlink" href="#hierarchical-composites" title="Permanent link">&para;</a></h2>
 <p>A composition can also contain others compositions. Let's imagine a variation of the latest application. In this case, we define a composite containing the GUI and the previous composite.</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 
@@ -643,7 +654,7 @@ start file:../example5/output/composition5.jar
 
 
 <p>You can check that the composite does no more publish the spell checker service in the OSGi service registry.</p>
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>This page has presented how to use iPOJO composition model. Several topics were not addressed and will be added shortly:</p>
 <ul>
 <li>Dynamic service implementation</li>
@@ -666,7 +677,7 @@ start file:../example5/output/composition5.jar
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1443557 by clement on Thu, 7 Feb 2013 15:34:03 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

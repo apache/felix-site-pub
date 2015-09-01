@@ -171,7 +171,18 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="how-to-write-your-ipojo-handler">How to write your iPOJO Handler</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="how-to-write-your-ipojo-handler">How to write your iPOJO Handler<a class="headerlink" href="#how-to-write-your-ipojo-handler" title="Permanent link">&para;</a></h1>
 <p><em>This document explains how developers can use iPOJO extensibility mechanism to extend the (primitive) component instance container. Such extensibility mechanism does not require to modify the iPOJO core.</em></p>
 <div class="toc">
 <ul>
@@ -229,7 +240,7 @@
 </div>
 <p>First, iPOJO concepts are briefly explained. The second section explains the steps to create a handler. The two last sections describes the implementation and the usage of two small example handlers : a Log Handler, logging messages inside the OSGi log service, and a Property Handler, injecting properties values inside fields.</p>
 <p>The code is available in this <a href="ipojo-handler-tutorial-project.zip">archive file</a>.</p>
-<h2 id="ipojo-concepts">iPOJO Concepts</h2>
+<h2 id="ipojo-concepts">iPOJO Concepts<a class="headerlink" href="#ipojo-concepts" title="Permanent link">&para;</a></h2>
 <p>iPOJO is a service oriented component model aiming to simplify OSGi applications development. iPOJO is based on the POJO concepts. A POJO is a simple Java class without any dependency on its runtime environment. In iPOJO, POJO are encapsulated in a container managing the relation between the POJO and the external world. This container keeps separated the POJO from the external "wild" world. Moreover, this container can be extended, using handlers.</p>
 <p>Basically, iPOJO contains two main concepts: component type and component instance. A component type is a type of component. A component type defines its implementation class, its creation policy, and its container. A component instance is a configured instance of a component type. This instance is created with the component type factory. A component instance inherits of all component type characteristics but has a unique name and its own configuration (set of &lt;key, value&gt;).</p>
 <p>Above these concepts, iPOJO runtime will manage component type factories and component instances. Each component instance is managed separately (but the factory can delete them).</p>
@@ -241,11 +252,11 @@
 iPOJO core contains 6 "core" handlers managing service providing, service dependencies, lifecycle callbacks, lifecycle controller, instance dynamic configuration, and component instance architecture. Theses handlers follow the same rules than external handlers, except that they use the iPOJO default namespace (i.e. <code>org.apache.felix.ipojo</code>).
 </div>
 
-<h2 id="handler-development-basis">Handler development basis</h2>
-<h3 id="fundamentals">Fundamentals</h3>
+<h2 id="handler-development-basis">Handler development basis<a class="headerlink" href="#handler-development-basis" title="Permanent link">&para;</a></h2>
+<h3 id="fundamentals">Fundamentals<a class="headerlink" href="#fundamentals" title="Permanent link">&para;</a></h3>
 <p>As explain above, the handler interacts with the POJO, with the component's container and with the external world (e.g. : other components, services, bundles, the OSGi framework, ...). The skeleton of such an agent is defined in iPOJO is defined by the <code>PrimitiveHandler</code> (abstract) class that can be found in the <code>org.apache.felix.ipojo</code> package.</p>
 <p>You need to implement the three basic lifecycle methods of this class, but you can extends this model by redefining some other methods (e.g. : to intercept POJO method calls, field accesses, ...).</p>
-<h3 id="declaring-your-handler">Declaring your handler</h3>
+<h3 id="declaring-your-handler">Declaring your handler<a class="headerlink" href="#declaring-your-handler" title="Permanent link">&para;</a></h3>
 <p>You first need to declare your handler, so iPOJO will be able to initialize, configure and use it when needed. First, you must give a name and a namespace to your handler. By doing that, iPOJO can recognize that a certain component uses your handler, so it can initialize it. You need to declare, using the <code>@Handler</code> annotations. You can, of course, declare several handlers, and even declare components using these handlers, in the same bundle.</p>
 <div class="codehilite"><pre><span class="nd">@Handler</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Log&quot;</span><span class="o">,</span> <span class="n">namespace</span> <span class="o">=</span> <span class="n">LogHandler</span><span class="o">.</span><span class="na">NAMESPACE</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">LogHandler</span> <span class="kd">extends</span> <span class="n">PrimitiveHandler</span> <span class="o">{</span>
@@ -260,7 +271,7 @@ iPOJO core contains 6 "core" handlers managing service providing, service depend
 In order to use iPOJO annotations processing, the namespace must be a valid package name and the name must be a valid annotation name (without the '@'). Refer to the <a href="#annotations">annotations</a> section.
 </div>
 
-<h3 id="handler-lifecycle">Handler lifecycle</h3>
+<h3 id="handler-lifecycle">Handler lifecycle<a class="headerlink" href="#handler-lifecycle" title="Permanent link">&para;</a></h3>
 <p>A handler lifecycle is composed of four different states.</p>
 <p><img src="Handler-Lifecycle.png"></p>
 <ul>
@@ -274,7 +285,7 @@ In order to use iPOJO annotations processing, the namespace must be a valid pack
 Keep in mind that the <code>stop()</code> method of your handler is called when the component instance is stopped (not necessarily destroyed). This instance can be restarted later, so the same instance of your handler must have to ability to restart too.
 </div>
 
-<h3 id="reading-handler-and-instance-configurations">Reading handler and instance configurations</h3>
+<h3 id="reading-handler-and-instance-configurations">Reading handler and instance configurations<a class="headerlink" href="#reading-handler-and-instance-configurations" title="Permanent link">&para;</a></h3>
 <p>Your handler need to read how it is configured in the using component type description. The configuration is written in the <code>metadata.xml</code> of the using bundle, but is passed to the <code>initializeComponentFactory()</code> and <code>configure()</code> methods as an <code>Element</code> object.</p>
 <p>The <code>Element</code> type (from the <code>org.apache.felix.ipojo.metadata package</code>), coupled with the <code>Attribute</code> type, is used to retrieve the structure and the content of the component configuration. The <code>Element</code> parameter, passed to the initialization and configuration methods, represents the root of the component type description (i.e. the root of the tree is the <code>component</code> tag).</p>
 <p>Several methods allows to browse the entire configuration from the root <code>Element</code> :</p>
@@ -329,7 +340,7 @@ Keep in mind that the <code>stop()</code> method of your handler is called when 
 </pre></div>
 
 
-<h3 id="interacting-with-the-pojo">Interacting with the POJO</h3>
+<h3 id="interacting-with-the-pojo">Interacting with the POJO<a class="headerlink" href="#interacting-with-the-pojo" title="Permanent link">&para;</a></h3>
 <p>One of the most interesting features of an handler is the ability to interact with the component's POJO. Indeed, you can intercept method calls and returns, inject values in the POJO's fields...</p>
 <p>The <code>getPojoMetadata()</code> method of the PrimitiveHandler class lets you access the structure of the POJO (represented by the <code>PojoMetadata</code> type) without having to use (slow) reflection. It allows you to list all fields and methods of the POJO, and get informations about implemented interfaces and the super-class. The <code>PojoMetadata</code> class implements the following operations :</p>
 <ul>
@@ -421,7 +432,7 @@ The <code>InstanceManager</code> has to know your handler wants to intercept fie
 The <code>PrimitiveHandler</code> abstract class implements the <code>FieldInterceptor</code> and <code>MethodInterceptor</code> interfaces, which declares the methods described just above. You can create your own interceptor class (implementing one or both of these interfaces) and give it to the <code>InstanceManager</code> register method instead of the handler object itself.
 </div>
 
-<h3 id="using-your-handler">Using your handler</h3>
+<h3 id="using-your-handler">Using your handler<a class="headerlink" href="#using-your-handler" title="Permanent link">&para;</a></h3>
 <p>Once your handler has been declared, you can use it in iPOJO components. To do so, you first have to be bound to your handler's namespace (using standard XML namespace declaration). Then you can configure the handler in your components type description. An example of bundle's <code>metadata.xml</code> declaring components using the handler is shown hereafter :</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo</span> <span class="na">xmlns:your-shortcut=</span><span class="s">&quot;the.namespace.of.your.handler&quot;</span><span class="nt">&gt;</span>
     ...
@@ -463,9 +474,9 @@ The <code>PrimitiveHandler</code> abstract class implements the <code>FieldInter
 <p>The remainder of this document describes two examples of handlers:
 <em> A log handler logging messages in the OSGi Log Service
 </em> A properties handler reading a property files to configure POJO field</p>
-<h2 id="log-handler-example">Log Handler example</h2>
+<h2 id="log-handler-example">Log Handler example<a class="headerlink" href="#log-handler-example" title="Permanent link">&para;</a></h2>
 <p>This section describes how to create a simple handler. This handler logs a message in the <em>OSGi Log Service</em> (if present) when the component instance state changes.</p>
-<h3 id="handler-metadata">Handler metadata</h3>
+<h3 id="handler-metadata">Handler metadata<a class="headerlink" href="#handler-metadata" title="Permanent link">&para;</a></h3>
 <p>The handler namespace is <code>org.apache.felix.ipojo.log.handler.LogHandler</code>. It is also the name of the handler implementation class. You can note that the handler has an optional dependency on a OSGi log service.</p>
 <div class="codehilite"><pre><span class="c1">// Declare a handler.</span>
 <span class="nd">@Handler</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Log&quot;</span><span class="o">,</span> <span class="n">namespace</span> <span class="o">=</span> <span class="n">LogHandler</span><span class="o">.</span><span class="na">NAMESPACE</span><span class="o">)</span>
@@ -483,14 +494,14 @@ The <code>PrimitiveHandler</code> abstract class implements the <code>FieldInter
 </pre></div>
 
 
-<h3 id="handler-implementation">Handler implementation</h3>
+<h3 id="handler-implementation">Handler implementation<a class="headerlink" href="#handler-implementation" title="Permanent link">&para;</a></h3>
 <p>The handler needs to override following methods:
 <em>  <code>configure</code> : to parse the metadata and load the properties file
 </em>  <code>stateChanged</code> : to log messages when the instance state changes.</p>
-<h4 id="loghandler-class">LogHandler class</h4>
+<h4 id="loghandler-class">LogHandler class<a class="headerlink" href="#loghandler-class" title="Permanent link">&para;</a></h4>
 <p>The handler is implemented inside the <code>LogHandler</code> class in the <code>org.apache.felix.ipojo.handler.log</code> package. This class extends the <code>org.apache.felix.ipojo.PrimitiveHandler</code> class.
 The handler needs to be notified when component instances becomes valid or invalid, thus it implements the <code>InstanceStateListener</code> interface.</p>
-<h4 id="configure-method">Configure Method</h4>
+<h4 id="configure-method">Configure Method<a class="headerlink" href="#configure-method" title="Permanent link">&para;</a></h4>
 <p>This method reads the component description and configures the handler. Then, the handler registers itself to the instance manager to be informed of the component's validity changes.</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
 <span class="cm"> * Parses the component&#39;s metadata to retrieve the log level in which we log messages.</span>
@@ -523,7 +534,7 @@ The handler needs to be notified when component instances becomes valid or inval
 </pre></div>
 
 
-<h4 id="statechanged-method">StateChanged Method</h4>
+<h4 id="statechanged-method">StateChanged Method<a class="headerlink" href="#statechanged-method" title="Permanent link">&para;</a></h4>
 <p>This method is called by the instance manager to notify that the component instance state changes. The handler needs to log a message containing the new state.</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
 <span class="cm"> * Logging messages when the instance state is changing</span>
@@ -545,7 +556,7 @@ The handler needs to be notified when component instances becomes valid or inval
 </pre></div>
 
 
-<h3 id="start-and-stop">Start and Stop</h3>
+<h3 id="start-and-stop">Start and Stop<a class="headerlink" href="#start-and-stop" title="Permanent link">&para;</a></h3>
 <p>The handler also contains two methods called by the instance manager when the underlying instance starts and stops.</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
 <span class="cm"> * The instance is starting.</span>
@@ -567,9 +578,9 @@ The handler needs to be notified when component instances becomes valid or inval
 </pre></div>
 
 
-<h2 id="handler-packaging">Handler packaging</h2>
+<h2 id="handler-packaging">Handler packaging<a class="headerlink" href="#handler-packaging" title="Permanent link">&para;</a></h2>
 <p>This handler needs to be packaged inside an iPOJO bundle. The bundle will import the <code>org.apache.felix.ipojo</code>, <code>org.osgi.framework</code> and <code>org.osgi.service.log</code> packages.</p>
-<h3 id="handler-usage">Handler usage</h3>
+<h3 id="handler-usage">Handler usage<a class="headerlink" href="#handler-usage" title="Permanent link">&para;</a></h3>
 <p>To use this handler, a component use the <code>Log</code> annotation, with a level attribute. This level attribute's value can be <code>"error"</code>, <code>"warning"</code> or <code>"info"</code>. Here is an usage example:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">felix</span><span class="o">.</span><span class="na">ipojo</span><span class="o">.</span><span class="na">log</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">example</span><span class="o">;</span>
 
@@ -599,7 +610,7 @@ The handler needs to be notified when component instances becomes valid or inval
 </pre></div>
 
 
-<h3 id="playing-with-the-handler">Playing with the handler</h3>
+<h3 id="playing-with-the-handler">Playing with the handler<a class="headerlink" href="#playing-with-the-handler" title="Permanent link">&para;</a></h3>
 <p>The archive contains a project named <code>Log-Handler-In-Felix</code>, which once built, provides a Felix framework with all the bundles deployed.</p>
 <p>Unzip the archive, and build the whole project using Maven: <code>mvn clean install</code>. It builds the log handler and the property handler. Then navigate to the felix-framework-VERSION directory:</p>
 <div class="codehilite"><pre>mvn clean install
@@ -646,10 +657,10 @@ The component instance my.simple.consumer becomes valid
 
 
 <p>By stopping the Foo service bundle, you withdrew the foo service from the service registry making our component invalid (and unhappy). The handler is notified of the new state and logs a message. When the bundle restarts, the service is republished. So the instance becomes valid again. The handler is notified and logs another message.</p>
-<h2 id="properties-handler-example">Properties Handler example</h2>
+<h2 id="properties-handler-example">Properties Handler example<a class="headerlink" href="#properties-handler-example" title="Permanent link">&para;</a></h2>
 <p>This section presents a second handler. This handler loads a property file containing field name and initial value. Then it injects and maintains these values inside POJO fields. In this example, only String values are managed.</p>
 <p>This handler is always valid, so do not participate to the component instance lifecycle. Moreover, the handler does not need to be notified when the component instance state changed. But, it need to be notified when POJO fields need a value or change their value.</p>
-<h3 id="handler-implementation_1">Handler implementation</h3>
+<h3 id="handler-implementation_1">Handler implementation<a class="headerlink" href="#handler-implementation_1" title="Permanent link">&para;</a></h3>
 <p>The handler needs to override following methods:</p>
 <ul>
 <li><code>configure</code> : to parse the metadata and load the properties file </li>
@@ -657,7 +668,7 @@ The component instance my.simple.consumer becomes valid
 <li><code>onGet</code> : to inject a values inside a field </li>
 <li><code>onSet</code> : to obtain the new field value </li>
 </ul>
-<h4 id="propertieshandler-class">PropertiesHandler class</h4>
+<h4 id="propertieshandler-class">PropertiesHandler class<a class="headerlink" href="#propertieshandler-class" title="Permanent link">&para;</a></h4>
 <p>The handler is implemented by the <code>PropertiesHandler</code> class present in the <code>org.apache.felix.ipojo.properties.handler</code> package. The class has several fields:</p>
 <ul>
 <li>The properties to maintain (<code>m_properties</code>) </li>
@@ -693,7 +704,7 @@ The component instance my.simple.consumer becomes valid
 </pre></div>
 
 
-<h4 id="configure-method_1">Configure Method</h4>
+<h4 id="configure-method_1">Configure Method<a class="headerlink" href="#configure-method_1" title="Permanent link">&para;</a></h4>
 <p>This method begins by parsing the component type metadata. The handler needs a properties element from its namespace. According to the result, the configure method can return immediately or parse the file attribute (to get the properties file path). Then, it builds a field list (String array) to register to field notification. By registering with a field array, the handler is going to be notified of field access.</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
 <span class="cm"> * This method is the first to be invoked.</span>
@@ -769,7 +780,7 @@ The component instance my.simple.consumer becomes valid
 
 
 <p>Notice that the handler is using the instance configuration. So instances can set their own file location using the <code>properties.file</code> property.</p>
-<h4 id="the-start-and-stop-methods">The start and stop methods</h4>
+<h4 id="the-start-and-stop-methods">The start and stop methods<a class="headerlink" href="#the-start-and-stop-methods" title="Permanent link">&para;</a></h4>
 <p>The start method does nothing, but needs to be implemented.</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{}</span>
 </pre></div>
@@ -788,7 +799,7 @@ The component instance my.simple.consumer becomes valid
 </pre></div>
 
 
-<h4 id="onget-and-onset-methods">onGet and onSet methods</h4>
+<h4 id="onget-and-onset-methods">onGet and onSet methods<a class="headerlink" href="#onget-and-onset-methods" title="Permanent link">&para;</a></h4>
 <p>The onGet method is called when the POJO need a field value. When called, the method needs to return the stored value.The onSet method is called when the POJO modifies a field value. If the new value if null, the handler will remove this properties from the property list.</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="n">Object</span> <span class="nf">onGet</span><span class="o">(</span><span class="n">Object</span> <span class="n">pojo</span><span class="o">,</span> <span class="n">String</span> <span class="n">field</span><span class="o">,</span> <span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span> 
     <span class="c1">// When the pojo requires a value for a managed field,</span>
@@ -806,7 +817,7 @@ The component instance my.simple.consumer becomes valid
 </pre></div>
 
 
-<h3 id="creating-the-annotation">Creating the annotation</h3>
+<h3 id="creating-the-annotation">Creating the annotation<a class="headerlink" href="#creating-the-annotation" title="Permanent link">&para;</a></h3>
 <p>The handler provides an annotation to ease its use:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">felix</span><span class="o">.</span><span class="na">ipojo</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">properties</span><span class="o">;</span>
 
@@ -826,9 +837,9 @@ The component instance my.simple.consumer becomes valid
 </pre></div>
 
 
-<h3 id="handler-packaging_1">Handler packaging</h3>
+<h3 id="handler-packaging_1">Handler packaging<a class="headerlink" href="#handler-packaging_1" title="Permanent link">&para;</a></h3>
 <p>This handler needs to be inside a bundle importing the <code>org.apache.felix.ipojo</code> packages and exporting the <code>org.apache.felix.ipojo.properties.handler</code> package.</p>
-<h3 id="playing-with-the-handler_1">Playing with the handler</h3>
+<h3 id="playing-with-the-handler_1">Playing with the handler<a class="headerlink" href="#playing-with-the-handler_1" title="Permanent link">&para;</a></h3>
 <p>As for the log handler , the archive contains a felix distribution with all bundles deployed.</p>
 <div class="codehilite"><pre><span class="nb">cd </span>Property-Handler-In-Felix/target/felix-framework-4.2.1/
 java -jar bin/felix.jar
@@ -868,12 +879,12 @@ g!
 </pre></div>
 
 
-<h2 id="advanced-topics">Advanced topics</h2>
-<h3 id="handler-reconfiguration">Handler reconfiguration</h3>
+<h2 id="advanced-topics">Advanced topics<a class="headerlink" href="#advanced-topics" title="Permanent link">&para;</a></h2>
+<h3 id="handler-reconfiguration">Handler reconfiguration<a class="headerlink" href="#handler-reconfiguration" title="Permanent link">&para;</a></h3>
 <p>iPOJO has the ability to reconfigure component instances while they are running. When instances are reconfigured, their used handler need to update their configuration (if they support such an operation). 
 To do so, reconfigurable handlers must override the <code>reconfigure()</code> method, which notify the concerned handlers of the new instance configuration (represented as a <code>Dictionary</code>).</p>
 <p><a name="description"></a></p>
-<h3 id="describing-your-handler">Describing your handler</h3>
+<h3 id="describing-your-handler">Describing your handler<a class="headerlink" href="#describing-your-handler" title="Permanent link">&para;</a></h3>
 <p>Handlers have the possibility to describe their state, overriding the <code>getDescription()</code> method and the <code>HandlerDescription</code> class. 
 By default, only the handler's name and validity are displayed in component instance's description (informations displayed by the (<code>arch -instance an.instance.name</code> command). The standard way to add description to your handler is shown hereafter :</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">YourHandler</span> <span class="kd">extends</span> <span class="n">PrimitiveHandler</span> <span class="o">{</span>  
@@ -907,7 +918,7 @@ By default, only the handler's name and validity are displayed in component inst
 
 
 <p><a name="annotations"></a></p>
-<h2 id="handlers-annotations">Handler's annotations</h2>
+<h2 id="handlers-annotations">Handler's annotations<a class="headerlink" href="#handlers-annotations" title="Permanent link">&para;</a></h2>
 <p>Your handle can also provide annotations. Annotations will allows users to configure the Handler from the source code (avoiding XML edition). iPOJO supports annotation of external handlers. Indeed, it detects annotations and re-creates the <code>Element-Attribute</code> structure.
 So, first, external Handler annotations <em>MUST</em> follow some principles:</p>
 <ul>
@@ -991,9 +1002,9 @@ Then, 'scalar' annotation attributes are mapped to Attribute. Sub-annotations (a
 
 <p><em>Note:</em> To customize this hierarchy, you can also use the <code>id/parent</code> annotation attributse. The id attribute is used to refer to an Element. An annotation with a <code>parent</code> (targeting an <code>id</code>) attribute will be processed as a sub-element of the Element identified by the given <code>id</code>.</p>
 <p><a name="schemas"></a></p>
-<h2 id="handlers-xsd">Handler's XSD</h2>
+<h2 id="handlers-xsd">Handler's XSD<a class="headerlink" href="#handlers-xsd" title="Permanent link">&para;</a></h2>
 <p>Coming soon...</p>
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>In this document, we present how-to develop handler for your components. We describe two small examples : a log handler and a properties handler. These handlers are plugged on (primitive) instance. However, it is possible to extends <code>CompositeHandler</code> too to customize the composition model.</p>
 <p>If you develop handler and you want to share it, feel free to contact us by sending a mail on the Felix mailing list.</p>
         </div>
@@ -1010,7 +1021,7 @@ Then, 'scalar' annotation attributes are mapped to Attribute. Sub-annotations (a
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1530195 by guillaume on Tue, 8 Oct 2013 09:12:32 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,17 +77,28 @@
       </div>
 
       <h1>Apache Felix Serialization Framework</h1>
-      <h1 id="problem">Problem</h1>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="problem">Problem<a class="headerlink" href="#problem" title="Permanent link">&para;</a></h1>
 <p>When you have an object graph that consists of objects that were created by different bundles, serializing and deserializing such a graph becomes a problem, since there is no single bundle that can "see" all (implementation) objects in the graph.</p>
 <p>The problem manifests itself for example in Apache Wicket, but also in other applications. The serialization framework is a solution to this problem.</p>
-<h1 id="design-discussion-sketch">Design discussion sketch</h1>
+<h1 id="design-discussion-sketch">Design discussion sketch<a class="headerlink" href="#design-discussion-sketch" title="Permanent link">&para;</a></h1>
 <p>Made at ApacheCon EU 2009, Robert, Martijn, Felix and Marcel produced the following design on the flipover:</p>
 <p>!sf_design.jpg|thumbnail!</p>
-<h1 id="service-design">Service design</h1>
+<h1 id="service-design">Service design<a class="headerlink" href="#service-design" title="Permanent link">&para;</a></h1>
 <p>Basically, we need two services:
 1. The serialization service, that can serialize and deserialize an object graph to an output or input stream.
 1. Helpers that are used to (de)serialize specific objects.</p>
-<h2 id="serialization-service">Serialization Service</h2>
+<h2 id="serialization-service">Serialization Service<a class="headerlink" href="#serialization-service" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span class="n">interface</span> <span class="n">SerializationService</span> <span class="p">{</span>
     <span class="n">void</span> <span class="n">serialize</span><span class="p">(</span><span class="n">Object</span> <span class="n">o</span><span class="p">,</span> <span class="n">OutputStream</span> <span class="n">s</span><span class="p">)</span> <span class="n">throws</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">UnknownObjectException</span><span class="p">;</span>
     <span class="n">Object</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">InputStream</span> <span class="n">s</span><span class="p">)</span> <span class="n">throws</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">UnknownObjectException</span><span class="p">;</span>
@@ -85,7 +107,7 @@
 
 
 <p>The actual implementation of this service determines how objects are serialized.</p>
-<h2 id="serialization-helper">Serialization Helper</h2>
+<h2 id="serialization-helper">Serialization Helper<a class="headerlink" href="#serialization-helper" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span class="n">interface</span> <span class="n">SerializationHelper</span> <span class="p">{</span>
     <span class="o">//</span> <span class="n">TODO</span>
 <span class="p">}</span>
@@ -95,7 +117,7 @@
 <p>We also discussed adding a special manifest header to a bundle to create a sort of declarative serialization helper. That way the bundle does not need to implement and register the service (if all of them use the same helper anyway).</p>
 <p>Helpers in some way need to be linked to a specific serialization service (using an XML serialization with a JSON helper will probably not be what you want).</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

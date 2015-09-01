@@ -171,29 +171,40 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="ipojo-in-10-minutes">iPOJO in 10 minutes</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="ipojo-in-10-minutes">iPOJO in 10 minutes<a class="headerlink" href="#ipojo-in-10-minutes" title="Permanent link">&para;</a></h1>
 <p>This page presents how to use the iPOJO runtime and its associated service component model. The concepts of the service component model are introduced, followed by a simple example that demonstrates the features of iPOJO. This tutorial uses annotations to describe components.  However, you can also use XML or a programmatic API to create iPOJO applications.</p>
-<h2 id="introduction">Introduction</h2>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>iPOJO aims to simplify service-oriented programming on OSGi frameworks; the name iPOJO is an abbreviation for <em>injected POJO</em>. iPOJO provides a new way to develop OSGi service components, simplifying service component implementation by transparently managing the dynamics of the environment as well as other non-functional requirements. The iPOJO framework allows developers to more clearly separate functional code (i.e., POJOs) from the non-functional code (i.e., dependency management, service provision, configuration, etc.).  At run time, iPOJO combines the functional and non-functional aspects. To achieve this, iPOJO provides a simple and extensible service component model based on POJOs.</p>
-<h2 id="the-pojo-concept">The POJO concept</h2>
+<h2 id="the-pojo-concept">The POJO concept<a class="headerlink" href="#the-pojo-concept" title="Permanent link">&para;</a></h2>
 <p>"POJO" is just an acronym for Plain Old Java Object, but it embodies a concept that the simpler and less intrusive the design of a given framework, the better. The name is used to emphasize that a given object is not somehow special, but is an ordinary Java Object. Martin Fowler, Rebecca Parsons and Josh Mackenzie coined the term POJO in September 2000: "We wondered why people were so against using regular objects in their systems and concluded that it was because simple objects lacked a fancy name. So we gave them one, and it's caught on very nicely." From a developer's perspective, the iPOJO framework strives as much as possible to only require POJOs.</p>
-<h2 id="ipojo-service-component-overview">iPOJO service component overview</h2>
+<h2 id="ipojo-service-component-overview">iPOJO service component overview<a class="headerlink" href="#ipojo-service-component-overview" title="Permanent link">&para;</a></h2>
 <p>A service component is able to provide and/or require services, where a service is an object that implements a given Java interface. In addition, iPOJO introduces a callback concept to notify a component about various state changes.</p>
 <p>The component is a central concept in iPOJO. In the core iPOJO model, a component describes service dependencies, provided services, and callbacks; this information is recorded in the component's metadata. After components, the next most important concept in iPOJO is the component instance. A component instance is a special <em>version</em> of a component. By merging component metadata and instance configuration, the iPOJO runtime is able to discover and inject required services, publish provided services, and manage the component's life cycle.</p>
-<h2 id="a-simple-example">A simple example</h2>
+<h2 id="a-simple-example">A simple example<a class="headerlink" href="#a-simple-example" title="Permanent link">&para;</a></h2>
 <p>In this tutorial we will present how to:</p>
 <ul>
 <li>Publish an OSGi service</li>
 <li>Require an OSGi service</li>
 <li>Use lifecycle callbacks to activate and deactivate components</li>
 </ul>
-<h3 id="presentation-of-the-spell-application">Presentation of the <em>Spell</em> application</h3>
+<h3 id="presentation-of-the-spell-application">Presentation of the <em>Spell</em> application<a class="headerlink" href="#presentation-of-the-spell-application" title="Permanent link">&para;</a></h3>
 <p>To illustrate iPOJO features, we will implement a very simple application. This application is composed by three components:
 <em> A component implementing a dictionary service
 </em> A component requiring the dictionary service and providing a spellchecker service
 * A component requiring the spellchecker and providing an user interface</p>
 <p><img src="spell.png"></p>
-<h3 id="preparing-the-tutorial">Preparing the tutorial</h3>
+<h3 id="preparing-the-tutorial">Preparing the tutorial<a class="headerlink" href="#preparing-the-tutorial" title="Permanent link">&para;</a></h3>
 <p>This tutorial is based on Ant. So, you need to have the Ant program accessible in your path (see <a href="http://ant.apache.org/">here</a> to download and install Ant). Download the tutorial archive available <a href="http://repo1.maven.org/maven2/org/apache/felix/org.apache.felix.ipojo.distribution.10mintutorial/1.12.1/org.apache.felix.ipojo.distribution.10mintutorial-1.12.1.zip">here</a> and then unzip it. The archive contains seven directories:</p>
 <ul>
 <li>spell.services contains service interfaces used by the applications</li>
@@ -204,7 +215,7 @@
 <li>The solution directory contains an already developed version of the application.</li>
 <li>Finally, the felix folder contains a configured version of the Felix runtime</li>
 </ul>
-<h3 id="the-spellservices-project">The spell.services project</h3>
+<h3 id="the-spellservices-project">The spell.services project<a class="headerlink" href="#the-spellservices-project" title="Permanent link">&para;</a></h3>
 <p>The spell.services project contains only service interfaces. It is not an iPOJO powered bundle.</p>
 <p>Go inside the spell.services directory and open the file "src/spell/services/DictionaryService.java". It's a very simple service interface with one method:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">services</span><span class="o">;</span>
@@ -268,7 +279,7 @@ Total <span class="nb">time</span>: 0 seconds
 
 <p>The created bundle is inside the output directory (spell.services.jar). The build process uses <a href="http://www.aqute.biz/Code/Bnd">BND</a>. The bundle manifest is described in the spell.services.bnd file.</p>
 <p>Once this project is done, we are able to implement a Dictionary service.</p>
-<h3 id="the-spellenglish-project-providing-an-osgi-service">The spell.english project: Providing an OSGi service</h3>
+<h3 id="the-spellenglish-project-providing-an-osgi-service">The spell.english project: Providing an OSGi service<a class="headerlink" href="#the-spellenglish-project-providing-an-osgi-service" title="Permanent link">&para;</a></h3>
 <p>The spell.english project is a simple dictionary implementation of the Dictionary service. It contains few English words. This implementation is an iPOJO component.</p>
 <p>The first step is to implement the service. Go in the spell.english directory and open the "src/spell/english/EnglishDictionary.java" file. Replace its content with:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">english</span><span class="o">;</span>
@@ -348,7 +359,7 @@ Total <span class="nb">time</span>: 0 seconds
 
 
 <p>The created bundle is inside the output directory (spell.english.jar). The build process is based on BND and on the iPOJO Ant task. The manifest of the bundle is described in the <code>spell.english.bnd</code> file.</p>
-<h3 id="the-spellchecker-project-requiring-an-osgi-service">The spell.checker project: Requiring an OSGi service</h3>
+<h3 id="the-spellchecker-project-requiring-an-osgi-service">The spell.checker project: Requiring an OSGi service<a class="headerlink" href="#the-spellchecker-project-requiring-an-osgi-service" title="Permanent link">&para;</a></h3>
 <p>The spell.checker project aims to provide a <em>spell checker</em> service. However, to serve this service, this implementation requires a <em>dictionary</em> service. During this step, we will create an iPOJO component requiring a Dictionary service and providing the Spell Checker service.</p>
 <p>First, go the the spell.checker directory and open the file <code>src/spell/checker/SpellCheck.java</code>. Replace its content with:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">checker</span><span class="o">;</span>
@@ -417,7 +428,7 @@ Total <span class="nb">time</span>: 0 seconds
 <p>This class implements the SpellChecker service interface as it provides it. Moreover, it has a <em>special</em> field <code>dictionary</code>. This field represents the required service. iPOJO injects a Dictionary service when needed. So, the class can use it directly. Notice that this class as no OSGi specific code, both the service providing and the requiring are managed by iPOJO and described using annotations. When the used dictionary service leaves, iPOJO tries to find another provider. If no more providers are available, the instance is invalidated, and the provided service is withdrawn from the service registry.</p>
 <p>The @Component, @Instantiate and @Provides annotations were already presented. The <code>@Requires</code> annotation specifies a service dependency. This example shows field injection, but iPOJO also supports constructor injection and method injection (with <code>@Bind</code> and <code>@Unbind</code>).</p>
 <p>Finally, we are able to build the bundle. As for previous projects, launch Ant from the project directory.</p>
-<h3 id="the-spellcheckergui-project">The spell.checker.gui project</h3>
+<h3 id="the-spellcheckergui-project">The spell.checker.gui project<a class="headerlink" href="#the-spellcheckergui-project" title="Permanent link">&para;</a></h3>
 <p>The spell.check.gui project contains a very simple user interface (in Swing) allowing a user to interact with a <em>spell checker</em> service.</p>
 <p>Go to the spell.checker.gui directory. Open the <code>src\spell\gui\SpellCheckerGui.java</code>. Replace its content with:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">spell</span><span class="o">.</span><span class="na">gui</span><span class="o">;</span>
@@ -545,7 +556,7 @@ Total <span class="nb">time</span>: 0 seconds
 
 <p>Look at the three last methods. The <em>check</em> methods collects the user input and uses a <em>Check speller</em> service to check this input. The speller is injected into the <code>checker</code> field thanks to the <code>@Requires</code> annotation. This method is called when the user presses the button. The <em>start</em> and <em>stop</em> methods are lifecycle callbacks. As we display the user interface when the instance is created and to dispose it when the instance stops, we need a way to be notified when we need to execute these actions. iPOJO provides an easy way to do this. The component provides two callback methods for its activation and deactivation. Callbacks are used when the component needs to be informed about a component state change. In iPOJO, the component state is either <em>INVALID</em> (i.e., not all of the component's constraints are satisfied) or <em>VALID</em> (i.e., all of the component's constraints are satisfied). In this example, the start callback method sets the GUI visibility to true; the stop callback method deletes the GUI. The <code>@Validate</code> and <code>@Invalidate</code> annotations are used to specify these callbacks.</p>
 <p>Once this file is created, you can compile the project by launching <em>ant</em> in the spell.checker.gui directory.</p>
-<h2 id="running-the-application">Running the application</h2>
+<h2 id="running-the-application">Running the application<a class="headerlink" href="#running-the-application" title="Permanent link">&para;</a></h2>
 <p>We have all the bundles required to start playing with the application.</p>
 <p>To run the example, start Felix. A distribution of Felix is provided in the felix-framework-VERSION directory. This version is configured to launch iPOJO automatically. From the Felix directory, launch the following command to start the framework. Then enter a profile name.</p>
 <div class="codehilite"><pre>java -jar bin/felix.jar
@@ -628,7 +639,7 @@ Instance spell.english.EnglishDictionary-0 -&gt; valid
 </pre></div>
 
 
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>We saw how to use easily iPOJO to build service-oriented component. In this tutorial, we have demonstrated how to:</p>
 <ul>
 <li>Publish OSGi services</li>
@@ -650,7 +661,7 @@ Instance spell.english.EnglishDictionary-0 -&gt; valid
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1531562 by clement on Sat, 12 Oct 2013 17:19:52 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

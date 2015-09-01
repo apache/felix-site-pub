@@ -171,14 +171,24 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="junit4osgi-quick-start">junit4osgi quick start</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="junit4osgi-quick-start">junit4osgi quick start<a class="headerlink" href="#junit4osgi-quick-start" title="Permanent link">&para;</a></h1>
 <p><em>This page describes how using the junit4osgi framework. With the archive tutorial, a pre-configured version of Felix (with the test framework already installed) is also provided.</em></p>
-<p>{div:class=toc}
-[TOC]
-{div}</p>
-<h2 id="getting-junit4osgi">Getting JUnit4OSGi</h2>
+<p div="div">{div:class=toc}
+[TOC]</p>
+<h2 id="getting-junit4osgi">Getting JUnit4OSGi<a class="headerlink" href="#getting-junit4osgi" title="Permanent link">&para;</a></h2>
 <p>The JUnit4OSGi framework is available from the <a href="http://felix.apache.org/site/downloads.cgi">Felix downloads</a>. Source code is also available in the iPOJO sub-project ([sources|Download]). The JUnit4OSGi framework and the different launchers are built when you compile Felix.</p>
-<h2 id="how-to-run-test">How to run test?</h2>
+<h2 id="how-to-run-test">How to run test?<a class="headerlink" href="#how-to-run-test" title="Permanent link">&para;</a></h2>
 <p>Firs of all to execute test you must deploy in your OSGi container:
 1. Your tests
 1. The junit4osgi runtime (executing tests)
@@ -190,7 +200,7 @@
 </strong> To run tests contained in all the test-bundles installed in the framework :<code>junit all</code>
 * The JUnit4OSGi Swing GUI lets you select the test cases and test suites to execute and shows you graphically the result of the tests. You can double-click on a test case result to show its details.</p>
 <p>!http://felix.apache.org/site/apache-felix-ipojo-junit4osgi.data/screenshot-junit4ogsi-swing-runner.PNG!</p>
-<h2 id="testcase-testsuite">TestCase, TestSuite</h2>
+<h2 id="testcase-testsuite">TestCase, TestSuite<a class="headerlink" href="#testcase-testsuite" title="Permanent link">&para;</a></h2>
 <p>A test case is an environment (made of conditions and variables) under which a tester will check that a requirement is satisfied. For JUnit, test cases are classes that define several test methods ; each test method tests an aspect of the targeted requirement. Test cases are often collected into test suites. A test suite aggregates several test cases (and even other test suites), including the notion of test hierarchy. Tests can be organized according to the different requirements they try to validate. The skeleton of a JUnit <code>TestCase</code> and <code>TestSuite</code> is shown just above :</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
 <span class="cm"> * The skeleton of a JUnit test case</span>
@@ -242,7 +252,7 @@
 
 
 <p>First, tests methods are declared in the test case. Their name must begin with "test", so JUnit will execute them on demand. The test are expressed in terms of JUnit assertions ; the <code>assert*()</code> methods causes JUnit test failure if the given assertion is false. The setUp() and tearDown() methods perform specific actions before and after test cases are run. Then, the test suite collect various test cases. It must implement the <code>suite()</code> method that returns the global (and organized) test suite to JUnit.</p>
-<h2 id="osgitestcase-and-osgitestsuite">OSGiTestCase and OSGiTestSuite</h2>
+<h2 id="osgitestcase-and-osgitestsuite">OSGiTestCase and OSGiTestSuite<a class="headerlink" href="#osgitestcase-and-osgitestsuite" title="Permanent link">&para;</a></h2>
 <p>An OSGi test case, is a test case that runs in an OSGi context. <code>OSGiTestCase</code> is the class that all the OSGi test cases you write must extend. This class is a kind of bridge between the JUnit TestCase class and the OSGi environment. The only thing the <code>OSGiTestCase</code> class adds is the access to the bundle context of the bundle containing tests, and some utility methods, giving an easy access to other bundles and services registered in the OSGi framework.</p>
 <p>The structure of an <code>OSGiTestCase</code> is exactly the same as a classic JUnit <code>TestCase</code> :</p>
 <div class="codehilite"><pre> <span class="o">/**</span>
@@ -283,7 +293,7 @@
 </pre></div>
 
 
-<h2 id="how-to-declare-test-suites">How to declare test suites</h2>
+<h2 id="how-to-declare-test-suites">How to declare test suites<a class="headerlink" href="#how-to-declare-test-suites" title="Permanent link">&para;</a></h2>
 <p>This section explains how to declare your test suites in order to expose them to the JUnit4OSGi bundle.</p>
 <p>The written OSGi test suites must be declared by the bundle containing them. To do so, you define add the Test-Suite property in your bundle's header. The following snippets show you how to configure your bundle generation tool to add this property in the header. You can even declare test cases in it. The Junit4OSGi bundle will detect such an header in installed bundle (using the extender pattern) and execute contained tests on demand.</p>
 <p>With the maven-bundle-plugin, add the following lines in your project's pom :</p>
@@ -312,16 +322,16 @@
 </pre></div>
 
 
-<h2 id="quick-examples">Quick examples</h2>
+<h2 id="quick-examples">Quick examples<a class="headerlink" href="#quick-examples" title="Permanent link">&para;</a></h2>
 <p>The following examples show you how to perform unitary tests on your OSGi platform. The first example recovers the example given in the JUnit Cookbook, "bundlizes" it so tests can be run in an OSGi environment. None of the JUnit4OSGi specific features is used, but it shows how to adapt classic JUnit tests. The second example is more OSGi-oriented, and shows how a unitary test can access to the framework via its bundle context.</p>
 <p>These examples can be downloaded <a href="http://people.apache.org/~clement/ipojo/tutorials/junit4osgi/junit4osgi-tutorial.zip">here</a>.</p>
-<h3 id="bundles-to-deploy-to-use-junit4osgi">Bundles to deploy to use junit4osgi</h3>
+<h3 id="bundles-to-deploy-to-use-junit4osgi">Bundles to deploy to use junit4osgi<a class="headerlink" href="#bundles-to-deploy-to-use-junit4osgi" title="Permanent link">&para;</a></h3>
 <p>If you don't use the archive, you can deploy the junit4osgi framework manually. Here is the list of the bundles to deploy and start:
 <em> org.apache.felix.ipojo-1.6.0.jar: iPOJO Core bundle
 </em> org.apache.felix.ipojo.handler.extender-1.6.0.jar: iPOJO Extender pattern handler
 <em> org.apache.felix.ipojo.junit4osgi-1.1.0-SNAPSHOT.jar: the JUnit4OSGi framework
 </em> org.apache.felix.ipojo.junit4osgi.felix-command-1.1.0-SNAPSHOT.jar: the command line junit4osgi runner</p>
-<h3 id="the-remixed-junit-example">The remixed JUnit example</h3>
+<h3 id="the-remixed-junit-example">The remixed JUnit example<a class="headerlink" href="#the-remixed-junit-example" title="Permanent link">&para;</a></h3>
 <p>This example is a simple conversion of a classic JUnit example derived from the JUnit Cookbook. The test case and the test suite are shown to remind you JUnit principles.</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">junit</span><span class="p">.</span><span class="n">example</span><span class="p">;</span>
 <span class="n">import</span> <span class="n">junit</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">TestCase</span><span class="p">;</span>
@@ -385,7 +395,7 @@
 
 
 <p>As you can see above, all tests have been correctly executed !</p>
-<h2 id="an-osgi-based-junit-example">An OSGi-based JUnit example</h2>
+<h2 id="an-osgi-based-junit-example">An OSGi-based JUnit example<a class="headerlink" href="#an-osgi-based-junit-example" title="Permanent link">&para;</a></h2>
 <p>This example shows you how to interact with the OSGi framework within your tests. The test bundle provide a service (HelloService) and tests its work normally. To get the service reference of the HelloService, it uses the bundle context field of the OSGiTestCase class (named <code>'context'</code>) and interacts with it like any other OSGi bundle does.</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">junit</span><span class="p">.</span><span class="n">example</span><span class="p">;</span>
 
@@ -449,7 +459,7 @@
 </pre></div>
 
 
-<h2 id="simple-right">Simple right?</h2>
+<h2 id="simple-right">Simple right?<a class="headerlink" href="#simple-right" title="Permanent link">&para;</a></h2>
 <p>So now you know everything required to run test inside OSGi. You can start developing your own test. To help you a little bit, junit4osgi provides <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-methods.html">utilities methods</a> greatly reducing the amount of code to write in your tests. Moreover, if you're a Maven user, the [maven-junit4osgi-plugin|apache-felix-ipojo-junit4osgi-maven] is made for you. It just runs your test directly during the maven build process.</p>
         </div>
     </div>
@@ -465,7 +475,7 @@
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

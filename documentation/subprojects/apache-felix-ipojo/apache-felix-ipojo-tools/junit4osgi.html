@@ -171,12 +171,23 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="junit4osgi-executing-unitary-and-integration-test-on-osgi">JUnit4OSGi : Executing Unitary and Integration Test on OSGi</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="junit4osgi-executing-unitary-and-integration-test-on-osgi">JUnit4OSGi : Executing Unitary and Integration Test on OSGi<a class="headerlink" href="#junit4osgi-executing-unitary-and-integration-test-on-osgi" title="Permanent link">&para;</a></h1>
 <p>This page is <em>deprecated</em></p>
 <hr />
-<h2 id="goals">Goals</h2>
+<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
 <p>Executing tests on OSGi became a stringent requirement as several aspects need to be tested. Indeed, modularity, services (and the inherent dynamism) and the business logic need to be tested.  The goal of JUnit4OSGi is to provide an execution gateway in order to test bundles and services.  Instead of injecting mock objects, as provided by regular test frameworks to hide the underlying Executing environment, tests are directly executed on OSGi and so have access to all the features provided by the OSGi framework. This allows developers checking modularity aspect and service dynamism in addition to the business logic.</p>
-<h2 id="principles">Principles</h2>
+<h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
 <p>Junit4OSGi is split in several pieces. First the core bundle (Junit4OSGi) contains an extended version of Junit (3.8.1). On the top of this framework, several runners are implemented:
 <em> Immediate runner : launch every available test suite
 </em> Command line runner : Felix command line allowing to choose the test suite(s) to launch
@@ -184,14 +195,14 @@
 </em> Maven runner: a maven plug-in allowing to automate tests during the project build process</p>
 <p>The different runners give a great flexibility to the framework that can be used during the build process or to test an application in a special environment (such as J2ME).
 Test suites and test cases are package inside bundles. Junit4OSGi extend Junit to support OSGi test suite and OSGi test case. These two kinds of test classes are able to use the bundle context of the bundle and so are able to deal with the underlying OSGi framework.</p>
-<h2 id="installing-the-framework">Installing the framework</h2>
+<h2 id="installing-the-framework">Installing the framework<a class="headerlink" href="#installing-the-framework" title="Permanent link">&para;</a></h2>
 <p>Except if you use the maven front end (automating the launch a an OSGi framework (Felix) and deploying required bundles), to launch the Junit framework you need to deploy and start
 <em> <a href="http://people.apache.org/~clement/ipojo/binaries/org.apache.felix.ipojo-0.8.0-SNAPSHOT.jar">iPOJO 0.8.0-SNASPHOT</a>
 </em> <a href="http://people.apache.org/~clement/ipojo/binaries/org.apache.felix.ipojo.handler.extender.pattern-0.8.0-SNAPSHOT.jar">iPOJO Extender Pattern Handler 0.8.0-SNAPSHOT</a>
 <em> <a href="http://people.apache.org/~clement/ipojo/junit4osgi/org.apache.felix.ipojo.junit4osgi-0.8.0-SNAPSHOT.jar">The Junit4OSGi bundle</a>
 </em> One runner such as the <a href="http://people.apache.org/~clement/ipojo/junit4osgi/org.apache.felix.ipojo.junit4osgi.felix-command-0.8.0-SNAPSHOT.jar">Felix command</a> one</p>
 <p>The archive available <a href="http://people.apache.org/~clement/ipojo/junit4osgi/junit4osgi.tutorial.zip">here</a> contains a pre-configured version of Felix with the previously mentionned bundles.</p>
-<h2 id="writing-junit-test-case-and-test-suite">Writing Junit Test Case and Test Suite</h2>
+<h2 id="writing-junit-test-case-and-test-suite">Writing Junit Test Case and Test Suite<a class="headerlink" href="#writing-junit-test-case-and-test-suite" title="Permanent link">&para;</a></h2>
 <p>This section describes briefly how to write test cases and test suites and how they are used by the Junit4OSGi framework. More details are available on the Junit web site <a href="http://www.junit.org/">http://www.junit.org/</a>.</p>
 <p>The Money class was introduced in the Junit tutorial and was implemented as the following:</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">junit</span><span class="p">.</span><span class="n">money</span><span class="p">;</span>
@@ -296,7 +307,7 @@ Start the pre-configured Felix with the following command launched from the Feli
 </pre></div>
 
 
-<h2 id="writing-junit-test-case-and-test-suite-specialized-for-osgi">Writing Junit Test Case and Test Suite specialized for OSGi</h2>
+<h2 id="writing-junit-test-case-and-test-suite-specialized-for-osgi">Writing Junit Test Case and Test Suite specialized for OSGi<a class="headerlink" href="#writing-junit-test-case-and-test-suite-specialized-for-osgi" title="Permanent link">&para;</a></h2>
 <p>The previous example has illustrated how creating thest cases and test suites by using the regular Junit framework. However, junit4osgi has the particularity to support specialized test for OSGi.  For example, imagine the very simple Hello Service implemented by the following class:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">HelloProvider</span> <span class="n">implements</span> <span class="n">HelloService</span> <span class="p">{</span>
 
@@ -352,7 +363,7 @@ The execution of these tests follows the same steps than the previous example:
 </em> Start Felix
 <em> Deploy the bundle with the following command: <code>start file:../junit-osgi-example/output/junit-osgi-example.jar</code>
 </em> Execute the test by using the junit command</p>
-<h2 id="maven-front-end-automating-tests-in-your-build-process">Maven front end: automating tests in your build process</h2>
+<h2 id="maven-front-end-automating-tests-in-your-build-process">Maven front end: automating tests in your build process<a class="headerlink" href="#maven-front-end-automating-tests-in-your-build-process" title="Permanent link">&para;</a></h2>
 <p><em>Coming soon</em></p>
         </div>
     </div>
@@ -368,7 +379,7 @@ The execution of these tests follows the same steps than the previous example:
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1441864 by fmeschbe on Sun, 3 Feb 2013 06:44:40 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

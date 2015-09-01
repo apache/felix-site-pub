@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Apache Felix Bundle Plugin FAQ</h1>
-      <h1 id="apache-felix-bundle-plugin-frequently-asked-questions">Apache Felix Bundle Plugin Frequently Asked Questions</h1>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="apache-felix-bundle-plugin-frequently-asked-questions">Apache Felix Bundle Plugin Frequently Asked Questions<a class="headerlink" href="#apache-felix-bundle-plugin-frequently-asked-questions" title="Permanent link">&para;</a></h1>
 <div class="toc">
 <ul>
 <li><a href="#apache-felix-bundle-plugin-frequently-asked-questions">Apache Felix Bundle Plugin Frequently Asked Questions</a><ul>
@@ -80,7 +102,7 @@
 </li>
 </ul>
 </div>
-<h2 id="when-i-embed-a-dependency-why-do-i-see-duplicated-content">When I embed a dependency why do I see duplicated content?</h2>
+<h2 id="when-i-embed-a-dependency-why-do-i-see-duplicated-content">When I embed a dependency why do I see duplicated content?<a class="headerlink" href="#when-i-embed-a-dependency-why-do-i-see-duplicated-content" title="Permanent link">&para;</a></h2>
 <p>Having two copies of classes, both unpacked and embedded as jars, is a sign that your Embed-Dependency and Export-Package instructions are overlapping. Export-Package tells BND to pull in classes found in the named packages from the build classpath and add them to the bundle, Embed-Dependency tells BND to embed (or inline if enabled) whole artifacts in the bundle.</p>
 <p>so say I have:</p>
 <div class="codehilite"><pre><span class="n">Export</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">org</span><span class="p">.</span><span class="n">objectweb</span><span class="p">.</span><span class="n">asm</span><span class="o">.*</span>
@@ -107,7 +129,7 @@
 </pre></div>
 
 
-<h2 id="why-do-i-see-more-classes-in-my-bundle-after-upgrading-to-maven-bundle-plugin-200">Why do I see more classes in my bundle after upgrading to maven-bundle-plugin 2.0.0?</h2>
+<h2 id="why-do-i-see-more-classes-in-my-bundle-after-upgrading-to-maven-bundle-plugin-200">Why do I see more classes in my bundle after upgrading to maven-bundle-plugin 2.0.0?<a class="headerlink" href="#why-do-i-see-more-classes-in-my-bundle-after-upgrading-to-maven-bundle-plugin-200" title="Permanent link">&para;</a></h2>
 <p>Before 2.0.0 the maven-bundle-plugin only passed local classes and compile scope dependencies to bnd. This was because the main BundlePlugin mojo used "@requiresDependencyResolution runtime" which asks Maven to only resolve dependencies of compile or runtime scope (the maven-bundle-plugin also explicitly filtered runtime scope dependencies from the classpath passed to bnd). Because bnd only had a fraction of the original classpath used to compile the bundle classes it meant that imported packages weren't augmented with additional information (such as versions and attributes) available from the complete classpath.</p>
 <p>In 2.0.0 a conscious decision was made to pass the complete classpath to bnd so it would have the complete set of information used during compilation. To do this the @requiresDependencyResolution setting was changed to "test" so all dependencies will now be resolved. Furthermore only test scope artifacts are now filtered from the final classpath passed to bnd.</p>
 <p>For most users passing more of the original compilation classpath to bnd simply means you get more accurate and consistent results. However, if you happened to rely on the old behaviour (perhaps by setting Private-Package: * to pull in all local and compile scope classes) then you will see more classes added to your bundle as the wildcard matches against additional content in the classpath.</p>
@@ -127,7 +149,7 @@
 </ul>
 <p>This second option effectively switches the maven-bundle-plugin back to the old 1.X behaviour.</p>
 <p>Please also note that since 2.0.0 the maven-bundle-plugin also sets default Export-Package and Private-Package instructions based on your local source files, so you might well find that simply removing any Private-Package and/or Export-Package instructions from your pom.xml will actually produce the correct result.</p>
-<h2 id="why-do-i-get-an-exception-unsupported-majorminor-version-490-when-i-build-with-a-14-or-earlier-jdk">Why do I get an exception (Unsupported major.minor version 49.0) when I build with a 1.4 or earlier JDK?</h2>
+<h2 id="why-do-i-get-an-exception-unsupported-majorminor-version-490-when-i-build-with-a-14-or-earlier-jdk">Why do I get an exception (Unsupported major.minor version 49.0) when I build with a 1.4 or earlier JDK?<a class="headerlink" href="#why-do-i-get-an-exception-unsupported-majorminor-version-490-when-i-build-with-a-14-or-earlier-jdk" title="Permanent link">&para;</a></h2>
 <p>The latest maven-bundle-plugin (2.0.0) uses a new release of bnd which requires Java5. This means you now have to build your bundle projects using a Java5 (or later) JDK. Note that you can still compile classes for earlier releases of the JVM by setting the appropriate source and target levels in your pom.xml:</p>
 <div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
@@ -139,11 +161,11 @@
 </pre></div>
 
 
-<h2 id="when-i-build-a-bundle-some-classes-are-built-in-targetclasses-but-theyre-not-included-in-the-final-jar">When I build a bundle, some classes are built in "target/classes" but they're not included in the final jar.</h2>
+<h2 id="when-i-build-a-bundle-some-classes-are-built-in-targetclasses-but-theyre-not-included-in-the-final-jar">When I build a bundle, some classes are built in "target/classes" but they're not included in the final jar.<a class="headerlink" href="#when-i-build-a-bundle-some-classes-are-built-in-targetclasses-but-theyre-not-included-in-the-final-jar" title="Permanent link">&para;</a></h2>
 <p>The only classes that will appear in the bundle are the ones you ask it to include using Export-Package, Private-Package, Include-Resource, and Embed-Dependency - so just because a file exists under target/classes does NOT mean it will end up in the bundle. This is because this is the way the underlying <a href="http://aqute.biz/Code/Bnd">BND</a> tool works (it is primarily pull-based).</p>
 <p>Now the bundleplugin will look at your Maven project and add appropriate BND instructions to pull in resource files - and version 2.0.0 will also look at your source directory to set reasonable defaults for Export-Package and Private-Package (unless you set these yourself). So when using bundleplugin 2.0.0 I'd use the default Private-Package and Export-Package to begin with - I would then move towards using an explicit list of packages in Export-Package to add versioning, directives, etc.</p>
 <p>The only time I would set Private-Package would be to have more control over what ends up in the bundle - either to remove certain packages or perhaps pull in additional packages not found by the source scanner. Also note that both Export-Package and Private-Package accept wildcards such as "org.example.*" which can reduce the number of entries in the list, but you should be careful not to set either the export or private instruction to "*" as this would pull in the entire classpath... dependencies and all!</p>
-<h2 id="how-do-i-remove-the-generated-maven-information-from-the-resulting-bundle-jar-file">How do I remove the generated Maven information from the resulting bundle JAR file?</h2>
+<h2 id="how-do-i-remove-the-generated-maven-information-from-the-resulting-bundle-jar-file">How do I remove the generated Maven information from the resulting bundle JAR file?<a class="headerlink" href="#how-do-i-remove-the-generated-maven-information-from-the-resulting-bundle-jar-file" title="Permanent link">&para;</a></h2>
 <p>Use the following archive setting:</p>
 <div class="codehilite"><pre><span class="nt">&lt;configuration&gt;</span>
   <span class="nt">&lt;archive&gt;</span>
@@ -154,10 +176,10 @@
 
 
 <p>Put this in either the JAR or bundle plugin configuration.</p>
-<h2 id="why-do-some-generated-resources-such-as-declarative-services-xml-files-appear-in-the-final-jar-but-others-dont">Why do some generated resources (such as Declarative Services XML files) appear in the final jar, but others don't?</h2>
+<h2 id="why-do-some-generated-resources-such-as-declarative-services-xml-files-appear-in-the-final-jar-but-others-dont">Why do some generated resources (such as Declarative Services XML files) appear in the final jar, but others don't?<a class="headerlink" href="#why-do-some-generated-resources-such-as-declarative-services-xml-files-appear-in-the-final-jar-but-others-dont" title="Permanent link">&para;</a></h2>
 <p>When you use the Service-Component instruction to specify Declarative Services the BND tool scans the project classpath for components and automatically adds its generated XML to the final bundle, therefore Include-Resource is not necessary. But if you generate files under OSGI-INF using another mechanism then they won't end up in the bundle unless you add that directory using Include-Resource (this goes back to the core design decision that BND pulls classes and resources into the bundle, rather than just taking everything under target/classes). We try to provide reasonable defaults on the Maven side in the bundleplugin so local classes and resources will end up in the bundle without additional configuration, but we do this by looking at the effective pom and src/ folder rather than the generated target/classes content.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

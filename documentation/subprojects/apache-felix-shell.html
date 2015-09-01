@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Apache Felix Shell</h1>
-      <h1 id="apache-felix-shell">Apache Felix Shell</h1>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="apache-felix-shell">Apache Felix Shell<a class="headerlink" href="#apache-felix-shell" title="Permanent link">&para;</a></h1>
 <ul>
 <li><a href="">Overview</a></li>
 <li><a href="">How the Shell Service Works</a></li>
@@ -75,7 +97,7 @@
 <li><a href="">Security and the Shell Service</a></li>
 <li><a href="">Feedback</a></li>
 </ul>
-<h2 id="overview">Overview</h2>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>In order to interact with Felix it is necessary to have some sort of interactive shell that allows you to issue commands to the framework and to obtain information from it. The OSGi specification does not define how an OSGi framework should provide this interactivity. Felix defines a shell service for creating and executing arbitrary commands. The shell service does not define a user interface, only a service API.</p>
 <p>The benefit of the Felix shell service approach is that it is possible to:</p>
 <ul>
@@ -84,7 +106,7 @@
 <li>use the shell service from other bundles/services.</li>
 </ul>
 <p>The remainder of this document describes how the shell service works and how to create custom commands for it. This document does not describe how to use the command shell, nor does it describe the text-based or GUI-based user interfaces that are available for the shell.</p>
-<h2 id="how-the-shell-service-works">How the Shell Service Works</h2>
+<h2 id="how-the-shell-service-works">How the Shell Service Works<a class="headerlink" href="#how-the-shell-service-works" title="Permanent link">&para;</a></h2>
 <p>The Felix shell service is intended to be a simple, but extensible shell service that can have multiple user interface implementations, all of which are independent from the Felix framework. The shell service is currently not intended to be sophisticated, rather it is just a mechanism to execute commands. The shell service maintains a list of command services, each of which have a unique command name. The shell service is defined by the following service interface:</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">;</span>
 
@@ -116,7 +138,7 @@
 
 <p>The shell service interprets this as an <code>update</code> command and will search for a command service with the same name. If a corresponding command service is not found, then it will print an error message to the error print stream. If a corresponding command service is found, then it will pass the entire command line string and the print streams into the <code>executeCommand()</code> method of the command service (for a more detailed description of command services, see the next section).</p>
 <p>Notice that there is no method to add commands to the shell service interface. This is because commands are implemented as OSGi services and the shell service listens for service events and when a command service registers/unregisters it automatically updates its list of commands accordingly.</p>
-<h2 id="how-commands-work">How Commands Work</h2>
+<h2 id="how-commands-work">How Commands Work<a class="headerlink" href="#how-commands-work" title="Permanent link">&para;</a></h2>
 <p>All commands available in the shell service are implemented as OSGi services. The advantage of this approach is two-fold: the shell service can leverage OSGi service events to maintain its list of available commands and the set available commands is dynamically extendable by installed bundles. The command service interface is defined as follows:</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">shell</span><span class="p">;</span>
 
@@ -137,7 +159,7 @@
 <li><code>getShortDescription()</code> - returns a short description of the command; this should be one line and as short as possible (this is used for generating the help command output).</li>
 <li><code>execute()</code> - executes the command's functionality using supplied command line and print streams.</li>
 </ul>
-<h2 id="creating-a-command">Creating a Command</h2>
+<h2 id="creating-a-command">Creating a Command<a class="headerlink" href="#creating-a-command" title="Permanent link">&para;</a></h2>
 <p>The following example creates a simple version of the <code>start</code> command.</p>
 <div class="codehilite"><pre><span class="n">package</span> <span class="n">test</span><span class="p">;</span>
 
@@ -269,12 +291,12 @@
 
 
 <p>This command creates a JAR file using the manifest you created and includes all of the classes in the test directory inside of the <code>c:\classes</code> directory. Once the bundle JAR file is created, you are ready to add the command service to the shell service; simply start Felix and install and start the bundle created by the above command. By doing so, the new <code>mystart</code> command is made available via the shell service.</p>
-<h2 id="security-and-the-shell-service">Security and the Shell Service</h2>
+<h2 id="security-and-the-shell-service">Security and the Shell Service<a class="headerlink" href="#security-and-the-shell-service" title="Permanent link">&para;</a></h2>
 <p>The shell service security handling is quite simple, all security is handled by the standard OSGi framework mechanisms. For example, if a bundle should not be able to register a shell service, then it should not be given the corresponding service permission. Security handling may change in future release after some experience is gained through usage.</p>
-<h2 id="feedback">Feedback</h2>
+<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h2>
 <p>Subscribe to the Felix users mailing list by sending a message to <a href="">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [users@felix.apache.org|mailto:users@felix.apache.org].</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

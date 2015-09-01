@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,8 +77,19 @@
       </div>
 
       <h1>Web Console Output Templating</h1>
-      <p>Templating and Internationalization support of the Web Console is based on Java Resource Bundles loaded from the plugin bundles and is transparent to the plugin itself.</p>
-<h2 id="basic-mechanism">Basic Mechanism</h2>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p>Templating and Internationalization support of the Web Console is based on Java Resource Bundles loaded from the plugin bundles and is transparent to the plugin itself.</p>
+<h2 id="basic-mechanism">Basic Mechanism<a class="headerlink" href="#basic-mechanism" title="Permanent link">&para;</a></h2>
 <p>All requests handled by web console plugins are wrapped by response wrapper, which installs a Writer filter if the response is a <code>text/html</code> response. This writer filter recognizes variables of the pattern <code>$&amp;#123;name&amp;#125;</code> and tries to replace that part of the output with another string:</p>
 <div class="codehilite"><pre><span class="o">*</span> <span class="n">If</span> <span class="n">a</span> <span class="n">variable</span> <span class="n">of</span> <span class="n">that</span> <span class="n">name</span> <span class="n">exists</span><span class="p">,</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="n">that</span> <span class="n">variable</span> <span class="n">is</span> <span class="n">used</span><span class="p">.</span> <span class="n">See</span> <span class="n">Variable</span> <span class="n">Resolution</span> <span class="n">below</span><span class="p">.</span>
 <span class="o">*</span> <span class="n">Otherwise</span> <span class="k">if</span> <span class="n">a</span> <span class="n">resource</span> <span class="n">bundle</span> <span class="n">provides</span> <span class="n">a</span> <span class="n">translated</span> <span class="n">string</span> <span class="k">for</span> <span class="n">the</span> <span class="n">name</span><span class="p">,</span> <span class="n">that</span> <span class="n">string</span> <span class="n">is</span> <span class="n">used</span><span class="p">.</span> <span class="n">See</span> <span class="n">Resource</span> <span class="n">Bundles</span> <span class="n">below</span><span class="p">.</span>
@@ -75,11 +97,10 @@
 </pre></div>
 
 
-<h3 id="example">Example</h3>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p>Consider the plugin bundle provides a localization for the default german locale <code>de</code>:</p>
-<p>{panel:title=OSGI-INF/l10n/bundle_de.properties}
-Hello = Guten Tag
-{panel}</p>
+<p panel="panel">{panel:title=OSGI-INF/l10n/bundle_de.properties}
+Hello = Guten Tag</p>
 <p>And the plugin defines a variable replacement and writes output with the following code:</p>
 <div class="codehilite"><pre>WebConsoleUtil.getVariableResolver().put(&quot;world&quot;, &quot;Schweiz&quot;);
 response.getWriter().println(&quot;<span class="cp">${</span><span class="n">Hello</span><span class="cp">}</span> <span class="cp">${</span><span class="n">world</span><span class="cp">}</span>&quot;);
@@ -91,15 +112,15 @@ response.getWriter().println(&quot;<span class="cp">${</span><span class="n">Hel
 </pre></div>
 
 
-<h2 id="variable-resolution">Variable Resolution</h2>
+<h2 id="variable-resolution">Variable Resolution<a class="headerlink" href="#variable-resolution" title="Permanent link">&para;</a></h2>
 <p>Variable Resolution is based on a <code>org.apache.felix.webconsole.VariableResolver</code> object provided as a request attribute prior to calling the <code>ServletResponse.getWriter()</code> method. If no such resolver is provided in the request, an instance of the <code>org.apache.felix.webconsole.DefaultVariableResolver</code> is used and stored in the request. Replacing the <code>VariableResolver</code> after the <code>getWriter()</code> has been called has no effect for variable resolution. Variables may be added to the <code>VariableResolver</code> even after the <code>getWriter()</code> method has been called.</p>
-<h2 id="resource-bundles">Resource Bundles</h2>
+<h2 id="resource-bundles">Resource Bundles<a class="headerlink" href="#resource-bundles" title="Permanent link">&para;</a></h2>
 <p>Resources for the Resource Bundles is provided by the Web Console bundle on the one hand and by the bundle providing the plugin on the other hand. Resources are identified inside a bundle with the <code>Bundle-Localization</code> manifest header as described in Section 3.10 Localization in the Core Specification.</p>
 <p>This also means, that additional translations may be provided by fragment bundles.</p>
 <p>During request processing the <code>Locale</code> of the request (<code>ServletRequest.getLocale()</code>) is used to identify the actual resources to use. From this information a <code>ResourceBundle</code> is constructed from a collection of the resources provided by the plugin bundle and the resources provided by the Web Console.</p>
-<h3 id="web-console-localization">Web Console Localization</h3>
+<h3 id="web-console-localization">Web Console Localization<a class="headerlink" href="#web-console-localization" title="Permanent link">&para;</a></h3>
 <p>The Web Console contains a single localization file <code>OSGI-INF/l10n/bundle.properties</code>. Fragments attached to the Web Console bundle may provide translations for these resources. All plugins of the Web Console itself will use a ReosurceBundle, which is only based on the localization of the Web Console itself.</p>
-<h2 id="using-templating">Using Templating</h2>
+<h2 id="using-templating">Using Templating<a class="headerlink" href="#using-templating" title="Permanent link">&para;</a></h2>
 <p>To use the described templating, the plugin developer may provide the following:</p>
 <ol>
 <li>Use templated strings in the generated response. Such templated strings will be replaced with variable values or localization strings as available.</li>
@@ -107,7 +128,7 @@ response.getWriter().println(&quot;<span class="cp">${</span><span class="n">Hel
 <li>Provide localization files and optionally set the <code>Bundle-Localization</code> header if the base file name is not the default <code>OSGI-INF/l10n/bundle</code>.</li>
 </ol>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

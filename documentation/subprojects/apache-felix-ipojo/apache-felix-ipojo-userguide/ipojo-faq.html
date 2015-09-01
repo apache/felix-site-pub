@@ -171,7 +171,18 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="apache-felix-ipojo-faq">Apache Felix iPOJO FAQ</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="apache-felix-ipojo-faq">Apache Felix iPOJO FAQ<a class="headerlink" href="#apache-felix-ipojo-faq" title="Permanent link">&para;</a></h1>
 <div class="toc">
 <ul>
 <li><a href="#apache-felix-ipojo-faq">Apache Felix iPOJO FAQ</a><ul>
@@ -193,7 +204,7 @@
 </li>
 </ul>
 </div>
-<h2 id="injecting-the-bundle-context-in-a-pojo">Injecting the bundle context in a POJO</h2>
+<h2 id="injecting-the-bundle-context-in-a-pojo">Injecting the bundle context in a POJO<a class="headerlink" href="#injecting-the-bundle-context-in-a-pojo" title="Permanent link">&para;</a></h2>
 <p>It is sometimes useful to inject the bundle context in your POJO. Then, your POJO is able to deal with the OSGi environment as <em>regular</em> OSGi applications. It is possible to a POJO to get its <code>BundleContext</code>. A POJO can receive its bundle context as an argument of its constructor. The next code snippet shows an example:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ASimplePOJO</span><span class="o">{</span>
     <span class="kd">private</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="o">;</span>
@@ -212,10 +223,10 @@
 <li>discover, track and use services</li>
 </ul>
 <p>However, all these interactions are no more managed by the iPOJO container. So, be careful to manage the dynamism, synchronization, listeners...</p>
-<h2 id="accessing-services-inside-inner-and-anonymous-classes">Accessing services inside inner and anonymous classes</h2>
+<h2 id="accessing-services-inside-inner-and-anonymous-classes">Accessing services inside inner and anonymous classes<a class="headerlink" href="#accessing-services-inside-inner-and-anonymous-classes" title="Permanent link">&para;</a></h2>
 <p>An inner class is a class defined inside another class.  This mechanism is useful in order to avoid creating a bunch of small files. So, it is common when creating threads, Swing listeners ... Generally speaking, inner classes are regular classes treated as separate classes. However this is an oversimplification. Some of the information about an inner class is not in its class file.  See section 4.7.5 for further details on [http://java.sun.com/docs/books/jvms/second_edition/html/ClassFile.doc.html]</p>
 <p>An inner class can access fields of its outer class. Since the iPOJO 1.0.0 version, fields managed by iPOJO, such as a service dependencies and properties, are also available from the inner class. Indeed, iPOJO manipulation also manipulates inner and nested classes, and accesses to outer class fields are correctly managed.</p>
-<h2 id="using-a-different-version-of-the-manipulator-during-the-manipulation">Using a different version of the manipulator during the manipulation</h2>
+<h2 id="using-a-different-version-of-the-manipulator-during-the-manipulation">Using a different version of the manipulator during the manipulation<a class="headerlink" href="#using-a-different-version-of-the-manipulator-during-the-manipulation" title="Permanent link">&para;</a></h2>
 <p>You can configure the version of the manipulator that you want to use when you're using the maven-ipojo-plugin or the iPOJO ant task. This allows to benefit latest improvements.</p>
 <p>For Maven, Just declare a dependency on the manipulator that you want to use in the maven-ipojo-plugin plugin section:</p>
 <div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
@@ -246,7 +257,7 @@
 </pre></div>
 
 
-<h2 id="callbacks-order">Callbacks order.</h2>
+<h2 id="callbacks-order">Callbacks order.<a class="headerlink" href="#callbacks-order" title="Permanent link">&para;</a></h2>
 <p>A lot of handlers define callbacks to notify the implementation class. The 'core' callbacks are called in the following order:</p>
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="nd">@Provides</span>
@@ -307,7 +318,7 @@
 </pre></div>
 
 
-<h2 id="disabling-proxies-in-ipojo-16">Disabling proxies in iPOJO 1.6+</h2>
+<h2 id="disabling-proxies-in-ipojo-16">Disabling proxies in iPOJO 1.6+<a class="headerlink" href="#disabling-proxies-in-ipojo-16" title="Permanent link">&para;</a></h2>
 <p>iPOJO 1.6.0 has generalized the proxy usage. However this mechanism can be disabled.</p>
 <p>To disable the proxies on the entire framework, just set the property <code>ipojo.proxy</code> to <code>disabled</code> (this set the default 'proxy' value). This property is either a system property (<code>-Dipojo.proxy=disabled</code> in the command line) or a framework property (given to the framework during its initialization).</p>
 <p>You can also disable proxies for specific dependencies by using the <code>proxy</code> attribute:</p>
@@ -322,12 +333,12 @@
 
 
 <p>The default value of the <code>proxy</code> attribute is the value of the <code>ipojo.proxy</code> property.</p>
-<h2 id="use-dynamic-proxies-instead-of-smart-proxies">Use dynamic proxies instead of smart proxies</h2>
+<h2 id="use-dynamic-proxies-instead-of-smart-proxies">Use dynamic proxies instead of smart proxies<a class="headerlink" href="#use-dynamic-proxies-instead-of-smart-proxies" title="Permanent link">&para;</a></h2>
 <p>Smart proxies are generated on the fly using bytecode generation. However this mechanism may not be always supported by the VM (like Dalvik (Android)). To disabled smart proxies (used by default) and use dynamic proxy instead, set the property <code>ipojo.proxy.type</code> to <code>dynamic-proxy</code>. This property is either a system property or a framework property.</p>
-<h2 id="can-i-use-ipojo-with-other-osgi-implementations">Can I use iPOJO with other OSGi implementations?</h2>
+<h2 id="can-i-use-ipojo-with-other-osgi-implementations">Can I use iPOJO with other OSGi implementations?<a class="headerlink" href="#can-i-use-ipojo-with-other-osgi-implementations" title="Permanent link">&para;</a></h2>
 <p>iPOJO relies on the OSGi R4.1 specification, so works on any compliant implementation. Moreover, iPOJO is weekly tested on Apache Felix, Eclipse Equinox and Knopflerfish..</p>
 <p>For further information, refer to the <a href="/documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.html">supported OSGi implementations</a> page and on this [blog|http://ipojo-dark-side.blogspot.com/2008/11/lessons-learned-from-ipojo-testing.html] post.</p>
-<h2 id="detecting-optional-service-unavailability">Detecting optional service unavailability</h2>
+<h2 id="detecting-optional-service-unavailability">Detecting optional service unavailability<a class="headerlink" href="#detecting-optional-service-unavailability" title="Permanent link">&para;</a></h2>
 <p>Sometimes it is useful to check if an optional service dependency is fulfilled or not. In order to propose a pretty simple development model, iPOJO injects proxies by default which avoid such check (Because proxies hide such details). By disabling proxies, you can easily check to unavailability.</p>
 <ul>
 <li>
@@ -363,7 +374,7 @@ private LogService log;</p>
 }</p>
 </li>
 </ul>
-<h2 id="setting-the-ipojo-log-level">Setting the iPOJO log level</h2>
+<h2 id="setting-the-ipojo-log-level">Setting the iPOJO log level<a class="headerlink" href="#setting-the-ipojo-log-level" title="Permanent link">&para;</a></h2>
 <p>By default, iPOJO logs only warning and error messages. There are two different methods to configure the log level. First, you can set the global log level by setting the <em>ipojo.log.level</em> system property. This replaces the default log level (warning). All iPOJO instances will be impacted.  However, each bundle containing component types can specify a different log level. To set this level, add the <em>ipojo-log-level</em> header in your manifest. The possible values for these two properties are:</p>
 <div class="codehilite"><pre><span class="o">*</span> <span class="n">info</span>
 <span class="o">*</span> <span class="n">debug</span>
@@ -372,16 +383,16 @@ private LogService log;</p>
 </pre></div>
 
 
-<h2 id="installing-ipojo-in-service-mix-kernel">Installing iPOJO in Service Mix Kernel</h2>
+<h2 id="installing-ipojo-in-service-mix-kernel">Installing iPOJO in Service Mix Kernel<a class="headerlink" href="#installing-ipojo-in-service-mix-kernel" title="Permanent link">&para;</a></h2>
 <p>You can use iPOJO in Service Mix Kernel. To deploy and start it, just execute the following command line in the ServiceMix Kernel Shell.</p>
 <div class="codehilite"><pre>osgi install -s mvn:org.apache.felix/org.apache.felix.ipojo/1.2.0
 </pre></div>
 
 
 <p>The iPOJO bundle is downloaded from the central maven repository.</p>
-<h2 id="ipojo-and-file-install">iPOJO and File Install</h2>
+<h2 id="ipojo-and-file-install">iPOJO and File Install<a class="headerlink" href="#ipojo-and-file-install" title="Permanent link">&para;</a></h2>
 <p>Thanks to File install you can create, disposed and reconfigure instances from <em>cfg</em> files. You can also reconfiguring a creatged instance (configured to expose a <a href="http://felix.apache.org/site/configuration-handler.html#ConfigurationHandler-ExposingaManagedService">ManagedService</a>) with <em>cfg</em> files too. More information about this topic is available [here|http://ipojo-dark-side.blogspot.com/2009/04/ipojo-and-file-install-configuring.html].</p>
-<h2 id="ipojo-handler-start-level">iPOJO handler <em>start</em> level</h2>
+<h2 id="ipojo-handler-start-level">iPOJO handler <em>start</em> level<a class="headerlink" href="#ipojo-handler-start-level" title="Permanent link">&para;</a></h2>
 <p>iPOJO Handlers have a <em>start</em> level. This is <em>not</em> the <code>OSGi Start Level</code>. This level is used to determine in which order handler are configured, started and stopped. Handlers with a low level are configured and started before handlers with a high level. Moreover they are stopped after handlers with a high level. By default, handlers have no level. It means that they have the maximum level (<code>Integer.MAX</code>).</p>
 <p>Here are the levels of core handlers:</p>
 <ul>
@@ -403,7 +414,7 @@ private LogService log;</p>
 iPOJO 1.3.0-SNAPSHOT sets the lifecycle callback handler level to 2. So, setter methods from instance properties are called before the validate method.
 </div>
 
-<h2 id="why-does-my-bundle-import-unused-packages">Why does my bundle import unused packages?</h2>
+<h2 id="why-does-my-bundle-import-unused-packages">Why does my bundle import unused packages?<a class="headerlink" href="#why-does-my-bundle-import-unused-packages" title="Permanent link">&para;</a></h2>
 <p>If you check iPOJO bundle imported packages, you will see that some packages where added:</p>
 <ul>
 <li>org.apache.felix.ipojo;version= 1.2.0</li>
@@ -414,7 +425,7 @@ iPOJO 1.3.0-SNAPSHOT sets the lifecycle callback handler level to 2. So, setter 
 <p>The <code>org.apache.felix.ipojo</code> package is the main iPOJO package. Manipulated class use it to get access to injected values. The <code>org.apache.felix.ipojo.architecture</code> package is used to expose <em>Architecture</em> service (allowing instance introspection). This service is exposed with the bundle context from the bundle declaring the component type.</p>
 <p>The <code>org.osgi.service.cm</code> package is imported to publish <em>ManagedService</em> and <em>ManagedServiceFactory</em> with the bundle context from the bundle declaring the component type. So, if you look for services exposed by a bundle declaring component types, you will see <em>ManagedServiceFactory</em> services.
 Finally, the <code>org.osgi.service.log</code> is imported because iPOJO delegates log to a log service (if available). This service is get from the bundle context from the bundle declaring the component type. So, to get this service, the package of the service interface is imported.  Then, according to implementations, log services may get the bundle logging the message.</p>
-<h2 id="how-does-ipojo-compare-to-declarative-services-or-blueprint">How does iPOJO compare to Declarative Services or Blueprint?</h2>
+<h2 id="how-does-ipojo-compare-to-declarative-services-or-blueprint">How does iPOJO compare to Declarative Services or Blueprint?<a class="headerlink" href="#how-does-ipojo-compare-to-declarative-services-or-blueprint" title="Permanent link">&para;</a></h2>
 <p>The following table highlights some of the features of each system, it does not attempt to highlight every feature of each.</p>
 <table class="table table-striped">
   <thead>
@@ -615,7 +626,7 @@ Finally, the <code>org.osgi.service.log</code> is imported because iPOJO delegat
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1531524 by clement on Sat, 12 Oct 2013 09:57:48 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

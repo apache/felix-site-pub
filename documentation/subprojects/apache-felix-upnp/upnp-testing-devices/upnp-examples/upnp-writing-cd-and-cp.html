@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,12 +77,23 @@
       </div>
 
       <h1>UPnP Writing CD and CP</h1>
-      <h1 id="writing-upnp-devices-and-control-points">Writing UPnP Devices and Control Points</h1>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="writing-upnp-devices-and-control-points">Writing UPnP Devices and Control Points<a class="headerlink" href="#writing-upnp-devices-and-control-points" title="Permanent link">&para;</a></h1>
 <p>The <a href="http://www.osgi.org/Specifications/HomePage">OSGi UPnP Specification (v 1.1)</a> dedicates section 111.6 "Working with a UPnP Device" to describe the details of implementing UPnP Devices on OSGi. Here we provide some hints on the main differences you may encounter working with OSGi with respect to the [UDA 1.0 Specification|http://www.upnp.org/resources/documents/CleanUPnPDA101-20031202s.pdf] .</p>
 <p>The first peculiarity is that OSGi provides a centralized register for discovering of UPnP devices as opposed to the distributed mechanism of the UPnP protocol stack. Thus, while in the UPnP networks the steps for subscribing the services of some device are typically 1) <em>discover</em> the required device and 2) <em>subscribe</em> the service, within the OSGi platform a Control Point may register an interest in receiving notify events even before the device is really plugged on the network. This is possible because the subscription mechanism is based on the <a href="http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPEventListener.html">UPnPEventListener</a>interface that is used for registering OSGi services, which ultimately handles the notify messages sent by the producers of the events. The base driver (importer) keeps track of such UPnPEventListener services and as soon as a matching service is discovered on the UPnP network, a subscription is made on behalf of the registered listeners.</p>
 <p>On the other hand, even if it is enough to register a service implementing the <a href="http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPDevice.html">UPnPDevice</a>interface to expose it as UPnP devices on the network, the developers have to implement on their own the event management required by the UPnP technology. From this point of view, for each evented state variable declared by the UPnP device, the developers have to monitor UPnPEventListenerservices that is error prone[1]. The correct implementation of the UPnP eventing phase is left entirely to developers. In particular, in UDA 1.0, the first time a Control Point subscribes a service, the current value of its state variables should soon be delivered to it. To manage this situation in a standard way, the last OSGi UPnP specification defined the extended interface [UPnPLocalStateVariable|http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPLocalStateVariable.html]. In fact, the previous basic interface UPnPStateVariable provided only a descriptive interface which did not enable to get the value of a state variable without knowing the final implementation class. Every developer should use this new interface in order to allow the specification of helper classes that ease the subscription/notify management (see [UPnPEventNotifier|http://svn.apache.org/viewvc/felix/trunk/upnp/extra/src/main/java/org/apache/felix/upnp/extra/util/UPnPSubscriber.java?view=markup] below).</p>
 <p>We have factorized and released part of the code used by the UPnP examples with the <em>org.apache.felix.upnp.extra</em> bundle.</p>
-<h2 id="the-extra-bundle-and-the-driver-interfaces">The Extra bundle and the driver interfaces</h2>
+<h2 id="the-extra-bundle-and-the-driver-interfaces">The Extra bundle and the driver interfaces<a class="headerlink" href="#the-extra-bundle-and-the-driver-interfaces" title="Permanent link">&para;</a></h2>
 <p>We provide some utility classes and services through the extra bundle and the services registered by the UPnP Base Driver.</p>
 <p>In the Extra bundle the class <a href="http://svn.apache.org/viewvc/felix/trunk/upnp/extra/src/main/java/org/apache/felix/upnp/extra/util/UPnPSubscriber.java?view=markup">org.apache.felix.upnp.extra.util.UPnPSubscriber</a> can be instantiated to subscribe one or more services. The constructor takes two parameters a [BundleContext |http://www.osgi.org/javadoc/r4/org/osgi/framework/BundleContext.html] reference and a [UPnPEventListener |http://www.osgi.org/javadoc/r4/org/osgi/service/upnp/UPnPEventListener.html] reference. In this class the method subscribe(Filter aFilter) is a general and powerful way to subscribe to any service by using an [LDAP filter|http://www.osgi.org/javadoc/r4/org/osgi/framework/Filter.html]. For example by using the string :</p>
 <div class="codehilite"><pre>&quot;<span class="p">(</span><span class="o">&amp;</span> <span class="p">(</span><span class="n">UPnP</span><span class="p">.</span><span class="n">device</span><span class="p">.</span><span class="n">type</span><span class="p">=</span><span class="n">urn</span><span class="p">:</span><span class="n">schemas</span><span class="o">-</span><span class="n">upnp</span><span class="o">-</span><span class="n">org</span><span class="p">:</span><span class="n">device</span><span class="p">:</span><span class="n">BinaryLight</span><span class="p">:</span>1<span class="p">)</span> <span class="p">(</span><span class="n">UPnP</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">type</span><span class="p">=</span> <span class="n">urn</span><span class="p">:</span><span class="n">schemas</span><span class="o">-</span><span class="n">upnp</span><span class="o">-</span><span class="n">org</span><span class="p">:</span><span class="n">service</span><span class="p">:</span><span class="n">SwitchPower</span><span class="p">:</span>1<span class="p">))</span>&quot;
@@ -110,11 +132,11 @@
 <a href="http://svn.apache.org/viewvc/felix/trunk/upnp/basedriver/src/main/java/org/apache/felix/upnp/basedriver/controller/DriverController.java?view=markup">org.apache.felix.upnp.basedriver.controller.DriverController</a>;</p>
 <p>The former can be used to retrieve the XML description of both devices and services. Other than be used for debugging purpose, it allows access to the UPnP schema extensions defined by UPnP Vendors. According to the UDA 1.0 they consist of elements inserted in different points of the XML description and by convention starting with the prefix "X_". This interface is used by the context menu handler of the UPnP Tester bundle.</p>
 <p>The latter interface can be used to change the log messages of the base driver at runtime. Two different methods are available to modify the log level of the base driver or to enable the visualization of low level messages related to the UPnP stack protocol (CyberDomo). Furthermore, the interface allows developers to send an M-SEARCH discovery message to the UPnP networks, thus refreshing the list of imported devices.</p>
-<h5 id="the-felix-upnp-examples-known-issues-upnp-known-issues"><a href="/documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples.html">The Felix UPnP Examples</a> &lt;&lt; \| &gt;&gt; [Known Issues| UPnP Known Issues]</h5>
+<h5 id="the-felix-upnp-examples-known-issues-upnp-known-issues"><a href="/documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples.html">The Felix UPnP Examples</a> &lt;&lt; \| &gt;&gt; [Known Issues| UPnP Known Issues]<a class="headerlink" href="#the-felix-upnp-examples-known-issues-upnp-known-issues" title="Permanent link">&para;</a></h5>
 <hr />
 <p>[1]() Developers should monitor UPnpEventListener services with a filter matching either the own service Id or service type, either the own device Id or device type and even a empty filter which are usually used to express interest for every UPnP device.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

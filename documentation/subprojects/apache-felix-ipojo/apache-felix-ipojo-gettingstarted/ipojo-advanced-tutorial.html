@@ -171,7 +171,18 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="the-ipojo-snack-bar">The iPOJO Snack Bar</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="the-ipojo-snack-bar">The iPOJO Snack Bar<a class="headerlink" href="#the-ipojo-snack-bar" title="Permanent link">&para;</a></h1>
 <p><em>This tutorial illustrates some advanced features of iPOJO</em></p>
 <div class="toc">
 <ul>
@@ -193,16 +204,16 @@
 </li>
 </ul>
 </div>
-<h2 id="context">Context</h2>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
 <p>This tutorial is based on a very simple application; customers are using a vendor service to buy hot dog or pop corn according to the availability of appropriate providers. Both of the vendors implement (and provide) the vendor service. The hot dog vendor depends on two others services to get the ingredients (buns and wiener). To sell pop corn, the pop corn vendor requires having enough corn in stock.</p>
 <p><img src="vendor.png"></p>
-<h2 id="preparing-the-tutorial">Preparing the tutorial</h2>
+<h2 id="preparing-the-tutorial">Preparing the tutorial<a class="headerlink" href="#preparing-the-tutorial" title="Permanent link">&para;</a></h2>
 <p>The tutorial archive is available <a href="http://people.apache.org/~clement/ipojo/tutorials/advanced/advanced.tutorial.zip">here</a>. This archive contains both the source code and a pre-configured version of Felix. First, unzip the archive. Then, launch <code>ant</code> to compile the bundles composing this tutorial. Once compiled, you can launch Felix and start the tutorial. To launch, Felix launch the following command from the <code>felix</code> directory:</p>
 <div class="codehilite"><pre>java -jar bin/felix.jar
 </pre></div>
 
 
-<h2 id="writing-a-component-providing-two-services">Writing a component providing two services</h2>
+<h2 id="writing-a-component-providing-two-services">Writing a component providing two services<a class="headerlink" href="#writing-a-component-providing-two-services" title="Permanent link">&para;</a></h2>
 <p>The sources of this project are inside the <em>vendor.buns-and-wieners</em> directory.
 The hot dog vendor requires at the same time the bun service and the wiener service. In our application these services are provided by the same component. This component can be implemented as follows (src\org\apache\felix\ipojo\example\vendor\provider\BunWienerProvider.java):</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BunWienerProvider</span> <span class="kd">implements</span> <span class="n">BunService</span><span class="o">,</span> <span class="n">WienerService</span> <span class="o">{</span>
@@ -236,7 +247,7 @@ The hot dog vendor requires at the same time the bun service and the wiener serv
 <p>iPOJO manages service publication and providing automatically at runtime. The <code>&lt;provides/&gt;</code> element means that the component provides services. If this element is not present, iPOJO will publish all implemented interfaces by the implementation class (and parent class too). In our case, it will publish the BunService and WienerService interfaces.</p>
 <p>Finally, we create one instance of our component. The instance contains the component attribute describing the component type to use. We use the component type name to target the wanted component type. </p>
 <p>At runtime, the bundle containing this component will create an instance which provides the BunService and the WienerService.</p>
-<h2 id="publishing-service-properties">Publishing service properties</h2>
+<h2 id="publishing-service-properties">Publishing service properties<a class="headerlink" href="#publishing-service-properties" title="Permanent link">&para;</a></h2>
 <p>The sources of this project are inside the <em>vendor.hotdog</em> directory.
 The hot dog vendor only provides the Vendor service. To provide this service, it uses a bun service and a wiener service. The following code (contained in the <em>src/org/apache/felix/ipojo/example/vendor/hotdog/HotDogVendor.java</em> file) shows a very simple implementation of this component:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HotDogVendor</span> <span class="kd">implements</span> <span class="n">Vendor</span> <span class="o">{</span>
@@ -300,7 +311,7 @@ The hot dog vendor only provides the Vendor service. To provide this service, it
 
 
 <p>iPOJO then publishes the "product" property in the "vendor" service registration. This property has the "hotdog" value.</p>
-<h2 id="publishing-dynamic-properties">Publishing 'dynamic' properties</h2>
+<h2 id="publishing-dynamic-properties">Publishing 'dynamic' properties<a class="headerlink" href="#publishing-dynamic-properties" title="Permanent link">&para;</a></h2>
 <p>The bun service and the wiener service can also expose service properties. In our case, these service properties will describe the stock of ingredients. Each time the service is used, the property value is decreased.
 To achieve this, we modify the current implementation to add a field representing the property:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BunWienerProvider</span> <span class="kd">implements</span> <span class="n">BunService</span><span class="o">,</span> <span class="n">WienerService</span> <span class="o">{</span>
@@ -337,7 +348,7 @@ To achieve this, we modify the current implementation to add a field representin
 
 
 <p>In the <code>provides</code> element, two properties are added. This property contains a <code>field</code> attribute aiming to attach the service property with a field of the implementation class. Then a default value is given. In the code, the property fields will obtain the initial value (10). Then each time the fields are modified, the service property is updated (as well as the OSGi™ service registration). Notice that iPOJO support method injection for property too. In this case, a getter method is called to inject the property value.</p>
-<h2 id="configuring-instances">Configuring instances</h2>
+<h2 id="configuring-instances">Configuring instances<a class="headerlink" href="#configuring-instances" title="Permanent link">&para;</a></h2>
 <p>In the previous example, the properties were configured in the component type description. It is also possible to customize any property value in the instance declaration. This way, each instance can obtain different values.</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 <span class="nt">&lt;component</span> 
@@ -358,7 +369,7 @@ To achieve this, we modify the current implementation to add a field representin
 
 
 <p>The previous metadata shows how to push a configuration in instance declarations. The instance declaration contains two property elements containing the name of the value of the property. Instance configuration override component type initial value. Properties are optional by default ; that's means that they do not need to receive a value. In this case, default values are the same as the Java default fields values (boolean : false, int : 0, double : 0.0d, ...). You can specify that a property must receive a default value from either the component type description or the instance configuration by setting the <code>mandatory</code> attribute to <code>true</code>. </p>
-<h2 id="using-filter-in-service-requirements">Using filter in service requirements</h2>
+<h2 id="using-filter-in-service-requirements">Using filter in service requirements<a class="headerlink" href="#using-filter-in-service-requirements" title="Permanent link">&para;</a></h2>
 <p>Now that bun and wiener providers publish their remaining stock, the hot dog provider can look for a bun service and a wiener service with a non empty stock. To achieve this, we must describe an LDAP filter in the service requirement description. The following XML snipped shows this metadata:</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
 <span class="nt">&lt;component</span> 
@@ -383,7 +394,7 @@ To achieve this, we modify the current implementation to add a field representin
 When an instance becomes invalid, all its provided services are withdrawn from the service registry. So, this instance is no more *accessible* from the service registry.
 </div>
 
-<h2 id="immediate-component-instance">Immediate component instance</h2>
+<h2 id="immediate-component-instance">Immediate component instance<a class="headerlink" href="#immediate-component-instance" title="Permanent link">&para;</a></h2>
 <p>Now that we get the hot dog provider, we are going to implement customers. Customers are implemented in the <em>vendor.customer</em> project). A customer simply looks for a vendor service and buys a product:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Customer</span> <span class="o">{</span>
 
@@ -421,7 +432,7 @@ When an instance becomes invalid, all its provided services are withdrawn from t
 There is a difference between immediate components and components with a <code>validate</code> lifecycle callback. Indeed, the callback is call at each time the instance becomes valid and calls the constructor only if no object already exists. On the other side, the immediate component's constructor is call only once.
 </div>
 
-<h2 id="creating-instances-from-an-external-component-type">Creating instances from an external component type</h2>
+<h2 id="creating-instances-from-an-external-component-type">Creating instances from an external component type<a class="headerlink" href="#creating-instances-from-an-external-component-type" title="Permanent link">&para;</a></h2>
 <p>In the previous section we have declared a customer component type, which does not have the <code>public=false</code> attribute. This feature allows separate deployment from instance creation. Moreover, we didn't declare instances in the descriptor. </p>
 <p>Another metadata file can be used to declare instances from the customer type, this descriptor being contained in another bundle. The following descriptor creates 10 customer instances (look at the <em>vendor.customer.creator\metadata.xml</em> file):</p>
 <div class="codehilite"><pre><span class="nt">&lt;ipojo&gt;</span>
@@ -460,7 +471,7 @@ There is a difference between immediate components and components with a <code>v
 
 
 <p>Once deployed, this bundle looks for the required factory. If it's not available the bundle waits for the factory. As soon as the required factory is available, all instances are created. When this bundle is stopped, all instances are destroyed. </p>
-<h2 id="deploying-the-application">Deploying the application</h2>
+<h2 id="deploying-the-application">Deploying the application<a class="headerlink" href="#deploying-the-application" title="Permanent link">&para;</a></h2>
 <p>Compile the bundles, by launching ant at the root of the tutorial. Then launch Felix is indicated above. 
 Once started, launch the following commands </p>
 <div class="codehilite"><pre>start file:../vendor.services/output/vendor.services.jar
@@ -484,7 +495,7 @@ Customer customer-8 bought Hotdog from Fenway Park
 
 
 <p>Only 8 customers can buy a hot-dog, as the stock of wieners and buns can't supply more hot-dog. The remainder of this tutorial will try to solve the problem of these two hungry customers.</p>
-<h2 id="using-the-lifecycle-controller">Using the lifecycle controller</h2>
+<h2 id="using-the-lifecycle-controller">Using the lifecycle controller<a class="headerlink" href="#using-the-lifecycle-controller" title="Permanent link">&para;</a></h2>
 <p>Sometimes you want to invalidate your instance in the code (for example: to unregister a service). That's possible with the lifecycle controller handler.
 Let's take the popcorn vendor with a corn stock from the <em>vendor.popcorn</em> project. Each time it sells some popcorn, its stock is decreased. When the stock reaches 0, it cannot sell popcorns any more (so the vendor service needs to be withdrawn).</p>
 <p>The following implementation (<em>src\org\apache\felix\ipojo\example\vendor\popcorn\PopCornVendor.java</em>) uses a field to control the lifecycle.</p>
@@ -555,7 +566,7 @@ Customer customer-3 bought popcorn from D &amp; P
 
 
 <p>To recreate new customers, just update the customer.creator bundle (bundle 10). So, now we have 7 customers hungry! There is neither popcorn nor hotdog!</p>
-<h2 id="reconfiguring-an-instance">Reconfiguring an instance</h2>
+<h2 id="reconfiguring-an-instance">Reconfiguring an instance<a class="headerlink" href="#reconfiguring-an-instance" title="Permanent link">&para;</a></h2>
 <p>OSGi specified the Configuration Admin mechanism aiming to handler service and bundle configuration. This section will describe how you can use the Configuration Admin and iPOJO to add corn inside our popcorn vendor.
 First, we will change the pop corn vendor to add a method reinjecting the new stock:</p>
 <div class="codehilite"><pre><span class="cm">/**</span>
@@ -647,7 +658,7 @@ Customer customer-4 bought popcorn from D &amp; P
 
 
 <p>That's it!</p>
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>This small tutorial has presented some of of the iPOJO features. Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to <a href="mailto:users@felix.apache.org">users@felix.apache.org</a>.</p>
         </div>
     </div>
@@ -663,7 +674,7 @@ Customer customer-4 bought popcorn from D &amp; P
                 may be trademarks or registered trademarks of their respective owners.
                 </div>
                 <div class="timestamp span3 offset2">
-                Rev. 1443557 by clement on Thu, 7 Feb 2013 15:34:03 +0000
+                Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
                 </div>
             </div>
         </footer>

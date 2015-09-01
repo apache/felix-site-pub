@@ -39,7 +39,18 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">news</a>  <br />
 <a href="/license.html">license</a>  <br />
 <a href="/downloads.cgi">downloads</a>  <br />
 <a href="/documentation.html">documentation</a>  <br />
@@ -66,18 +77,29 @@
       </div>
 
       <h1>MOSGi Managed OSGi framework</h1>
-      <p>MOSGi enables the remote management of OSGi-compatible service gateways, using JMX. The framework is a reference architecture for end-to-end gateway management. It provides the following features:
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p>MOSGi enables the remote management of OSGi-compatible service gateways, using JMX. The framework is a reference architecture for end-to-end gateway management. It provides the following features:
 <em> relies on JMX management infrastructure (IP-based     management),
 </em> provides two JMX agents: the standard Java 1.5 agent and a    specific Java 1.4 lightweight embedded agent (MX4J agent deviation),
 <em> provides a way to deploy various probes on remote gateways,
 </em> provides a management console,
 * the graphical part of a probe (management console part) can   be dynamically plugged in the management console and is dynamically     downloaded.</p>
-<h1 id="very-fast-quickstart-guide">Very fast QuickStart Guide</h1>
+<h1 id="very-fast-quickstart-guide">Very fast QuickStart Guide<a class="headerlink" href="#very-fast-quickstart-guide" title="Permanent link">&para;</a></h1>
 <p>Go into $FELIX_HOME/trunk/mosgi.doc and read Readme.txt.</p>
-<h1 id="general-architecture">General architecture</h1>
+<h1 id="general-architecture">General architecture<a class="headerlink" href="#general-architecture" title="Permanent link">&para;</a></h1>
 <p>The overall architecture is presented in the following picture :</p>
 <p>!MOSGiArchitecture.png!</p>
-<h1 id="how-it-works">How it works</h1>
+<h1 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h1>
 <p>Managed OSGi gateways can install JMX probes from various repositories. A JMX probe is a standard OSGi bundle that registers an <a href="">#MBean</a> component in the managed gateway's JMX agent.</p>
 <p>The management console (running in a standard OSGi framework) is connected to each gateway through the JMX remoting protocol. When it connects for the first time to a managed gateway, it asks for probes that are installed (i.e. all MBeans registered in the TabUI JMX domain). Then, for each MBean found, the management console asks for its graphical representation through a call to our standard API (component getUI() call). This call redirects to a bundle in the GUI probe repository that is installed by the management console. So the management console discovers at run-time the user interface it should use to
 supervise a specific remote gateway.</p>
@@ -98,7 +120,7 @@ supervise a specific remote gateway.</p>
 <p>A JMX Console is an OSGi framework also (for simplicity) which should host two bundles :
 <em> JMX Console: the graphical framework that will host graphical     plugins
 </em> jmxconsole common tabs: tabs that are common to all gateways.     For the moment it only concerns a tab that shows remote notification    (it works whith remote logger)</p>
-<h1 id="osgijmx-mbean-registration">OSGi/JMX MBean registration</h1>
+<h1 id="osgijmx-mbean-registration">OSGi/JMX MBean registration<a class="headerlink" href="#osgijmx-mbean-registration" title="Permanent link">&para;</a></h1>
 <p>MOSGi installs JMX-MX4J agent at the gateways level. Any one can register an MBean to the JMX agent. The registration can be made in two ways. The direct code and the white board pattern.
 <em> In the direct code, one can register an MBean to the agent through the standard service interface : </em>javax.management.MBeanServer*</p>
 <p>Example:</p>
@@ -117,7 +139,7 @@ supervise a specific remote gateway.</p>
 </pre></div>
 
 
-<h1 id="management-console">Management Console</h1>
+<h1 id="management-console">Management Console<a class="headerlink" href="#management-console" title="Permanent link">&para;</a></h1>
 <p>The management console is a ad-hoc jmx compatible console. Its aim is not to be a concurrent to general purpose consoles like MX4J or JConsole but provides an ad-hoc user interface depending on the managed gateway. The console is based on a plugin framework. Each time the consol connects to a gateway it gets the list of available MBean. Then for each registered MBean it asks for specific local bundles for managing it. Each graphical bundle is integrated as a graphical tab in the management console.</p>
 <p>In the next screenshot, the gateway user has deployed 4 probes on the remote gateway : Remote Obr, Remote Bundle List, GNU/Linux and OSGi Plateform.!jmxconsoleGUI.png!</p>
 <p>In order to get these tabs, the gateway manager deploys the 4 probe bundles on the remote gateway and GUI tabs are automatically made available to the remote console. These bundles are :
@@ -126,10 +148,10 @@ supervise a specific remote gateway.</p>
 <em> GNU-Linux : a probe that gets status from running host    operating system
 </em> OSGi Platform : a probe that gets information from current    running gateway</p>
 <p>These plugin are developed as simple examples and are available in felix repository. A <a href="/documentation/subprojects/mosgi-managed-osgi-framework/probeguide.html">ProbeGuide</a> that  describes plugin integration is available. Plugin are dynamically removed and reinstalled each time you change your selected gateway.</p>
-<h3 id="mbean-definition">MBean Definition</h3>
+<h3 id="mbean-definition">MBean Definition<a class="headerlink" href="#mbean-definition" title="Permanent link">&para;</a></h3>
 <p>An MBean is a Management Component for the JMX framework. It is made of an MBean interface and an implementation of it. The MBean interface is used to make remote management with the implementation.&nbsp;</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1422427 by fmeschbe on Sun, 16 Dec 2012 00:36:51 +0000
+        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
