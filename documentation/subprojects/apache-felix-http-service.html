@@ -115,15 +115,13 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <li><a href="#maven-artifacts">Maven Artifacts</a></li>
 </ul>
 </div>
-<p>This is an implementation of the HTTP Service Specification as described in chapter 102 of the OSGi Compendium. The goal
-is to provide a standard and simplified way to register servlets and resources in a servlet container, and to associate
-them with URIs. It also implement a non-standard extension for registering servlet filters as well as a whiteboard
-implementation. Complete set of features:</p>
+<p>This is an implementation of the HTTP Whiteboard Service as described in chapter 140 of the OSGi Compendium (R6) in combination with an implementation of the HTTP Service Specification as described in chapter 102 of the OSGi Compendium. The goal
+is to provide a standard and simplified way to register servlets, listeners, filters, and resources in a servlet container, to managed them in servlet contexts, and to associate
+them with URIs. Complete set of features:</p>
 <ul>
 <li>Standard HTTP Service implementation;</li>
-<li>Extended HTTP Service implementation that allows for servlet filter registration;</li>
+<li>Standard HTTP Whiteboard Service implementation</li>
 <li>Run either with Jetty or inside your own application server using the servlet bridge;</li>
-<li>A whiteboard implementation for easy registration of servlets and filters;</li>
 <li>One complete bundle that includes everything to simplify deployment;</li>
 <li>Correctly versioned Servlet API.</li>
 </ul>
@@ -131,14 +129,15 @@ implementation. Complete set of features:</p>
 <p>The Apache Felix HTTP Service project includes several bundles. </p>
 <ul>
 <li><code>org.apache.felix.http.servlet-api</code> - Provides the Servlet API (versions 2.6 and 3.0 of the Servlet specification);</li>
-<li><code>org.apache.felix.http.jetty</code> - HTTP Service implementation that is embedding Jetty server (currently Jetty 8);</li>
-<li><code>org.apache.felix.http.whiteboard</code> - Whiteboard implementation that uses any HTTP Service implementation;</li>
+<li><code>org.apache.felix.http.api</code> - Provides the OSGi APIs;</li>
+<li><code>org.apache.felix.http.jetty</code> - HTTP Service implementation that is embedding Jetty server (currently Jetty 9, requiring Java 7);</li>
+<li><code>org.apache.felix.http.whiteboard</code> - Deprecated whiteboard implementation that uses any HTTP Service implementation;</li>
 <li><code>org.apache.felix.http.bridge</code> - HTTP Service implementation that uses the host application server (bridged mode). Must be used with proxy;</li>
 <li><code>org.apache.felix.http.cometd</code> - Adds Comet/Ajax Push functionality to the HTTP Service implementation;</li>
 <li><code>org.apache.felix.http.bundle</code> - The all-in-one bundle that includes all of the above;</li>
 <li><code>org.apache.felix.http.proxy</code> - Proxy that is needed inside WAR when deployed inside an application server. </li>
 </ul>
-<p>Note that as of version <strong>2.3.0</strong>, both the HTTP as the Serlvet APIs are <strong>no longer</strong> packaged with the separate
+<p>Note that as of version <strong>2.3.x</strong> and <strong>3.0.0</strong>, both the HTTP as the Serlvet APIs are <strong>no longer</strong> packaged with the separate
 bundles! The only exception to this is the all-in-one bundle (that is <code>org.apache.felix.http.bundle</code>), which still
 <strong>does</strong> include these APIs.<br />
 If you are migrating from lower versions, and are <em>not</em> using the all-in-one bundle, be sure to add both the
@@ -836,7 +835,7 @@ the provided <code>HttpContext</code> instance:</p>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1694964 by cziegeler on Mon, 10 Aug 2015 06:46:11 +0000
+        Rev. 1706277 by cziegeler on Thu, 1 Oct 2015 15:46:44 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
