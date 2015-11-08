@@ -1,16 +1,3 @@
 ErrorDocument 403 /errors/403.html
 ErrorDocument 404 /errors/404.html
 
-RewriteEngine on
-
-# if file is not found in CMS content, look into components
-RewriteCond %{REQUEST_URI} !^/components/
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /components/$1 [C]
-
-# in case of directory without trailing /, do the redirect or httpd
-will do a redirect from /foo to /components/foo/
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteCond %{REQUEST_URI} !/$
-RewriteRule components/(.*) /$1/ [R]
