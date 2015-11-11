@@ -39,17 +39,28 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">News</a>  <br />
+<a href="/license.html">License</a>  <br />
+<a href="/downloads.cgi">Downloads</a>  <br />
+<a href="/documentation.html">Documentation</a>  <br />
+<a href="/mailinglists.html">Mailing Lists</a>  <br />
+<a href="/documentation/community/contributing.html">Contributing</a>  <br />
+<a href="/sitemap.html">Site Map</a>  <br />
+<a href="http://www.apache.org/">ASF</a>  <br />
+<a href="http://www.apache.org/security/">Security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Apache Felix SCR Ant Task Use</h1>
-      <p>The SCR Ant Task is implemented in the <code>org.apache.felix.scr.ant</code> library which must be registered as an Ant Task in the build file as follows:</p>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p>The SCR Ant Task is implemented in the <code>org.apache.felix.scr.ant</code> library which must be registered as an Ant Task in the build file as follows:</p>
 <div class="codehilite"><pre><span class="nt">&lt;project</span> <span class="err">...</span><span class="nt">&gt;</span>
 
   <span class="nt">&lt;taskdef</span>
@@ -85,7 +107,7 @@
 <li>The task requires that the source files have already been compiled</li>
 </ul>
 <p>The task only generates the descriptor file(s). If you want to use the Declarative Services descriptor -- by default generated in the <code>OSGI-INF/serviceComponents.xml</code> -- you must make sure to add a <code>Service-Components</code> header to your bundle manifest. Unlike Maven plugin the Ant task cannot automatically generate this header.</p>
-<h2 id="task-attributes">Task Attributes</h2>
+<h2 id="task-attributes">Task Attributes<a class="headerlink" href="#task-attributes" title="Permanent link">&para;</a></h2>
 <p>Like the standard <code>javac</code> Ant Task, the SCR Ant Task defines an implicit fileset which defines the source files to be scanned for Java 5 Annotations or JavaDoc Tags. In addition to the child elements available to Ant Fileset as defined for <a href="http://ant.apache.org/manual/dirtasks.html#directorybasedtasks">directory-based tasks</a> the following task attributes are supported:</p>
 <hr />
 <p><strong><code>scrdir</code></strong>  <br />
@@ -149,12 +171,12 @@ If set to true, JavaDoc based annotations will be processed.</p>
 If set to true, SCR annotations will be processed</p>
 <hr />
 <p>The <code>scr</code> task must be provided with the same class path as was used to compile the sources. The classes in the class path are used by the task to be able to load compiled classes (mostly for Java 5 annotation processing) and any base classes, which may be extended. The easiest way to share the class path is to define a class path property and refer to it with the <code>classpathref</code> attribute of the <code>scr</code> task.</p>
-<h2 id="using-javadoc-tags">Using JavaDoc Tags</h2>
+<h2 id="using-javadoc-tags">Using JavaDoc Tags<a class="headerlink" href="#using-javadoc-tags" title="Permanent link">&para;</a></h2>
 <p>JavaDoc tags are supported natively by the SCR Ant Task. No further configuration and/or libraries are needed.</p>
-<h2 id="java-5-annotations">Java 5 Annotations</h2>
+<h2 id="java-5-annotations">Java 5 Annotations<a class="headerlink" href="#java-5-annotations" title="Permanent link">&para;</a></h2>
 <p>To use Java 5 Annotations make sure the library defining the annotations is available on the class path for both the compilation in the <code>javac</code> task and for generating the descriptor in the <code>scr</code> task.</p>
 <p>No further configuration is required as the SCR Ant Task automatically recognizes SCR Annotation definitions from libraries in the class path provided the annotations are provided in a JAR library with properly setup SPI configuration as documented in <a href="/documentation/subprojects/apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations</a>.</p>
-<h2 id="example">Example</h2>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>The following is very simple example build file based on the <a href="http://svn.apache.org/repos/asf/sling/trunk/bundles/jcr/webconsole">Apache Sling JCR WebConsole</a> bundle:</p>
 <div class="codehilite"><pre><span class="nt">&lt;project</span> <span class="na">default=</span><span class="s">&quot;scr&quot;</span> <span class="na">basedir=</span><span class="s">&quot;.&quot;</span><span class="nt">&gt;</span>
 

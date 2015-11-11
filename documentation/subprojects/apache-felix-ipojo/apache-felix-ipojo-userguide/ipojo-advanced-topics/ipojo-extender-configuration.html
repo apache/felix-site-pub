@@ -171,7 +171,18 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="configuring-ipojo-extender">Configuring iPOJO Extender</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="configuring-ipojo-extender">Configuring iPOJO Extender<a class="headerlink" href="#configuring-ipojo-extender" title="Permanent link">&para;</a></h1>
 <p><em>This page presents how the iPOJO's extender can be configured.</em></p>
 <div class="toc">
 <ul>
@@ -191,9 +202,9 @@
 </li>
 </ul>
 </div>
-<h2 id="extender">Extender</h2>
+<h2 id="extender">Extender<a class="headerlink" href="#extender" title="Permanent link">&para;</a></h2>
 <p>The iPOJO Extender starts with the iPOJO bundle (in fact, it's the iPOJO's <code>BundleActivator</code>). It is basically a <code>BundleTracker</code> that will discover iPOJO's components, instances, etc from the <code>ACTIVE</code> bundles.</p>
-<h3 id="threadpool">ThreadPool</h3>
+<h3 id="threadpool">ThreadPool<a class="headerlink" href="#threadpool" title="Permanent link">&para;</a></h3>
 <p>In Apache Felix iPOJO 1.10, the extender has been refactored to take advantage of multi-threading capabilities of modern machines.
 There is now an <code>ExecutorQueueService</code> service, based on a <code>ThreadPoolExecutor</code> that enable asynchronous (and concurrent) activation of Bundles.
 All activation activities (search for <code>IPOJO-Components</code> and <code>IPOJO-Extensions</code> Manifest headers, creation of factories and instances, binding) are done through job submissions.
@@ -223,13 +234,13 @@ Property names are identical for System properties and ConfigAdmin.</p>
   </tbody>
 </table>
 
-<h3 id="synchronous-asynchronous-processing">Synchronous / Asynchronous processing</h3>
+<h3 id="synchronous-asynchronous-processing">Synchronous / Asynchronous processing<a class="headerlink" href="#synchronous-asynchronous-processing" title="Permanent link">&para;</a></h3>
 <p>By default, Apache Felix iPOJO process the Bundles in an asynchronous way. It's better in term of performances and more aligned with OSGi spec recommendations.
 However, in some situations, like when running in <a href="https://developers.google.com/appengine/">Google App Engine</a> (<em>GAE</em>), the underlying platform imposes limitations.
 For example GAE imposes mono-threading. That means that no asynchronous processing can be done by the application itself.</p>
 <p>In other situations, it can be useful to be sure that components and instances contained in a given Bundle will be synchronously started.</p>
 <p>iPOJO's Extender can be configured to support mono-threaded bundle processing to support such use cases.</p>
-<h4 id="system-wide">System wide</h4>
+<h4 id="system-wide">System wide<a class="headerlink" href="#system-wide" title="Permanent link">&para;</a></h4>
 <p>General synchronous processing can be configured through System properties or iPOJO's own Manifest attributes (requires a dedicated iPOJO bundle build).</p>
 <table class="table table-striped">
   <thead>
@@ -259,7 +270,7 @@ For example GAE imposes mono-threading. That means that no asynchronous processi
   </tbody>
 </table>
 
-<h4 id="per-bundle">Per-Bundle</h4>
+<h4 id="per-bundle">Per-Bundle<a class="headerlink" href="#per-bundle" title="Permanent link">&para;</a></h4>
 <p>The synchronous behavior can be selected per-bundle (given that it does not conflict with existing system wide configuration).
 Synchronous/Asynchronous behavior can be expressed in the Bundle's Manifest (case is not significant, but an uppercase first letter is recommended):</p>
 <div class="codehilite"><pre><span class="n">IPOJO</span><span class="o">-</span><span class="n">Queue</span><span class="o">-</span><span class="n">Preference</span> <span class="n">SYNC</span>
@@ -273,7 +284,7 @@ Synchronous/Asynchronous behavior can be expressed in the Bundle's Manifest (cas
 <li><code>DEFAULT</code> using the default behavior</li>
 </ul>
 <p>If no header (or invalid value) is provided, the fallback behavior is <code>DEFAULT</code> (use system wide preference).</p>
-<h3 id="queueservice-insights">QueueService Insights</h3>
+<h3 id="queueservice-insights">QueueService Insights<a class="headerlink" href="#queueservice-insights" title="Permanent link">&para;</a></h3>
 <p>Apache Felix iPOJO provides a mechanism that stores Job events of the QueueService in use (synchronous, multi-threaded, ...) for replay.
 This is very useful to see where time is spent during the bootstrap and take actions accordingly.</p>
 <p>This mechanism is available when the <code>org.apache.felix.ipojo.extender.BootstrapQueueDebug</code> system property is set to <code>true</code>.
@@ -301,7 +312,7 @@ After that, the proxy simply forward the queue events to registered listeners.</
 </pre></div>
 
 
-<h3 id="event-dispatcher">Event Dispatcher</h3>
+<h3 id="event-dispatcher">Event Dispatcher<a class="headerlink" href="#event-dispatcher" title="Permanent link">&para;</a></h3>
 <p>Apache Felix iPOJO provides a way to circumvent the so-call event storm happening when starting large OSGi applications (chained services apparitions).
 It is a dedicated Event dispatcher that mimics a service registry partition logic based on registered service interfaces (<code>Constants.OBJECTCLASS</code>).
 It is not enabled by default (rely on the framework's own service registry).</p>

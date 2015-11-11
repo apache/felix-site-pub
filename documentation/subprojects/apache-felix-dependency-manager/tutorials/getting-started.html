@@ -39,17 +39,28 @@
     </div>
     
     <div class="menu"> 
-      <p><a href="/news.html">news</a>  <br />
-<a href="/license.html">license</a>  <br />
-<a href="/downloads.cgi">downloads</a>  <br />
-<a href="/documentation.html">documentation</a>  <br />
-<a href="/mailinglists.html">mailing lists</a>  <br />
-<a href="/documentation/community/contributing.html">contributing</a>  <br />
-<a href="/sitemap.html">site map</a>  <br />
-<a href="http://www.apache.org/">asf</a>  <br />
-<a href="http://www.apache.org/security/">security</a>  <br />
-<a href="http://www.apache.org/foundation/sponsorship.html">sponsorship</a>  <br />
-<a href="http://www.apache.org/foundation/thanks.html">sponsors</a>    </p>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p><a href="/news.html">News</a>  <br />
+<a href="/license.html">License</a>  <br />
+<a href="/downloads.cgi">Downloads</a>  <br />
+<a href="/documentation.html">Documentation</a>  <br />
+<a href="/mailinglists.html">Mailing Lists</a>  <br />
+<a href="/documentation/community/contributing.html">Contributing</a>  <br />
+<a href="/sitemap.html">Site Map</a>  <br />
+<a href="http://www.apache.org/">ASF</a>  <br />
+<a href="http://www.apache.org/security/">Security</a>  <br />
+<a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
+<a href="http://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
 <iframe
     src="http://www.apache.org/ads/button.html"
     style="border-width:0; float: left"
@@ -66,7 +77,18 @@
       </div>
 
       <h1>Dependency Manager - Getting Started</h1>
-      <p>When developing an OSGi bundle that has dependencies and possibly registers services, there are two classes in particular we need to implement:</p>
+      <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<p>When developing an OSGi bundle that has dependencies and possibly registers services, there are two classes in particular we need to implement:</p>
 <ol>
 <li>The bundle activator which controls the life-cycle of the bundle.</li>
 <li>The actual component, which can be a POJO.</li>
@@ -74,7 +96,7 @@
 <p>When using the dependency manager, your bundle activator is a subclass of <code>DependencyActivatorBase</code>. It needs to implement the <code>init</code> life cycle method and can optionally also implement a <code>destroy</code> method. Both methods take two arguments: <code>BundleContext</code> and <code>DependencyManager</code>. The latter is your interface to the declarative API you can use to define your components and dependencies.</p>
 <p>The following paragraphs will show various examples that explain how to do this. Subsequently, some more advanced scenarios will be covered that involve listening to dependency and component state changes and interacting with the OSGi framework from within your component implementation.</p>
 <p>To use the dependency manager, you should put the <code>org.apache.felix.dependencymanager.jar</code> in your classpath while compiling and in your OSGi framework when running.</p>
-<h2 id="registering-a-service">Registering a service</h2>
+<h2 id="registering-a-service">Registering a service<a class="headerlink" href="#registering-a-service" title="Permanent link">&para;</a></h2>
 <p>The first example is about registering a service. We extend <code>DependencyActivatorBase</code> and in the <code>init</code> method we use the reference to the <code>DependencyManager</code> to create and add a component. For this component we subsequently set its service interface and implementation. In this case the interface is the <code>Store</code> interface, the second parameter, <code>null</code>, allows you to provide properties along with the service registration. For the implementation, we only mention the <code>Class</code> of the implementation, which means the dependency manager will lazily instantiate it. In this case, there is not much point in doing that because the component has no dependencies, but if it had, the instantiation would only happen when those dependencies were resolved.</p>
 <p>Notice that the dependency manager API uses method chaining to create a more or less "fluent" API that, with proper indentation, is very easy to read.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
@@ -111,7 +133,7 @@
 </pre></div>
 
 
-<h2 id="depending-on-a-service">Depending on a service</h2>
+<h2 id="depending-on-a-service">Depending on a service<a class="headerlink" href="#depending-on-a-service" title="Permanent link">&para;</a></h2>
 <p>Our second example is that of a component that depends on two other services: our <code>Store</code> from the previous example and the standard OSGi <code>LogService</code>. Looking at the code, there is a small but important difference between the two: <code>Store</code> is a required dependency and <code>LogService</code> is not. This means that our component really needs a store to work, but if there is no logging available, it can work without. Also note that this component has no <code>setInterface</code> method, which simply means it is not itself a service. This is perfectly fine.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
@@ -147,7 +169,7 @@
 </pre></div>
 
 
-<h2 id="tracking-services-with-callbacks">Tracking services with callbacks</h2>
+<h2 id="tracking-services-with-callbacks">Tracking services with callbacks<a class="headerlink" href="#tracking-services-with-callbacks" title="Permanent link">&para;</a></h2>
 <p>Sometimes, simply injecting services does not give you enough control over a dependency because you might want to track more than one, or you might want to execute some code on changes. For all those cases, callbacks are your friends. Since one of our goals is to not introduce any kind of API in our POJO, callbacks are declared by specifying their method names instead of through some interface. In this case, we have a dependency on <code>Translator</code> services, and we define <code>added</code> and <code>removed</code> as callbacks.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
@@ -196,7 +218,7 @@
 </pre></div>
 
 
-<h2 id="depending-on-a-configuration">Depending on a configuration</h2>
+<h2 id="depending-on-a-configuration">Depending on a configuration<a class="headerlink" href="#depending-on-a-configuration" title="Permanent link">&para;</a></h2>
 <p>Not all dependencies are on services. There are several other types of dependencies that are supported, one of them is the configuration dependency. In fact, only <em>required</em> configuration dependencies are supported, because optional ones can just be achieved by registering as a <code>ManagedService</code> yourself. When defining the dependency, you must define the persistent ID of the service. The component will not become active until the configuration you depend on is available <em>and</em> is valid. The latter can be checked by your implementation as we will see below.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>

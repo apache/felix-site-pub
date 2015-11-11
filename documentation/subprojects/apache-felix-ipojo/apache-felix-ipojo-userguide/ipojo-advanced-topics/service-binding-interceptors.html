@@ -171,7 +171,18 @@
 
     <div class="container">
         <div class="content">
-            <h1 id="service-binding-interceptors">Service Binding Interceptors</h1>
+            <style type="text/css">
+/* The following code is added by mdx_elementid.py
+   It was originally lifted from http://subversion.apache.org/style/site.css */
+/*
+ * Hide class="elementid-permalink", except when an enclosing heading
+ * has the :hover property.
+ */
+.headerlink, .elementid-permalink {
+  visibility: hidden;
+}
+h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+<h1 id="service-binding-interceptors">Service Binding Interceptors<a class="headerlink" href="#service-binding-interceptors" title="Permanent link">&para;</a></h1>
 <p>Service Bindings are the connection between a service consumer and a service provider. Following the service-orientation paradigm (<em>publication-lookup-binding</em>), bindings are woven based a <em>local</em> analysis only: the consumer tracks and chooses the service to user. However, this <em>locality</em> avoids using more global knowledge to resolve the dependencies.</p>
 <p>Service binding interceptors allows you to customize the service bindings from outside the involved components (providers or consumers). It let you adapt the bindings dynamically without touching anything in your component implementation.</p>
 <div class="toc">
@@ -187,7 +198,7 @@
 </li>
 </ul>
 </div>
-<h2 id="whats-an-interceptor">What's an interceptor</h2>
+<h2 id="whats-an-interceptor">What's an interceptor<a class="headerlink" href="#whats-an-interceptor" title="Permanent link">&para;</a></h2>
 <p>Interceptors are services exposed in the OSGi service registry. They can be iPOJO components, but it's not a necessity. </p>
 <p>Each interceptor can manage a set of dependencies. The interceptor selects this set with a LDAP filter, exposed as service properties (named <code>target</code>):</p>
 <div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">immediate</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
@@ -210,14 +221,14 @@
 <li><a href="http://felix.apache.org/ipojo/api/1.12.1/org/apache/felix/ipojo/dependency/interceptors/ServiceBindingInterceptor.html">Binding interceptors</a> - can modify the injected service objects</li>
 </ul>
 <p>For all these classes, default implementations are available in (http://felix.apache.org/ipojo/api/1.12.1/org/apache/felix/ipojo/dependency/interceptors/package-summary.html).</p>
-<h2 id="service-dependency-theory">Service dependency theory</h2>
+<h2 id="service-dependency-theory">Service dependency theory<a class="headerlink" href="#service-dependency-theory" title="Permanent link">&para;</a></h2>
 <p>Before looking more deeply into these interceptors, let's first explain the service dependency principle. Before being injected inside the component's code, a service (reference) traverses a set of layers. The service dependencies consider all services from the service registry and narrows this set to select the right set of services. The narrowing process has three phases.</p>
 <p>The initial set of services considered by the service dependencies is named <em>base set</em>. It contains all services from the service registry providing the requested service interface.</p>
 <p>Then, for all services from the base set, the tracking interceptors (handling the service dependency) can decide whether or not to accept the service. By this way, they can decide to hide services. They are also able to <em>transform</em> services, to add and/or remove service properties. Several tracking interceptors can handle the same service dependency. They are invoked sequentially. Service accepted by all tracking interceptors are composed the <em>matching set</em>. Notice that the OSGi LDAP filters are tracking interceptors.</p>
 <p><img src="narrowing.png"/></p>
 <p>Unlike service tracking interceptors, only one ranking interceptor can be plugged on a service dependency. The ranking interceptor transforms the matching set to the <em>selected set</em> by selecting and sorting services. The iPOJO comparator feature is a ranking interceptor. Notice that ranking interceptor may select an empty set from the matching set. </p>
 <p>Finally, the last layer is the binding interceptor. This layer does not narrow the service set, but may interceptor the <em>weaving</em> of the binding for monitoring or interception purposes.</p>
-<h2 id="selection-of-service-dependencies">Selection of service dependencies</h2>
+<h2 id="selection-of-service-dependencies">Selection of service dependencies<a class="headerlink" href="#selection-of-service-dependencies" title="Permanent link">&para;</a></h2>
 <p>All interceptors must publish a <em>target</em> service property indicating the set of service dependency they handle. This property is an LDAP filter that can rely on the following properties:</p>
 <ul>
 <li><em>instance.name</em> : to select all dependencies of a specific instance (String)</li>
@@ -239,7 +250,7 @@
 <code>(&amp;(instance.name=instance)(dependency.id=foo))</code></li>
 <li>select all dependencies targeting <code>AbstractService</code> or sub-classes: <code>(objectClass=o.o…AbstractService)</code></li>
 </ul>
-<h2 id="service-tracking-interceptors">Service Tracking Interceptors</h2>
+<h2 id="service-tracking-interceptors">Service Tracking Interceptors<a class="headerlink" href="#service-tracking-interceptors" title="Permanent link">&para;</a></h2>
 <p>Service tracking interceptors are responsible for accepting matching services. Their main goal is to filter the <em>base set</em>. The following tracking interceptor hides all services with the <code>hidden</code> property:</p>
 <div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">immediate</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
 <span class="nd">@Provides</span>
@@ -288,7 +299,7 @@
 
 <p>The <code>invalidateMatchingServices</code> invalidates the matching service set and triggers a complete evaluation of the base set.</p>
 <p>Several tracking interceptors can manage the same dependency. All interceptors must accept matching services. The last evaluated tracking interceptor is the iPOJO LDAP filter.</p>
-<h2 id="service-ranking-interceptors">Service Ranking Interceptors</h2>
+<h2 id="service-ranking-interceptors">Service Ranking Interceptors<a class="headerlink" href="#service-ranking-interceptors" title="Permanent link">&para;</a></h2>
 <p>Service Ranking Interceptors receive the services from the matching set as input and returns a sorted sub-set. Unlike service tracking interceptors, only one ranking interceptor can manage a dependency.</p>
 <div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">immediate</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
 <span class="nd">@Provides</span>
@@ -331,7 +342,7 @@
 
 
 <p>The iPOJO comparator is a ranking interceptor. As only one interceptor can manage the dependency, the comparator is replaced when an external interceptor is plugged. It is restored when the external interceptors disappears.</p>
-<h2 id="binding-service-interceptors">Binding Service Interceptors</h2>
+<h2 id="binding-service-interceptors">Binding Service Interceptors<a class="headerlink" href="#binding-service-interceptors" title="Permanent link">&para;</a></h2>
 <p>The last category of interceptors is bindings interceptors. They intercepts the binding weaving, and thus, can <em>change</em> the injected service objects. This kind of interceptors are often used to inject a proxy intercepting some invocations:</p>
 <div class="codehilite"><pre><span class="nd">@Component</span>
 <span class="nd">@Provides</span>
