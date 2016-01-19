@@ -90,45 +90,47 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
 <p>The Felix Framework Security subproject is an implementation of the security part of the OSGi R4.2 core specification.</p>
 <h1 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h1>
-<p>Support for the OSGi r4.2 security specifications including PermissionAdmin and ConditionalPermissionAdmin is provided by the framework.security extension bundle. The bundle provides both, the packages as well as the services when it is installed. </p>
-<p>All that needs to be done is to install the org.apache.felix.framework.security bundle into the framework. </p>
+<p>Support for the OSGi R4.2 security specifications including <code>PermissionAdmin</code> and <code>ConditionalPermissionAdmin</code> is provided by the framework.security extension bundle. The bundle provides both, the packages as well as the services when it is installed.</p>
+<p>All that needs to be done is to install the <code>org.apache.felix.framework.security</code> bundle into the framework.</p>
 <h1 id="using-security">Using security<a class="headerlink" href="#using-security" title="Permanent link">&para;</a></h1>
-<p>Besides installing the security bundle three properties should be specified:
-<em> org.osgi.framework.security="osgi"
-</em> java.security.policy=all.policy
-* org.osgi.framework.trust.repositories=&lt;list of keystores)</p>
+<p>Besides installing the security bundle three properties should be specified:</p>
+<ul>
+<li><code>org.osgi.framework.security="osgi"</code></li>
+<li><code>java.security.policy=all.policy</code></li>
+<li><code>org.osgi.framework.trust.repositories=&lt;list of keystores&gt;</code></li>
+</ul>
 <p>The first installs a security manager on framework init (which in combination with the installed security bundle enables security). </p>
-<p>The second, points to a security policy file that gives allpermission like so,</p>
-<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>all.policy</B></DIV><DIV class="codeContent panelContent">
-    grant {
-     permission java.security.AllPermission;
-    };
+<p>The second points to a security policy file (<code>all.policy</code>) that gives all permission like so:</p>
+<div class="codehilite"><pre><span class="n">grant</span> <span class="p">{</span>
+ <span class="n">permission</span> <span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">AllPermission</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
 
-The third, allows to specify a File.pathseparater separated list of JKS keystores without a password. The certificates found inside the keystores are the trusted root certificates of the framework (setting this property is optional). 
 
-<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>Example</B></DIV><DIV class="codeContent panelContent">
-    $ java -Djava.security.policy=all.policy -Dorg.osgi.framework.security="osgi" -jar bin/felix.jar
+<p>The third allows to specify a <code>File.pathSeparator</code> separated list of JKS keystores without a password. The certificates found inside the keystores are the trusted root certificates of the framework (setting this property is optional). </p>
+<div class="codehilite"><pre>$ <span class="n">java</span> <span class="o">-</span><span class="n">Djava</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">policy</span><span class="p">=</span><span class="n">all</span><span class="p">.</span><span class="n">policy</span> <span class="o">-</span><span class="n">Dorg</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">security</span><span class="p">=</span>&quot;<span class="n">osgi</span>&quot; <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="o">/</span><span class="n">felix</span><span class="p">.</span><span class="n">jar</span>
 
-    Welcome to Felix
-    ================
+<span class="n">Welcome</span> <span class="n">to</span> <span class="n">Felix</span>
+<span class="o">================</span>
 
-    -> install file:org.apache.felix.framework.security.jar
-    -> inspect s c 0
-    System Bundle (0) provides services:
-    ------------------------------------
-    objectClass = org.osgi.service.startlevel.StartLevel
-    service.id = 1
-    ----
-    objectClass = org.osgi.service.packageadmin.PackageAdmin
-    service.id = 2
-    ----
-    objectClass = org.osgi.service.permissionadmin.PermissionAdmin
-    service.id = 3
-    ----
-    objectClass = org.osgi.service.condpermadmin.ConditionalPermissionAdmin
-    service.id = 4
+<span class="o">-&gt;</span> <span class="n">install</span> <span class="n">file</span><span class="p">:</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">jar</span>
+<span class="o">-&gt;</span> <span class="n">inspect</span> <span class="n">s</span> <span class="n">c</span> 0
+<span class="n">System</span> <span class="n">Bundle</span> <span class="p">(</span>0<span class="p">)</span> <span class="n">provides</span> <span class="n">services</span><span class="p">:</span>
+<span class="o">------------------------------------</span>
+<span class="n">objectClass</span> <span class="p">=</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">startlevel</span><span class="p">.</span><span class="n">StartLevel</span>
+<span class="n">service</span><span class="p">.</span><span class="n">id</span> <span class="p">=</span> 1
+<span class="o">----</span>
+<span class="n">objectClass</span> <span class="p">=</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">packageadmin</span><span class="p">.</span><span class="n">PackageAdmin</span>
+<span class="n">service</span><span class="p">.</span><span class="n">id</span> <span class="p">=</span> 2
+<span class="o">----</span>
+<span class="n">objectClass</span> <span class="p">=</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">permissionadmin</span><span class="p">.</span><span class="n">PermissionAdmin</span>
+<span class="n">service</span><span class="p">.</span><span class="n">id</span> <span class="p">=</span> 3
+<span class="o">----</span>
+<span class="n">objectClass</span> <span class="p">=</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">condpermadmin</span><span class="p">.</span><span class="n">ConditionalPermissionAdmin</span>
+<span class="n">service</span><span class="p">.</span><span class="n">id</span> <span class="p">=</span> 4
+</pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
+        Rev. 1725495 by pauls on Tue, 19 Jan 2016 12:35:53 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
