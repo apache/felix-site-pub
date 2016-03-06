@@ -96,6 +96,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <p>When using the dependency manager, your bundle activator is a subclass of <code>DependencyActivatorBase</code>. It needs to implement the <code>init</code> life cycle method and can optionally also implement a <code>destroy</code> method. Both methods take two arguments: <code>BundleContext</code> and <code>DependencyManager</code>. The latter is your interface to the declarative API you can use to define your components and dependencies.</p>
 <p>The following paragraphs will show various examples that explain how to do this. Subsequently, some more advanced scenarios will be covered that involve listening to dependency and component state changes and interacting with the OSGi framework from within your component implementation.</p>
 <p>To use the dependency manager, you should put the <code>org.apache.felix.dependencymanager.jar</code> in your classpath while compiling and in your OSGi framework when running.</p>
+<p>A recent java 8 jdk is required since the dependency manager r8 (the dm r8 release has been built and tested using java version 1.8.74).</p>
 <h2 id="registering-a-service">Registering a service<a class="headerlink" href="#registering-a-service" title="Permanent link">&para;</a></h2>
 <p>The first example is about registering a service. We extend <code>DependencyActivatorBase</code> and in the <code>init</code> method we use the reference to the <code>DependencyManager</code> to create and add a component. For this component we subsequently set its service interface and implementation. In this case the interface is the <code>Store</code> interface, the second parameter, <code>null</code>, allows you to provide properties along with the service registration. For the implementation, we only mention the <code>Class</code> of the implementation, which means the dependency manager will lazily instantiate it. In this case, there is not much point in doing that because the component has no dependencies, but if it had, the instantiation would only happen when those dependencies were resolved.</p>
 <p>Notice that the dependency manager API uses method chaining to create a more or less "fluent" API that, with proper indentation, is very easy to read.</p>
@@ -252,7 +253,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <span class="p">}</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+        Rev. 1733828 by pderop on Sun, 6 Mar 2016 18:52:36 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
