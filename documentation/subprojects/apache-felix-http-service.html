@@ -91,16 +91,14 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <div class="toc">
 <ul>
 <li><a href="#installing">Installing</a></li>
-<li><a href="#using-the-httpservice">Using the HttpService</a></li>
-<li><a href="#using-the-exthttpservice">Using the ExtHttpService</a></li>
-<li><a href="#using-the-whiteboard">Using the Whiteboard</a><ul>
+<li><a href="#using-the-osgi-http-whiteboard">Using the OSGi Http Whiteboard</a><ul>
 <li><a href="#servlet-service-properties">Servlet service properties</a></li>
 <li><a href="#filter-service-properties">Filter service properties</a></li>
-<li><a href="#httpcontext-service-properties">HttpContext service properties</a></li>
+<li><a href="#servletcontexthelper-service-properties">ServletContextHelper service properties</a></li>
 </ul>
 </li>
+<li><a href="#using-the-httpservice">Using the HttpService</a></li>
 <li><a href="#using-the-servlet-bridge">Using the Servlet Bridge</a></li>
-<li><a href="#using-the-all-in-one-bundle">Using the all-in-one bundle</a></li>
 <li><a href="#using-the-ssl-filter">Using the SSL filter</a></li>
 <li><a href="#configuration-properties">Configuration Properties</a><ul>
 <li><a href="#all-in-one-bundle-configuration-properties">All-in-one-bundle configuration properties</a></li>
@@ -119,35 +117,69 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 is to provide a standard and simplified way to register servlets, listeners, filters, and resources in a servlet container, to managed them in servlet contexts, and to associate
 them with URIs. Complete set of features:</p>
 <ul>
-<li>Standard HTTP Service implementation;</li>
-<li>Standard HTTP Whiteboard Service implementation</li>
-<li>Run either with Jetty or inside your own application server using the servlet bridge;</li>
-<li>One complete bundle that includes everything to simplify deployment;</li>
+<li>Standard OSGi Http Service implementation</li>
+<li>Standard OSGi Http Whiteboard implementation</li>
+<li>Run either with Jetty or inside your own application server using the servlet bridge</li>
 <li>Correctly versioned Servlet API.</li>
 </ul>
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
 <p>The Apache Felix HTTP Service project includes several bundles. </p>
 <ul>
-<li><code>org.apache.felix.http.servlet-api</code> - Provides the Servlet API (versions 2.6 and 3.0 of the Servlet specification);</li>
-<li><code>org.apache.felix.http.api</code> - Provides the OSGi APIs;</li>
-<li><code>org.apache.felix.http.jetty</code> - HTTP Service implementation that is embedding Jetty server (currently Jetty 9, requiring Java 7). This bundle includes the http.api bundle.;</li>
-<li><code>org.apache.felix.http.whiteboard</code> - Deprecated whiteboard implementation that uses any HTTP Service implementation;</li>
-<li><code>org.apache.felix.http.bridge</code> - HTTP Service implementation that uses the host application server (bridged mode). Must be used with proxy;</li>
-<li><code>org.apache.felix.http.cometd</code> - Adds Comet/Ajax Push functionality to the HTTP Service implementation;</li>
-<li><code>org.apache.felix.http.bundle</code> - The all-in-one bundle that includes all of the above;</li>
+<li><code>org.apache.felix.http.servlet-api</code> - Provides the Servlet API (versions 2.6, 3.0, and 3.1 of the Servlet specification)</li>
+<li><code>org.apache.felix.http.api</code> - Provides the OSGi APIs for the Http Whiteboard and Http Service.</li>
+<li><code>org.apache.felix.http.jetty</code> - Implementation that is embedding Jetty server (currently Jetty 9, requiring Java 8). This bundle includes the http.api bundle.</li>
+<li><code>org.apache.felix.http.sslfilter</code> - Servlet filter for handling SSL termination.</li>
+<li><code>org.apache.felix.http.bridge</code> - Implementation that uses the host application server (bridged mode). Must be used with the proxy (see below)</li>
+<li><code>org.apache.felix.http.cometd</code> - Adds Comet/Ajax Push functionality to the HTTP Service implementation.</li>
 <li><code>org.apache.felix.http.proxy</code> - Proxy that is needed inside WAR when deployed inside an application server. </li>
 </ul>
-<p>Note that as of version <strong>2.3.x</strong> and <strong>3.0.0</strong>, both the HTTP as well as the Serlvet APIs are <strong>no longer</strong> packaged with the separate
-bundles! The only exception to this is the all-in-one bundle (that is <code>org.apache.felix.http.bundle</code>), which still
-<strong>does</strong> include these APIs.<br />
-If you are migrating from lower versions, and are <em>not</em> using the all-in-one bundle, be sure to add both the
-<code>org.apache.felix.http.api</code> and <code>org.apache.felix.http.servlet-api</code> (or any other compatible Serlvet API bundle) to your
+<p>Note that as of version <strong>3.x</strong>, the Serlvet APIs are <strong>no longer</strong> packaged with the implementation bundles! If you are migrating from lower versions, be sure to add the
+<code>org.apache.felix.http.servlet-api</code> (or any other compatible Serlvet API bundle) to your
 classpath and deployment!</p>
-<p>So, in most cases you could just use <strong>org.apache.felix.http.bundle</strong> and forget about all the other ones. Note that <em>by
-default</em>, this bundle operates in "bridged mode" and needs explicit configuration to enable or operate in other modes.
-See <a href="#using-the-all-in-one-bundle">this section</a> for more information.</p>
+<h2 id="using-the-osgi-http-whiteboard">Using the OSGi Http Whiteboard<a class="headerlink" href="#using-the-osgi-http-whiteboard" title="Permanent link">&para;</a></h2>
+<p>The OSGi whiteboard implementation simplifies the task of registering servlets, filters, resources, listeners, and servlet contexts. For a complete introduction, please refer to the OSGi R6 Compendium or Enterprise specification. </p>
+<p>For a short introduction: Such a whiteboard service can be registered by exporting it as a service, making it no longer necessary to track and use the <code>HttpService</code> directly. The
+whiteboard implementation detects all <code>javax.servlet.Servlet</code> and <code>javax.servlet.Filter</code> services with the right service properties. Let us illustrate the usage by registering a servlet:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="n">ServiceRegistration</span> <span class="n">registration</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">Hashtable</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">();</span>
+    <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;osgi.http.whiteboard.servlet.pattern&quot;</span><span class="o">,</span> <span class="s">&quot;/hello&quot;</span><span class="o">);</span>
+    <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;servlet.init.message&quot;</span><span class="o">,</span> <span class="s">&quot;Hello World!&quot;</span><span class="o">);</span>
+
+    <span class="k">this</span><span class="o">.</span><span class="na">registration</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">registerService</span><span class="o">(</span><span class="n">Servlet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="k">new</span> <span class="n">HelloWorldServlet</span><span class="o">(),</span> <span class="n">props</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">registration</span><span class="o">.</span><span class="na">unregister</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>To ensure the HTTP whiteboard service picks up your servlet and filter correctly, your service
+registration <em>must</em> provide several service properties.</p>
+<h3 id="servlet-service-properties">Servlet service properties<a class="headerlink" href="#servlet-service-properties" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>osgi.http.whiteboard.servlet.pattern</code> - defines the servlet pattern to register the servlet under, should be a path as defined in the Servlet specification.</li>
+<li><code>osgi.http.whiteboard.context.select</code> - Filter expression to select the servlet context (optional).</li>
+<li><code>servlet.init.*</code> - these properties (sans the <code>servlet.init.</code> prefix) are made available throught the <code>ServletConfig</code> object of your servlet. This allows you to supply your servlet initialization parameters as you would normally do in the web descriptor (web.xml).</li>
+</ul>
+<h3 id="filter-service-properties">Filter service properties<a class="headerlink" href="#filter-service-properties" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>osgi.http.whiteboard.filter.regex</code> - The regular expression pattern to register filter with.</li>
+<li><code>osgi.http.whiteboard.context.select</code> - Filter expression to select the servlet context (optional).</li>
+<li><code>service.ranking</code> - an integer value that allows you to specify where in the filter chain the filter should be registered. Higher rankings will be placed first in the chain, that is, filter chains are sorted in descending order. If omitted, a ranking of zero (0) is used.</li>
+<li><code>filter.init.*</code> - these properties (sans the <code>filter.init.</code> prefix) are made available throught the <code>FilterConfig</code> object of your filter. This allows you to supply your filter initialization parameters as you would normally do in the web descriptor (web.xml).</li>
+</ul>
+<h3 id="servletcontexthelper-service-properties">ServletContextHelper service properties<a class="headerlink" href="#servletcontexthelper-service-properties" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>osgi.http.whiteboard.context.name</code> - the identifier of the registered HTTP context to be referenced by a servlet or filter service</li>
+<li><code>osgi.http.whiteboard.context.path</code> - The path of the servlet context.</li>
+</ul>
 <h2 id="using-the-httpservice">Using the HttpService<a class="headerlink" href="#using-the-httpservice" title="Permanent link">&para;</a></h2>
-<p>The main components provided by the Apache Felix HTTP Service bundle are:</p>
+<p>In general the Http Service is regarded legacy and the OSGi Http Whiteboard should be used instead. If you still want to use the Http Service, this is a brief introduction. The main components provided by the Apache Felix HTTP Service bundle are:</p>
 <ul>
 <li><code>HttpService</code> - Service used to dynamically register resources and servlets;</li>
 <li><code>HttpContext</code> - Additional (optional) component to handle authentication, resource and mime type mappings.</li>
@@ -311,91 +343,6 @@ or the correct MIME type implementing the method <code>HttpContext.getMimeType</
 </pre></div>
 
 
-<h2 id="using-the-exthttpservice">Using the ExtHttpService<a class="headerlink" href="#using-the-exthttpservice" title="Permanent link">&para;</a></h2>
-<p>To be able to register filters, it is possible to get hold of <code>org.apache.felix.http.api.ExtHttpService</code>. This service
-is exported by both Jetty and the bridged implementation. Let's see an example of how you would register a filter:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="n">ServiceTracker</span> <span class="n">httpTracker</span><span class="o">;</span>
-
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="n">httpTracker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceTracker</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">ExtHttpService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removedService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">,</span> <span class="n">Object</span> <span class="n">service</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// HTTP service is no longer available, unregister our resources...</span>
-        <span class="k">try</span> <span class="o">{</span>
-           <span class="o">((</span><span class="n">ExtHttpService</span><span class="o">)</span> <span class="n">service</span><span class="o">).</span><span class="na">unregister</span><span class="o">(</span><span class="s">&quot;/static&quot;</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
-           <span class="c1">// Ignore; servlet registration probably failed earlier on...</span>
-        <span class="o">}</span>
-      <span class="o">}</span>
-
-      <span class="kd">public</span> <span class="n">Object</span> <span class="nf">addingService</span><span class="o">(</span><span class="n">ServiceReference</span> <span class="n">reference</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// HTTP service is available, register our resources...</span>
-        <span class="n">ExtHttpService</span> <span class="n">httpService</span> <span class="o">=</span> <span class="o">(</span><span class="n">ExtHttpService</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
-        <span class="k">try</span> <span class="o">{</span>
-          <span class="n">httpService</span><span class="o">.</span><span class="na">registerFilter</span><span class="o">(</span><span class="k">new</span> <span class="n">HelloWorldFilter</span><span class="o">(),</span> <span class="s">&quot;/hello/.*&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">exception</span><span class="o">)</span> <span class="o">{</span>
-          <span class="n">exception</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="n">httpService</span><span class="o">;</span>
-      <span class="o">}</span>
-    <span class="o">};</span>
-    <span class="c1">// start tracking all HTTP services...</span>
-    <span class="n">httpTracker</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
-  <span class="o">}</span>
-
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="c1">// stop tracking all HTTP services...</span>
-    <span class="n">httpTracker</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<h2 id="using-the-whiteboard">Using the Whiteboard<a class="headerlink" href="#using-the-whiteboard" title="Permanent link">&para;</a></h2>
-<p>The whiteboard implementation simplifies the task of registering servlets and filters. A servlet (or filter) can be
-registered by exporting it as a service, making it no longer necessary to track and use the <code>HttpService</code> directly. The
-whiteboard implementation detects all <code>javax.servlet.Servlet</code>, <code>javax.servlet.Filter</code> and
-<code>org.osgi.service.http.HttpContext</code> services with the right service properties. Let us illustrate the usage by
-registering a servlet:</p>
-<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">implements</span> <span class="n">BundleActivator</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="n">ServiceRegistration</span> <span class="n">registration</span><span class="o">;</span>
-
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="n">Hashtable</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">();</span>
-    <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;alias&quot;</span><span class="o">,</span> <span class="s">&quot;/hello&quot;</span><span class="o">);</span>
-    <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;init.message&quot;</span><span class="o">,</span> <span class="s">&quot;Hello World!&quot;</span><span class="o">);</span>
-
-    <span class="k">this</span><span class="o">.</span><span class="na">registration</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">registerService</span><span class="o">(</span><span class="n">Servlet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="k">new</span> <span class="n">HelloWorldServlet</span><span class="o">(),</span> <span class="n">props</span><span class="o">);</span>
-  <span class="o">}</span>
-
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="k">this</span><span class="o">.</span><span class="na">registration</span><span class="o">.</span><span class="na">unregister</span><span class="o">();</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>To ensure the HTTP whiteboard service picks up your HTTP context, servlet and filter correctly, your service
-registration <em>must</em> provide several service properties. These properties are used for the actual registration with the
-<code>HttpService</code> (or <code>ExtHttpService</code>).</p>
-<h3 id="servlet-service-properties">Servlet service properties<a class="headerlink" href="#servlet-service-properties" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>alias</code> - defines the servlet alias to register the servlet under, should be a path as defined in the Servlet specification. Note that wildcards are <strong>not</strong> supported yet; </li>
-<li><code>contextId</code> - the optional identifier of the HTTP context to associate the servlet with. If omitted, a default HTTP context will be associated;</li>
-<li><code>init.*</code> - these properties (sans the <code>init.</code> prefix) are made available throught the <code>ServletConfig</code> object of your servlet. This allows you to supply your servlet initialization parameters as you would normally do in the web descriptor (web.xml).</li>
-</ul>
-<h3 id="filter-service-properties">Filter service properties<a class="headerlink" href="#filter-service-properties" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>pattern</code> - The regular expression pattern to register filter with;</li>
-<li><code>service.ranking</code> - an integer value that allows you to specify where in the filter chain the filter should be registered. Higher rankings will be placed first in the chain, that is, filter chains are sorted in descending order. If omitted, a ranking of zero (0) is used;</li>
-<li><code>contextId</code> - the optional identifier of the HTTP context to associate the filter with. If omitted, a default HTTP context will be associated;</li>
-<li><code>init.*</code> - these properties (sans the <code>init.</code> prefix) are made available throught the <code>FilterConfig</code> object of your filter. This allows you to supply your filter initialization parameters as you would normally do in the web descriptor (web.xml).</li>
-</ul>
-<h3 id="httpcontext-service-properties">HttpContext service properties<a class="headerlink" href="#httpcontext-service-properties" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>contextId</code> - the identifier of the registered HTTP context to be referenced by a servlet or filter service;</li>
-<li><code>context.shared</code> - if the HTTP context needs to be shared across bundles then this property should be set to <code>true</code>. Shared <code>HttpContext</code> services should  either not implement the <code>getResource</code> at all or be registered as service factories to ensure access to foreign bundle resources is not allowed through this backdoor.</li>
-</ul>
 <h2 id="using-the-servlet-bridge">Using the Servlet Bridge<a class="headerlink" href="#using-the-servlet-bridge" title="Permanent link">&para;</a></h2>
 <p>The servlet bridge is used if you want to use the HTTP service inside a WAR deployed on a 3rd part applicaiton server. A
 little setup is needed for this to work:</p>
@@ -408,11 +355,6 @@ little setup is needed for this to work:</p>
 <li>deploy <code>org.apache.felix.http.bridge</code> (or <code>org.apache.felix.http.bundle</code>) inside the OSGi framework.</li>
 </ol>
 <p>A detailed example can be found <a href="http://svn.apache.org/repos/asf/felix/trunk/http/samples/bridge">here</a>.</p>
-<h2 id="using-the-all-in-one-bundle">Using the all-in-one bundle<a class="headerlink" href="#using-the-all-in-one-bundle" title="Permanent link">&para;</a></h2>
-<p>The all-in-one bundle combines the the Jetty server, the whiteboard implementation, the servlet bridge and the CometD
-functionality in a single, easy to use bundle. By default its functionality is equivalent to the Servlet Bridge, meaning
-that the Jetty, Whiteboard and CometD features are <em>disabled</em>. To <em>enable</em> these features, you need to supply one or
-more configuration properties as described in the <a href="#configuration-properties">next section</a>.</p>
 <h2 id="using-the-ssl-filter">Using the SSL filter<a class="headerlink" href="#using-the-ssl-filter" title="Permanent link">&para;</a></h2>
 <p>This filter provides you means to transparently handle <a href="http://en.wikipedia.org/wiki/SSL_termination_proxy">SSL termination proxies</a>, 
 allowing your servlets and filters to work <em>like they were accessed directly through HTTPS</em>. This filter is useful when
@@ -786,56 +728,46 @@ the provided <code>HttpContext</code> instance:</p>
 <div class="codehilite"><pre><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.servlet-api<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.1.2<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.api<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.base<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.bridge<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.bundle<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.cometd<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.jetty<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>3.2.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.base<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>3.0.8<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.bridge<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>3.0.8<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.cometd<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.2<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.proxy<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.whiteboard<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>3.0.2<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.http.sslfilter<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>0.1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0.4<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1712598 by cziegeler on Wed, 4 Nov 2015 17:48:20 +0000
+        Rev. 1740740 by cziegeler on Sun, 24 Apr 2016 22:19:59 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
