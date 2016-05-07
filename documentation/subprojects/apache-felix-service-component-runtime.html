@@ -90,11 +90,11 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
 <div class="toc">
 <ul>
-<li><a href="#example">Example</a></li>
+<li><a href="#example">Example</a><ul>
 <li><a href="#component">Component</a></li>
 <li><a href="#declaration">Declaration</a></li>
 <li><a href="#activation">Activation</a></li>
-<li><a href="#service-binding">Service Binding</a><ul>
+<li><a href="#service-binding">Service Binding</a></li>
 <li><a href="#looking-up-the-service">Looking up the Service</a></li>
 <li><a href="#receiving-the-service">Receiving the Service</a></li>
 </ul>
@@ -110,12 +110,12 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <li><a href="#summary">Summary</a></li>
 </ul>
 </div>
-<p>The Apache Felix Service Component Runtime described by the OSGi Declarative Services Specification is implemented by the <code>org.apache.felix.scr</code> bundle. As specified, the components must be declared in XML-formatted descriptor files which in turn must be listed in the <code>Service-Component</code> header of the declaring bundle.</p>
+<p>The Apache Felix Service Component Runtime described by the OSGi Declarative Services Specification is implemented by the <code>org.apache.felix.scr</code> bundle. As specified, the components must be declared in XML-formatted descriptor files which in turn must be listed in the <code>Service-Component</code> header of the declaring bundle. But the good news is, you usually don't have to worry about XML as you can simply use annotations which are processed at build time. The build tool will create the XML files and headers for you.</p>
 <p>The component declarations are read when the declaring bundle is started and the respective components are verified and activated depending on their declaration.</p>
-<p>The Apache Felix Declarative Services implementation with the OSGi Declarative Services Specification Version 1.1  passes the OSGi CT.</p>
+<p>The Apache Felix Declarative Services implementation is the reference implementation for  the OSGi Declarative Services Specification Version 1.3 (R6) and therefore passes the OSGi CT.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p>To help you get a head start, here is an example of using Declarative Services. You will find more examples in the <code>trunk/examples</code> folder of the Apache Felix Project.</p>
-<h2 id="component">Component<a class="headerlink" href="#component" title="Permanent link">&para;</a></h2>
+<p>To help you get a head start, here is an example of using Declarative Services "by hand". Instead of using annotations, the XML is created by hand. We discourage doing so, but this is just to give you an idea how it really works. You will find more examples in the <code>trunk/examples</code> folder of the Apache Felix Project.</p>
+<h3 id="component">Component<a class="headerlink" href="#component" title="Permanent link">&para;</a></h3>
 <p>First of all the component must be implemented in a simple Java class. The Declarative Services Specification basically places no restrictions on the contents of this class. If you make use of advanced functionality such as providing an <code>activate()</code> or <code>deactivate()</code> method or using service loopup by <em>event strategy</em> (see 112.3.1 Accessing Services) you will of course have to provide the respective methods.</p>
 <p>For the sake of example, lets define a very simple class, which implements a <code>java.util.Comparator</code> service:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">sample</span><span class="o">;</span>
@@ -132,7 +132,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 
 
 <p>This is of course a very simple and not very intelligently implemented comparator...</p>
-<h2 id="declaration">Declaration<a class="headerlink" href="#declaration" title="Permanent link">&para;</a></h2>
+<h3 id="declaration">Declaration<a class="headerlink" href="#declaration" title="Permanent link">&para;</a></h3>
 <p>The next step consists of writing the declaration. I usually put these files in the <code>OSGI-INF</code> folder of the bundle, but the files may be placed anywhere within the bundle or any of the bundle's fragments as long as its path is listed in the <code>Service-Component</code> bundle manifest header.</p>
 <p>So here we go with the <code>OSGI-INF/sample.xml</code> file:</p>
 <div class="codehilite"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
@@ -160,7 +160,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 </pre></div>
 
 
-<h2 id="activation">Activation<a class="headerlink" href="#activation" title="Permanent link">&para;</a></h2>
+<h3 id="activation">Activation<a class="headerlink" href="#activation" title="Permanent link">&para;</a></h3>
 <p>It may well be that the component needs to be notified, when it is activated and deactivated. For this, the component may implement an <code>activate</code> method and a <code>deactivate</code> method. Both methods must be <code>public</code> or <code>protected</code> and take a single argument, the <code>org.osgi.service.ComponentContext</code>. It is recommended for this method to the <code>protected</code> as it is only used by the Service Component Runtime and should of course not be part of the public API of the component.</p>
 <p>Here is the initial class extended with activation and deactivation methods:</p>
 <div class="codehilite"><pre><span class="kn">package</span> <span class="n">sample</span><span class="o">;</span>
@@ -188,7 +188,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 
 
 <p>Nothing more needs to be done as the Service Component Runtime automatically recognizes and calls these methods.</p>
-<h2 id="service-binding">Service Binding<a class="headerlink" href="#service-binding" title="Permanent link">&para;</a></h2>
+<h3 id="service-binding">Service Binding<a class="headerlink" href="#service-binding" title="Permanent link">&para;</a></h3>
 <p>The next step would probably be to do some service binding. This is somewhat more overhead, as the referred to services must be declared. On the other hand, you do not have to care to listen for these services. As examples of these strategies we will first use the lookup strategy to access an OSGi <code>HttpService</code> and then we will use the event strategy to access an OSGi <code>LogService</code> (I personally prefer the event strategy, but your mileage may vary).</p>
 <h3 id="looking-up-the-service">Looking up the Service<a class="headerlink" href="#looking-up-the-service" title="Permanent link">&para;</a></h3>
 <p>To use the service, the reference must be declared in the service declaration in an <em>reference</em> element. Here is the respective declaration for a log service to lookup:</p>
@@ -363,10 +363,10 @@ If you don't know what this section is about, just ignore it and leave the <code
 <p>Alternatively, you may of course use the <code>ServiceTracker</code> or if you are using the <code>ScrService</code> in a component, you may have the <code>ScrService</code> bound according to the component declaration.</p>
 <p>The <code>ScrService</code> allows access to all registered components, to a specific component by component ID or to all registered components of a specific bundle.</p>
 <h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
-<p>This tutorial just listed some very basic information on Declarative Service. To get more information, for example on hoe the Configuration Admin Service may be used to configure components, refer to the Declarative Services Sepecification in the OSGi Service Platform <em>Service Compendium</em> book.</p>
+<p>This tutorial just listed some very basic information on Declarative Service. To get more information, for example on how the Configuration Admin Service may be used to configure components, refer to the Declarative Services Sepecification in the OSGi Service Platform <em>Service Compendium</em> book.</p>
 <p>Have Fun !</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1465873 by fmeschbe on Tue, 9 Apr 2013 03:46:54 +0000
+        Rev. 1741809 by cziegeler on Sat, 30 Apr 2016 20:20:56 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
