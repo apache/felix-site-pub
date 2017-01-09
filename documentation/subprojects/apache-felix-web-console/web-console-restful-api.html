@@ -380,9 +380,9 @@ in the URL and just ignores if one is provided.</dd>
 <h2 id="services-plugin">Services Plugin<a class="headerlink" href="#services-plugin" title="Permanent link">&para;</a></h2>
 <p>TBD</p>
 <h2 id="configuration-admin-plugin">Configuration Admin Plugin<a class="headerlink" href="#configuration-admin-plugin" title="Permanent link">&para;</a></h2>
-<p>TBD</p>
+<p>The Configuration Admin Plugin can be accessed directly by sending POST requests to it.</p>
 <h3 id="post-requests_1">POST Requests<a class="headerlink" href="#post-requests_1" title="Permanent link">&para;</a></h3>
-<p>Configuration handling is done based on the PID of the configuration. Each POST can either contain the PID as a suffix like <code>../PID</code>or with the parameter <code>pid</code>. The parameter <code>pidFilter</code> might contain an additional filter expression.
+<p>Configuration handling is done based on the PID of the configuration. Each POST can either contain the PID as a suffix like <code>../PID</code> or with the parameter <code>pid</code>. The parameter <code>pidFilter</code> might contain an additional filter expression.
 For the action to execute, the following options are tested, one after the other. As soon as one is executed, the request is processed.</p>
 <h4 id="create">Create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h4>
 <p>If the parameter <code>create</code>is sent, a new configuration with the PID is created. The value of the parameter is not evaluated.</p>
@@ -390,12 +390,28 @@ For the action to execute, the following options are tested, one after the other
 <p>If the parameter <code>apply</code> is sent, the configuration is changed. The value of the parameter is not evaluated.
 The parameter <code>factoryPid</code> might contain the factory pid.
 The parameter <code>propertyList</code> contains a comma-separated list of all configuration property names that will be changed by this POST. For each name, the value of the corresponding request parameter is used to set the value. If such a parameter is missing, the property is not changed.</p>
+<p>For example to use <code>curl</code> to apply a configuration the following command line can be used:</p>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">propertylist</span><span class="p">=</span><span class="n">foo</span><span class="p">,</span><span class="n">bar</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">foo</span><span class="p">=</span>51&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">bar</span><span class="p">=</span><span class="n">hello</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">MyPid</span>
+</pre></div>
+
+
+<p>To create a factory configuration, the special PID <code>[Temporary PID replaced by real PID upon save]</code> must be used, URL encoded. So to create a new factory configuration 
+for a factoryPid <code>com.acme.MyFactoryPid</code> the following can be used:</p>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">propertylist</span><span class="p">=</span><span class="n">name</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">name</span><span class="p">=</span><span class="n">mycfg</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">factoryPid</span><span class="p">=</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">MyFactoryPid</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="c">%5BTemporary%20PID%20replaced%20by%20real%20PID%20upon%20save%5D</span>
+</pre></div>
+
+
 <h4 id="delete">Delete<a class="headerlink" href="#delete" title="Permanent link">&para;</a></h4>
 <p>If the parameters <code>apply</code> and <code>delete</code> are sent, the configuration is removed. The values of the parameters is not evaluated.</p>
+<p>Example using <code>curl</code>:</p>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span>  <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">delete</span><span class="p">=</span><span class="n">true</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">MyPid</span>
+</pre></div>
+
+
 <h4 id="unbind">Unbind<a class="headerlink" href="#unbind" title="Permanent link">&para;</a></h4>
 <p>If the parameter <code>unbind</code> is sent, the configuration is unbind.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1448643 by cziegeler on Thu, 21 Feb 2013 14:05:39 +0000
+        Rev. 1777977 by davidb on Mon, 9 Jan 2017 14:49:42 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
