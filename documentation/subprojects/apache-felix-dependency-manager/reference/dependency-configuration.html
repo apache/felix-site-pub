@@ -91,32 +91,48 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <p>A configuration dependency is always required, and allows you to depend on the availability of a valid configuration for your component. Optional configuration dependencies are not supported because in that case you can just as well register as a <code>ManagedService</code> yourself.</p>
 <p>The dependency injects by default the configuration in an "updated" callback which can accept the following parameters:</p>
 <ul>
-<li>updated(Dictionary)</li>
-<li>updated(Component, Dictionary)</li>
-<li>updated(ConfigurationType)</li>
-<li>updated(Component, ConfigurationType)</li>
+<li><code>updated(Dictionary)</code></li>
+<li><code>updated(Component, Dictionary)</code></li>
+<li><code>updated(&lt;ConfigurationType&gt;)</code></li>
+<li><code>updated(Component, &lt;ConfigurationType&gt;)</code></li>
 </ul>
 <p>If you only specify a pid, by default the callback method name is assumed to be "updated".</p>
-<p>Configuration types are a new feature that allows you to specify an interface that is implemented by DM and such interface is then injected to your callback instead of the actual Dictionary. Using such configuration interface provides a way for creating type-safe configurations from a actual Dictionary that is normally injected by Dependency Manager. The callback accepts in argument an interface that you have to provide, and DM will inject a proxy that converts method calls from your configuration-type to lookups in the actual map or dictionary. The results of these lookups are then converted to the expected return type of the invoked configuration method.
+<p>Configuration types are a new feature that allows you to specify a Java interface that is implemented by DM and such interface is then injected to your callback instead of the actual Dictionary. Using such configuration interface provides a way for creating type-safe configurations from a actual Dictionary that is normally injected by Dependency Manager. The callback accepts in argument an interface that you have to provide, and DM will inject a proxy that converts method calls from your configuration-type to lookups in the actual map or dictionary. The results of these lookups are then converted to the expected return type of the invoked configuration method.
 As proxies are injected, no implementations of the desired configuration-type are necessary!</p>
 <p>The lookups performed are based on the name of the method called on the configuration type. The method names are "mangled" to the following form: [lower case letter] [any valid character]*. Method names starting with get or is (JavaBean convention) are stripped from these prefixes. For example: given a dictionary with the key "foo" can be accessed from a configuration-type using the following method names: foo(), getFoo() and isFoo().</p>
-<p>The return values supported are: primitive types (or their object wrappers), strings, enums, arrays of primitives/strings, Collection types, Map types, Classes and interfaces. When an interface is returned, it is treated equally to a configuration type, that is, it is returned as a proxy.</p>
-<p>Arrays can be represented either as comma-separated values, optionally enclosed in square brackets. For example: [ a, b, c ] and a, b,c are both considered an array of length 3 with the values "a", "b" and "c". Alternatively, you can append the array index to the key in the dictionary to obtain the same: a dictionary with "arr.0" =&gt; "a", "arr.1" =&gt; "b", "arr.2" =&gt; "c" would result in the same array as the earlier examples.</p>
-<p>Maps can be represented as single string values similarly as arrays, each value consisting of both the key and value separated by a dot. Optionally, the value can be enclosed in curly brackets. Similar to array, you can use the same dot notation using the keys. For example, a dictionary with</p>
-<p>"map" =&gt; "{key1.value1, key2.value2}"</p>
-<p>and a dictionary with</p>
-<p>"map.key1" =&gt; "value1", "map2.key2" =&gt; "value2"</p>
-<p>result in the same map being returned. Instead of a map, you could also define an interface with the methods getKey1() and getKey2 and use that interface as return type instead of a Map.</p>
+<p>The return values supported are: </p>
+<ul>
+<li>primitive types (or their object wrappers);</li>
+<li>strings;</li>
+<li>enums; </li>
+<li>arrays of primitives/strings;</li>
+<li>Collection types;</li>
+<li>Map types;</li>
+<li>Classes and interfaces.</li>
+</ul>
+<p>When an interface is returned, it is treated equally to a configuration type, that is, a proxy is returned.</p>
+<p>Arrays can be represented either as comma-separated values, optionally enclosed in square brackets. For example: <code>[ a, b, c ]</code> and <code>a, b,c</code> are both considered an array of length 3 with the values "a", "b" and "c". Alternatively, you can append the array index to the key in the dictionary to obtain the same: a dictionary with "arr.0" =&gt; "a", "arr.1" =&gt; "b", "arr.2" =&gt; "c" would result in the same array as the earlier examples.</p>
+<p>Maps can be represented as single string values similarly as arrays, each value consisting of both the key and value separated by a dot. Optionally, the value can be enclosed in curly brackets. Similar to array, you can use the same dot notation using the keys. For example, a dictionary with:</p>
+<div class="codehilite"><pre>&quot;<span class="n">map</span>&quot; <span class="p">=</span><span class="o">&gt;</span> &quot;<span class="p">{</span><span class="n">key1</span><span class="p">.</span><span class="n">value1</span><span class="p">,</span> <span class="n">key2</span><span class="p">.</span><span class="n">value2</span><span class="p">}</span>&quot;
+</pre></div>
+
+
+<p>and a dictionary with:</p>
+<div class="codehilite"><pre>&quot;<span class="n">map</span><span class="p">.</span><span class="n">key1</span>&quot; <span class="p">=</span><span class="o">&gt;</span> &quot;<span class="n">value1</span>&quot;<span class="p">,</span> &quot;<span class="n">map2</span><span class="p">.</span><span class="n">key2</span>&quot; <span class="p">=</span><span class="o">&gt;</span> &quot;<span class="n">value2</span>&quot;
+</pre></div>
+
+
+<p>result in the <em>same</em> map being returned. Instead of a map, you could also define an interface with the methods <code>getKey1()</code> and <code>getKey2()</code> and use that interface as return type instead of a Map.</p>
 <p>In case a lookup does not yield a value from the underlying map or dictionary, the following rules are applied:</p>
 <ul>
 <li>primitive types yield their default value, as defined by the Java Specification;</li>
-<li>string, Classes and enum values yield null;</li>
-<li>for arrays, collections and maps, an empty array/collection/map is returned;</li>
-<li>for other interface types that are treated as configuration type a null-object is returned. </li>
+<li>string, Classes and enum values yield <code>null</code>;</li>
+<li>for arrays, collections and maps, an <em>empty</em> array/collection/map is returned;</li>
+<li>for other interface types that are treated as configuration type a Null-object is returned. </li>
 </ul>
 <p>Usage example where a component depends on a configuration:</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ServiceImpl</span> <span class="o">{</span>
-    <span class="kt">void</span> <span class="nf">modified</span><span class="o">(</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">cnf</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">cnf</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">cnf</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">String</span> <span class="n">addr</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">cnf</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;address&quot;</span><span class="o">);</span>
             <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">cnf</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;port&quot;</span><span class="o">);</span>
@@ -136,7 +152,7 @@ As proxies are injected, no implementations of the desired configuration-type ar
 </pre></div>
 
 
-<p>Here is the same example, but a custom configuration type interface is used (by default, the fqdn of the configuration type is assumed to be the configuration pid):</p>
+<p>Here is the same example, but a custom configuration type interface is used (by default, the FQDN of the configuration type is assumed to be the configuration pid):</p>
 <div class="codehilite"><pre><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MyConfig</span> <span class="o">{</span>
     <span class="n">String</span> <span class="nf">getAddress</span><span class="o">();</span>
     <span class="kt">int</span> <span class="nf">getPort</span><span class="o">();</span>
@@ -157,7 +173,7 @@ As proxies are injected, no implementations of the desired configuration-type ar
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">DependencyManager</span> <span class="n">dm</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
         <span class="n">dm</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">createComponent</span><span class="o">()</span>
           <span class="o">.</span><span class="na">setImplementation</span><span class="o">(</span><span class="n">ServiceImpl</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>            
-          <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">createConfigurationDependency</span><span class="o">().</span><span class="na">setCallback</span><span class="o">(</span><span class="s">&quot;updated&quot;</span><span class="o">,</span> <span class="n">MyConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+          <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">createConfigurationDependency</span><span class="o">().</span><span class="na">setCallback</span><span class="o">(</span><span class="s">&quot;modified&quot;</span><span class="o">,</span> <span class="n">MyConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
@@ -225,7 +241,7 @@ actual configuration dictionary).</p>
  <span class="p">}</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1762306 by cziegeler on Mon, 26 Sep 2016 09:54:12 +0000
+        Rev. 1783995 by jawi on Wed, 22 Feb 2017 09:54:59 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
