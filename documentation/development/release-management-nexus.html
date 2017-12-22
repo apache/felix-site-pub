@@ -192,13 +192,6 @@ the released version.
 </ul>
 </li>
 </ol>
-<h2 id="stage-the-generated-documentation">Stage the generated documentation<a class="headerlink" href="#stage-the-generated-documentation" title="Permanent link">&para;</a></h2>
-<p>(This only applies to the maven-bundle-plugin so far.)</p>
-<p>Run:</p>
-<div class="codehilite"><pre>$ <span class="n">mvn</span> <span class="n">site</span><span class="p">:</span><span class="n">site</span> <span class="n">site</span><span class="p">:</span><span class="n">stage</span> <span class="n">scm</span><span class="o">-</span><span class="n">publish</span><span class="p">:</span><span class="n">publish</span><span class="o">-</span><span class="n">scm</span>
-</pre></div>
-
-
 <h2 id="starting-the-vote">Starting the Vote<a class="headerlink" href="#starting-the-vote" title="Permanent link">&para;</a></h2>
 <p>Propose a vote on the dev list with the closed issues, the issues left, and the staging repository - for example:</p>
 <div class="codehilite"><pre>To: &quot;Felix Developers List&quot; &lt;dev@felix.apache.org&gt;
@@ -345,11 +338,13 @@ Otherwise publish the site by visiting the <a href="https://cms.apache.org/felix
 <h2 id="update-jira">Update JIRA<a class="headerlink" href="#update-jira" title="Permanent link">&para;</a></h2>
 <p>Go to <a href="https://issues.apache.org/jira/secure/project/ViewProject.jspa?pid=12310100">Admin</a> section on the FELIX JIRA and mark the Y.Z version as released - create version Y.Z+1, if that hasn't already been done.</p>
 <h2 id="publish-generated-documentation">Publish Generated Documentation<a class="headerlink" href="#publish-generated-documentation" title="Permanent link">&para;</a></h2>
-<p>This procedure applies to the maven-bundle-plugin; it may expand to others. The bundle plugin's maven-site-plugin doc is published to SVN by the
-maven-scm-publish plugin at the location
-https://svn.apache.org/repos/infra/websites/production/felix/content/components/bundle-plugin-archives/bundle-plugin-LATEST. At release time, you
-rename that from LATEST to the correct version, and then copy it to https://svn.apache.org/repos/infra/websites/production/felix/content/components/bundle-plugin.</p>
-<p>See <a href="http://maven.apache.org/developers/website/deploy-component-reference-documentation.html#Publishing_versioned_component_reference_documentation">some doc from the Maven project</a>.</p>
+<p>This procedure applies currently only to the <code>maven-bundle-plugin</code>:</p>
+<ol>
+<li>Checkout the release tag of the plugin (or reset your svn workspace to the release tag)</li>
+<li>Run <code>mvn clean package site</code></li>
+<li>Create a new folder for the new version at <code>https://svn.apache.org/repos/asf/felix/site/trunk/content/components/bundle-plugin-archives/bundle-plugin-&lt;version&gt;</code> and publish the generated site from <code>target/site</code> there</li>
+<li>Remove the previous documentation from <code>components/bundle-plugin</code> and SVN-copy the new version there as well</li>
+</ol>
 <h2 id="create-an-announcement">Create an Announcement<a class="headerlink" href="#create-an-announcement" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre>To: &quot;Felix Users List&quot; &lt;users@felix.apache.org&gt;
 Subject: [ANN] Felix XXX version Y.Z Released
@@ -422,7 +417,7 @@ svn: MKACTIVITY of &#39;/repos/asf/!svn/act/4f11ad5d-9161-0410-b4dd-cb727141ea8c
 
 <p>This is due to a bug in Subversion on the Mac, as described by Brett Porter in his [blog|http://blogs.exist.com/bporter/2008/02/25/working-around-non-interactive-problems-in-leopards-subversion/]. He proposes putting an "svn" script at the head of your path to fix the issue.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1772047 by bimargulies on Wed, 30 Nov 2016 14:24:53 +0000
+        Rev. 1819013 by sseifert on Fri, 22 Dec 2017 09:03:09 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
