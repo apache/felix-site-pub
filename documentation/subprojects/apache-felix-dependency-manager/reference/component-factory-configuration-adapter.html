@@ -89,174 +89,60 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 }
 h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
 <p>A factory configuration adapter service creates an adapter for each matching configuration in Configuration Admin. For each new factory configuration matching the factoryPid, an adapter will be created based on the adapter implementation class. The adapter will be registered with the specified interface and with the specified adapter service properties. Depending on the propagate parameter, every public factory configuration properties (which don't start with ".") will be propagated along with the adapter service properties. It will also inherit all dependencies.</p>
-<h3 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span class="n">manager</span><span class="o">.</span><span class="na">createFactoryConfigurationAdapterService</span><span class="o">(</span><span class="s">&quot;MyFactoryPid&quot;</span><span class="o">,</span> <span class="s">&quot;update&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">)</span>
-       <span class="o">.</span><span class="na">setInterface</span><span class="o">(</span><span class="n">MyService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">()</span> <span class="o">)</span>
-       <span class="o">.</span><span class="na">setImplementation</span><span class="o">(</span><span class="n">MyServiceImpl</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-<span class="kd">class</span> <span class="nc">MyServiceImpl</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
-    <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">cnf</span><span class="o">)</span> <span class="o">{</span>
-       <span class="n">String</span> <span class="n">ip</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">cnf</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;address&quot;</span><span class="o">);</span>
-       <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">cnf</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;port&quot;</span><span class="o">);</span>
-    <span class="o">}</span>
-    <span class="o">...</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>You an also use "<code>configuration types</code>" (<a href="dependency-configuration.html">see configuration dependency documentation)</a>
-This is the same example as above, using a "MyConfig" configuration type:</p>
-<div class="codehilite"><pre><span class="n">manager</span><span class="o">.</span><span class="na">createFactoryConfigurationAdapterService</span><span class="o">(</span><span class="s">&quot;MyFactoryPid&quot;</span><span class="o">,</span> <span class="s">&quot;update&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="n">MyConfig</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-       <span class="o">.</span><span class="na">setInterface</span><span class="o">(</span><span class="n">MyService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">()</span> <span class="o">)</span>
-       <span class="o">.</span><span class="na">setImplementation</span><span class="o">(</span><span class="n">MyServiceImpl</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MyConfig</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="nf">getAddress</span><span class="o">();</span>
+<h2 id="example-using-dm-api">Example using DM API<a class="headerlink" href="#example-using-dm-api" title="Permanent link">&para;</a></h2>
+<p>Here is a sample showing a "MyComponent" component, which can be instantiated multiple times using a factory configuration:</p>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MyConfig</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="nf">getPort</span><span class="o">();</span>
+    <span class="n">String</span> <span class="nf">getAddress</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="kd">class</span> <span class="nc">MyServiceImpl</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
-    <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">Dictionary</span> <span class="n">cnf</span><span class="o">)</span> <span class="o">{</span>
-       <span class="n">String</span> <span class="n">ip</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="na">getAddress</span><span class="o">();</span>
-       <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="na">getPort</span><span class="o">();</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">MyConfig</span> <span class="n">cnf</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="na">getPort</span><span class="o">();</span>
+        <span class="n">String</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="na">getAddress</span><span class="o">();</span>
+        <span class="o">...</span>
     <span class="o">}</span>
-    <span class="o">...</span>
 <span class="o">}</span>
-</pre></div>
 
-
-<h2 id="factoryconfigurationadapterservice">@FactoryConfigurationAdapterService<a class="headerlink" href="#factoryconfigurationadapterservice" title="Permanent link">&para;</a></h2>
-<p>Annotates a class that acts as a Factory Configuration Adapter Service. 
-Like with @ConfigurationDependency, you can optionally specify a configuration type and (optioanlly) use bnd metatype annotations
-in order to specify configuration meta data (heading/descriptions/default values, etc ...)</p>
-<h3 id="annotation-attributes">Annotation attributes:<a class="headerlink" href="#annotation-attributes" title="Permanent link">&para;</a></h3>
-<hr />
-<p><strong><code>configType</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: --
-The interface to use as the configuration type, which will be injected instead of the actual configuration dictionary.</p>
-<hr />
-<p><strong><code>provides</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: all directly implemented interfaces.
-The interface(s) to use when registering adapters. By default, directly implemented interfaces will be registered in the OSGi registry. </p>
-<hr />
-<p><strong><code>properties</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: --</p>
-<p>Adapter Service properties. Notice that public factory configuration is also 
-registered in service properties, (only if propagate is true). 
-Public factory configuration properties are those which don't starts with a 
-dot (".").</p>
-<hr />
-<p><strong><code>factoryPid</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: The class name, including the package.</p>
-<p>Returns the factory pid whose configurations will instantiate the 
-annotated service class. 
-(By default, the pid is the service class name). </p>
-<hr />
-<p><strong><code>factoryClass</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: The class name, including the package.</p>
-<p>Returns the factory pid from a class name. The full class name will be used as the 
-configuration PID. You can use this method when you use an interface annoted with 
-standard bndtols metatype annotations. (see http://bnd.bndtools.org/chapters/210-metatype.html).</p>
-<hr />
-<p><strong><code>updated</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: "updated"</p>
-<p>The Update method to invoke (defaulting to "updated"), when a factory 
-configuration is created or updated </p>
-<hr />
-<p><strong><code>propagate</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: false</p>
-<p>Returns true if the configuration properties must be published 
-along with the service. Any additional service properties specified directly 
-are merged with these. </p>
-<hr />
-<p><strong><code>factoryMethod</code></strong>  <br />
-<em>Required</em>: False  <br />
-<em>Default</em>: --</p>
-<p>Sets the static method used to create the adapter instance.</p>
-<h3 id="usage-examples_1">Usage Examples<a class="headerlink" href="#usage-examples_1" title="Permanent link">&para;</a></h3>
-<p>Here, a "DictionaryService" service instance is instantiated for each existing 
-factory configuration instance matching the "sample.DictionaryServiceFactory" factory pid:</p>
-<div class="codehilite"><pre><span class="nd">@FactoryConfigurationAdapterService</span><span class="o">(</span><span class="n">factoryPid</span><span class="o">=</span><span class="s">&quot;sample.DictionaryServiceFactory&quot;</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DictionaryImpl</span> <span class="kd">implements</span> <span class="n">DictionaryService</span>
-<span class="o">{</span>
-    <span class="cm">/**</span>
-<span class="cm">      * The key of our config admin dictionary language.</span>
-<span class="cm">      */</span>
-    <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">LANG</span> <span class="o">=</span> <span class="s">&quot;lang&quot;</span><span class="o">;</span>
-
-    <span class="cm">/**</span>
-<span class="cm">      * The key of our config admin dictionary values.</span>
-<span class="cm">      */</span>
-    <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">WORDS</span> <span class="o">=</span> <span class="s">&quot;words&quot;</span><span class="o">;</span>
-
-    <span class="cm">/**</span>
-<span class="cm">      * We store all configured words in a thread-safe data structure, because ConfigAdmin</span>
-<span class="cm">      * may invoke our updated method at any time.</span>
-<span class="cm">      */</span>
-    <span class="kd">private</span> <span class="n">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">m_words</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CopyOnWriteArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
-
-    <span class="cm">/**</span>
-<span class="cm">      * Our Dictionary language.</span>
-<span class="cm">      */</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">m_lang</span><span class="o">;</span>
-
-    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="o">?&gt;</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">m_lang</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LANG</span><span class="o">);</span>
-        <span class="n">m_words</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
-        <span class="n">String</span><span class="o">[]</span> <span class="n">words</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">[])</span> <span class="n">config</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">WORDS</span><span class="o">);</span>
-        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">word</span> <span class="o">:</span> <span class="n">words</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">m_words</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">word</span><span class="o">);</span>
-        <span class="o">}</span>
-     <span class="o">}</span>   
-         <span class="c1">// ...</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>Here is the same example as above, but using a configuration type as well as meta types (the DM annotations metatype attributes are deprecated and 
-it's better to use standard bnd metatype annotations):</p>
-<p>First, we declare our factory configuration metadata using standard bndtools metatype annotations (see http://bnd.bndtools.org/chapters/210-metatype.html):</p>
-<div class="codehilite"><pre><span class="kn">package</span> <span class="n">sample</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">aQute.bnd.annotation.metatype.Meta.AD</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">aQute.bnd.annotation.metatype.Meta.OCD</span><span class="o">;</span>
-
-<span class="nd">@OCD</span><span class="o">(</span><span class="n">factory</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Declare here some Dictionary instances.&quot;</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">DictionaryConfiguration</span> <span class="o">{</span>
-   <span class="nd">@AD</span><span class="o">(</span><span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Describes the dictionary language.&quot;</span><span class="o">,</span> <span class="n">deflt</span> <span class="o">=</span> <span class="s">&quot;en&quot;</span><span class="o">)</span>
-   <span class="n">String</span> <span class="nf">lang</span><span class="o">();</span>
-
-   <span class="nd">@AD</span><span class="o">(</span><span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Declare here the list of words supported by this dictionary.&quot;</span><span class="o">)</span>
-   <span class="n">List</span> <span class="nf">words</span><span class="o">();</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>And here is the DictionaryService:</p>
-<div class="codehilite"><pre><span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">aQute.bnd.annotation.metatype.Configurable</span><span class="o">;</span>
-
-<span class="nd">@FactoryConfigurationAdapterService</span><span class="o">(</span><span class="n">configType</span><span class="o">=</span><span class="n">DictionaryConfiguration</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>  
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DictionaryImpl</span> <span class="kd">implements</span> <span class="n">DictionaryService</span> <span class="o">{</span>
-    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">DictionaryConfiguration</span> <span class="n">config</span><span class="o">)</span> <span class="o">{</span>   
-        <span class="n">m_lang</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="na">lang</span><span class="o">();</span>
-        <span class="n">m_words</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
-        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">word</span> <span class="o">:</span> <span class="n">conf</span><span class="o">.</span><span class="na">words</span><span class="o">())</span> <span class="o">{</span>
-            <span class="n">m_words</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">word</span><span class="o">);</span>
-        <span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">extends</span> <span class="n">DependencyActivatorBase</span> <span class="o">{</span>
+    <span class="o">&amp;</span><span class="n">Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="o">,</span> <span class="n">DependencyManager</span> <span class="n">dm</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">Component</span> <span class="n">factoryComponent</span> <span class="o">=</span> <span class="n">createFactoryComponent</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">setFactoryPid</span><span class="o">(</span><span class="s">&quot;my.factory.pid&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setInterface</span><span class="o">(</span><span class="n">MySevice</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="kc">null</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setImplementation</span><span class="o">(</span><span class="n">MyComponent</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setConfigType</span><span class="o">(</span><span class="n">MyConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">dm</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">factoryComponent</span><span class="o">);</span>
     <span class="o">}</span>
-    <span class="o">...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="example-using-dm-lambda-api">Example using DM Lambda API<a class="headerlink" href="#example-using-dm-lambda-api" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">extends</span> <span class="n">DependencyManagerActivator</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">DependencyManager</span> <span class="n">dm</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span> 
+        <span class="n">factoryPidAdapter</span><span class="o">(</span><span class="n">adapter</span> <span class="o">-&gt;</span> <span class="n">adapter</span>
+            <span class="o">.</span><span class="na">factoryPid</span><span class="o">(</span><span class="s">&quot;my.factory.pid&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">provides</span><span class="o">(</span><span class="n">MySevice</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">impl</span><span class="o">(</span><span class="n">DictionaryImpl</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">MyConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nl">MyComponent:</span><span class="o">:</span><span class="n">updated</span><span class="o">)</span>                
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2 id="example-using-dm-annotations">Example using DM Annotations<a class="headerlink" href="#example-using-dm-annotations" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span class="nd">@Component</span><span class="o">(</span><span class="n">factoryPid</span> <span class="o">=</span> <span class="s">&quot;my.factory.pid&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyComponent</span> <span class="kd">implements</span> <span class="n">MyService</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">updated</span><span class="o">(</span><span class="n">MyConfig</span> <span class="n">cnf</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="na">getPort</span><span class="o">();</span>
+        <span class="n">String</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">cnf</span><span class="o">.</span><span class="na">getAddress</span><span class="o">();</span>
+        <span class="o">...</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1762306 by cziegeler on Mon, 26 Sep 2016 09:54:12 +0000
+        Rev. 1842565 by pderop on Mon, 1 Oct 2018 21:06:15 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

@@ -90,48 +90,35 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
 <p>Resource adapters work just like adapters, but instead of working with services, they work with resources. Resources, represented as a URL, are an abstraction introduced to provide a generic way of dealing with "blobs" and can be resources inside a bundle, filesystem or some kind of data store.</p>
 <p>A resource adapter will be applied to any resource that matches the specified filter condition. For each matching resource an adapter will be created based on the adapter implementation class. The adapter will be registered with the specified interface and existing properties from the original resource plus any extra properties you supply here. It will also inherit all dependencies, and if you declare the original service as a member it will be injected.</p>
-<p>Usage Example:</p>
-<div class="codehilite"><pre><span class="n">manager</span><span class="p">.</span><span class="n">createResourceAdapterService</span><span class="p">(</span>&quot;<span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">path</span><span class="p">=</span><span class="o">/</span><span class="n">test</span><span class="p">)(</span><span class="n">repository</span><span class="p">=</span><span class="n">TestRepository</span><span class="p">))</span>&quot;<span class="p">,</span> <span class="n">true</span><span class="p">)</span>
-    <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">AdapterService</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="p">()</span> <span class="p">)</span>
-    <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">AdapterServiceImpl</span><span class="p">.</span><span class="n">class</span><span class="p">);</span>
-</pre></div>
-
-
-<h2 id="resourceadapterservice">@ResourceAdapterService<a class="headerlink" href="#resourceadapterservice" title="Permanent link">&para;</a></h2>
-<p>Resource adapters are things that adapt a resource instead of a service, and 
-provide an adapter service on top of this resource. Resources are an 
-abstraction that is introduced by the dependency manager, represented as a URL. They can be implemented to serve resources embedded in bundles, somewhere on a file system or in an http content repository server, or database.</p>
-<p>The adapter will be applied to any resource that matches the specified filter 
-condition, which can match some part of the resource URL (with "path", 
-"protocol", "port", or "host" filters). For each matching resource an 
-adapter will be created based on the adapter implementation class. 
-The adapter will be registered with the specified interface and with any 
-extra service properties you supply here. Moreover, the following service 
-properties will be propagated from the resource URL:</p>
-<ul>
-<li><em>host</em>: this property exposes the host part of the resource URL</li>
-<li><em>path</em>: the resource URL path</li>
-<li><em>protocol</em>: the resource URL protocol</li>
-<li><em>port</em>: the resource URL port </li>
-</ul>
-<h3 id="annotation-attributes">Annotation attributes<a class="headerlink" href="#annotation-attributes" title="Permanent link">&para;</a></h3>
-<p>TBD</p>
-<h3 id="usage-examples">Usage Examples:<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h3>
+<h2 id="usage-example-using-api">Usage Example using API:<a class="headerlink" href="#usage-example-using-api" title="Permanent link">&para;</a></h2>
 <p>Here, the "VideoPlayer" service provides a video service on top of any movie 
 resources, with service properties "host"/"port"/"protocol"/"path" extracted 
 from the resource URL:</p>
-<div class="codehilite"><pre><span class="nd">@ResourceAdapterService</span><span class="o">(</span><span class="n">filter</span> <span class="o">=</span> <span class="s">&quot;(&amp;(path=/videos/*.mkv)(host=localhost))&quot;</span><span class="o">,</span> <span class="n">propagate</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">VideoPlayerImpl</span> <span class="kd">implements</span> <span class="n">VideoPlayer</span> <span class="o">{</span>
+<div class="codehilite"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">VideoPlayerImpl</span> <span class="kd">implements</span> <span class="n">VideoPlayer</span> <span class="o">{</span>
     <span class="c1">// Injected by reflection</span>
-    <span class="n">URL</span> <span class="n">resource</span><span class="o">;</span>
+    <span class="kd">volatile</span> <span class="n">URL</span> <span class="n">resource</span><span class="o">;</span>
 
     <span class="kt">void</span> <span class="nf">play</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// play video referenced by this.resource     </span>
     <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// stop playing the video</span>
     <span class="kt">void</span> <span class="nf">transcode</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// ...</span>
 <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activator</span> <span class="kd">extends</span> <span class="n">DependencyManagerActivator</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">BundleContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">DependencyManager</span> <span class="n">dm</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">Component</span> <span class="n">c</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="na">createResourceComponent</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">setResourceFilter</span><span class="o">(</span><span class="s">&quot;(&amp;(path=/videos/*.mkv)(host=localhost))&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setPropate</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">setInterface</span><span class="o">(</span><span class="n">AdapterService</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">()</span> <span class="o">)</span>
+            <span class="o">.</span><span class="na">setImplementation</span><span class="o">(</span><span class="n">AdapterServiceImpl</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">dm</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
+
+
+<p>Notice that resource adapters are only supported with the DM API, not using annotations or using DM lambda.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1665812 by marrs on Wed, 11 Mar 2015 09:02:04 +0000
+        Rev. 1842562 by pderop on Mon, 1 Oct 2018 20:32:05 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
