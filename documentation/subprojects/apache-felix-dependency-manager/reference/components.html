@@ -175,7 +175,7 @@ instance. However, several of these instances might want to have dependencies in
 In such cases you need to tell the dependency manager which instances to consider. 
 This has to be a fixed set of instances however.</p>
 <p>We now describe how to declare a service composition using the Api, and the Annotations:</p>
-<h3 id="composition-api">Composition / API<a class="headerlink" href="#composition-api" title="Permanent link">&para;</a></h3>
+<p>Example:</p>
 <p>When using the DependencyManager API, you can use the <em>Component.setComposition</em> method to declare a special callback in your component that 
 returns the list of object that are part of the component, and all dependencies and lifecycle callbacks will be invoked
 on the objects returned by the method. Let's take an example, with a <em>ProviderImpl</em> top-level service implementation
@@ -221,44 +221,6 @@ that is internally implemented using three Pojos: <em>ProviderImpl</em>, <em>Pro
             <span class="o">.</span><span class="na">setImplementation</span><span class="o">(</span><span class="n">ProviderImpl</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
             <span class="o">.</span><span class="na">setComposition</span><span class="o">(</span><span class="s">&quot;getComposition&quot;</span><span class="o">)</span>
             <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">createServiceDependency</span><span class="o">().</span><span class="na">setService</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">setRequired</span><span class="o">(</span><span class="kc">true</span><span class="o">)));</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<h3 id="composition-annotations">Composition / Annotations<a class="headerlink" href="#composition-annotations" title="Permanent link">&para;</a></h3>
-<p>Here is the same example as above, but using Annotations:</p>
-<div class="codehilite"><pre><span class="nd">@Component</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProviderImpl</span> <span class="kd">implements</span> <span class="n">Provider</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ProviderParticipant1</span> <span class="n">m_participant1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProviderParticipant1</span><span class="o">();</span>
-    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ProviderParticipant2</span> <span class="n">m_participant2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProviderParticipant2</span><span class="o">();</span>
-    <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span> <span class="c1">// injected</span>
-
-    <span class="nd">@Composition</span>
-    <span class="n">Object</span><span class="o">[]</span> <span class="nf">getComposition</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span> <span class="k">this</span><span class="o">,</span> <span class="n">m_participant1</span><span class="o">,</span> <span class="n">m_participant2</span> <span class="o">};</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Start</span>
-    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">,</span> <span class="s">&quot;ProviderImpl.start(): participants=&quot;</span> <span class="o">+</span> <span class="n">m_participant1</span> <span class="o">+</span> <span class="s">&quot;,&quot;</span> <span class="o">+</span> <span class="n">m_participant2</span>
-            <span class="o">+</span> <span class="s">&quot;, conf=&quot;</span> <span class="o">+</span> <span class="n">m_conf</span><span class="o">);</span>
-    <span class="o">}</span>      
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProviderParticipant1</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span> <span class="c1">// also injected, since we are part of the composition</span>
-
-    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">,</span> <span class="s">&quot;ProviderParticipant1.start()&quot;</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProviderParticipant2</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">volatile</span> <span class="n">LogService</span> <span class="n">m_log</span><span class="o">;</span> <span class="c1">// also injected, since we are part of the composition</span>
-
-    <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">m_log</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">LogService</span><span class="o">.</span><span class="na">LOG_INFO</span><span class="o">,</span> <span class="s">&quot;ProviderParticipant2.start()&quot;</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
@@ -333,7 +295,7 @@ are part of a composition and need dependencies injected:</p>
 
 <p>You can refer to this <a href="https://svn.apache.org/repos/asf/felix/trunk/dependencymanager/org.apache.felix.dependencymanager.samples/src/org/apache/felix/dependencymanager/samples/compositefactory/">sample code</a>, which is part of the source distribution.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1666366 by pderop on Fri, 13 Mar 2015 07:59:18 +0000
+        Rev. 1843269 by pderop on Tue, 9 Oct 2018 13:35:30 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project

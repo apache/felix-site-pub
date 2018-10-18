@@ -103,7 +103,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
         <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
-            <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">Store</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">setInterface</span><span class="p">(</span><span class="n">Store</span><span class="p">.</span><span class="n">class</span><span class="p">,</span> <span class="n">null</span><span class="p">)</span>
             <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">MemoryStore</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
         <span class="p">);</span>
     <span class="p">}</span>
@@ -220,7 +220,11 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 
 
 <h2 id="depending-on-a-configuration">Depending on a configuration<a class="headerlink" href="#depending-on-a-configuration" title="Permanent link">&para;</a></h2>
-<p>Not all dependencies are on services. There are several other types of dependencies that are supported, one of them is the configuration dependency. In fact, only <em>required</em> configuration dependencies are supported, because optional ones can just be achieved by registering as a <code>ManagedService</code> yourself. When defining the dependency, you must define the persistent ID of the service. The component will not become active until the configuration you depend on is available <em>and</em> is valid. The latter can be checked by your implementation as we will see below.</p>
+<p>Not all dependencies are on services. There are several other types of dependencies 
+that are supported, one of them is the configuration dependency. 
+When defining the dependency, you must define the persistent ID of the service. 
+The component will not become active until the configuration you depend on is available 
+<em>and</em> is valid. The latter can be checked by your implementation as we will see below.</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Activator</span> <span class="n">extends</span> <span class="n">DependencyActivatorBase</span> <span class="p">{</span>
     <span class="n">public</span> <span class="n">void</span> <span class="n">init</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">DependencyManager</span> <span class="n">manager</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span> <span class="p">{</span>
         <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">()</span>
@@ -234,7 +238,12 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 </pre></div>
 
 
-<p>Here's our code that implements <code>ManagedService</code> and has an <code>updated</code> method. This method checks if the provided configuration is valid and throw a <code>ConfigurationException</code> if it is not. As long as this method does not accept the configuration, the corresponding component will not be activated.</p>
+<p>Here's our code that implements <code>ManagedService</code> and has an <code>updated</code> method. 
+This method checks if the provided configuration is valid and throw a 
+<code>ConfigurationException</code> if it is not. As long as this method does not accept the 
+configuration, the corresponding component will not be activated.
+Notice that your component does not necessarily implement the ManagedService interface, and the updated callback
+can also throw any exceptions:</p>
 <div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">Task</span> <span class="n">implements</span> <span class="n">ManagedService</span> <span class="p">{</span>
     <span class="n">private</span> <span class="n">String</span> <span class="n">m_interval</span><span class="p">;</span>
 
@@ -253,7 +262,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <span class="p">}</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1733828 by pderop on Sun, 6 Mar 2016 18:52:36 +0000
+        Rev. 1843257 by pderop on Tue, 9 Oct 2018 13:26:06 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
