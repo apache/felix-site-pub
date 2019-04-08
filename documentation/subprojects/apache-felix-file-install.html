@@ -122,6 +122,11 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <td>Threshold of logging information</td>
 </tr>
 <tr>
+<td><code>felix.fileinstall.log.default</code></td>
+<td>stdout</td>
+<td>Possible values are <code>stdout</code>, <code>jul</code>. Defines where to log when the OSGi LogService is not available.</td>
+</tr>
+<tr>
 <td><code>felix.fileinstall.bundles.new.start</code></td>
 <td>true</td>
 <td>Automatically start newly discovered bundles</td>
@@ -167,9 +172,29 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <td>If <code>false</code>, File Install will not write back in the file configurations changes. Note that this setting is global and can not be modified per polled directory.</td>
 </tr>
 <tr>
+<td><code>felix.fileinstall.configEncoding</code></td>
+<td>ISO-8859-1</td>
+<td>The encoding used to read and write configuration files.</td>
+</tr>
+<tr>
 <td><code>felix.fileinstall.bundles.updateWithListeners</code></td>
 <td>false</td>
 <td>If <code>true</code>, FileInstall will update managed bundles when a new version of an artifact handler is detected.  This detection is performed based on the last modification date of the bundle registering the handler.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.optionalImportRefreshScope</code></td>
+<td>all</td>
+<td>Possible values are <code>none</code>, <code>managed</code>, <code>all</code>. Defines which bundles can be elected for refresh.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.fragmentRefreshScope</code></td>
+<td>all</td>
+<td>Possible values are <code>none</code>, <code>managed</code>, <code>all</code>. Defines which bundles can be elected for refresh.</td>
+</tr>
+<tr>
+<td><code>felix.fileinstall.disableNio2</code></td>
+<td>false</td>
+<td>If <code>true</code>, File Install will not use NIO2 to scan directory and files.</td>
 </tr>
 <tr>
 <td><code>felix.fileinstall.subdir.mode</code></td>
@@ -217,24 +242,21 @@ Example:</p>
 
 <h2 id="watching-multiple-directories-with-file-install">Watching multiple directories with File Install<a class="headerlink" href="#watching-multiple-directories-with-file-install" title="Permanent link">&para;</a></h2>
 <p>Starting with version 3.1.0 it is possible to specify several directories to watch with the system property <code>felix.fileinstall.dir</code>; this property can either point to a single directory or a comma separated list of directories. In addition, Apache Felix File Install provides a ManagedServiceFactory to create multiple instances of File Install. Asuming you have a File Install bundle watching a <code>bundles</code> folder, creating a new instance is as simple as creating a new configuration file <code>org.apache.felix.fileinstall-&lt;pid&gt;.cfg</code> in that folder (substitute <pid> with a unique Id for the new service instance):</p>
-<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>org.apache.felix.fileinstall-configDir.cfg</B></DIV><DIV class="codeContent panelContent">
-    felix.fileinstall.poll=2000
-    felix.fileinstall.dir=/configDir
-    felix.fileinstall.debug=-1
-    felix.fileinstall.filter=.*\\.cfg
-    felix.fileinstall.bundles.new.start=false
+<div class="codehilite"><pre><span class="n">felix</span><span class="p">.</span><span class="n">fileinstall</span><span class="p">.</span><span class="n">poll</span><span class="p">=</span>2000
+<span class="n">felix</span><span class="p">.</span><span class="n">fileinstall</span><span class="p">.</span><span class="n">dir</span><span class="p">=</span><span class="o">/</span><span class="n">configDir</span>
+<span class="n">felix</span><span class="p">.</span><span class="n">fileinstall</span><span class="p">.</span><span class="n">debug</span><span class="p">=</span><span class="o">-</span>1
+<span class="n">felix</span><span class="p">.</span><span class="n">fileinstall</span><span class="p">.</span><span class="n">filter</span><span class="p">=</span><span class="o">.*\\</span><span class="p">.</span><span class="n">cfg</span>
+<span class="n">felix</span><span class="p">.</span><span class="n">fileinstall</span><span class="p">.</span><span class="n">bundles</span><span class="p">.</span><span class="n">new</span><span class="p">.</span><span class="n">start</span><span class="p">=</span><span class="n">false</span>
+</pre></div>
 
-## Exploded bundles
 
-Apache Felix File Install has the ability to watch for exploded bundles and automatically update such bundles if the content is changed in any way.  If a watched directory contains a sub directory, its content will be jar'ed and deployed to the OSGi framework.  Any change to a file in this directory or one of its subdirectories will result in the directory to be jar'ed again and the corresponding bundle to be updated.
-
-## Custom artifacts
-
-Apache Felix File Install can support deployment of custom artifacts.  By default, configurations and plain OSGi bundles are supported, but other kind of artifacts can be deployed through custom artifact handlers.
-
-To add support for a custom artifact, a service implementing one of `org.apache.felix.fileinstall.ArtifactListener`'s sub interfaces must be registered in the OSGi registry.
+<h2 id="exploded-bundles">Exploded bundles<a class="headerlink" href="#exploded-bundles" title="Permanent link">&para;</a></h2>
+<p>Apache Felix File Install has the ability to watch for exploded bundles and automatically update such bundles if the content is changed in any way.  If a watched directory contains a sub directory, its content will be jar'ed and deployed to the OSGi framework.  Any change to a file in this directory or one of its subdirectories will result in the directory to be jar'ed again and the corresponding bundle to be updated.</p>
+<h2 id="custom-artifacts">Custom artifacts<a class="headerlink" href="#custom-artifacts" title="Permanent link">&para;</a></h2>
+<p>Apache Felix File Install can support deployment of custom artifacts.  By default, configurations and plain OSGi bundles are supported, but other kind of artifacts can be deployed through custom artifact handlers.</p>
+<p>To add support for a custom artifact, a service implementing one of <code>org.apache.felix.fileinstall.ArtifactListener</code>'s sub interfaces must be registered in the OSGi registry.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1758291 by gnodet on Mon, 29 Aug 2016 19:00:43 +0000
+        Rev. 1857098 by gnodet on Mon, 8 Apr 2019 08:09:51 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
