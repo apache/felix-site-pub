@@ -221,15 +221,27 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 
 
 <p>The flag <code>supportIncrementalBuild</code> is only necessary when you are using Eclipse and m2e, it supports generating the appropriate metadata during incremental builds. When you also want to support the old-style Felix SCR annotations from Java package <code>org.apache.felix.scr.annotations</code> you can add this BND plugin:</p>
-<div class="codehilite"><pre><span class="nt">&lt;configuration&gt;</span>
-  <span class="nt">&lt;instructions&gt;</span>
-    <span class="c">&lt;!-- Support parsing of maven-scr-plugin annotations through the felix.scr.bnd plugin --&gt;</span>
-    <span class="nt">&lt;_plugin&gt;</span>org.apache.felix.scrplugin.bnd.SCRDescriptorBndPlugin;destdir=<span class="cp">${</span><span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">outputDirectory</span><span class="cp">}</span>;<span class="nt">&lt;/_plugin&gt;</span>
-  <span class="nt">&lt;/instructions&gt;</span>
-<span class="nt">&lt;/configuration&gt;</span>
+<div class="codehilite"><pre><span class="nt">&lt;plugin&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>maven-bundle-plugin<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+  <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;instructions&gt;</span>
+      <span class="c">&lt;!-- Support parsing of maven-scr-plugin annotations through the felix.scr.bnd plugin --&gt;</span>
+      <span class="nt">&lt;_plugin&gt;</span>org.apache.felix.scrplugin.bnd.SCRDescriptorBndPlugin;destdir=<span class="cp">${</span><span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="o">.</span><span class="n">outputDirectory</span><span class="cp">}</span><span class="nt">&lt;/_plugin&gt;</span>
+    <span class="nt">&lt;/instructions&gt;</span>
+  <span class="nt">&lt;/configuration&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.felix<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>org.apache.felix.scr.bnd<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.9.4<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
 </pre></div>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1762308 by cziegeler on Mon, 26 Sep 2016 09:55:32 +0000
+        Rev. 1860681 by sseifert on Wed, 5 Jun 2019 19:40:16 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
