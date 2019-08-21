@@ -95,6 +95,20 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 </ul>
 </div>
 <p>As of Apache Felix Web Console 3.1.0 security of the Web Console can be extended by providing a <code>WebConsoleSecurityProvicer</code> service. An extension to this service has been introduced with the <code>WebConsoleSecurityProvider2</code> service in Apache Felix Web Console 3.1.4.</p>
+<p>As of Web Console 4.3.16 it is now possible to <em>require</em> a WebConsoleSecurityProvider service to be present in order for the Web Console to become 
+active. This can be used to prevent bypassing the security provider if this is provided asynchronously.
+To do this, the WebConsoleSecurityProvider service needs to be registered with a <em>Service Registration</em> property to identify itself:</p>
+<div class="codehilite"><pre>&quot;<span class="n">webconsole</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">provider</span><span class="p">.</span><span class="n">id</span>&quot; <span class="p">=</span> &quot;<span class="n">my</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">provider</span>&quot;
+</pre></div>
+
+
+<p>Then the Web Console can be informed about the security providers it needs to operate by setting the following <em>OSGi Framework</em> property:</p>
+<div class="codehilite"><pre>&quot;<span class="n">felix</span><span class="p">.</span><span class="n">webconsole</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">providers</span>&quot; <span class="p">=</span> &quot;<span class="n">my</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">provider</span>&quot;
+</pre></div>
+
+
+<p>With this property specified, the Web Console will not activate until the service with the specified property is present. Local login as typically done with 
+<code>admin/password</code> is disabled when this property is specified.</p>
 <h2 id="webconsolesecurityprovider">WebConsoleSecurityProvider<a class="headerlink" href="#webconsolesecurityprovider" title="Permanent link">&para;</a></h2>
 <p>The <code>WebConsoleSecurityProvider</code> service provides two methods:</p>
 <p>{code:java}
@@ -172,7 +186,7 @@ public boolean authorize( Object user, String role );</p>
 <h2 id="sample">Sample<a class="headerlink" href="#sample" title="Permanent link">&para;</a></h2>
 <p>A sample of a <code>WebConsoleSecurityProvider</code> service is the Apache Sling implementation <a href="http://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/webconsolesecurityprovider/src/main/java/org/apache/sling/extensions/webconsolesecurityprovider/internal/SlingWebConsoleSecurityProvider.java"><code>SlingWebConsoleSecurityProvider</code></a>. This implementation uses a JCR implementation to login to the repository and thus validate the credentials.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1712598 by cziegeler on Wed, 4 Nov 2015 17:48:20 +0000
+        Rev. 1865611 by davidb on Wed, 21 Aug 2019 08:56:22 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
