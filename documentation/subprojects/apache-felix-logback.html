@@ -118,14 +118,38 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 
 <p>These provide the <code>slf4j</code> logging API over the Logback backend.</p>
 <h2 id="basic-configuration">Basic Configuration<a class="headerlink" href="#basic-configuration" title="Permanent link">&para;</a></h2>
-<p>Configuring logback is most easily handled by setting the system property <code>logback.configurationFile</code> to point to a file on the file system.</p>
+<p>Configuring logback is easily handled by setting the system property <code>logback.configurationFile</code> to point to a file on the file system.</p>
 <p>This is an example using a <em>bndrun</em> file:</p>
-<div class="codehilite"><pre><span class="na">-runproperties</span><span class="o">:</span> <span class="s">logback.configurationFile=file:${.}/logback.xml</span>
+<div class="codehilite"><pre><span class="na">-runproperties</span><span class="o">:</span> <span class="s">logback.configurationFile=${fileuri;${.}/logback.xml}</span>
 </pre></div>
 
 
-<p>where in bnd <code>${.}</code> gives the path to the directory of the bndrun file.</p>
+<p>where the bnd macro <code>${.}</code> gives the path to the directory of the bndrun file and macro <code>${fileuri;&lt;path&gt;}</code> converts the path to a system compatible path.</p>
 <p>Logback offers many features from it's configuration file, so make sure to look through the <a href="https://logback.qos.ch/documentation.html">documentation</a>.</p>
+<p><strong>Note</strong> When using the bnd export function to produce an executable jars <code>-runproperties</code> are copied verbatim and as defined above the 
+property will be the literal value provided at build time. This is likely not desirable. You can instead
+use a path without a URI protocol to ensure logback searches for the file on the classpath of the executable jar.</p>
+<p>A default configuration file can be embedded in the executable jar with the <code>-includeresource</code> directive in the bndrun file:</p>
+<div class="codehilite"><pre><span class="na">-includeresource</span><span class="o">:</span> <span class="s">META-INF/logback.xml=${.}/logback.xml</span>
+</pre></div>
+
+
+<p>This places the default logback config inside the executable jar at <code>META-INF/logback.xml</code>. Now the following directive can be used:</p>
+<div class="codehilite"><pre><span class="na">-runproperties</span><span class="o">:</span> <span class="s">logback.configurationFile=META-INF/logback.xml</span>
+</pre></div>
+
+
+<p>The defaults will be used when executing the jar.</p>
+<div class="codehilite"><pre>java -jar executable.jar
+</pre></div>
+
+
+<p>Of course this property can be overloaded by the system property when executing the jar:</p>
+<div class="codehilite"><pre>java -jar executable.jar -Dlogback.configurationFile<span class="o">=</span>file:/some/path/logback.xml
+</pre></div>
+
+
+<p>Remember to use the <code>file:</code> protocol in this case to alert logback to the fact this path is not on the classpath.</p>
 <h2 id="deployment-options">Deployment Options<a class="headerlink" href="#deployment-options" title="Permanent link">&para;</a></h2>
 <p>There are at least two possible deployment scenarios.</p>
 <h3 id="the-standard-approach">The Standard Approach<a class="headerlink" href="#the-standard-approach" title="Permanent link">&para;</a></h3>
@@ -238,7 +262,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <li>When using <strong>equinox</strong> framework you may want to disable it's internal appenders using the system property <code>eclipse.log.enabled=false</code></li>
 </ul>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1835281 by rotty3000 on Fri, 6 Jul 2018 20:50:28 +0000
+        Rev. 1877299 by rotty3000 on Sat, 2 May 2020 14:32:21 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
