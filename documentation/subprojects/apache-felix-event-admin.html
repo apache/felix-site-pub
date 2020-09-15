@@ -220,7 +220,7 @@ h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover
 <p>Each of the aforementioned events actually contains a wider set of properties. Check the OSGi Compendium specification, section 113.6, for a complete list.</p>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
 <p>The Apache Felix Event Admin implementation is trying the deliver the events as fast as possible. Events sent from different threads are sent in parallel. Events from the same thread are sent in the order they are received (this is according to the spec).
-A timeout can be configured which is used for event handlers. If an event handler takes longer than the configured timeout to process an event, it is blacklisted. Once a handler is in a blacklist, it doesn't get sent any events anymore.
+A timeout can be configured which is used for event handlers. If an event handler takes longer than the configured timeout to process an event, it is denied. Once a handler is in a denylist, it doesn't get sent any events anymore.
 The Felix Event Admin can be configured either through framework properties or through the configuration admin using PID <code>org.apache.felix.eventadmin.impl.EventAdmin</code>. This is a list of configuration properties:</p>
 <hr />
 <p><strong>Thread Pool Size</strong></p>
@@ -240,7 +240,7 @@ The Felix Event Admin can be configured either through framework properties or t
 <p><em>Property</em>: org.apache.felix.eventadmin.Timeout<br />
 <em>Default</em>: 5000<br />
 <em>Type</em>: Integer</p>
-<p>The black-listing timeout in milliseconds. The default value is 5000. Increase or decrease at own discretion. A value of less then 100 turns timeouts off. Any other value is the time in milliseconds granted to each event handler before it gets blacklisted.</p>
+<p>The deny-listing timeout in milliseconds. The default value is 5000. Increase or decrease at own discretion. A value of less then 100 turns timeouts off. Any other value is the time in milliseconds granted to each event handler before it gets denied.</p>
 <hr />
 <p><strong>Require Topic</strong></p>
 <p><em>Property</em>: org.apache.felix.eventadmin.RequireTopic<br />
@@ -269,7 +269,7 @@ The Felix Event Admin can be configured either through framework properties or t
 <p>This sets the log level used for messages outputted by the event admin implementation. Valid values are 1 (=ERROR), 2 (=WARNING), 3 (=INFO), and 4 (=DEBUG). The default is 2 and an invalid value sets the level to the default value.</p>
 <hr />
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1622444 by cziegeler on Thu, 4 Sep 2014 10:12:53 +0000
+        Rev. 1881725 by cziegeler on Tue, 15 Sep 2020 05:11:14 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
