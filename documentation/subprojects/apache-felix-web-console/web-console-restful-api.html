@@ -387,11 +387,16 @@ For the action to execute, the following options are tested, one after the other
 <h4 id="create">Create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h4>
 <p>If the parameter <code>create</code>is sent, a new configuration with the PID is created. The value of the parameter is not evaluated.</p>
 <h4 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">&para;</a></h4>
-<p>If the parameter <code>apply</code> is sent, the configuration is changed. The value of the parameter is not evaluated.
+<p>If the parameter <code>apply</code> is sent, the configuration is changeg. The value of the parameter is not evaluated.
 The parameter <code>factoryPid</code> might contain the factory pid.
-The parameter <code>propertyList</code> contains a comma-separated list of all configuration property names that will be changed by this POST. For each name, the value of the corresponding request parameter is used to set the value. If such a parameter is missing, the property is not changed.</p>
+The parameter <code>propertyList</code> contains a comma-separated list of all configuration property names that will be changed by this POST. For each name, the value of the corresponding request parameter is used to set the value. If such a parameter is missing, the property is not changed. Any existing property not listed in the property list will be removed from the configuration</p>
 <p>For example to use <code>curl</code> to apply a configuration the following command line can be used:</p>
 <div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">propertylist</span><span class="p">=</span><span class="n">foo</span><span class="p">,</span><span class="n">bar</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">foo</span><span class="p">=</span>51&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">bar</span><span class="p">=</span><span class="n">hello</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">MyPid</span>
+</pre></div>
+
+
+<p>If the configuration contains property where the names clash with the commands of the rest api like <code>apply</code> or <code>propertyList</code> the request parameter name gets prefixed with a dollar sign:</p>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">propertylist</span><span class="p">=</span><span class="n">update</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;$<span class="n">update</span><span class="p">=</span><span class="n">yes</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">mypid</span>
 </pre></div>
 
 
@@ -411,7 +416,7 @@ for a factoryPid <code>com.acme.MyFactoryPid</code> the following can be used:</
 <h4 id="unbind">Unbind<a class="headerlink" href="#unbind" title="Permanent link">&para;</a></h4>
 <p>If the parameter <code>unbind</code> is sent, the configuration is unbind.</p>
       <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1777977 by davidb on Mon, 9 Jan 2017 14:49:42 +0000
+        Rev. 1884089 by cziegeler on Fri, 4 Dec 2020 07:34:08 +0000
       </div>
       <div class="trademarkFooter"> 
         Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
