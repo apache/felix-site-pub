@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Apache Felix Maven Bundle Plugin (BND) :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/documentation/subprojects/apache-felix-maven-bundle-plugin-bnd.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/feather.svg">
+        </span>
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+        Apache Felix
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Projects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="apache-felix-deployment-admin.html">Deployment Admin</a>
+            <a class="navbar-item" href="apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="apache-felix-jaas.html">JAAS</a>
+            <a class="navbar-item" href="apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads/currentreleases.html">Downloads</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../auto-index.html">Temporary auto-index page</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../media.html">Media</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../miscellaneous.html">miscellaneous</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Welcome to Apache Felix</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Documentation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects.html">Apache Felix Subproject Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../community.html">Community Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../development.html">Development</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../faqs.html">Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">FAQS</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Subprojects</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-autoconf.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-autoconf.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-commons.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-commons.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-deployment-admin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-deployment-admin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework.html">Apache Felix Framework</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-gogo.html">Apache Felix Gogo</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-jaas.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-jaas.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-lightweight-http-service.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-lightweight-http-service.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-manifest-generator-mangen.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-manifest-generator-mangen.adoc</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-maven-obr-plugin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-maven-obr-plugin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-maven-osgi-plugin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-maven-osgi-plugin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-maven-scr-plugin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-maven-scr-plugin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-osgi-core.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-osgi-core.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-script-console-plugin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-script-console-plugin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-serialization-framework.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-serialization-framework.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-web-console.html">Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/mosgi-managed-osgi-framework.adoc">master@documentation:ROOT:documentation/subprojects/mosgi-managed-osgi-framework.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Commons (retired)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-commons/creating-bundles-using-bnd.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-commons/creating-bundles-using-bnd.adoc</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Dependency Manager</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Framework</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">GoGo Shell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">iPOJO (retired)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/injecting-bundle-context.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/injecting-bundle-context.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-faq.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-feature-overview.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/apache-felix-ipojo-online-manipulator.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/articles-and-presentations.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/articles-and-presentations.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-eclipse-integration.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/combining-ipojo-and-configuration-admin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/configuration-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-extender-configuration.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-extender-configuration.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-instances.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-instances.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/developing-camel-mediators-with-ipojo.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/dive-into-the-ipojo-manipulation-depths.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/download.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/download.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/event-admin-handlers.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/event-admin-handlers.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-testing-components.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/how-to-use-ipojo-annotations.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-use-ipojo-manipulation-metadata.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-maven-plug-in.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-maven-plug-in.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-devguide/how-to-write-your-own-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/instance-vs-service-controller.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/instance-vs-service-controller.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-ipojo-introspection-api.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/architecture-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-advanced-tutorial.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-ant-task.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-ant-task.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/apache-felix-ipojo-api.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-arch-command.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-composition-tutorial.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/how-to-use-ipojo-factories.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-hello-word-maven-based-tutorial.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-hierarchical-composition-overview.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-hierarchical-composition-overview.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/ipojo-in-10-minutes.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/ipojo-jmx-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/ipojo-jmx-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-karaf-feature.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-karaf-feature.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-keypoints.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-keypoints.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-successstories.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/ipojo-webconsole-plugin.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/ipojo-news.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/ipojo-news.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/ipojo-reference-card.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/ipojo-reference-card.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/ipojo-support.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/ipojo-support.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/junit4osgi.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-tools/junit4osgi.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-architecture.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-architecture.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-tutorial.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-tutorial.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/lifecycle-callback-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/controller-lifecycle-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-methods.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-methods.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/providing-osgi-services.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/related-works.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/related-works.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/service-requirement-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/service-binding-interceptors.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/service-binding-interceptors.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-stereotypes.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/using-stereotypes.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedvms.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-supportedosgi.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/extender-pattern-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-maven.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-junit4osgi/apache-felix-ipojo-junit4osgi-maven.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/temporal-service-dependency.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/describing-components/white-board-pattern-handler.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/constructing-pojo-objects-with-factory-methods.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-gettingstarted/apache-felix-ipojo-dosgi.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-factory-service.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/ipojo-advanced-topics/ipojo-factory-service.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-userguide/using-xml-schemas.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-ipojo/apache-felix-ipojo-why-choose-ipojo.adoc</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">UPNP (retired)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-getting-started.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-getting-started.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-known-issues.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-known-issues.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-driver-architecture.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-driver-architecture.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-testing-devices.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-testing-devices.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-acknowledgments.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-acknowledgments.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples/upnp-writing-cd-and-cp.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-upnp/upnp-testing-devices/upnp-examples/upnp-writing-cd-and-cp.adoc</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">User Admin (retired)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-background.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-background.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-file-store.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-file-store.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-getting-started.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-getting-started.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-introduction.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-introduction.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-mongodb-store.adoc">master@documentation:ROOT:documentation/subprojects/apache-felix-user-admin/apache-felix-user-admin-mongodb-store.adoc</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Web Console</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">MOSGI (retired)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="#master@documentation:ROOT:documentation/subprojects/mosgi-managed-osgi-framework/probeguide.adoc">master@documentation:ROOT:documentation/subprojects/mosgi-managed-osgi-framework/probeguide.adoc</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li>Documentation</li>
+    <li>Subprojects</li>
+    <li><a href="apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/documentation/subprojects/apache-felix-maven-bundle-plugin-bnd.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Apache Felix Maven Bundle Plugin (BND)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This plugin for Maven 2/3 is based on the <a href="http://bnd.bndtools.org/">BND</a> tool from Peter Kriens.
+The way BND works is by treating your project as a big collection of classes (e.g., project code, dependencies, and the class path).
+The way you create a bundle with BND is to tell it the content of the bundle&#8217;s JAR file as a subset of the available classes.
+This plugin wraps BND to make it work specifically with the Maven 2 project structure and to provide it with reasonable default behavior for Maven 2 projects.</p>
+</div>
+<div class="paragraph">
+<p>INFO:
+If you have questions about the maven-bundle-plugin please read the <a href="../faqs/apache-felix-bundle-plugin-faq.html" class="page">FAQ</a> first.
+If you still have questions you can ask them on the <a href="http://felix.apache.org/site/mailinglists.html">Felix user list</a>.&lt;/div&gt;</p>
+</div>
+<div class="paragraph">
+<p><em>NOTE: test scoped dependencies are <strong>not</strong> included in the classpath seen by BND.</em></p>
+</div>
+<div class="paragraph">
+<p>Since the 1.4.0 release, this plugin also aims to automate OBR (OSGi Bundle Repository) management.
+It helps manage a local OBR for your local Maven repository, and also supports remote OBRs for bundle distribution.
+The plug-in automatically computes bundle capabilities and requirements, using a combination of Bindex and Maven metadata.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<a href="http://felix.apache.org/components/bundle-plugin/index.html">Full Maven Site Plugin documentation for the current release of the maven-bundle-plugin</a>&lt;/div&gt;
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<a href="http://bnd.bndtools.org/chapters/790-format.html">A complete list of instructions and their format is available from the BND website</a>&lt;/div&gt;
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_simple_example"><a class="anchor" href="#_simple_example"></a>Simple Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rather than going straight to a detailed list of plugin features, we will first look at a simple example of how to use the plugin to give an immediate flavor.
+A detailed "<a href="#detailed-how-to">how to</a>" will follow.</p>
+</div>
+<div class="paragraph">
+<p>Assume that we have a simple bundle project that has a pubic API package an several implementation packages, such as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>org.foo.myproject.api
+org.foo.myproject.impl1
+org.foo.myproject.impl2
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we also assume that we have a bundle activator in one of the implementation packages, then the <code>&lt;plugins&gt;</code> section of the POM file for this bundle project would look like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>...
+&lt;plugins&gt;
+  &lt;plugin&gt;
+    &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+    &lt;extensions&gt;true&lt;/extensions&gt;
+    &lt;configuration&gt;
+      &lt;instructions&gt;
+        &lt;Export-Package&gt;org.foo.myproject.api&lt;/Export-Package&gt;
+        &lt;Private-Package&gt;org.foo.myproject.*&lt;/Private-Package&gt;
+        &lt;Bundle-Activator&gt;org.foo.myproject.impl1.Activator&lt;/Bundle-Activator&gt;
+      &lt;/instructions&gt;
+    &lt;/configuration&gt;
+  &lt;/plugin&gt;
+&lt;/plugins&gt;
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;Export-Package&gt;</code> and <code>&lt;Private-Package&gt;</code> instructions tell the plugin about the contents of the resulting bundle JAR file.
+The <code>&lt;Export-Package&gt;</code> instruction tells the plugin which of the available packages to copy into the bundle <em>and</em> export, while the <code>&lt;Private-Package&gt;</code> instruction indicates which of the available packages to copy into the bundle <em>but not</em> export.
+If the two sets overlap, as they do in the case, then the export takes precedence.
+Since we did not specify any values for any other bundle manifest headers, they will assume default values which are described <a href="#default-behavior">below</a>.
+One specific behavior to highlight is that the plugin generates the <code>Import-Package</code> bundle manifest header based on the contents of the bundle, which means that you generally do not ever need to explicitly specify it yourself.
+That&#8217;s it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_features"><a class="anchor" href="#_features"></a>Features</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The BND library underlying the plugin defines instructions to direct its behavior.
+For this Maven plugin, these instructions are issued in the plugin configuration section of the POM file, as was illustrated <a href="#simple-example">above</a>.
+BND recognizes three types of instructions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><em>Manifest headers</em> - Any instruction that starts with a capital letter will appear in the resulting bundle&#8217;s manifest file;
+the value for the header will either be copied, augmented, or generated by BND depending on the instruction.</p>
+</li>
+<li>
+<p><em>Variables</em> - Any instruction starting with a lowercase letter is assumed to be a variable in the form of a name-value pair, such as <code>version=3.0</code>, that can be used for property substitution, but is not copied to the manifest.</p>
+</li>
+<li>
+<p><em>Directives</em> - Any instruction starting with a '-' character is considered to be a directive that informs BND to perform some special processing and is not copied to the manifest.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The remainder of this section covers the most important aspects of BND&#8217;s instructions;
+for complete details refer to the <a href="http://bnd.bndtools.org/">BND documentation</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_instructions"><a class="anchor" href="#_instructions"></a>Instructions</h3>
+<div class="sect3">
+<h4 id="_export_package"><a class="anchor" href="#_export_package"></a><code>&lt;Export-Package&gt;</code></h4>
+<div class="paragraph">
+<p>The <code>&lt;Export-Package&gt;</code> instruction is a list of packages for the bundle to export.
+These packages are copied into the resulting bundle JAR file from the available classes (i.e., project classes, dependencies, and class path);
+thus, it is possible to include classes into your bundle that are not associated with source files in your project.
+<code>&lt;Export-Package&gt;</code> can be specified with package patterns using the '*' wildcard.
+Also, it is possible to exclude packages using negation by starting the package pattern with '!'.
+Thus, non-negated patterns indicate which of the available packages to include in the bundle, whereas negated patterns indicate which should not be included in the bundle.</p>
+</div>
+<div class="paragraph">
+<p>The list of package patterns is ordered and earlier patterns are applied before later patterns.
+For example, if you specify "<code class="code">org.foo.<strong>,!org.foo.impl</code>" the second pattern has no effect since all <code>org.foo</code> packages have already been selected by the first pattern.
+Instead, you should specify "<code class="code">!org.foo.impl,org.foo.</strong></code>", which will export all <code>org.foo</code> packages except <code>org.foo.impl</code>.</p>
+</div>
+<div class="paragraph">
+<p>Following standard OSGi R4 syntax, package patterns can include both directives and attributes, which will be copied appropriately into the generated Export-Package manifest header.
+Besides explicitly listing package version attributes, BND will also determine package versions by examining the source JAR file or from <code>packageinfo</code> files in the package directory.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_private_package"><a class="anchor" href="#_private_package"></a><code>&lt;Private-Package&gt;</code></h4>
+<div class="paragraph">
+<p>The <code>&lt;Private-Package&gt;</code> instruction is similar in every way to the <code>&lt;Export-Package&gt;</code> instruction, except for the fact that these packages will <em>not</em> be exported by the bundle.
+If a package is selected by both the export and private package headers, then the export takes precedence.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_include_resource"><a class="anchor" href="#_include_resource"></a><code>&lt;Include-Resource&gt;</code></h4>
+<div class="paragraph">
+<p>The <code>&lt;Include-Resource&gt;</code> instruction is a list of arbitrary resources that should be copied into the bundle JAR file.
+The specified resources are declared as clauses that can have the following forms:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>clause ::== assignment | inline | simple
+assignment ::== PATH '=' PATH
+simple ::== PATH
+inline ::== '@' PATH</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For the <code>&lt;Include-Resource&gt;</code> instruction, actual file paths are relative to the <code>pom.xml</code>, while file copy destinations are relative to the root of the resulting bundle JAR file.
+In the case of <code>assignment</code> or <code>simple</code> forms, the <code>PATH</code> parameter can point to a file or directory.
+The <code>simple</code> form will place the resource in the bundle JAR with only the file name, i.e., without any path component.
+For example, including <code>src/main/resources/a/b.c</code> will result in a resource <code>b.c</code> in the root of the bundle JAR.
+If the <code>PATH</code> points to a directory, the entire directory hierarchy is copied into the resulting bundle JAR file relative to the specified directory.
+If a specific resource must be placed into a subdirectory of the bundle jar, then use the <code>assignment</code> form, where the first path is the the destination path (including file name if the resource is a file) and the second path is the resource to copy.
+The <code>inline</code> form requires a ZIP or JAR file, which will be completely expanded in the bundle JAR.</p>
+</div>
+<div class="paragraph">
+<p>If a resource clause is specified inside of "{ &#8230;&#8203;
+}" brackets, then variable substitution will be performed on the resource, where variables in the resources are denoted with "${ &#8230;&#8203;
+}" syntax.</p>
+</div>
+<div class="paragraph">
+<p>By default the bundle plugin converts the project&#8217;s Maven resource directories into a single <code>&lt;Include-Resource&gt;</code> instruction.
+If you specify your own <code>&lt;Include-Resource&gt;</code> instruction, this will replace the generated one.
+To include the generated list of Maven resources in your own <code>&lt;Include-Resource&gt;</code> instruction just add <code>{maven-resources}</code> to the list and it will be expanded automatically.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_import_package"><a class="anchor" href="#_import_package"></a><code>&lt;Import-Package&gt;</code></h4>
+<div class="paragraph">
+<p>The <code>&lt;Import-Package&gt;</code> instruction is a list of packages that are required by the bundle&#8217;s contained packages.
+The default for this header is "<strong>", resulting in importing all referred packages.
+This header rarely has to be explicitly specified.
+However, in certain cases when there is an unwanted import, such an import can be removed by using a negation package pattern.
+The package patterns work in the same way as for <code>&lt;Export-Package&gt;</code>, which means they are ordered.
+For example, if you wanted to import all packages except <code>org.foo.impl</code> you would specify "<code class="code">!org.foo.impl,</strong></code>"</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_default_behavior"><a class="anchor" href="#_default_behavior"></a>Default Behavior</h3>
+<div class="paragraph">
+<p>To use this plugin, very little information is required by BND.
+As part of the Maven integration, the plugin tries to set reasonable defaults for various instructions.
+For example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;Bundle-SymbolicName&gt;</code> is computed using the shared <a href="http://svn.apache.org/repos/asf/maven/shared/trunk/maven-osgi/src/main/java/org/apache/maven/shared/osgi/DefaultMaven2OsgiConverter.java">Maven2OsgiConverter</a> component, which uses the following algorithm: Get the symbolic name as groupId + "." + artifactId, with the following exceptions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>if artifact.getFile is not null and the jar contains a OSGi Manifest with Bundle-SymbolicName property then that value is returned</p>
+</li>
+<li>
+<p>if groupId has only one section (no dots) and artifact.getFile is not null then the first package name with classes is returned.
+eg.
+commons-logging:commons-logging -&gt; org.apache.commons.logging</p>
+</li>
+<li>
+<p>if artifactId is equal to last section of groupId then groupId is returned.
+eg.
+org.apache.maven:maven -&gt; org.apache.maven</p>
+</li>
+<li>
+<p>if artifactId starts with last section of groupId that portion is removed.
+eg.
+org.apache.maven:maven-core -&gt; org.apache.maven.core The computed symbolic name is also stored in the <code>$(maven-symbolicname)</code> property in case you want to add attributes or directives to it.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>&lt;Export-Package&gt;</code> is now assumed to be the set of packages in your local Java sources, excluding the default package '.' and any packages containing 'impl' or 'internal'.
+<em>(before version 2 of the bundleplugin it was based on the symbolic name)</em></p>
+</li>
+<li>
+<p>Since 2.2.0 you can also use <code>{local-packages}</code> inside <code>&lt;Export-Package&gt;</code> and it will be expanded to the set of local packages.</p>
+</li>
+<li>
+<p><code>&lt;Private-Package&gt;</code> is now assumed to be the set of packages in your local Java sources (note that any packages in both <code>&lt;Export-Package&gt;</code> and <code>&lt;Private-Package&gt;</code> will be exported).
+<em>(before version 2 of the bundleplugin it was assumed to be empty by default)</em></p>
+</li>
+<li>
+<p><code>&lt;Import-Package&gt;</code> is assumed to be "<code class="code">*</code>", which imports everything referred to by the bundle content, but not contained in the bundle.
+<em>Any exported packages are also imported by default, to ensure a consistent class space.</em></p>
+</li>
+<li>
+<p><code>&lt;Include-Resource&gt;</code> is generated from the project&#8217;s Maven resources, typically "<code class="code">src/main/resources/</code>", which will copy the specified project directory hierarchy into the resulting bundle JAR file, mirroring standard Maven behavior.</p>
+</li>
+<li>
+<p><code>&lt;Bundle-Version&gt;</code> is assumed to be "<code class="code">${pom.version}</code>" but is normalized to the OSGi version format of "<code class="code">MAJOR.MINOR.MICRO.QUALIFIER</code>", for example "<code class="code">2.1-SNAPSHOT</code>" would become "<code class="code">2.1.0.SNAPSHOT</code>".</p>
+</li>
+<li>
+<p><code>&lt;Bundle-Name&gt;</code> is assumed to be "<code class="code">${pom.name}</code>".</p>
+</li>
+<li>
+<p><code>&lt;Bundle-Description&gt;</code> is assumed to be "<code class="code">${pom.description}</code>".</p>
+</li>
+<li>
+<p><code>&lt;Bundle-License&gt;</code> is assumed to be "<code class="code">${pom.licenses}</code>".</p>
+</li>
+<li>
+<p><code>&lt;Bundle-Vendor&gt;</code> is assumed to be "<code class="code">${pom.organization.name}</code>".</p>
+</li>
+<li>
+<p><code>&lt;Bundle-DocURL&gt;</code> is assumed to be "<code class="code">${pom.organization.url}</code>".</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Since the plugin creates bundles for OSGi R4, it hard-codes <code>Bundle-ManifestVersion</code> to be '2'.
+Additionally, it generates imports for every export to ensure package substitutability, which is very important when working with collaborating services.
+It is possible to override any of these values (except <code>Bundle-ManifestVersion</code>) just by specifying the desired value in the plugin configuration section of the POM file.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_detailed_how_to"><a class="anchor" href="#_detailed_how_to"></a>Detailed "How To"</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_maven2"><a class="anchor" href="#_get_maven2"></a>Get Maven2</h3>
+<div class="paragraph">
+<p>The first step in the process of using the plugin is downloading and installing the latest version of the Maven2 runtime.
+The latest Maven2 release and instuctions for getting started with Maven2 can be found at the <a href="http://maven.apache.org/index.html">Maven website</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_plugin"><a class="anchor" href="#_using_the_plugin"></a>Using the Plugin</h3>
+<div class="paragraph">
+<p>To use the maven-bundle-plugin, you first need to add the plugin and some appropriate plugin configuration to your bundle project&#8217;s POM.
+Below is an example of a simple OSGi bundle POM for Maven2:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;project&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;my-osgi-bundles&lt;/groupId&gt;
+  &lt;artifactId&gt;examplebundle&lt;/artifactId&gt;
+  &lt;packaging&gt;bundle&lt;/packaging&gt;    &lt;!-- (1) --&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;name&gt;Example Bundle&lt;/name&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+      &lt;artifactId&gt;org.osgi.core&lt;/artifactId&gt;
+      &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;    &lt;!-- (2) START --&gt;
+        &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+        &lt;extensions&gt;true&lt;/extensions&gt;
+        &lt;configuration&gt;
+          &lt;instructions&gt;
+            &lt;Export-Package&gt;com.my.company.api&lt;/Export-Package&gt;
+            &lt;Private-Package&gt;com.my.company.*&lt;/Private-Package&gt;
+            &lt;Bundle-Activator&gt;com.my.company.Activator&lt;/Bundle-Activator&gt;
+          &lt;/instructions&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;    &lt;!-- (2) END --&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+&lt;/project&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are two main things to note: (1) the <code>&lt;packaging&gt;</code> specifier must be "bundle" and (2) the plugin and configuration must be specified (the configuration section is where you will issue instructions to the plugin).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_real_world_example"><a class="anchor" href="#_real_world_example"></a>Real-World Example</h3>
+<div class="paragraph">
+<p>Consider this more real-world example using Felix' Log Service implementation.
+The Log Service project is comprised of a single package: <code>org.apache.felix.log.impl</code>.
+It has a dependency on the core OSGi interfaces as well as a dependency on the compendium OSGi interfaces for the specific log service interfaces.
+The following is its POM file:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;project&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.log&lt;/artifactId&gt;
+  &lt;packaging&gt;bundle&lt;/packaging&gt;
+  &lt;name&gt;Apache Felix Log Service&lt;/name&gt;
+  &lt;version&gt;0.8.0-SNAPSHOT&lt;/version&gt;
+  &lt;description&gt;
+    This bundle provides an implementation of the OSGi R4 Log service.
+  &lt;/description&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;${pom.groupId}&lt;/groupId&gt;
+      &lt;artifactId&gt;org.osgi.core&lt;/artifactId&gt;
+      &lt;version&gt;0.8.0-incubator&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;${pom.groupId}&lt;/groupId&gt;
+      &lt;artifactId&gt;org.osgi.compendium&lt;/artifactId&gt;
+      &lt;version&gt;0.9.0-incubator-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+        &lt;extensions&gt;true&lt;/extensions&gt;
+        &lt;configuration&gt;
+          &lt;instructions&gt;
+            &lt;Export-Package&gt;org.osgi.service.log&lt;/Export-Package&gt;
+            &lt;Private-Package&gt;org.apache.felix.log.impl&lt;/Private-Package&gt;
+            &lt;Bundle-SymbolicName&gt;${pom.artifactId}&lt;/Bundle-SymbolicName&gt;
+            &lt;Bundle-Activator&gt;${pom.artifactId}.impl.Activator&lt;/Bundle-Activator&gt;
+            &lt;Export-Service&gt;org.osgi.service.log.LogService,org.osgi.service.log.LogReaderService&lt;/Export-Service&gt;
+          &lt;/instructions&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+&lt;/project&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that the <code>&lt;Export-Package&gt;</code> instruction specifies that the bundle exports the Log Service package, even though this package is not contained in the bundle project.
+By declaring this, the plugin will copy the Log Service package into the resulting bundle JAR file.
+This is useful in this case because now the bundle can resolve without having to download the entire compendium bundle.
+The resulting manifest for the Log Service bundle looks like this (notice how the imports/exports automatically have version information associated with them, which was obtained from packageinfo files in the source packages):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Manifest-Version: 1
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Activator: org.apache.felix.log.impl.Activator
+Import-Package: org.osgi.framework;version=1.3, org.osgi.service.log;v
+ ersion=1.3
+Include-Resource: src/main/resources
+Export-Package: org.osgi.service.log;uses:=org.osgi.framework;version=
+ 1.3
+Bundle-Version: 0.8.0.SNAPSHOT
+Bundle-Name: Apache Felix Log Service
+Bundle-Description: This bundle provides an implementation of the OSGi
+  R4 Log service.
+Private-Package: org.apache.felix.log.impl
+Bundle-ManifestVersion: 2
+Export-Service: org.osgi.service.log.LogService,org.osgi.service.log.L
+ ogReaderService
+Bundle-SymbolicName: org.apache.felix.log</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resulting bundle JAR file has the following content (notice how the LICENSE and NOTICE files were automatically copied from the <code>src/main/resources/</code> directory of the project):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>META-INF/MANIFEST.MF
+LICENSE
+META-INF/
+META-INF/maven/
+META-INF/maven/org.apache.felix/
+META-INF/maven/org.apache.felix/org.apache.felix.log/
+META-INF/maven/org.apache.felix/org.apache.felix.log/pom.properties
+META-INF/maven/org.apache.felix/org.apache.felix.log/pom.xml
+NOTICE
+org/
+org/apache/
+org/apache/felix/
+org/apache/felix/log/
+org/apache/felix/log/impl/
+org/apache/felix/log/impl/Activator.class
+org/apache/felix/log/impl/Log.class
+org/apache/felix/log/impl/LogEntryImpl.class
+org/apache/felix/log/impl/LogException.class
+org/apache/felix/log/impl/LogListenerThread.class
+org/apache/felix/log/impl/LogNode.class
+org/apache/felix/log/impl/LogNodeEnumeration.class
+org/apache/felix/log/impl/LogReaderServiceFactory.class
+org/apache/felix/log/impl/LogReaderServiceImpl.class
+org/apache/felix/log/impl/LogServiceFactory.class
+org/apache/felix/log/impl/LogServiceImpl.class
+org/osgi/
+org/osgi/service/
+org/osgi/service/log/
+org/osgi/service/log/LogEntry.class
+org/osgi/service/log/LogListener.class
+org/osgi/service/log/LogReaderService.class
+org/osgi/service/log/LogService.class
+org/osgi/service/log/package.html
+org/osgi/service/log/packageinfo</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_adding_osgi_metadata_to_existing_projects_without_changing_the_packaging_type"><a class="anchor" href="#_adding_osgi_metadata_to_existing_projects_without_changing_the_packaging_type"></a>Adding OSGi metadata to existing projects without changing the packaging type</h3>
+<div class="paragraph">
+<p>If you want to keep your project packaging type (for example "jar") but would like to add OSGi metadata you can use the manifest goal to generate a bundle manifest.
+The maven-jar-plugin can then be used to add this manifest to the final artifact.
+For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;plugin&gt;
+  &lt;artifactId&gt;maven-jar-plugin&lt;/artifactId&gt;
+  &lt;configuration&gt;
+    &lt;archive&gt;
+      &lt;manifestFile&gt;${project.build.outputDirectory}/META-INF/MANIFEST.MF&lt;/manifestFile&gt;
+    &lt;/archive&gt;
+  &lt;/configuration&gt;
+&lt;/plugin&gt;
+&lt;plugin&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;id&gt;bundle-manifest&lt;/id&gt;
+      &lt;phase&gt;process-classes&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;manifest&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to use packaging types other than "jar" and "bundle" then you also need to enable support for them in the bundleplugin configuration, for example if you want to use the plugin with WAR files:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;plugin&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;id&gt;bundle-manifest&lt;/id&gt;
+      &lt;phase&gt;process-classes&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;manifest&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+  &lt;configuration&gt;
+    &lt;supportedProjectTypes&gt;
+      &lt;supportedProjectType&gt;jar&lt;/supportedProjectType&gt;
+      &lt;supportedProjectType&gt;bundle&lt;/supportedProjectType&gt;
+      &lt;supportedProjectType&gt;war&lt;/supportedProjectType&gt;
+    &lt;/supportedProjectTypes&gt;
+    &lt;instructions&gt;
+      &lt;!-- ...etc... --&gt;
+    &lt;/instructions&gt;
+  &lt;/configuration&gt;
+&lt;/plugin&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll also need to configure the other plugin to pick up and use the generated manifest, which is written to <code>${project.build.outputDirectory}/META-INF/MANIFEST.MF</code> by default (unless you choose a different <code>manifestLocation</code> in the maven-bundle-plugin configuration).
+Continuing with our WAR example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;plugin&gt;
+  &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
+  &lt;configuration&gt;
+    &lt;archive&gt;
+      &lt;manifestFile&gt;${project.build.outputDirectory}/META-INF/MANIFEST.MF&lt;/manifestFile&gt;
+    &lt;/archive&gt;
+  &lt;/configuration&gt;
+&lt;/plugin&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_building_the_plugin"><a class="anchor" href="#_building_the_plugin"></a>Building the Plugin</h3>
+<div class="paragraph">
+<p>The plugin is hosted at the Apache Felix project.
+The following steps describe how to build and install the plugin into your local Maven2 repository.</p>
+</div>
+<div class="paragraph">
+<p>Using the SVN client of your choice, checkout the maven-bundle-plugin project.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ svn co http://svn.apache.org/repos/asf/felix/trunk/bundleplugin</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using Maven2, build and install the maven-bundle-plugin by issuing the following Maven2 command in the project directory that was created as a result of the previous step.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ mvn install</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_goals"><a class="anchor" href="#_goals"></a>Goals</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The maven-bundle-plugin also provides additional functionality via some Maven goals.
+Command-line execution of a goal is performed as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn org.apache.felix:maven-bundle-plugin:GOAL</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where GOAL is one of the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`bundle`</em> - build an OSGi bundle jar for the current project configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`manifestLocation`</em> defaults to ${project.build.outputDirectory}/META-INF</p>
+</li>
+<li>
+<p><em>`unpackBundle`</em> unpack bundle contents to output directory, defaults to false</p>
+</li>
+<li>
+<p><em>`excludeDependencies`</em> comma-separated list of dependency artifactIds to exclude from the classpath passed to Bnd, use "true" to exclude everything.
+Version 2 of the bundleplugin now supports the same style of filter clauses in <code>excludeDependencies</code> as <code>Embed-Dependency</code>.</p>
+</li>
+<li>
+<p><em>`classifier`</em> attach bundle to the project using the given classifier</p>
+</li>
+<li>
+<p><em>`supportedProjectTypes`</em> defaults to "jar","bundle"</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`bundleall`</em> - build OSGi bundle jars for all transitive dependencies configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`wrapImportPackage`</em> defaults to "*"</p>
+</li>
+<li>
+<p><em>`supportedProjectTypes`</em> defaults to "jar","bundle"</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`wrap`</em> - as above, but limited to the first level of dependencies configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`wrapImportPackage`</em> defaults to "*"</p>
+</li>
+<li>
+<p><em>`supportedProjectTypes`</em> defaults to "jar","bundle"</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`manifest`</em> - create an OSGi manifest for the current project configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`manifestLocation`</em> defaults to ${project.build.outputDirectory}/META-INF</p>
+</li>
+<li>
+<p><em>`supportedProjectTypes`</em> defaults to "jar","bundle"</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`install`</em> - adds the current bundle project to the local OBR configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`obrRepository`</em> path to local OBR, defaults to <strong>&lt;local-maven-repository&gt;</strong><code>/repository.xml</code></p>
+</li>
+<li>
+<p><em>`supportedProjectTypes`</em> defaults to "jar","bundle"</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>More GOALs are available in the <em>1.4.0</em> release:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`ant`</em> - create an Ant build script to rebuild the bundle</p>
+</li>
+<li>
+<p><em>`install-file`</em> - adds a local bundle file to the local OBR configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`obrRepository`</em> path to local OBR, defaults to <strong>&lt;local-maven-repository&gt;</strong><code>/repository.xml</code></p>
+</li>
+<li>
+<p><em>`groupId`</em> Maven groupId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`artifactId`</em> Maven artifactId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`version`</em> Maven version for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`packaging`</em> Maven packaging type for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`classifier`</em> Maven classifier type, defaults to none</p>
+</li>
+<li>
+<p><em>`pomFile`</em> optional Pom file describing the bundle</p>
+</li>
+<li>
+<p><em>`file`</em> bundle file, defaults to the bundle from the local Maven repository</p>
+</li>
+<li>
+<p><em>`obrXml`</em> optional additional properties for the bundle</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`deploy`</em> - adds the current bundle project to a remote OBR configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`remoteOBR`</em> name of remote OBR, defaults to NONE (which means no remote OBR deployment)</p>
+</li>
+<li>
+<p><em>`obrRepository`</em> used when the remoteOBR name is blank, defaults to <code>repository.xml</code></p>
+</li>
+<li>
+<p><em>`prefixUrl`</em> optional public URL prefix for the remote repository</p>
+</li>
+<li>
+<p><em>`bundleUrl`</em> optional public URL where the bundle has been deployed</p>
+</li>
+<li>
+<p><em>`altDeploymentRepository`</em> alternative remote repository, <em>id::layout::url</em></p>
+</li>
+<li>
+<p><em>`obrDeploymentRepository`</em> optional OBR specific deployment repository.</p>
+</li>
+<li>
+<p><em>`ignoreLock`</em> ignore remote locking when updating the OBR</p>
+</li>
+<li>
+<p><em>`supportedProjectTypes`</em> defaults to "jar","bundle"</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`deploy-file`</em> - adds a local bundle file to a remote OBR configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`remoteOBR`</em> name of remote OBR, defaults to an empty string</p>
+</li>
+<li>
+<p><em>`obrRepository`</em> used when the remoteOBR name is blank, defaults to <code>repository.xml</code></p>
+</li>
+<li>
+<p><em>`repositoryId`</em> optional repository id, used to lookup authentication settings</p>
+</li>
+<li>
+<p><em>`url`</em> remote repository transport URL, like <code>scpexe://host/path/to/obr</code></p>
+</li>
+<li>
+<p><em>`bundleUrl`</em> public URL of deployed bundle, like <code>http://www.foo.org/bundles/foo.jar</code></p>
+</li>
+<li>
+<p><em>`groupId`</em> Maven groupId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`artifactId`</em> Maven artifactId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`version`</em> Maven version for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`packaging`</em> Maven packaging type for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>`classifier`</em> Maven classifier type, defaults to none</p>
+</li>
+<li>
+<p><em>`pomFile`</em> optional Pom file describing the bundle</p>
+</li>
+<li>
+<p><em>`file`</em> bundle file, defaults to the bundle from the local Maven repository</p>
+</li>
+<li>
+<p><em>`obrXml`</em> optional additional properties for the bundle</p>
+</li>
+<li>
+<p><em>`ignoreLock`</em> ignore remote locking when updating the OBR</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`clean`</em> - cleans the local OBR, removing missing bundles configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`obrRepository`</em> path to local OBR, defaults to <strong>&lt;local-maven-repository&gt;</strong><code>/repository.xml</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>`remote-clean`</em> - cleans a remote OBR, removing missing bundles configuration options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>`remoteOBR`</em> name of remote OBR, defaults to NONE (which means no remote cleaning)</p>
+</li>
+<li>
+<p><em>`obrRepository`</em> used when the remoteOBR name is blank, defaults to <code>repository.xml</code></p>
+</li>
+<li>
+<p><em>`prefixUrl`</em> optional public URL prefix for the remote repository</p>
+</li>
+<li>
+<p><em>`altDeploymentRepository`</em> alternative remote repository, <em>id::layout::url</em></p>
+</li>
+<li>
+<p><em>`obrDeploymentRepository`</em> optional OBR specific deployment repository.</p>
+</li>
+<li>
+<p><em>`ignoreLock`</em> ignore remote locking when updating the OBR</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are also new instructions available from the underlying BND tool, which continues to be improved independently;
+for the latest see <a href="http://bnd.bndtools.org/">BND documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The default goal <em>`bundle`</em> will be initialized by setting the &lt;packaging&gt;entry to "bundle".</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_following_features_are_only_available_from_version_1_2_0_onwards"><a class="anchor" href="#_the_following_features_are_only_available_from_version_1_2_0_onwards"></a>The following features are only available from version 1.2.0 onwards</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_embedding_dependencies"><a class="anchor" href="#_embedding_dependencies"></a>Embedding dependencies</h3>
+<div class="paragraph">
+<p>The Maven Bundle Plugin supports embedding of selected project dependencies inside the bundle by using the <code>&lt;Embed-Dependency&gt;</code> instruction:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;Embed-Dependency&gt;dependencies&lt;/Embed-Dependency&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>dependencies ::== clause ( ',' clause ) *
+clause ::== MATCH ( ';' attr '=' MATCH | ';inline=' inline )
+attr ::== 'groupId' | 'artifactId' | 'version' | 'scope' | 'type' | 'classifier' | 'optional'
+inline ::== 'true' | 'false' | PATH ( '|' PATH ) *
+MATCH ::== &lt;globbed regular expression&gt;
+PATH ::== &lt;Ant-style path expression&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The plugin uses the <code>&lt;Embed-Dependency&gt;</code> instruction to transform the project dependencies into <code>&lt;Include-Resource&gt;</code> and <code>&lt;Bundle-ClassPath&gt;</code> clauses, which are then appended to the current set of instructions and passed onto BND.
+If you want the embedded dependencies to be at the start or middle of <code>&lt;Include-Resource&gt;</code> or <code>&lt;Bundle-ClassPath&gt;</code> then you can use <code>{maven-dependencies}</code>, which will automatically expand to the relevant clauses.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The MATCH section accepts alternatives, separated by *</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>, and can be negated by using *!</em> at the <em>beginning</em> of the MATCH.
+Use <em>*</em> to represent zero or more unknown characters and <em>?</em> to represent zero or one character.
+You can also use standard Java <a href="http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html">regexp</a> constructs.
+There is no need to escape the <em>.</em> character inside MATCH.
+The first MATCH in a clause will filter against the artifactId.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>some examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;!-- embed all compile and runtime scope dependencies --&gt;
+&lt;Embed-Dependency&gt;*;scope=compile|runtime&lt;/Embed-Dependency&gt;
+
+&lt;!-- embed any dependencies with artifactId junit and scope runtime --&gt;
+&lt;Embed-Dependency&gt;junit;scope=runtime&lt;/Embed-Dependency&gt;
+
+&lt;!-- inline all non-pom dependencies, except those with scope runtime --&gt;
+&lt;Embed-Dependency&gt;*;scope=!runtime;type=!pom;inline=true&lt;/Embed-Dependency&gt;
+
+&lt;!-- embed all compile and runtime scope dependencies, except those with artifactIds in the given list --&gt;
+&lt;Embed-Dependency&gt;*;scope=compile|runtime;inline=false;artifactId=!cli|lang|runtime|tidy|jsch&lt;/Embed-Dependency&gt;
+
+&lt;!-- inline contents of selected folders from all dependencies --&gt;
+&lt;Embed-Dependency&gt;*;inline=images/**|icons/**&lt;/Embed-Dependency&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>examples of using <code>{maven-dependencies}</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;Include-Resource&gt;
+  {maven-resources}, {maven-dependencies},
+  org/foo/Example.class=target/classes/org/foo/Example.class
+&lt;/Include-Resource&gt;
+
+&lt;Bundle-ClassPath&gt;.,{maven-dependencies},some.jar&lt;/Bundle-ClassPath&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default matched dependencies are embedded in the bundle as <code>artifactId-version.jar</code>.
+This behaviour can be modified using the following instructions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;Embed-StripVersion&gt;true&lt;/Embed-StripVersion&gt;</code> - removes the version from the file (ie.
+<em>artifactId.jar</em>)</p>
+</li>
+<li>
+<p><code>&lt;Embed-StripGroup&gt;false&lt;/Embed-StripGroup&gt;</code> - adds the groupId as a subdirectory (ie.
+<em>groupId/artifactId-version.jar</em>)</p>
+</li>
+<li>
+<p><code>&lt;Embed-Directory&gt;directory&lt;/Embed-Directory&gt;</code> - adds a subdirectory (ie.
+<em>directory/artifactId-version.jar</em>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Normally the plugin only checks direct dependencies, but this can be changed to include the complete set of transitive dependencies with the following option:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;Embed-Transitive&gt;true&lt;/Embed-Transitive&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want a dependency inlined instead of embedded add the <code>inline=true</code>.
+For example to inline all <em>compile</em> and <em>runtime</em> scoped dependencies use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;Embed-Dependency&gt;*;scope=compile|runtime;inline=true&lt;/Embed-Dependency&gt;</pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_embed_dependency_and_export_package"><a class="anchor" href="#_embed_dependency_and_export_package"></a>Embed-Dependency and Export-Package</h4>
+<div class="paragraph">
+<p>If you embed a dependency with <code>&lt;Embed-Dependency&gt;</code>, and your <code>&lt;Export-Package&gt;</code> or <code>&lt;Private-Package&gt;</code> instructions match packages inside the embedded jar, you will see some duplication inside the bundle.
+This is because the <code>&lt;Export-Package&gt;</code> and <code>&lt;Private-Package&gt;</code> instructions will result in classes being inlined in the bundle, even though they also exist inside the embedded jar.
+If you want to export packages from an embedded dependency without such duplication then you can either inline the dependency, or use a new BND instruction called <code>&lt;_exportcontents&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>&lt;_exportcontents&gt;</code> behaves just like Export-Package, except it doesn&#8217;t change the content of the bundle, just what content should be exported.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_integration"><a class="anchor" href="#_obr_integration"></a>OBR integration</h3>
+<div class="paragraph">
+<p>The latest Maven Bundle Plugin automatically updates the local OBR repository.xml file during the install phase, using a default location of:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;LOCAL-MAVEN-REPOSITORY&gt;/repository.xml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can configure the location of the OBR repository by using the command line:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn clean install -DobrRepository=&lt;PATH_TO_OBR&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or in the configuration section for the maven-bundle-plugin in your Maven POM:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+&lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+&lt;extensions&gt;true&lt;/extensions&gt;
+&lt;configuration&gt;
+  &lt;obrRepository&gt;PATH_TO_OBR&lt;/obrRepository&gt;
+  &lt;instructions&gt;
+    &lt;!-- bnd instructions --&gt;
+  &lt;/instructions&gt;
+&lt;/configuration&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to disable OBR installation set the obrRepository to NONE, for example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+&lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+&lt;extensions&gt;true&lt;/extensions&gt;
+&lt;configuration&gt;
+  &lt;obrRepository&gt;NONE&lt;/obrRepository&gt;
+  &lt;instructions&gt;
+    &lt;!-- bnd instructions --&gt;
+  &lt;/instructions&gt;
+&lt;/configuration&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_eclipsepde_integration"><a class="anchor" href="#_eclipsepde_integration"></a>Eclipse/PDE integration</h3>
+<div class="paragraph">
+<p>It is possible to configure the Maven Bundle Plugin to put the bundle manifest where Eclipse/PDE expects it, and use the Maven Dependency Plugin to arrange for any embedded dependencies to appear in a local directory that matches the Bundle-ClassPath entries.
+Here is an example POM that does this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;project&gt;
+
+  &lt;properties&gt;
+    &lt;bundle.symbolicName&gt;org.example&lt;/bundle.symbolicName&gt;
+    &lt;bundle.namespace&gt;org.example&lt;/bundle.namespace&gt;
+  &lt;/properties&gt;
+
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;examples&lt;/groupId&gt;
+  &lt;artifactId&gt;org.example&lt;/artifactId&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+  &lt;name&gt;${bundle.symbolicName} [${bundle.namespace}]&lt;/name&gt;
+
+  &lt;packaging&gt;bundle&lt;/packaging&gt;
+
+  &lt;build&gt;
+    &lt;resources&gt;
+      &lt;resource&gt;
+        &lt;directory&gt;src/main/resources&lt;/directory&gt;
+      &lt;/resource&gt;
+      &lt;resource&gt;
+        &lt;directory&gt;.&lt;/directory&gt;
+        &lt;includes&gt;
+          &lt;include&gt;plugin.xml&lt;/include&gt;
+        &lt;/includes&gt;
+      &lt;/resource&gt;
+    &lt;/resources&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+        &lt;version&gt;2.5.0&lt;/version&gt;
+        &lt;extensions&gt;true&lt;/extensions&gt;
+        &lt;!--
+          the following instructions build a simple set of public/private classes into an OSGi bundle
+        --&gt;
+        &lt;configuration&gt;
+          &lt;manifestLocation&gt;META-INF&lt;/manifestLocation&gt;
+          &lt;instructions&gt;
+            &lt;Bundle-SymbolicName&gt;${bundle.symbolicName}&lt;/Bundle-SymbolicName&gt;
+            &lt;Bundle-Version&gt;${pom.version}&lt;/Bundle-Version&gt;
+            &lt;!--
+              assume public classes are in the top package, and private classes are under ".internal"
+            --&gt;
+            &lt;Export-Package&gt;!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"&lt;/Export-Package&gt;
+            &lt;Private-Package&gt;${bundle.namespace}.internal.*&lt;/Private-Package&gt;
+            &lt;Bundle-Activator&gt;${bundle.namespace}.internal.ExampleActivator&lt;/Bundle-Activator&gt;
+            &lt;!--
+              embed compile/runtime dependencies using path that matches the copied dependency folder
+            --&gt;
+            &lt;Embed-Dependency&gt;*;scope=compile|runtime;inline=false&lt;/Embed-Dependency&gt;
+            &lt;Embed-Directory&gt;target/dependency&lt;/Embed-Directory&gt;
+            &lt;Embed-StripGroup&gt;true&lt;/Embed-StripGroup&gt;
+          &lt;/instructions&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+      &lt;plugin&gt;
+        &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;id&gt;copy-dependencies&lt;/id&gt;
+            &lt;phase&gt;package&lt;/phase&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;copy-dependencies&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.osgi&lt;/groupId&gt;
+      &lt;artifactId&gt;osgi_R4_core&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+      &lt;optional&gt;true&lt;/optional&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.osgi&lt;/groupId&gt;
+      &lt;artifactId&gt;osgi_R4_compendium&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+      &lt;optional&gt;true&lt;/optional&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;junit&lt;/groupId&gt;
+      &lt;artifactId&gt;junit&lt;/artifactId&gt;
+      &lt;version&gt;3.8.1&lt;/version&gt;
+      &lt;scope&gt;compile&lt;/scope&gt;
+      &lt;optional&gt;true&lt;/optional&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+&lt;/project&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To generate the Eclipse metadata use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn clean package eclipse:eclipse -Declipse.pde install</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and you should now be able to import this as an existing Eclipse project.</p>
+</div>
+<div class="paragraph">
+<p>FYI: the above POM was generated using the <code>pax-create-bundle</code> command from <a href="http://www.ops4j.org/projects/pax/construct/index.html">Pax-Construct</a> and then tweaked to demonstrate using the Maven Dependency Plugin to handle embedded jars in Eclipse.</p>
+</div>
+<div class="paragraph">
+<p>With the original Pax-Construct generated POM you would simply use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn clean package pax:eclipse</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to create the appropriate Eclipse files and manifest, and also handle any embedded entries.
+The pax:eclipse goal extends eclipse:eclipse, and supports the same parameters.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_unpacking_bundle_contents_to_targetclasses"><a class="anchor" href="#_unpacking_bundle_contents_to_targetclasses"></a>Unpacking bundle contents to 'target/classes'</h3>
+<div class="paragraph">
+<p>Once in a while you may create a bundle which contains additional classes to the ones compiled from <code>src/main/java</code>, for example when you embed the classes from another jar.
+This can sometimes cause unforeseen problems in Maven, as it will use the output directory (<code>target/classes</code>) rather than the final bundle, when compiling against projects in the same reactor (ie.
+the same build).</p>
+</div>
+<div class="paragraph">
+<p>The easiest way to get around this Maven 'feature' is to unpack the contents of the bundle to the output directory after the packaging step, so the additional classes will be found where Maven expects them.
+Thankfully there is now an easy option to do this in the bundle-plugin:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+&lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+&lt;extensions&gt;true&lt;/extensions&gt;
+&lt;configuration&gt;
+  &lt;unpackBundle&gt;true&lt;/unpackBundle&gt;
+  &lt;instructions&gt;
+    &lt;!-- bnd instructions --&gt;
+  &lt;/instructions&gt;
+&lt;/configuration&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_an_existing_manifest_mf_file"><a class="anchor" href="#_using_an_existing_manifest_mf_file"></a>Using an existing MANIFEST.MF file</h3>
+<div class="paragraph">
+<p>If you have an existing manifest, you can add this to the Bnd instructions, like so:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;_include&gt;src/main/resources/META-INF/MANIFEST.MF&lt;/_include&gt;
+&lt;Export-Package&gt;org.example.*&lt;/Export-Package&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Bnd will use it when calculating the bundle contents, and will also copy across all manifest attributes starting with a capital letter.
+As shown in the above example, you could use this to include a non-OSGi manifest which you then customize with extra OSGi attributes.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_following_features_are_only_available_from_version_1_4_0_onwards"><a class="anchor" href="#_the_following_features_are_only_available_from_version_1_4_0_onwards"></a>The following features are only available from version 1.4.0 onwards</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_bundleant"><a class="anchor" href="#_bundleant"></a>bundle:ant</h3>
+<div class="paragraph">
+<p>The <em>ant</em> goal creates a customized <code>build.xml</code> Ant script along with a collection of BND instructions and properties, taken from the current project and stored in <code>maven-build.bnd</code>.
+You also need to run <em>`ant:ant`</em> to create the standard Ant support tasks to download Maven dependencies and perform compilation, etc.</p>
+</div>
+<div class="paragraph">
+<p>The customized Ant script uses the BND tool to rebuild the bundle, so any source changes should be reflected in the (re)generated manifest.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>mvn ant:ant bundle:ant
+
+ant clean package</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bundleinstall_file"><a class="anchor" href="#_bundleinstall_file"></a>bundle:install-file</h3>
+<div class="paragraph">
+<p>The <em>install-file</em> goal updates the local OBR with the details of a bundle from the local filesystem.</p>
+</div>
+<div class="paragraph">
+<p>Configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>obrRepository</em> path to local OBR, defaults to <strong>&lt;local-maven-repository&gt;</strong><code>/repository.xml</code></p>
+</li>
+<li>
+<p><em>groupId</em> Maven groupId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>artifactId</em> Maven artifactId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>version</em> Maven version for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>packaging</em> Maven packaging type for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>classifier</em> Maven classifier type, defaults to none</p>
+</li>
+<li>
+<p><em>pomFile</em> optional Pom file describing the bundle</p>
+</li>
+<li>
+<p><em>file</em> bundle file, defaults to the bundle from the local Maven repository</p>
+</li>
+<li>
+<p><em>obrXml</em> optional additional properties for the bundle</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn org.apache.felix:maven-bundle-plugin:1.4.0:install-file \
+  -DpomFile=myPom.xml -Dfile=foo-1.0.jar</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bundledeploy"><a class="anchor" href="#_bundledeploy"></a>bundle:deploy</h3>
+<div class="paragraph">
+<p>The <em>deploy goal</em> updates the remote OBR with the details of the deployed bundle from the local Maven repository.
+The remote OBR is found by querying the <code>&lt;distributionManagement&gt;</code> section of the project, unless <code>-DaltDeploymentRepository</code> is set.
+See <a href="http://maven.apache.org/plugins/maven-deploy-plugin/deploy-mojo.html" class="bare">http://maven.apache.org/plugins/maven-deploy-plugin/deploy-mojo.html</a> for more details about these particular settings.</p>
+</div>
+<div class="paragraph">
+<p>(If the project has an <code>obr.xml</code> file somewhere in its resources, then it will be automatically detected and applied.)</p>
+</div>
+<div class="paragraph">
+<p>Configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>remoteOBR</em> name of remote OBR, defaults to NONE (which means no remote OBR deployment)</p>
+</li>
+<li>
+<p><em>obrRepository</em> used when the remoteOBR name is blank, defaults to <code>repository.xml</code></p>
+</li>
+<li>
+<p><em>altDeploymentRepository</em> alternative remote repository, <em>id::layout::url</em></p>
+</li>
+<li>
+<p><em>ignoreLock</em> ignore remote locking when updating the OBR</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This goal is part of the "bundle" packaging lifecycle, but is disabled by default - to enable just set the <code>remoteOBR</code> parameter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bundledeploy_file"><a class="anchor" href="#_bundledeploy_file"></a>bundle:deploy-file</h3>
+<div class="paragraph">
+<p>The <em>deploy-file</em> goal updates the remote OBR with the details of a deployed bundle from the local filesystem.
+The remote OBR is found using the <code>-DrepositoryId</code> and <code>-Durl</code> parameters.
+See <a href="http://maven.apache.org/plugins/maven-deploy-plugin/deploy-file-mojo.html" class="bare">http://maven.apache.org/plugins/maven-deploy-plugin/deploy-file-mojo.html</a> for more details about these particular settings.</p>
+</div>
+<div class="paragraph">
+<p>You can use the <code>-DbundleUrl</code> parameter to give the public location of the deployed bundle, which may differ from the remote OBR location.</p>
+</div>
+<div class="paragraph">
+<p>Configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>remoteOBR</em> name of remote OBR, defaults to an empty string</p>
+</li>
+<li>
+<p><em>obrRepository</em> used when the remoteOBR name is blank, defaults to <code>repository.xml</code></p>
+</li>
+<li>
+<p><em>repositoryId</em> optional repository id, used to lookup authentication settings</p>
+</li>
+<li>
+<p><em>url</em> remote repository transport URL, like <code>scpexe://host/path/to/obr</code></p>
+</li>
+<li>
+<p><em>bundleUrl</em> public URL of deployed bundle, like <code>http://www.foo.org/bundles/foo.jar</code></p>
+</li>
+<li>
+<p><em>groupId</em> Maven groupId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>artifactId</em> Maven artifactId for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>version</em> Maven version for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>packaging</em> Maven packaging type for the bundle, taken from <em>pomFile</em> if given</p>
+</li>
+<li>
+<p><em>classifier</em> Maven classifier type, defaults to none</p>
+</li>
+<li>
+<p><em>pomFile</em> optional Pom file describing the bundle</p>
+</li>
+<li>
+<p><em>file</em> bundle file, defaults to the bundle from the local Maven repository</p>
+</li>
+<li>
+<p><em>obrXml</em> optional additional properties for the bundle</p>
+</li>
+<li>
+<p><em>ignoreLock</em> ignore remote locking when updating the OBR</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn org.apache.felix:maven-bundle-plugin:1.4.0:deploy-file \
+  -DpomFile=myPom.xml -Dfile=foo-1.0.jar -Durl=file:/tmp/example/OBR \
+  -DbundleUrl=http://www.foo.org/bundles/foo.jar</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bundleclean"><a class="anchor" href="#_bundleclean"></a>bundle:clean</h3>
+<div class="paragraph">
+<p>Sometimes you would like to clean your local OBR because it contains bundles that are no longer in your local Maven repository.
+This case often occurs when artifacts were deleted manually.
+The maven-bundle-plugin provides a simple goal to check for missing bundles, and remove them from the local OBR.</p>
+</div>
+<div class="paragraph">
+<p>Configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>obrRepository</em> path to local OBR, defaults to <strong>&lt;local-maven-repository&gt;</strong><code>/repository.xml</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn bundle:clean</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bundleindex"><a class="anchor" href="#_bundleindex"></a>bundle:index</h3>
+<div class="paragraph">
+<p>The <code>index</code> goal allows the creation of an OBR repository based on a set of jars in a maven repository.</p>
+</div>
+<div class="paragraph">
+<p>Configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>obrRepository</em> path to local OBR, defaults to <strong>&lt;local-maven-repository&gt;</strong><code>/repository.xml</code></p>
+</li>
+<li>
+<p><em>urlTemplate</em> template for generating urls for OBR resources</p>
+</li>
+<li>
+<p><em>mavenRepository</em> path to the maven repository, defaults to <strong>&lt;local-maven-repository&gt;</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Possible values for the <code>urlTemplate</code> are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>maven</em> this will create a maven based url such as <code>mvn:groupid/artifactid/version</code></p>
+</li>
+<li>
+<p>pattern with the following placeholders:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>%v</code> bundle version</p>
+</li>
+<li>
+<p><code>%s</code> bundle symbolic name</p>
+</li>
+<li>
+<p><code>%f</code> file name</p>
+</li>
+<li>
+<p><code>%p</code> file path</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_concurrent_updates"><a class="anchor" href="#_concurrent_updates"></a>Concurrent updates</h3>
+<div class="paragraph">
+<p>With a remote OBR, several uploads may occur at the same time.
+However, the remote OBR is centralized in one file, so concurrent modification must be avoided.
+To achieve this, the plug-in implements a locking system.
+Each time the plug-in tries to modify the file it sets a file based lock.
+If it can&#8217;t take the lock, it will wait and retry.
+After 3 attempts the upload process fails.
+To bypass this lock add <code>-DignoreLock</code> to the command-line (or add <code>&lt;ignoreLock&gt;true&lt;ignoreLock&gt;</code> to the configuration section of your Pom).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ftp_protocol"><a class="anchor" href="#_ftp_protocol"></a>FTP protocol</h3>
+<div class="paragraph">
+<p>Not all protocols are supported by Maven out of the box.
+For example the ftp protocol requires the <em>wagon-ftp</em> component.
+To enable the ftp protocol add this to your Pom:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;build&gt;
+  &lt;extensions&gt;
+    &lt;extension&gt;
+      &lt;groupId&gt;org.apache.maven.wagon&lt;/groupId&gt;
+      &lt;artifactId&gt;wagon-ftp&lt;/artifactId&gt;
+      &lt;version&gt;1.0-alpha-6&lt;/version&gt;
+    &lt;/extension&gt;
+  &lt;/extensions&gt;
+&lt;/build&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_the_plug_in_computes_the_description_of_the_bundle"><a class="anchor" href="#_how_the_plug_in_computes_the_description_of_the_bundle"></a>How the plug-in computes the description of the bundle</h3>
+<div class="paragraph">
+<p>The description of the bundle comes from three different sources:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Bindex : Bindex is a tool that analyzes a bundle manifest to generate OBR description</p>
+</li>
+<li>
+<p>pom.xml : by analyzing the pom file, various information is collected (symbolic name &#8230;&#8203;)</p>
+</li>
+<li>
+<p>obr.xml : this file contains customized description and capabilities for the bundle</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These sources are merged together using the following precedence:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bindex
+| (overrides)
+pom.xml
+| (overrides)
+obr.xml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A warning message is displayed when existing information is overridden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_known_issues_limitations"><a class="anchor" href="#_known_issues_limitations"></a>Known issues &amp; limitations</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>obr.xml (file given by the user to add properties not found by Bindex) must be correct, because the plug-in does not check its syntax.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_feedback"><a class="anchor" href="#_feedback"></a>Feedback</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>;
+after subscribing, email questions or feedback to <a href="mailto:users@felix.apache.org">users@felix.apache.org</a>.</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
