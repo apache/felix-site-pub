@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service. :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-maven-scr-plugin/scr-annotations.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/feather.svg">
+        </span>
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+        Apache Felix
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Projects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-deployment-admin.html">Deployment Admin</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-jaas.html">JAAS</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../documentation/subprojects/apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads/currentreleases.html">Downloads</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-framework.html">Apache Felix Framework</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-gogo.html">Apache Felix Gogo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-web-console.html">Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Dependency Manager</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Framework</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">GoGo Shell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Web Console</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../subprojects.html">Subprojects</a></li>
+    <li>Maven SCR plugin</li>
+    <li><a href="scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-maven-scr-plugin/scr-annotations.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>maven-scr-plugin</code> uses the <code>SCR</code> annotations from the corresponding subproject at Apache Felix.
+All annotations are in the <code>org.apache.felix.scr.annotations</code> package.
+If you want to use the annotations in your project, you have to use a <code>maven-scr-plugin</code> version &gt;= 1.24.0 and make sure that you add a dependency to the annotations to your <code>POM</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml"> &lt;dependency&gt;
+     &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+     &lt;artifactId&gt;org.apache.felix.scr.annotations&lt;/artifactId&gt;
+     &lt;version&gt;1.12.0&lt;/version&gt;
+ &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following annotations are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#component">@Component</a></p>
+</li>
+<li>
+<p><a href="#activate-deactivate-and-modified">@Activate, @Deactivate, and @Modified</a></p>
+</li>
+<li>
+<p><a href="#service">@Service</a></p>
+</li>
+<li>
+<p><a href="#property">@Property</a></p>
+</li>
+<li>
+<p><a href="#reference">@Reference</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The annotations itself do <em>not</em> support the new features from R6 or above.
+It is suggested to use the official OSGi annotations for Declarative Services instead.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_component"><a class="anchor" href="#_component"></a>@Component</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>@Component</code> annotation is the only required annotation.
+If this annotation is not declared for a Java class, the class is not declared as a component.</p>
+</div>
+<div class="paragraph">
+<p>This annotation is used to declare the <code>&lt;component&gt;</code> element of the component declaration.
+See section 112.4.3, Component Element, in the OSGi Service Platform Service Compendium Specification for more information.
+The required <code>&lt;implementation&gt;</code> element is automatically generated with the fully qualified name of the class containing the <code>@Component</code> annotation.</p>
+</div>
+<div class="paragraph">
+<p>Supported attributes:</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong><code>ds</code></strong>  + <em>Default</em>: <code>true</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Whether Declarative Services descriptor is generated or not.
+If this parameter is not set or set to <code>true</code> the Declarative Services descriptor is generated in the service descriptor file for this component.
+Otherwise no Declarative Services descriptor is generated for this component.
+--- <strong><code>specVersion</code></strong>  + <em>Default</em>: <code>1.0</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Defines what Declarative Services specification the component is written against.
+Though the Maven SCR Plugin is very good at detecting whether components are written against the original or a newer specification, there are some cases, where the plugin may fail.
+For these cases, the <code>specVersion</code> attribute may be set to the correct version.
+Currently supported values for this attribute are <code>1.0</code> and <code>1.1</code>.
+Since version 1.4.1 of the Maven SCR Plugin and version 1.0.1 of the SCR Annotations.
+--- <strong><code>metatype</code></strong>  + <em>Default</em>: <code>false</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Whether Metatype Service data is generated or not.
+If this parameter is set to <code>true</code> Metatype Service data is generated in the <code>metatype.xml</code> file for this component.
+Otherwise no Metatype Service data is generated for this component.
+--- <strong><code>componentAbstract</code></strong>  + <em>Default</em>: see <a href="#abstract-service-descriptions">description</a>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + This marks an abstract service description which is not added to the descriptor but intended for reuse through inheritance.
+This attribute defaults to <code>true</code> for abstract classes and <code>false</code> for concrete classes.
+--- <strong><code>inherit</code></strong>  + <em>Default</em>: <code>true</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Whether any service, property and reference declarations from base classes should be inherited by this class.
+--- <strong><code>createPid</code></strong>  + <em>Default</em>: <code>true</code>  + <em>SCR Descriptor</em>: <code>service.pid</code>  + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Generate the <code>service.pid</code> property if non is declared.
+--- <strong><code>name</code></strong>  + <em>Default</em>: Fully qualified name of the Java class  + <em>SCR Descriptor</em>: <code>component.name</code>  + <em>Metatype Descriptor</em>: <code>OCD.id</code>  + Defines the Component name also used as the PID for the Configuration Admin Service --- <strong><code>enabled</code></strong>  + <em>Default</em>: <code>true</code>  + <em>SCR Descriptor</em>: <code>component.enabled</code>  + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Whether the component is enabled when the bundle starts --- <strong><code>factory</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>component.factory</code>  + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Whether the component is a factory component --- <strong><code>immediate</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>component.immediate</code>  + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + Whether the component is immediately activated --- <strong><code>policy</code></strong>  + <em>Default</em>: <code>OPTIONAL</code>  + <em>SCR Descriptor</em>: <code>component.policy</code>  + <em>Metatype Descriptor</em>:&#8201;&#8212;&#8201; + The configuration policy for this component: <code>OPTIONAL</code>, <code>IGNORE</code>, or <code>REQUIRE</code>.
+This attribute is supported since version 1.4.0 of the plugin and requires a Declarative Service implementation 1.1 or higher.
+--- <strong><code>label</code></strong>  + <em>Default</em>: <code>%&lt;name&gt;.name</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: <code>OCD.name</code>  + This is generally used as a title for the object described by the meta type.
+This name may be localized by prepending a <code>%</code> sign to the name.
+--- <strong><code>description</code></strong>  + <em>Default</em>: <code>%&lt;name&gt;.name</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: <code>OCD.description</code>  + This is generally used as a description for the object described by the meta type.
+This name may be localized by prepending a <code>%</code> sign to the name.
+--- <strong><code>configurationFactory</code></strong>  + <em>Default</em>: <code>false</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: <code>Designate.factoryPid</code>  + Is this a configuration factory?
+(since 1.4.0)</p>
+</div>
+<div class="sect2">
+<h3 id="_abstract_service_descriptions"><a class="anchor" href="#_abstract_service_descriptions"></a>Abstract Service Descriptions</h3>
+<div class="paragraph">
+<p>If the <code>@Component</code> annotations contains the attribute <code>componentAbstract</code> with a value of true, the containing class is regarded as an abstract class.
+It is not added to the service descriptor and the tags are not validated.
+The information about this class is added to the bundle.
+Classes from other bundles (or the same) can extends this abstract class and do not need to specify the references of the abstract class if they set the <code>inherit</code> parameter on the <code>scr.component</code> tag to true.</p>
+</div>
+<div class="paragraph">
+<p>This allows to create abstract classes which already provide some valuable functionality without having to deal with the details like reference definitions in each and every subclass.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_activate_deactivate_and_modified"><a class="anchor" href="#_activate_deactivate_and_modified"></a>@Activate, @Deactivate, and @Modified</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Declarative Service version 1.1 allows to specify the name for the activate, deactivate and modified method (see the spec for more information).
+The <code>@Activate</code>, <code>@Deactivate</code>, and <code>@Modified</code> annotation can be used to mark a method to be used for the specified purpose.
+However, as the DS specifies a method search algorithm, there are rare cases where the marked method is not used (if there is another method with the same name, but a different signature this might happen).</p>
+</div>
+<div class="paragraph">
+<p>These annoations have no attribues.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_service"><a class="anchor" href="#_service"></a>@Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>@Service</code> annotation defines whether and which service interfaces are provided by the component.
+This is a class annotation.</p>
+</div>
+<div class="paragraph">
+<p>This annotation is used to declare <code>&lt;service&gt;</code> and <code>&lt;provide&gt;</code> elements of the component declaration.
+See section 112.4.6, Service Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
+</div>
+<div class="paragraph">
+<p>Supported attributes:</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong><code>value</code></strong>  + <em>Default</em>: All implemented interfaces  + <em>SCR Descriptor</em>: <code>provide.interface</code>  + The name of the service interface provided by the component.
+This can either be the fully qualified  name or just the interface class name if the interface is either in the same package or is imported.
+If this property is not set <code>provide</code> elements will be generated for all interfaces generated by the class --- <strong><code>serviceFactory</code></strong>  + <em>Default</em>: <code>false</code>  + <em>SCR Descriptor</em>: <code>service.servicefactory</code>  + Whether the component is registered as a <code>ServiceFactory</code> or not</p>
+</div>
+<div class="paragraph">
+<p>Omitting the <code>Service</code> annotation will just define (and activate if required) the component but not register it as a service.
+Multiple <code>Service</code> annotations may be declared each with its own <code>value</code>.
+These annotations need to be wrapped into a <code>Services</code> anotation.
+The component is registered as a <code>ServiceFactory</code> if at least on <code>Service</code> annotations declares the <code>serviceFactory</code> attribute as <code>true</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_property"><a class="anchor" href="#_property"></a>@Property</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>@Property</code> annotation defines properties which are made available to the component through the <code>ComponentContext.getProperties()</code> method.
+These tags are not strictly required but may be used by components to defined initial configuration.
+Additionally properties may be set here to identify the component if it is registered as a service, for example the <code>service.description</code> and <code>service.vendor</code> properties.</p>
+</div>
+<div class="paragraph">
+<p>This annotation can be applied on the component class level or on a field defining a constant with the name of the property.</p>
+</div>
+<div class="paragraph">
+<p>This annotation is used to declare <code>&lt;property&gt;</code> elements of the component declaration.
+See section 112.4.5, Properties and Property Elements, in the OSGi Service Platform Service Compendium Specification for more information.</p>
+</div>
+<div class="paragraph">
+<p>Supported attributes:</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong><code>name</code></strong>  + <em>Default</em>: The name of constant  + <em>SCR Descriptor</em>: <code>property.name</code>  + <em>Metatype Descriptor</em>: <code>AD.id</code>  + The name of the property.
+If this tag is defined on a field with an initialization expression, the value of that expression is used as the name if the field is of type <code>String</code>.
+--- <strong><code>value</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The string value of the property.
+This can either be a single value or an array.
+--- <strong><code>longValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The long value of the property.
+This can either be a single value or an array.
+--- <strong><code>doubleValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The double value of the property.
+This can either be a single value or an array.
+--- <strong><code>floatValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The float value of the property.
+This can either be a single value or an array.
+--- <strong><code>intValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The int value of the property.
+This can either be a single value or an array.
+--- <strong><code>byteValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The byte value of the property.
+This can either be a single value or an array.
+--- <strong><code>charValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The char value of the property.
+This can either be a single value or an array.
+--- <strong><code>boolValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The boolean value of the property.
+This can either be a single value or an array.
+--- <strong><code>shortValue</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>property.value</code>  + <em>Metatype Descriptor</em>: <code>AD.default</code>  + The short value of the property.
+This can either be a single value or an array.
+--- <strong><code>label</code></strong>  + <em>Default</em>: <code>%&lt;name&gt;.name</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: <code>AD.name</code>  + The label to display in a form to configure this property.
+This name may be localized by prepending a <code>%</code> sign to the name.
+--- <strong><code>description</code></strong>  + <em>Default</em>: <code>%&lt;name&gt;.description</code>  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: <code>AD.description</code>  + A descriptive text to provide the client in a form to configure this property.
+This name may be localized by prepending a <code>%</code> sign to the name.
+--- <strong><code>propertyPrivate</code></strong>  + <em>Default</em>: Depending on the name  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: See description Boolean flag defining whether a metatype descriptor entry should be generated for this property or not.
+By default a metatype descriptor entry, i.e.
+an <code>AD</code> element, is generated except for the properties <code>service.pid</code>, <code>service.description</code>, <code>service.id</code>, <code>service.ranking</code>, <code>service.vendor</code>, <code>service.bundlelocation</code> and <code>service.factoryPid</code>.
+If a property should not be available for display in a configuration user interface, this parameter should be set to <code>true</code>.
+--- <strong><code>cardinality</code></strong>  + <em>Default</em>: Depends on property value(s)  + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: <code>AD.cardinality</code>  + Defines the cardinality of the property and its collection type.
+If the cardinality is negative, the property is expected to be stored in a <code>java.util.Vector</code> (primitive types such as <code>boolean</code> are boxed in the Wrapper class), if the cardinality is positive, the property is stored in an array (primitve types are unboxed, that is <code>Boolean</code> type values are stored in <code>boolean\[\]({{ refs..path }})</code>).
+The actual value defines the maximum number of elements in the vector or array, where <code>Integer.MIN*INT</code> describes an unbounded Vector and <code>Integer.MAX*INT</code> describes an unbounded array.
+If the cardinality is zero, the property is a scalar value.
+If the defined value of the property is set in the <code>value</code> attribute, the cardinality defaults to <code>0</code> (zero for scalar value).
+If the property is defined in one or more properties starting with <code>values</code>, the cardinality defaults to <code>Integer.MAX_INT</code>, that is an unbounded array.
+--- <strong><code>options</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>:&#8201;&#8212;&#8201; + <em>Metatype Descriptor</em>: <a href="#the-options-attribute">See below</a>  + See below for a description of the <code>options</code> attribute.</p>
+</div>
+<div class="paragraph">
+<p>Generating <code>&lt;properties&gt;</code> elements referring to bundle entries is not currently supported.</p>
+</div>
+<div class="paragraph">
+<p>Multiple property annotations on the class level can be embedded in the <code>@Properties</code> annotation.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> @Properties({
+     @Property(name = "prop1", value = "value1"),
+     @Property(name = "prop2", value = "value2")
+ })</code></pre>
+</div>
+</div>
+<h4 id="_naming_the_property" class="discrete">Naming the Property</h4>
+<div class="paragraph">
+<p>It is important to carefully define the name of properties.
+By using a constant of the form</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> @Property(value="default value")
+ static final String CONSTANT_NAME = "property.name";</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and defining the <code>@Property</code> annotation on this constant, the name of the property is taken from the constant value.
+Thus it may easily be ensured, that both the property in the descriptor files and the property used by the implementation are actually the same.
+In addition the value attribute can refer to another constant.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_options_attribute"><a class="anchor" href="#_the_options_attribute"></a>The <code>options</code> Attribute</h3>
+<div class="paragraph">
+<p>Some properties may only be set to a set of possible values.
+To support user interfaces which provide a selection list of values or a list of checkboxes the option values and labels may be defined as parameters to the <code>@Property</code> annotation.</p>
+</div>
+<div class="paragraph">
+<p>The value of the <code>options</code> attribute is a list of <code>@PropertyOption</code>s annotations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> @Property(name = "sample",
+     options = {
+         @PropertyOption(name = "option1", value = "&amp;option.label.1"),
+         @PropertyOption(name = "option2", value = "&amp;option.label.2")
+     }
+ )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@PropertyOption</code>'s name is used as the value while the parameter value is used as the label in the user interface.
+This label may be prepended with a <code>%</code> sign to localize the string.</p>
+</div>
+<div class="paragraph">
+<p>The options are written to the <code>metatype.xml</code> file as <code>Option</code> elements inside the <code>AD</code> element defining the property.
+The name of the parameter will be used for the <code>Option.value</code> attribute while the value of the parameter defines the <code>Option.label</code> attribute.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_multivalue_properties"><a class="anchor" href="#_multivalue_properties"></a>Multivalue Properties</h3>
+<div class="paragraph">
+<p>Generally the value of a property is scalar, that is a property has a single value such as <code>true</code>, <code>5</code> or <code>"This is a String"</code>.
+Such scalar values are defined with the different <code>value</code> attributes of the <code>Property</code> annotation.
+In the case of a scalar property value, the <code>cardinality</code> parameter value is assumed to be <code>0</code> (zero) unless of course set otherwise.</p>
+</div>
+<div class="paragraph">
+<p>There may be properties, which have a list of values, such as a list of possible URL mappings for an URL Mapper.
+Such multiple values are defined just by comma separate as the value of the annotation parameter.</p>
+</div>
+<div class="paragraph">
+<p>If the cardinality of the property is not explicilty set with the <code>cardinality</code> property, it defaults to <code>Integer.MAX_INT</code>, i.e.
+unbound array, if multiple values are defined.
+Otherwise the <code>cardinality</code> parameter may be set for example to a negative value to store the values in a <code>java.util.Vector</code> instead.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reference"><a class="anchor" href="#_reference"></a>@Reference</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>@Reference</code> annotation defines references to other services made available to the component by the Service Component Runtime.</p>
+</div>
+<div class="paragraph">
+<p>This annotation may be declared on a Class level or any Java field to which it might apply.
+Depending on where the annotation is declared, the parameters may have different default values.</p>
+</div>
+<div class="paragraph">
+<p>This annotation is used to declare <code>&lt;reference&gt;</code> elements of the component declaration.
+See section 112.4.7, Reference Element, in the OSGi Service Platform Service Compendium Specification for more information.</p>
+</div>
+<div class="paragraph">
+<p>Supported parameters:</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong><code>name</code></strong>  + <em>Default</em>: Name of the field  + <em>SCR Descriptor</em>: <code>reference.name</code>  + The local name of the reference.
+If the <code>Reference</code> annotation is declared in the class comment, this parameter is required.
+If the annotation is declared on a field, the default value for the <code>name</code> parameter is the name of the field --- <strong><code>interfaceReference</code></strong>  + <em>Default</em>: Type of the field  + <em>SCR Descriptor</em>: <code>reference.interface</code>  + The name of the service interface.
+This name is used by the Service Component Runtime to access the service on behalf of the component.
+If the <code>Reference</code> annotation is declared on a class level, this parameter is required.
+If the annoation is declared on a field, the default value for the <code>interfaceReference</code> parameter is the type of the field --- <strong><code>cardinality</code></strong>  + <em>Default</em>: <code>1..1</code>  + <em>SCR Descriptor</em>: <code>reference.cardinality</code>  + The cardinality of the service reference.
+This must be one of value from the enumeration <code>ReferenceCardinality</code> --- <strong><code>policy</code></strong>  + <em>Default</em>: <code>static</code>  + <em>SCR Descriptor</em>: <code>reference.policy</code>  + The dynamicity policy of the reference.
+If <code>dynamic</code> the service will be made available to the component as it comes and goes.
+If <code>static</code> the component will be deactivated and re-activated if the service comes and/or goes away.
+This must be one of <code>static</code> and <code>dynamic</code> --- <strong><code>target</code></strong>  + <em>Default</em>:&#8201;&#8212;&#8201; + <em>SCR Descriptor</em>: <code>reference.target</code>  + A service target filter to select specific services to be made available.
+In order to be able to overwrite the value of this value by a configuration property, this parameter must be declared.
+If the parameter is not declared, the respective declaration attribute will not be generated --- <strong><code>bind</code></strong>  + <em>Default</em>: See description  + <em>SCR Descriptor</em>: <code>reference.bind</code>  + The name of the method to be called when the service is to be bound to the component.
+The default value is the name created by appending the reference <code>name</code> to the string <code>bind</code>.
+The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type --- <strong><code>unbind</code></strong>  + <em>Default</em>: See description  + <em>SCR Descriptor</em>: <code>reference.unbind</code>  + The name of the method to be called when the service is to be unbound from the component.
+The default value is the name created by appending the reference <code>name</code> to the string <code>unbind</code>.
+The method must be declared <code>public</code> or <code>protected</code> and take single argument which is declared with the service interface type --- <strong><code>strategy</code></strong>  + <em>Default</em>: <code>event</code>  + <em>SCR Descriptor</em>: <code>reference.strategy</code>  + The strategy used for this reference, one of <code>event</code> or <code>lookup</code>.
+If the reference is defined on a field with a strategy of <code>event</code> and there is no bind or unbind method, the plugin will create the necessary methods.</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

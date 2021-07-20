@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Using the OSGi Compliance Tests :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/development/using-the-osgi-compliance-tests.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../_/css/site.css">
+    <link rel="icon" href="../../_/img/favicon.png" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../_/img/feather.svg">
+        </span>
+        <span>
+          <img src="../../_/img/logo.png">
+        </span>
+        Apache Felix
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Projects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-deployment-admin.html">Deployment Admin</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-jaas.html">JAAS</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../documentation/subprojects/apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../downloads/currentreleases.html">Downloads</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-gogo.html">Apache Felix Gogo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Dependency Manager</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Framework</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">GoGo Shell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Web Console</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Documentation</a></li>
+    <li>Development</li>
+    <li><a href="using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/development/using-the-osgi-compliance-tests.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Using the OSGi Compliance Tests</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The OSGi Alliance provides Apache committers access to its Compliance Tests (CT).
+This page describes how to get access to the CTs and how to use them with Felix subprojects.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gaining_access_to_osgi_cts"><a class="anchor" href="#_gaining_access_to_osgi_cts"></a>Gaining Access to OSGi CTs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The general process is to send a request to the <a href="mailto:jcp-open@apache.org">jcp-open@apache.org</a> mailing requesting access.
+Since redistributing the OSGi CTs is not allowed, you will need to submit an  <a href="http://www.apache.org/jcp/ApacheNDA.pdf">NDA</a> to be granted access to the  <a href="https://svn.apache.org/repos/tck/osgi-cts">SVN repo</a> containing the binaries.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_osgi_ct_overview"><a class="anchor" href="#_osgi_ct_overview"></a>OSGi CT Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The CT is delivered as three JAR files, one for the core CT, one of the enterprise CT and one for the compendium CT.
+Each JAR file is composed of several other JAR files, which are the actual compliance tests.
+Typically, there is one JAR per specification, except for the OSGi framework.
+The CT uses BND as its testing harness, which in turn uses the OSGi framework launching and embedding API to configure, launch, and install test bundles.
+Each test JAR file has an associated BND file which supplies the configuration BND needs to run the associated tests.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modifying_the_bnd_files"><a class="anchor" href="#_modifying_the_bnd_files"></a>Modifying the BND files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Modifying the BND files is fairly straightforward.
+A typical BND file looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># bnd pack for project org.osgi.test.cases.startlevel
+# Mon Aug 31 18:50:18 EDT 2009
+build=.
+
+-target = \
+    jar/org.osgi.test.cases.startlevel-4.2.0.jar;version=file,
+
+-runpath = \
+    jar/org.eclipse.osgi-3.5.1.jar;version=file, \
+    jar/com.springsource.junit-3.8.2.jar;version=file;export="junit.framework;version=3.8"
+
+-runbundles
+
+-runproperties = \
+report="true", \
+osgi.compatibility.bootdelegation="false", \
+osgi.resolverMode="strict"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The important parts are the following settings:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>-target</code> specifies the bundles containing the tests.</p>
+</li>
+<li>
+<p><code>-runpath</code> specifies the class path used to run the tests.</p>
+</li>
+<li>
+<p><code>-runbundles</code> specifies the bundles to install for the tests.</p>
+</li>
+<li>
+<p><code>-runproperties</code> specifies configuration properties to pass into the framework.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following two examples show how to edit these files for the Felix framework and Felix bundle subprojects.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_testing_the_felix_framework"><a class="anchor" href="#_testing_the_felix_framework"></a>Testing the Felix framework</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Felix framework is tested against the core CT.
+The first thing to do is extract the core CT JAR file, which includes test suites for:</p>
+</div>
+<div class="sect2">
+<h3 id="_core_functionality"><a class="anchor" href="#_core_functionality"></a>Core functionality</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Framework core (<code>org.osgi.test.cases.framework.bnd</code>)</p>
+</li>
+<li>
+<p>Framework launching (<code>org.osgi.test.cases.framework.launch.bnd</code>)</p>
+</li>
+<li>
+<p>Tracker Specification (<code>org.osgi.test.cases.tracker.bnd</code>)</p>
+</li>
+<li>
+<p>URL Handlers (<code>org.osgi.test.cases.url.bnd</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>While the Tracker and URL Handler specifications are optional as per the OSGi Specification, they are implemented by the  Felix Framework and therefore the tests should be run and pass.</p>
+</div>
+<div class="paragraph">
+<p>The following CT tests from the Compendium/Enterprise CT also pass with the Felix framework:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>XML Parser Specification (<code>org.osgi.test.cases.xml.bnd</code>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_security_components"><a class="anchor" href="#_security_components"></a>Security components</h3>
+<div class="paragraph">
+<p>OSGi Security components are optional.
+They are supported by Felix but require security support to be enabled.
+See the <a href="#security">Security</a> section below for more details.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Framework security (<code>org.osgi.test.cases.framework.secure.bnd</code>)</p>
+</li>
+<li>
+<p>Framework launching security (<code>org.osgi.test.cases.framework.launch.secure.bnd</code>)</p>
+</li>
+<li>
+<p>Permission Admin (<code>org.osgi.test.cases.permissionadmin.bnd</code>)</p>
+</li>
+<li>
+<p>Conditional Permission Admin (<code>org.osgi.test.cases.condpermadmin.bnd</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With security correctly enabled in Felix all the above security CT suites should pass.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_the_tests"><a class="anchor" href="#_running_the_tests"></a>Running the tests</h3>
+<div class="paragraph">
+<p>For each of the associated BND files, the <code>-runpath</code> needs to be edited to refer to the Felix framework.
+The easiest way to do this is by modifying the <code>shared.inc</code> file which is included by  all BND files.
+It should look something like this after editing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext"> -runpath = \
+     /path/to/felix/framework/org.apache.felix.framework-4.4.1.jar;version=file, \
+     jar/com.springsource.junit-3.8.2.jar;version=file;export="junit.framework;version=3.8"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Typically, it is not necessary to change anything else in the BND files and it is normal that the <code>-runbundles</code> setting is empty, since there are no additional bundles associated with testing the framework.</p>
+</div>
+<div class="paragraph">
+<p>After editing the BND files, run the tests using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext"> source runtests</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will run all test suites for all BND files.
+To run a specific test suite, do the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> $ java -jar jar/bnd.jar runtests --title osgi.ct &lt;bnd-file&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>&lt;bnd-file&gt;</code> specifies one or more BND files associated with the desired test suites.
+NOTE: <strong>Be Aware</strong> Tests for native code loading will fail on Java 6, so do not use this JDK for testing the framework.</p>
+</div>
+<div class="paragraph">
+<p>Reports for the tests suites are generated in the <code>reports/</code> subdirectory and are named after the appropriate test suite.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="security"><a class="anchor" href="#security"></a>Security</h3>
+<div class="paragraph">
+<p><strong><em>TODO this section is unfinished.</em></strong></p>
+</div>
+<div class="paragraph">
+<p>The exception to this is for the framework test suites for security.
+To test with security enabled, you will need to add the framework security provider in <code>-runbundles</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext"> -runbundles = \
+     /path/to/felix/framework.security/org.apache.felix.framework.security-1.0.0.jar.jar;version=file</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deviations"><a class="anchor" href="#_deviations"></a>Deviations</h3>
+<div class="sect3">
+<h4 id="_core_r5"><a class="anchor" href="#_core_r5"></a>Core R5</h4>
+<div class="paragraph">
+<p>When running the Core R5 CT the following error appears:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext"> testEERequirement
+ junit.framework.AssertionFailedError: Required Execution Environment is available: Unresolved constraint in bundle org.osgi.test.cases.framework.div.tb7a [214]: Unable to resolve 214.0: missing requirement [214.0] osgi.ee; (|(osgi.ee=div/tb7a)(osgi.ee=div/tb7b))
+ at org.osgi.test.support.OSGiTestCase.fail(OSGiTestCase.java:70)
+ at org.osgi.test.cases.framework.junit.div.DivTests.testEERequirement(DivTests.java:253)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a known deviation in the Core R5 CT and can be ignored.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_core_r6"><a class="anchor" href="#_core_r6"></a>Core R6</h4>
+<div class="paragraph">
+<p>When running the Core R6 CT the following error appears:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext"> testArrayServiceReferenceDTO
+ junit.framework.AssertionFailedError: ServiceReferenceDTO[] for stopped bundle is null
+ at junit.framework.Assert.fail(Assert.java:47)
+ at junit.framework.Assert.assertTrue(Assert.java:20)
+ at junit.framework.Assert.assertNotNull(Assert.java:217)
+ at org.osgi.test.cases.framework.junit.dto.DTOTestCase.testArrayServiceReferenceDTO(DTOTestCase.java:429)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a known deviation in the Core R6 CT and can be ignored.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_testing_a_felix_bundle"><a class="anchor" href="#_testing_a_felix_bundle"></a>Testing a Felix bundle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The core CT tests the framework implementation and its related services.
+The compendium CT tests the various non-framework-related specifications, which are implemented as bundles.
+For the most part, testing a bundle is similar to testing the framework.</p>
+</div>
+<div class="paragraph">
+<p>Extract the compendium CT JAR file to access the individual test suites.
+Since most compendium service specification test suites require security, it is necessary to use a framework implementation that supports security.
+For the Felix framework, you will have to add the security provider to the <code>-runbundles</code> to enable security.</p>
+</div>
+<div class="paragraph">
+<p>For example, to test Felix' Event Admin bundle, edit the <code>-runbundles</code> setting in <code>org.osgi.test.cases.event.bnd</code> to look something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext"> -runbundles = \
+     /path/to/felix/eventadmin/org.apache.felix.eventadmin-1.0.0.jar;version=file,\
+     /path/to/felix/framework.security/org.apache.felix.framework.security-1.0.0.jar.jar;version=file</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After editing the BND files to refer to the appropriate bundles, run the tests using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext"> source runtests</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will run all test suites for all BND files.
+To run a specific test suite, do the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> $ java -jar jar/bnd.jar runtests --title osgi.ct &lt;bnd-file&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>&lt;bnd-file&gt;</code> specifies one or more BND files associated with the desired test suites.
+Reports for the tests suites are generated in the <code>reports/</code> subdirectory and are named after the appropriate test suite.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_feedback"><a class="anchor" href="#_feedback"></a>Feedback</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For any questions or feedback, subscribe to the Felix developers mailing list by sending a message to <a href="mailto:dev-subscribe@felix-apache-org">dev-subscribe@felix.apache.org</a>;
+after subscribing, email questions or feedback to <a href="mailto:dev@felix.apache.org">dev@felix.apache.org</a>.</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../_/js/site.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dependency Manager - Design Patterns :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-dependency-manager/guides/design-patterns.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <link rel="icon" href="../../../../_/img/favicon.png" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../../_/img/feather.svg">
+        </span>
+        <span>
+          <img src="../../../../_/img/logo.png">
+        </span>
+        Apache Felix
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Projects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-deployment-admin.html">Deployment Admin</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-jaas.html">JAAS</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../../documentation/subprojects/apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../../downloads/currentreleases.html">Downloads</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-framework.html">Apache Felix Framework</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-gogo.html">Apache Felix Gogo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-web-console.html">Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Dependency Manager</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Framework</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">GoGo Shell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Web Console</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../../index.html">Documentation</a></li>
+    <li><a href="../../../subprojects.html">Subprojects</a></li>
+    <li>Dependency Manager</li>
+    <li>Guides</li>
+    <li><a href="design-patterns.html">Dependency Manager - Design Patterns</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-dependency-manager/guides/design-patterns.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Dependency Manager - Design Patterns</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section lists a couple of design patterns as they can be applied in an OSGi context.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_singleton_service"><a class="anchor" href="#_singleton_service"></a>Singleton Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides a service as long as its dependencies are resolved.</p>
+</div>
+<div class="sect2">
+<h3 id="_motivation"><a class="anchor" href="#_motivation"></a>Motivation</h3>
+<div class="paragraph">
+<p>In a dynamic framework, services can come and go.
+Components that publish a service are often themselves dependent on other services to perform their task.
+In such cases, they have a dependency on those services and it makes sense to only publish their own services when these dependencies are available.
+Being able to declare such dependencies in code ensures consistent life cycle behavior.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structure"><a class="anchor" href="#_structure"></a>Structure</h3>
+<div class="imageblock kroki">
+<div class="content">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
+          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg fill-opacity="1" xmlns:xlink="http://www.w3.org/1999/xlink" color-rendering="auto" color-interpolation="auto" text-rendering="auto" stroke="black" stroke-linecap="square" width="190" stroke-miterlimit="10" shape-rendering="auto" stroke-opacity="1" fill="black" stroke-dasharray="none" font-weight="normal" stroke-width="1" viewBox="20 -10 190 360" height="360" xmlns="http://www.w3.org/2000/svg" font-family="'Dialog'" font-style="normal" stroke-linejoin="miter" font-size="12px" stroke-dashoffset="0" image-rendering="auto"
+><!--Generated by the Batik Graphics2D SVG Generator--><defs id="genericDefs"
+  /><g
+  ><defs id="defs1"
+    ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath1"
+      ><path d="M0 0 L2147483647 0 L2147483647 2147483647 L0 2147483647 L0 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath2"
+      ><path d="M0 0 L0 70 L20 70 L20 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath3"
+      ><path d="M0 0 L0 90 L80 90 L80 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath4"
+      ><path d="M0 0 L0 100 L90 100 L90 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath5"
+      ><path d="M0 0 L0 100 L140 100 L140 0 Z"
+      /></clipPath
+    ></defs
+    ><g fill="rgb(0,0,0)" fill-opacity="0.4902" transform="translate(100,260)" stroke-opacity="0.4902" stroke="rgb(0,0,0)"
+    ><ellipse rx="9.25" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5" stroke="none"
+    /></g
+    ><g transform="translate(100,260)"
+    ><ellipse rx="9.25" fill="none" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5"
+    /></g
+    ><g fill="rgb(0,0,0)" fill-opacity="0.4902" transform="translate(100,10)" stroke-opacity="0.4902" stroke="rgb(0,0,0)"
+    ><ellipse rx="9.25" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5" stroke="none"
+    /></g
+    ><g transform="translate(100,10)"
+    ><ellipse rx="9.25" fill="none" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5"
+    /></g
+    ><g transform="translate(100,200)"
+    ><path fill="none" d="M10.5 69.5 L10.5 10.5" clip-path="url(#clipPath3)"
+      /><path fill="none" d="M17 58.7417 L10.5 70 L4 58.7417" clip-path="url(#clipPath3)"
+      /><text x="14" font-size="14px" y="48.125" clip-path="url(#clipPath3)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >requires</text
+    ></g
+    ><g transform="translate(100,30)"
+    ><path fill="none" d="M10.5 11.5 L10.5 80.5" clip-path="url(#clipPath4)"
+      /><path fill="none" d="M4 22.2583 L10.5 11 L17 22.2583" clip-path="url(#clipPath4)"
+      /><text x="14" font-size="14px" y="53.125" clip-path="url(#clipPath4)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >publishes</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(40,110)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="138.5" height="98.5" y="0.5" clip-path="url(#clipPath5)" stroke="none"
+    /></g
+    ><g transform="translate(40,110)"
+    ><rect fill="none" x="0.5" width="138.5" height="98.5" y="0.5" clip-path="url(#clipPath5)"
+      /><text x="34" font-size="14px" y="18.25" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >«Singleton»</text
+      ><text x="37" font-size="14px" y="34.5" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >Repository</text
+      ><path fill="none" d="M1 40.5 L139 40.5" clip-path="url(#clipPath5)"
+      /><path fill="none" d="M1 61.75 L139 61.75" clip-path="url(#clipPath5)"
+      /><text x="5" font-size="14px" y="77" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >get(key) : object</text
+      ><text x="5" font-size="14px" y="93.25" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >store(key, object)</text
+    ></g
+  ></g
+></svg
+>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code_example"><a class="anchor" href="#_code_example"></a>Code Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> public class Activator extends DependencyActivatorBase {
+     public void init(BundleContext context, DependencyManager manager) throws Exception {
+         manager.add(createComponent()
+             .setInterface(UserStore.class, new Properties() {{ put("store.id", "users"); }})
+             .setImplementation(UserStoreImpl.class)
+             .add(createServiceDependency()
+                 .setService(Store.class)
+                 .setRequired(true)
+             )
+             .add(createServiceDependency()
+                 .setService(LogService.class)
+                 .setRequired(false)
+             )
+         );
+     }
+
+     public void destroy(BundleContext context, DependencyManager manager) throws Exception {}
+ }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aspect_service"><a class="anchor" href="#_aspect_service"></a>Aspect Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides an aspect on top of a specific type of service.</p>
+</div>
+<div class="sect2">
+<h3 id="_motivation_2"><a class="anchor" href="#_motivation_2"></a>Motivation</h3>
+<div class="paragraph">
+<p>In aspect oriented programming, supporting functions are isolated from the main application&#8217;s business logic.
+This increases modularity at the source level by allowing the separation of cross-cutting concerns.
+In OSGi we want to extend this modularity to the runtime, therefore we implement aspects to work on certain services, where the aspect itself publishes that same service but (usually) with a higher priority.
+This allows you to dynamically add and remove aspects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structure_2"><a class="anchor" href="#_structure_2"></a>Structure</h3>
+<div class="imageblock kroki">
+<div class="content">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
+          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg fill-opacity="1" xmlns:xlink="http://www.w3.org/1999/xlink" color-rendering="auto" color-interpolation="auto" text-rendering="auto" stroke="black" stroke-linecap="square" width="190" stroke-miterlimit="10" shape-rendering="auto" stroke-opacity="1" fill="black" stroke-dasharray="none" font-weight="normal" stroke-width="1" viewBox="20 -10 190 360" height="360" xmlns="http://www.w3.org/2000/svg" font-family="'Dialog'" font-style="normal" stroke-linejoin="miter" font-size="12px" stroke-dashoffset="0" image-rendering="auto"
+><!--Generated by the Batik Graphics2D SVG Generator--><defs id="genericDefs"
+  /><g
+  ><defs id="defs1"
+    ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath1"
+      ><path d="M0 0 L2147483647 0 L2147483647 2147483647 L0 2147483647 L0 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath2"
+      ><path d="M0 0 L0 70 L20 70 L20 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath3"
+      ><path d="M0 0 L0 90 L90 90 L90 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath4"
+      ><path d="M0 0 L0 100 L90 100 L90 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath5"
+      ><path d="M0 0 L0 100 L140 100 L140 0 Z"
+      /></clipPath
+    ></defs
+    ><g fill="rgb(0,0,0)" fill-opacity="0.4902" transform="translate(100,260)" stroke-opacity="0.4902" stroke="rgb(0,0,0)"
+    ><ellipse rx="9.25" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5" stroke="none"
+    /></g
+    ><g transform="translate(100,260)"
+    ><ellipse rx="9.25" fill="none" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5"
+    /></g
+    ><g fill="rgb(0,0,0)" fill-opacity="0.4902" transform="translate(100,10)" stroke-opacity="0.4902" stroke="rgb(0,0,0)"
+    ><ellipse rx="9.25" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5" stroke="none"
+    /></g
+    ><g transform="translate(100,10)"
+    ><ellipse rx="9.25" fill="none" ry="10" clip-path="url(#clipPath2)" cx="9.75" cy="20.5"
+    /></g
+    ><g transform="translate(100,200)"
+    ><path fill="none" d="M10.5 69.5 L10.5 10.5" clip-path="url(#clipPath3)"
+      /><path fill="none" d="M17 58.7417 L10.5 70 L4 58.7417" clip-path="url(#clipPath3)"
+      /><text x="14" font-size="14px" y="48.125" clip-path="url(#clipPath3)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >intercepts</text
+    ></g
+    ><g transform="translate(100,30)"
+    ><path fill="none" d="M10.5 11.5 L10.5 80.5" clip-path="url(#clipPath4)"
+      /><path fill="none" d="M4 22.2583 L10.5 11 L17 22.2583" clip-path="url(#clipPath4)"
+      /><text x="14" font-size="14px" y="53.125" clip-path="url(#clipPath4)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >publishes</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(40,110)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="138.5" height="98.5" y="0.5" clip-path="url(#clipPath5)" stroke="none"
+    /></g
+    ><g transform="translate(40,110)"
+    ><rect fill="none" x="0.5" width="138.5" height="98.5" y="0.5" clip-path="url(#clipPath5)"
+      /><text x="41" font-size="14px" y="18.25" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >«Aspect»</text
+      ><text x="17" font-size="14px" y="34.5" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >RepositoryCache</text
+      ><path fill="none" d="M1 40.5 L139 40.5" clip-path="url(#clipPath5)"
+      /><path fill="none" d="M1 61.75 L139 61.75" clip-path="url(#clipPath5)"
+      /><text x="5" font-size="14px" y="77" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >get(key) : object</text
+      ><text x="5" font-size="14px" y="93.25" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >store(key, object)</text
+    ></g
+  ></g
+></svg
+>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code_example_2"><a class="anchor" href="#_code_example_2"></a>Code Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class Activator extends DependencyActivatorBase {
+    public void init(BundleContext context, DependencyManager manager) throws Exception {
+        manager.add(createAspectService(Manageable.class, "(monitor=true)", 50)
+            .setImplementation(ManageableMonitor.class)
+        );
+    }
+
+    public void destroy(BundleContext context, DependencyManager manager) throws Exception {}
+}
+
+public interface Manageable {
+    public void setProperty(String key, String value);
+}
+
+public class ManageableMonitor implements Manageable {
+    private volatile Manageable m_manageable;
+
+    public void setProperty(String key, String value) {
+        System.out.println("Someone set " + key + " to " + value);
+        m_manageable.setProperty(key, value);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_adapter_service"><a class="anchor" href="#_adapter_service"></a>Adapter Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides an adapter for a specific type of service.</p>
+</div>
+<div class="sect2">
+<h3 id="_motivation_3"><a class="anchor" href="#_motivation_3"></a>Motivation</h3>
+<div class="paragraph">
+<p>Like with aspects, sometimes you want to create adapters for certain services, which add certain behavior that results in the publication of (in this case) a different service.
+Adapters can dynamically be added and removed and allow you to keep your basic services implementations clean and simple, adding extra features on top of them in a modular way.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structure_3"><a class="anchor" href="#_structure_3"></a>Structure</h3>
+<div class="imageblock kroki">
+<div class="content">
+<img src="https://kroki.io/umlet/svg/eNrVlE1vgkAQhu_8CrIHbwii0RoXTGPSpEm9mHo2A0xh02WXsOtXf3131ViLTVqtPfQwC-8MO8v7DIGONyV3V1grJkVEOu2AuChSmTGRR2T-_ODdEVdpEBlwKTAiQpJx7NCMQV5D6Va1tNeILEuOmpx06rZDEjuuS9-kLBccV8jjTkD9E2mryLFEoe29USyL59OnR6GxfoEUqW8S-0oqZW1eCjSqfcbkNqah6bg5Jra7E7ZHvY5Do9dHXcR9o4tDS_-sJ61AIF-A1jVLljad5FHCIX11qH9W22-BLGPaWIbTmr_z5p-Yu7XRsP-vnE44KPWty15zms1xdnoNlzsul9hscT2ycZ9BZeC3ciNNODOspGJa1tsJpAU6UxCQIyQcHc9zbNyeyww52I2XT7_b4DL8LRauI0vFc6plwpkqUF1m15zYDkYfy51ZqP_1o38JJgwaZAYNMsNrwYD9YK6iMviE5mdUqH_4w8bvcqyr5Q==" alt="Diagram">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code_example_3"><a class="anchor" href="#_code_example_3"></a>Code Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class Activator extends DependencyActivatorBase {
+    public void init(BundleContext context, DependencyManager manager) throws Exception {
+        manager.add(createAdapterService(Manageable.class, "(publish=servlet)")
+            .setInterface(HttpServlet.class.getName(), null)
+            .setImplementation(ManageableServlet.class)
+        );
+    }
+
+    public void destroy(BundleContext context, DependencyManager manager) throws Exception {}
+}
+
+public interface Manageable {
+    public void setProperty(String key, String value);
+}
+
+public class ManageableServlet implements HttpServlet {
+    private volatile Manageable m_manageable;
+
+    public void doPost(HttpRequest req, HttpResponse response) {
+        String key = req.getProperty("key");
+        String value = req.getProperty("value");
+        m_manageable.setProperty(key, value);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resource_adapter_service"><a class="anchor" href="#_resource_adapter_service"></a>Resource Adapter Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides an adapter for a specific type of resource.</p>
+</div>
+<div class="sect2">
+<h3 id="_motivation_4"><a class="anchor" href="#_motivation_4"></a>Motivation</h3>
+<div class="paragraph">
+<p>Resource adapters are similar to normal adapters, but instead of requiring a service, they require a resource and provide a service on top of it.
+Resources are an abstraction that is introduced by the dependency manager, represented as a URL.
+They can be implemented to serve resources embedded in bundles, somewhere on a file system or in a content repository or database.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structure_4"><a class="anchor" href="#_structure_4"></a>Structure</h3>
+<div class="imageblock kroki">
+<div class="content">
+<img src="https://kroki.io/umlet/svg/eNq1lMlOwzAQhu9-isgHBIc2XYBS4QQhJCQkQAgB12qaDK2FYwfb3Xh6xi0qJa2EwnKwk38mnvj_vIizeaGiKVonjU54u9niEerM5FKPEv74cNk44ZHzoHNQRmPCteFnKRO5hJGFIiqtCc-ETwqFnm9U6jY7PGVRJN6MKQYKp6jSdkvEGzJkUWGB2od3UjJPH2-ur7RH-wwZipgCq0xmjKVJgUe3ilBsnvap4HytF8sfLNZ6lnZIz9Z6nB6THn9UjLdKihI0qgF4b-VwEsLDUTJUkL0wEW_lVkMgz6Unx7CZi5fW4g1vO31eKHDuW4_dLY8Vk-3Dist2t6bNPeVPQ7tHZyY2w_McSlqCvRGFqbEnmaO5U7BAyxoNFlpJav-AOW9KengL2tGuwf1nYwvwB3_P6x4VhIG190S3gqtXodWvCUv5JLBqMAiUXD2ntHrN1uln16NOxLs__UcmnU4FyslfQbH4OpEWf4Sl94XNz7HQ0bo1_vvb46hKpV89Wa0KlqOaWAozldgsXqaMbpLZWIZJ_eZgiPjj4k3fAXvTtTE=" alt="Diagram">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_temporal_dependency"><a class="anchor" href="#_temporal_dependency"></a>Temporal Dependency</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides a proxy that hides the service dynamics of a dependency, even if it disappears for a short time.</p>
+</div>
+<div class="sect2">
+<h3 id="_motivation_5"><a class="anchor" href="#_motivation_5"></a>Motivation</h3>
+<div class="paragraph">
+<p>As a service consumer, you sometimes do not want to deal with the dynamics of services and the fact that they tend to go away for short periods of time whilst their hosting bundle gets updated.
+A temporal dependency provides you with a proxy that hides these dynamics and blocks your calls if you try to invoke a method on a service that is currently "updating".
+The maximum time to wait is configurable and you will get an exception if no new service becomes available before that time.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structure_5"><a class="anchor" href="#_structure_5"></a>Structure</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_null_object"><a class="anchor" href="#_null_object"></a>Null Object</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides an implementation of an object that does nothing and can be used in the absence of the real object.</p>
+</div>
+<div class="sect2">
+<h3 id="_motivation_6"><a class="anchor" href="#_motivation_6"></a>Motivation</h3>
+<div class="paragraph">
+<p>When a component depends on a service, but the dependency is optional, it means that it will use this service when available, but it can still operate if it&#8217;s not.
+Constantly checking in your code if a service is actually available tends to lead to code with a lot of "<code class="code">if (service != null) service.invoke();</code>" constructions which do not help with code readability.
+Instead, the dependency manager offers you a mechanism where it will inject null objects for services that are currently not available so you can simply invoke methods on them that "do nothing".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structure_6"><a class="anchor" href="#_structure_6"></a>Structure</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_whiteboard"><a class="anchor" href="#_whiteboard"></a>Whiteboard</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Handles listeners by leveraging the OSGi service registry to publish and look them up.</p>
+</div>
+<div class="sect2">
+<h3 id="_motivation_7"><a class="anchor" href="#_motivation_7"></a>Motivation</h3>
+<div class="paragraph">
+<p>The traditional model for dealing with listeners in Java needlessly complicates things in an OSGi context.
+Instead of having listeners registering themselves with the component that will invoke them on any change, a listener simply registers itself in the service registry and the component will do a lookup of all relevant services.
+This is explained in more detail on the OSGi.org wiki in the <a href="http://www.osgi.org/wiki/uploads/Links/whiteboard.pdf">"Listeners considered harmful: the 'whiteboard' pattern"</a> article.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structure_7"><a class="anchor" href="#_structure_7"></a>Structure</h3>
+
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
