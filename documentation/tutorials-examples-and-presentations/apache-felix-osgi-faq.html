@@ -28,7 +28,7 @@
       <div class="navbar-end">
         <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link" href="#">Projects</a>
+          <a class="navbar-link" href="#">Subprojects</a>
           <div class="navbar-dropdown">
             <a class="navbar-item" href="../subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
             <a class="navbar-item" href="../subprojects/apache-felix-event-admin.html">Event Admin</a>
@@ -494,7 +494,7 @@
 <article class="doc">
 <h1 class="page">OSGi Frequently Asked Questions</h1>
 <div class="sect1">
-<h2 id="_if_i_use_bundles_from_felix_will_my_application_be_tied_to_the_felix_framework"><a class="anchor" href="#_if_i_use_bundles_from_felix_will_my_application_be_tied_to_the_felix_framework"></a>If I use bundles from Felix, will my application be tied to the Felix framework?</h2>
+<h2 id="subproject-independence"><a class="anchor" href="#subproject-independence"></a>If I use bundles from Felix, will my application be tied to the Felix framework?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>No.
@@ -514,7 +514,7 @@ In the future, it is also possible some subprojects may require Felix, but they 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_when_i_update_my_bundle_why_are_my_bundles_old_classes_still_being_used"><a class="anchor" href="#_when_i_update_my_bundle_why_are_my_bundles_old_classes_still_being_used"></a>When I update my bundle, why are my bundle&#8217;s old classes still being used?</h2>
+<h2 id="bundle-update-visibility"><a class="anchor" href="#bundle-update-visibility"></a>When I update my bundle, why are my bundle&#8217;s old classes still being used?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Updating a bundle does not necessarily cause the new classes to be used immediately, it depends on two factors:</p>
@@ -539,7 +539,7 @@ On the other hand, if any other bundles are using the exported packages, then th
 In this case, the new classes will not be made available until <code>PackageAdmin.refreshPackages()</code> is called (this can be invoked in the Felix shell using the <code>refresh</code> command).</p>
 </div>
 <div class="paragraph">
-<p>There is one partial exception to this latter case, it occurs when the exporting bundle does <strong>not</strong> also import its own exported packages (see "<a href="#should-a-bundle-import-its-own-exported-packages">Should a bundle import its own exported packages?</a>" below for more information on this topic).
+<p>There is one partial exception to this latter case, it occurs when the exporting bundle does <strong>not</strong> also import its own exported packages (see "<a href="#import-own-exports">Should a bundle import its own exported packages?</a>" below for more information on this topic).
 In this case, the new classes become immediately accessible to the updated exporting bundle, but not to the dependent bundles;
 the dependent bundles continue to see the old version of the classes.
 This situation generally requires <code>PackageAdmin.refreshPackages()</code> to be invoked to bring the bundles back to a useful state.</p>
@@ -557,14 +557,14 @@ This is done to reduce disruption when performing several updates.</p>
 <div class="paragraph">
 <p>There is no easy answer to this question and it largely depends on the specific usage scenario.
 The OSGi specification had originally suggested that it was good practice to embed service API packages in the service provider bundle.
-In this case in OSGi R4, the service provider should both <a href="#should-a-bundle-import-its-own-exported-packages">export and import</a> the service API packages, which was the default for previous versions of the OSGi specification.</p>
+In this case in OSGi R4, the service provider should both <a href="#import-own-exports">export and import</a> the service API packages, which was the default for previous versions of the OSGi specification.</p>
 </div>
 <div class="paragraph">
 <p>The OSGi specification never had an explicit stance on whether or not a consumer bundle should embed its dependent service API packages;
 although, it would not appear to be a best practice.
 Logically, there is some sense to this approach, since it potentially allows the consumer bundle to gracefully handle broken service dependencies.
 Of course, this depends on whether there is anything the bundle can do in the face of broken dependencies.
-If service API packages are embedded in the consumer bundle, then it should <a href="#should-a-bundle-import-its-own-exported-packages">export and import</a> the packages.
+If service API packages are embedded in the consumer bundle, then it should <a href="#import-own-exports">export and import</a> the packages.
 An alternative approach in this case is to dynamically import the service API (or even use optional imports if the dependency should only be considered once).</p>
 </div>
 <div class="paragraph">
@@ -586,7 +586,7 @@ Thus, if the provider were updated or uninstalled and then refreshed, the consum
 </div>
 </div>
 <div class="sect1">
-<h2 id="_should_a_bundle_import_its_own_exported_packages"><a class="anchor" href="#_should_a_bundle_import_its_own_exported_packages"></a>Should a bundle import its own exported packages?</h2>
+<h2 id="import-own-exports"><a class="anchor" href="#import-own-exports"></a>Should a bundle import its own exported packages?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In OSGi R3 this was always the case, since Export-Package implied Import-Package.
