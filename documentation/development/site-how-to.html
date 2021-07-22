@@ -495,316 +495,197 @@
 <h1 class="page">Site How To</h1>
 <div id="preamble">
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-This page is totaly wrong and needs to be rewritten.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>The site is managed with the <a href="https://www.apache.org/dev/cms.html">Apache CMS</a> where the source is kept in SVN at <a href="https://svn.apache.org/repos/asf/felix/site/trunk/content" class="bare">https://svn.apache.org/repos/asf/felix/site/trunk/content</a>.</p>
+<p>The website is written in <a href="https://docs.asciidoctor.org/asciidoc/latest/">AsciiDoc</a>, built using <a href="https://docs.antora.org/">Antora</a>, and published using an <a href="https://cwiki.apache.org/confluence/display/INFRA/Git+-+.asf.yaml+features#Git.asf.yamlfeatures-WebSiteDeploymentServiceforGitRepositories"><code>.asf.yaml</code></a> file in a git repo.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_to_update_the_documentation_using_the_cms_system"><a class="anchor" href="#_to_update_the_documentation_using_the_cms_system"></a>To update the documentation using the CMS system</h2>
+<h2 id="_overall_organization"><a class="anchor" href="#_overall_organization"></a>Overall organization</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>For simplicity, this references the GitHub mirrors of the Apache gitbox repos.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">General content</dt>
+<dd>
+<p>Content not specific to a particular subproject and unmigrated content is in the <a href="https://github.com/apache/felix-antora-site">felix-antora-site</a> repository.
+At the moment there is only one Antora component, version, and module, so the content is all under <code>modules/ROOT/pages</code>.</p>
+</dd>
+<dt class="hdlist1">Subproject-specific content</dt>
+<dd>
+<p>Content specific to a subproject may be put in the subproject repo in the standard Antora layout.
+For instance, SCR content could be in <code>felix-dev</code> under <code>scr/docs/modules/ROOT/pages</code>.
+This feature is not yet used.</p>
+</dd>
+<dt class="hdlist1">Antora playbook</dt>
+<dd>
+<p>The Antora playbook together with  the Node project to fetch and set up the required dependencies is in the <a href="https://github.com/apache/felix-antora">felix-antora</a> repository.</p>
+</dd>
+<dt class="hdlist1">Antora UI</dt>
+<dd>
+<p>The UI for this website is in the <a href="https://github.com/apache/felix-antora-ui">felix-antora-ui</a> repository.
+For simplicity this is currently set up as an extension of the Antora default UI using <a href="https://gitlab.com/djencks/antora-ui-builder" class="bare">https://gitlab.com/djencks/antora-ui-builder</a>.</p>
+</dd>
+<dt class="hdlist1">Published site content</dt>
+<dd>
+<p>The website build publishes the content to <a href="https://github.com/apache/felix-site-pub">felix-site-pub</a> in the <code>asf-site</code> branch.
+The <code>.asf.yaml</code> file is configured to publish the content to Apache servers.</p>
+</dd>
+<dt class="hdlist1">Automated site build</dt>
+<dd>
+<p>The site is built using Jenkins jobs <a href="https://ci-builds.apache.org/job/Felix/job/website-build">Felix/website-build</a> and <a href="https://ci-builds.apache.org/job/Felix/job/website-content-trigger">Felix/website-content-trigger</a>.
+Committing to the <code>felix-antora-site</code> or <code>felix-antora</code> repositories will trigger a website build and publish.
+Changes to the UI will not trigger an automated build, but PMC members may trigger a build manually with the <a href="https://ci-builds.apache.org/job/Felix/job/website-build/build?delay=0sec">Build Now</a> button.
+If subproject content is moved to subproject repositories more trigger jobs will be needed.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_extensions_currently_in_use"><a class="anchor" href="#_extensions_currently_in_use"></a>Extensions currently in use</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://github.com/Mogztter/asciidoctor-kroki">asciidoctor-kroki</a></dt>
+<dd>
+<p>This provides access to numerous text-to-diagram converters.
+Currently it is used for some UMLet diagrams in the DependencyManager documentation.</p>
+</dd>
+<dt class="hdlist1"><a href="https://gitlab.com/djencks/asciidoctor-antora-indexer">asciidoctor-antora-indexer</a></dt>
+<dd>
+<p>This queries the Antora content catalog and renders the results as lists, tables, etc.
+It is currently used in the <a href="../site-map.html" class="page">Site map</a> page to partially automate generation.</p>
+</dd>
+<dt class="hdlist1"><a href="https://gitlab.com/djencks/asciidoctor-jsonpath">asciidoctor-jsonpath</a></dt>
+<dd>
+<p>This queries a json, yaml, or toml document and renders the results as lists, tables, etc.
+It is currently used to generate the content on the downloads page.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_basic_asciidoc"><a class="anchor" href="#_basic_asciidoc"></a>Basic AsciiDoc</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Intellij AsciiDoc plugin provides extensive syntax checking, side-by-side rendering, and a lot of other help.</p>
+</div>
+<div class="paragraph">
+<p>Consult the Asciidoctor and Antora documentation for complete coverage of syntax and features.</p>
+</div>
+<div class="paragraph">
+<p>Please use "ventilated prose", with one sentence per line.</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Install the bookmarklet from the <a href="https://cms.apache.org/">cms</a> page.
-You only have to do this once.</p>
+<p>A blank line indicates a new paragraph.</p>
 </li>
 <li>
-<p>Navigate to the page you wish to edit (on the live site, not in the cms).</p>
+<p>A page starts with a title, indicated by <code>= Title</code>.</p>
 </li>
 <li>
-<p>Click the bookmarklet.
-There will be a short pause while the CMS system is initialised for you.</p>
+<p>Sections are marked with <code>==</code>, <code>===</code>, etc, the number of <code>=</code> indicating section nesting.</p>
 </li>
 <li>
-<p>Click on <code>Edit</code> (to skip this step hack the bookmarklet to add an 'action=edit' param to the query string)</p>
+<p>Sections are automatically assigned ids that can be used as the fragment in links.
+To manually specify an id, precede the section line with <code>[#my-id]</code> on a separate line.</p>
 </li>
 <li>
-<p>The page editor should then be displayed.</p>
+<p>Code blocks look like this:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[source,java]
+----
+class Foo {
+...
+}
+----</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_local_build"><a class="anchor" href="#_local_build"></a>Local build</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need Node and npm installed.
+You also need git to clone the repositories locally, but the build itself does not use git.</p>
+</div>
+<div class="paragraph">
+<p>I do not recommend following the instructions on the Antora site, which advise installing Antora globally.
+The playbook project is instead set up to use an npm script to install Antora and all required dependencies locally
+At a minimum:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Clone the <code>felix-antora</code> playbook project.</p>
 </li>
 <li>
-<p>Click <code>Submit</code> to save your edit to the workarea</p>
+<p>Run <code>npm run plain-install</code>.</p>
 </li>
 <li>
-<p>Click <code>Commit</code> to save the updated file to SVN and trigger a staged build.
-(to skip this step click on the "Quick Commit" checkbox in the <code>Edit</code> form).</p>
-</li>
-<li>
-<p>The results should appear shortly on the <a href="http://felix.staging.apache.org/content/documentation.html">staging</a> site.
-(You may have to force the page to refresh in order to see the updated content)</p>
-</li>
-<li>
-<p>Once you are happy with the updated page, click on <code>Publish Site</code> to deploy.</p>
+<p>Run <code>npm run build</code>.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>There is also a <a href="https://www.apache.org/dev/cmsref.html">Reference Manual</a> of the Apache CMS as well as a video tutorial at <a href="http://s.apache.org/cms-tutorial" class="bare">http://s.apache.org/cms-tutorial</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_features_of_the_apache_felix_site"><a class="anchor" href="#_features_of_the_apache_felix_site"></a>Features of the Apache Felix Site</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section lists some Apache Felix features to help with the maintenance of the site, such as automatic link generation.</p>
+<p>This will build the site locally into build/site, using the remote content sources, such as <code>felix-antora-site</code>.</p>
 </div>
 <div class="paragraph">
-<p>Start the file with a <code>Title:</code> line to define the page title and the first H1 tag:</p>
+<p>Most likely you will want to modify content sources locally, and build using your local sources, before committing and pushing your changes.
+To enable this:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>= Page Title
-
-Here comes the content separated with a blank like from the
-header ...</pre>
+<div class="ulist">
+<ul>
+<li>
+<p>Clone the <code>felix-antora-site</code> repository and any other content repositories you wish to work with next to the playbook project.</p>
+</li>
+<li>
+<p>Modify the <code>antora-playbook.yml</code> to point to the local clones rather than the remote repositories.
+Be sure to specify <code>branches: HEAD</code> to use the worktree content rather than the local committed repository content.
+The appropriate changes are already in the playbook, commented out, with comments, for the <code>felix-antora-site</code> repository.</p>
+</li>
+<li>
+<p>Build the site as above.</p>
+</li>
+</ul>
 </div>
-</div>
-<div class="paragraph">
-<p>The last modification information from SVN (revision, committer, and date/time) is automatically added when the page is rendered</p>
-</div>
-<div class="paragraph">
-<p>Excerpts can be added to a page using the <code>Excerpt:</code> header:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>= Page Title
-Excerpt: Summary of the page for inclusion in other pages;
-   continuation of the excerpt must be indented</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Here comes the content separated with a blank like from the
-header ...</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Metadata from child pages can be referred to in the content with the Django variable reference notation using the child page name (without extension) as its container;
-e.g.
-for the child page named <code>childpage</code>:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>:::django
-{{ y|default:"{{" }} children.childpage.headers.excerpt }}
-{{ y|default:"{{" }} children.childpage.headers.title }}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Content Pages can contain Django templates of the form <code>{{ y|default:"{{" }}...}}</code> and <code>{{ y|default:"{%" }}...%}</code>.
-If so, the page content is evaluated as a Django template before running it through the page template.</p>
+<div class="sect2">
+<h3 id="_working_with_the_ui"><a class="anchor" href="#_working_with_the_ui"></a>Working with the UI</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Clone the <code>felix-antora-ui</code> project next to the playbook project.</p>
+</li>
+<li>
+<p>Run <code>npm i</code>.</p>
+</li>
+<li>
+<p>Run <code>./node_modules/gulp/bin/gulp.js</code> to assemble the UI.</p>
+</li>
+<li>
+<p>To see the results, run <code>cp build/felix-antora-ui-bundle.zip ../felix-antora/node_modules/@apache-felix/felix-antora-ui/build/felix-antora-ui-bundle.zip</code> and build the playbook project.</p>
+</li>
+<li>
+<p>When you are satisfied with your changes, commit both source changes and the assembled UI bundle and push to the remote repository.</p>
+</li>
+<li>
+<p>UI bundle changes do not trigger a site build; you&#8217;ll need to start one manually.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Any page in the site can be referenced with refs.pagename returning properties:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>.path</code></dt>
-<dd>
-<p>the absolute path of the page on the site</p>
-</dd>
-<dt class="hdlist1"><code>.headers</code></dt>
-<dd>
-<p>page headers (e.g.
-<code>.title</code>, <code>.excerpt</code>)</p>
-</dd>
-<dt class="hdlist1"><code>.content</code></dt>
-<dd>
-<p>the raw page content</p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>All pages in the children namespace are also available in the refs namespace</p>
-</div>
-<div class="paragraph">
-<p>Some usefull hints:</p>
-</div>
-<div class="paragraph">
-<p>Printing title of another page "handler":</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>:::django
-{{ y|default:"{{" }} refs.handler.headers.title }}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Printing excerpt of another page "handler":</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>:::django
-{{ y|default:"{{" }} refs.handler.headers.excerpt }}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Linking to another page "handler":</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>:::django
-({{ y|default:"{{" }} refs.handler.path }})</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Printing title as a link to another page "handler":</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>:::django
-[{{ y|default:"{{" }} refs.handler.headers.title }}]({{ y|default:"{{" }} refs.handler.path }})</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Printing excerpt as a link to another page "handler":</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>:::django
-[{{ y|default:"{{" }} refs.handler.headers.excerpt }}]({{ y|default:"{{" }} refs.handler.path }})</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Print a bullet pointed child page list:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>:::django
-{{ y|default:"{%" }} for label, page in children %}* [{{ y|default:"{{" }} page.headers.title }}]({{ y|default:"{{" }} page.path }})
-{{ y|default:"{%" }} endfor %}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is important to have the first part as a single line, otherwise the Django/Markdown combo will create a list for each entry.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_code_highlighting"><a class="anchor" href="#_code_highlighting"></a>Code Highlighting</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Code Highlighting works by indenting code by four blanks.
-To indicate the type of highlighting preced the code style text with either <code>:::&lt;lexer&gt;</code> to get high lighted code using the given <code>&lt;lexer&gt;</code> or <code>#!&lt;lexer&gt;</code> to get high lighted code with line numbers using the given <code>&lt;lexer&gt;</code>.
-See <a href="http://www.apache.org/dev/cmsref.html#code-hilighter" class="bare">http://www.apache.org/dev/cmsref.html#code-hilighter</a> for main info and <a href="http://pygments.org/docs/lexers/" class="bare">http://pygments.org/docs/lexers/</a> for supported lexers</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_html_and_markdown"><a class="anchor" href="#_html_and_markdown"></a>HTML and Markdown</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Markdown supports embedding HTML.
-But be aware that contents of HTML elements are not further handled by the Markdown converter.
-Thus it is not possible to embed Markdown syntax inside of HTML elements to have them converted.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_manual_generation"><a class="anchor" href="#_manual_generation"></a>Manual Generation</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>When commiting changes to pages into SVN the pages are automatically generated in <a href="http://felix.staging.apache.org">the staging site</a>.&lt;div class="info"&gt;To generate the site locally, you must have checked out the complete SVN to access the tools:&lt;div class="codehilite"&gt;$ svn <a href="https://svn.apache.org/repos/asf/felix/site/" class="bare">https://svn.apache.org/repos/asf/felix/site/</a> felix-site&lt;/div&gt;&lt;/div&gt;</p>
-</div>
-<div class="paragraph">
-<p>To manually generate the site or single pages the <a href="http://svn.apache.org/repos/asf/felix/site">site</a> can be checked out from SVN.
-In addition Perl and Python must be installed for the build tools to work.</p>
-</div>
-<div class="paragraph">
-<p>To prepare for site build, the Markdown daemon has to be started:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> $ export MARKDOWN_SOCKET="$PWD/tools/build/../markdown.socket"
- $ export PYTHONPATH="$PWD/tools/build"
- $ python "$PWD/tools/build/markdownd.py"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>MARKDOWN_SOCKET</code> environment variables is also required by the <code>build_site.pl</code> and <code>build_file.pl</code> scripts to connect to the Markdown daemon.</p>
-</div>
-<div class="paragraph">
-<p>To build the complete site use the <code>build_site.pl</code> script:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> $ tools/build/build_site.pl --source-base $PWD/trunk \
-     --target-base $PWD/trunk/target</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To build a single page use the <code>build_file.pl</code> script:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> $ tools/build/build_site.pl --source-base $PWD/trunk \
-     --target-base $PWD/trunk/target \
-     --source content/documentation.mdtext</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The argument to the <code>--source</code> parameter is relative to the <code>--source-base</code> folder.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_configuring_site_generation_on_mac"><a class="anchor" href="#_configuring_site_generation_on_mac"></a>Configuring site generation on Mac</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Those instructions were computed on Mountain Lion.</p>
-</div>
-<div class="paragraph">
-<p>A couple of Python and Perl libraries are required and need to be installed</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> $ sudo easy_install Pygments
- $ sudo easy_install Markdown</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And for the Perl modules:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> $ sudo cpan install XML::Atom::Feed
- $ sudo cpan install XML::RSS::Parser
- $ sudo cpan install XML::Parser::Lite
- $ sudo cpan install XML::RSS::Parser::Lite
- $ sudo cpan install Net::Twitter
- $ sudo cpan install SVN::Client</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Be careful that some of those commands require time&#8230;&#8203;
-Once done, launch the mardown daemon with the following command from the SVN root:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> $ export MARKDOWN_SOCKET="$PWD/tools/build/../markdown.socket"
- $ export PYTHONPATH="$PWD/tools/build"
- $ python "$PWD/tools/build/markdownd.py"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And finally, generate the web site from the svn root with:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> tools/build/build_site.pl --source-base $PWD/trunk     --target-base $PWD/trunk/target</code></pre>
+<p>Most likely making changes to src/partials/* templates will be fairly self-explanatory.
+Other changes are likely to need a fairly detailed understanding of the Antora default UI.</p>
 </div>
 </div>
 </div>
