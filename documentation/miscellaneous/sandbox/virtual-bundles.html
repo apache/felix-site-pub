@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Virtual Bundles :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/miscellaneous/sandbox/virtual-bundles.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="virtual-bundles.html">Virtual Bundles</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/miscellaneous/sandbox/virtual-bundles.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Virtual Bundles</h1>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The OSGi framework supports deploying and managing bundles, which are reusable units of code and resources.
+Although the OSGi specification does not explicitly require bundles to be packaged as JAR files, it does require that bundles look like JAR files (i.e., they have a manifest and named byte entries).
+For the most part, this abstraction as worked well and has allowed framework implementations to support other archive formats and even install-by-reference semantics (to some degree).
+However, there are limitations limitations as to what can be achieved by this approach.</p>
+</div>
+<div class="paragraph">
+<p>The &#8220;JAR abstraction&#8221; employed by the OSGi specification for bundles requires that the framework is always in control of all aspects of class loading (e.g., searching for bytes, defining classes from bytes, etc.).
+While this makes sense since the framework must enforce consistency, it limits the framework to scenarios where a bundle can be modeled as a JAR file.
+Overall, this limitation might not seem so onerous, but the result is that every new requirement that comes along at the bundle level results in modifications (and bloating) of the core framework specification.</p>
+</div>
+<div class="paragraph">
+<p>To avoid bloat and added conceptual complexity, this proposal introduces the primitive concept of a virtual bundle to the OSGi framework.
+A virtual bundle can quite succinctly be described as a bundle whose content is not managed by the framework.
+More specifically, the idea is to weaken the &#8220;JAR abstraction&#8221; where the framework expects to have access to byte entries in an archive and instead allow another entity to manage entry access and more importantly bundle class loading.
+The ultimate goal is to reduce the need to modify the framework to support niche requirements by enabling their support in upper layers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_cases"><a class="anchor" href="#_use_cases"></a>Use cases</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some potential use cases for virtual bundles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Composite bundles&#8201;&#8212;&#8201;virtual bundles could wrap a composite bundle concept (i.e., a bundle composed of other bundles).</p>
+</li>
+<li>
+<p>Byte code weaving&#8201;&#8212;&#8201;virtual bundles could enable byte code weaving by allowing an external entity to manage the class loading for on-the-fly weaving.</p>
+</li>
+<li>
+<p>Module system integration&#8201;&#8212;&#8201;foreign module systems could wrap their modules as virtual bundles for OSGi interoperability.</p>
+</li>
+<li>
+<p>Marshaling&#8201;&#8212;&#8201;temporary marshaling bundles could be modeled as virtual bundles, providing better control over class loader monitoring for garbage collection purposes.</p>
+</li>
+<li>
+<p>Install by reference&#8201;&#8212;&#8201;an install-by-reference mechanism could be modeled on top of the framework as a virtual bundle.</p>
+</li>
+<li>
+<p>Exotic use cases&#8201;&#8212;&#8201;for example, supporting bundles whose class path refers to external content.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This is not a complete list of use cases, but provides some potential examples.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terminology"><a class="anchor" href="#_terminology"></a>Terminology</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following terms are used in this document:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>bundle&#8201;&#8212;&#8201;a normal, framework-managed bundle.</p>
+</li>
+<li>
+<p>virtual bundle&#8201;&#8212;&#8201;a bundle with content managed by a third party.</p>
+</li>
+<li>
+<p>third party&#8201;&#8212;&#8201;typically this will likely refer to another bundle, but not necessarily since a virtual bundle could be installed externally using the standard launching and embedding API.</p>
+</li>
+<li>
+<p>virtual module&#8201;&#8212;&#8201;third-party managed bundle content (naming explained further below).</p>
+</li>
+<li>
+<p>content&#8201;&#8212;&#8201;in the context of normal bundles, this generally is referring to a bundle&#8217;s bytes, but for a virtual module it refers to bytes and classes.</p>
+</li>
+<li>
+<p>manager&#8201;&#8212;&#8201;the third-party responsible for providing access to virtual module content;
+mostly likely managers will be an installed bundle following some form of extender-like pattern.</p>
+</li>
+<li>
+<p>management object&#8201;&#8212;&#8201;the object injected by the manager into the framework to manage the virtual bundle&#8217;s content (this is an implementation of <code>VirtualModule</code> as will be described shortly).</p>
+</li>
+<li>
+<p>manager-owned class loader&#8201;&#8212;&#8201;this term is used to indicate that the associated class loader comes from a third party.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_technical_approach"><a class="anchor" href="#_technical_approach"></a>Technical approach</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To support a virtual bundle concept, we need to introduce a few new interfaces to manage access to the virtual bundle&#8217;s content and to provide it access to its own wiring state.
+This section discusses these interfaces as well as other technical issues.</p>
+</div>
+<div class="sect2">
+<h3 id="_proposed_api"><a class="anchor" href="#_proposed_api"></a>Proposed API</h3>
+<div class="paragraph">
+<p>This proposal defines the following new interfaces and/or augmentations to existing interfaces to support adding a virtual bundle concept to the framework.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 1: The package name used for this prototype is <code>org.apache.felix.framework.ext</code> to avoid an IP issues regarding the development of the prototype in the open at Apache Felix.
+If we want to change it to the <code>org.osgi.framework</code> namespace, we need some way of making timely updates of the proposed packages available to the public.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 2: All names in this document (e.g., interfaces, methods, etc.) are subject to change and were merely chosen for the purposes of making progress on the prototype.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_virtualmodule"><a class="anchor" href="#_virtualmodule"></a><code>VirtualModule</code></h3>
+<div class="paragraph">
+<p>The <code>VirtualModule</code> interface abstracts access to the virtual bundle&#8217;s content and is the management object handling content access.
+The name might seem confusing, but results from how framework implementations must handle bundles.
+Normally in the OSGi framework, a bundle is not necessarily associated with a single bundle archive;
+instead, it may have multiple archives associated with it at run time depending on whether it has been updated or not.
+In the Felix framework implementation, we call these things modules and this naming was chosen for that reason:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    public interface VirtualModule {
+        void resolve(Wire bootWire, List&lt;Wire&gt; wires) throws BundleException;
+
+        Class loadClass(String name) throws ClassNotFoundException;
+        URL getResource(String name);
+        Enumeration getResources(String name);
+
+        URL getEntry(String entry);
+        Enumeration&lt;String&gt; getEntryPaths(String path);
+        Enumeration&lt;URL&gt; findEntries(String path, String filePattern, boolean recurse);
+    }</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>VirtualModule</code> interface is implemented by a manager wishing to provide a virtual bundle.
+The core of the interface provides access to the content (i.e., both classes and entries).
+Third-party management of class access is the main differentiator between a normal bundle and a virtual bundle;
+this means the manager owns the class loader associated with the <code>VirtualModule</code>.</p>
+</div>
+<div class="paragraph">
+<p>Most of the methods on this interface are self explanatory;
+however, the <code>resolve()</code> method is not.
+The <code>resolve()</code> method provides the virtual module its wiring context in the form of <code>Wire</code> objects.
+This allows the manager-owned class loader to implement proper OSGi class delegation.
+The <code>bootWire</code> parameter is a special wire that performs boot delegation, while the wires parameter performs normal delegation for imported packages and required bundles.
+The <code>resolve()</code> method is technically a setter method and is called by the framework when resolving the virtual module to inject its wires;
+however, the method may throw an exception if it cannot resolve at that time.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 1: Technically, we could merge <code>bootWire</code> into <code>wires</code> or we could eliminate wires and just have a single <code>delegateWire</code> that wraps the actual wires.</p>
+</div>
+<div class="paragraph">
+<p>For clarity, the class- and resource-related methods take into account wiring delegation;
+the entry-related methods do not.
+This is similar for normal bundles.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 2: We could potentially use a <code>dispose()</code> method that is called when the framework is really done with the virtual module (i.e., when it is refreshed).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_wire"><a class="anchor" href="#_wire"></a><code>Wire</code></h3>
+<div class="paragraph">
+<p>The <code>Wire</code> interface provides a delegation mechanism to the manager of virtual module class loaders:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>public interface Wire {
+    Class loadClass(String name) throws ClassNotFoundException;
+    URL getResource(String name) throws ResourceNotFoundException;
+    Enumeration getResources(String name) throws ResourceNotFoundException;
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The methods are reasonable self explanatory, since they perform the actions normally associated with the methods of the same name on a class loader.
+However, their behavior is defined to help managers support proper OSGi class and resource delegation.
+The result of each method and its meaning are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the method returns a result, then this result should be returned by the manager-owned class loader (with the possible exception of <code>getResources()</code>) and delegation should stop.</p>
+</li>
+<li>
+<p>If the method returns null, then the manager-owned class loader should continue its search.</p>
+</li>
+<li>
+<p>If the method throws an exception, then the manager-owned class loader should stop its search and throw an exception.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Injection of wires into a virtual module does not compel the manager-owned class loader to obey proper OSGi delegation patterns.
+It is recommended to do so to ensure consistency, but the third-party provider has the flexibility to deviate as it sees fit, but it must live with the consequences.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_felixbundlecontext"><a class="anchor" href="#_felixbundlecontext"></a><code>FelixBundleContext</code></h3>
+<div class="paragraph">
+<p>The framework needs to provide explicit support for installing virtual bundles and currently this happens via two new methods on the <code>BundleContext</code> interface.
+For the prototype, these methods are added to a specialization of <code>BundleContext</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>public interface FelixBundleContext extends BundleContext {
+    VirtualModuleContext installBundle(String location, Map headers, VirtualModule vm)
+        throws BundleException;
+    VirtualModuleContext reinstallBundle(Bundle bundle, VirtualModule vm)
+        throws BundleException;
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>installBundle()</code> method is how a manager installs a virtual bundle for the first time.
+The <code>location</code> parameter is the normal bundle location string, the <code>headers</code> parameter is the virtual bundle&#8217;s manifest, and the <code>vm</code> parameter is the virtual bundle&#8217;s <code>VirtualModule</code> implementation.
+The <code>reinstallBundle()</code> method is used by a manager to reinstall or reattach a <code>VirtualModule</code> implementation to a previously installed virtual bundle, such as on framework restart.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 1: Technically, it would be possible to avoid passing in the <code>VirtualModule</code> instance to <code>installBundle()</code> and force the manager to always attach <code>VirtualModule</code> implementations using <code>reinstallBundle()</code>, but this approach at least makes the first install atomic.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 2: Perhaps <code>reinstallBundle()</code> should be on the <code>Bundle</code> interface.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_virtualmodulecontext"><a class="anchor" href="#_virtualmodulecontext"></a><code>VirtualModuleContext</code></h3>
+<div class="paragraph">
+<p>When a manager installs or reinstalls a virtual bundle, it receives a <code>VirtualModuleContext</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>public interface VirtualModuleContext {
+    Bundle getBundle();
+    File getDataFile();
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The sole purpose of a <code>VirtualModuleContext</code> is to provide the manager with access to the virtual bundle&#8217;s private data area.
+The <code>VirtualModuleContext</code> is valid even when the virtual bundle is not <code>ACTIVE</code>, but becomes invalid once the virtual bundle is <code>UNINSTALLED</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This could be implemented as a super interface of <code>BundleContext</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_virtual_bundle_lifecycle"><a class="anchor" href="#_virtual_bundle_lifecycle"></a>Virtual bundle lifecycle</h3>
+<div class="paragraph">
+<p>In an effort to minimize the impact to the framework, the lifecycle handling for virtual bundles has been kept purposely simplistic.
+There was a conscious decision to avoid making the framework responsible for reifying the relationship between a virtual bundle and its manager;
+instead, this is solely the manager&#8217;s responsibility.
+This does have some have some potential ramifications on issues like ordering, which will be discussed shortly along with other lifecycle-related issues.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_persistence_of_virtual_bundles"><a class="anchor" href="#_persistence_of_virtual_bundles"></a>Persistence of virtual bundles</h3>
+<div class="paragraph">
+<p>When a virtual bundle is installed, it is installed persistently;
+however, this has a different meaning than for normal bundles.
+A virtual bundle is recorded persistently in the bundle cache and its specified headers are cached for it;
+this means the headers cannot change after installation unless updated, like a normal bundle.
+The managed object (i.e., the <code>VirtualModule</code> instance) associated with a virtual bundle is not persisted.
+This means on subsequent framework restarts, the framework is able to reconstitute a virtual bundle and maintains its private data area, but the reconstituted virtual bundle is merely an empty shell.
+It is the managers responsibility to reinstall the virtual bundle&#8217;s associated <code>VirtualModule</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_managervirtual_bundle_ordering"><a class="anchor" href="#_managervirtual_bundle_ordering"></a>Manager/virtual bundle ordering</h3>
+<div class="paragraph">
+<p>In many cases it will be important for the manager to start before anyone attempts to use a virtual bundle.
+If so, the manager should be placed in a lower start level than its virtual bundles.
+Although not optimal, this is acceptable since virtual bundles are quite low level and are effectively extending the framework.
+This may not be necessary in all cases and could potentially be alleviated to some degree if the framework were proactive during the reinstall phase of a virtual bundle (e.g., it could immediately try to restart persistently started bundles after a reinstall).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This is also related to the &#8220;active dependencies&#8221; topic of RFC-154;
+if the framework managed some active dependencies then this could be resolved that way, but that opens another whole can of worms.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_a_virtual_bundle"><a class="anchor" href="#_refreshing_a_virtual_bundle"></a>Refreshing a virtual bundle</h3>
+<div class="paragraph">
+<p>When a normal bundle is refreshed, the framework throws away the class loader associated with the bundle and will ultimately create a new one when needed.
+For virtual bundles, the first part is the similar, but the second is not since the framework has no way to create the needed <code>VirtualModule</code> instance.
+Thus, when a virtual bundle is refreshed, the framework throws away the associated <code>VirtualModule</code> instance and sets the associated state of the virtual bundle to <code>INSTALLED</code>.
+It is the manager&#8217;s responsibility to detect this situation and reinstall the needed <code>VirtualModule</code> instance.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Technically, I think it may be possible to achieve this somewhat atomically with a synchronous bundle listener.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Refreshing a virtual bundle does not necessarily have a direct impact on the manager.
+In other words, the virtual bundle does not necessarily have an implicit dependency on its manager.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_a_manager"><a class="anchor" href="#_refreshing_a_manager"></a>Refreshing a manager</h3>
+<div class="paragraph">
+<p>The framework must maintain dependencies from a manager to its installed virtual bundles so when a manager is refreshed, then all of its virtual bundles will be refreshed too.
+If the class implementing the <code>VirtualModule</code> instance comes from a bundle other than the manager, then the framework should associate an implicit dependency between this other bundle and the virtual module too so it is refreshed when this other bundle is refreshed, in addition to the manager.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is not necessarily clear that we need to directly support this last case.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_effective_time_of_a_virtual_module"><a class="anchor" href="#_effective_time_of_a_virtual_module"></a>Effective time of a virtual module</h3>
+<div class="paragraph">
+<p>The effective time of a virtual module instance is related to the lifecycle of the virtual bundle itself and the virtual bundle&#8217;s manager.
+It seems obvious that a virtual module instance should be valid (i.e., used by the framework) while the virtual bundle state is <code>RESOLVED</code>, <code>STARTING</code>, <code>ACTIVE</code>, <code>STOPPING</code>, and <code>UNINSTALLED</code> (until refreshed);
+this mimics normal bundle behavior.
+With respect to the manager&#8217;s lifecycle, the prototype currently assumes the virtual module is valid during these same lifecycle states in the manager.
+In other words, the manager does not need to be active after the fact for the virtual bundles to continue to function, it just needs to be active to install them initially.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The alternative is to treat this as some sort of &#8220;active dependency&#8221; where if the manager is stopped, its associated virtual bundles are refreshed immediately.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_open_issues"><a class="anchor" href="#_open_issues"></a>Open issues</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section documents open and/or unaddressed issues.</p>
+</div>
+<div class="sect2">
+<h3 id="_installation_interception"><a class="anchor" href="#_installation_interception"></a>Installation interception</h3>
+<div class="paragraph">
+<p>Some form of bundle installation interception is necessary to integrate cleanly with existing management agents that use <code>BundleContext.installBundle()</code> to deploy bundles.
+One possibility is to introduce a new service interface used by the framework, such as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>public interface InstallHook {
+    boolean installBundle(String location);
+    boolean installBundle(String location, InputStream is);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Managers could register such a service which would be used by the framework during bundle installation to call out to the managers to given them an opportunity to process the bundle installation instead of using the default handling.
+This is somewhat analogous to resource processors in the Deployment Admin specification.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_updating_a_virtual_bundle"><a class="anchor" href="#_updating_a_virtual_bundle"></a>Updating a virtual bundle</h3>
+<div class="paragraph">
+<p>No issues are foreseen in the normal update scenario (i.e., updating a bundle to a completely new version of a bundle whether it is virtual or not).
+It should be possible to update a virtual bundle to a new virtual module (and headers), as well as updating a normal bundle to a virtual bundle or vice versa.
+This will likely require adding another <code>update()</code> method to <code>Bundle</code> that accepts the appropriate parameters (e.g., <code>Bundle.update(Map headers, VirtualModule vm)</code>).</p>
+</div>
+<div class="paragraph">
+<p>A more complicated case is related to ordering, which is how to deal with bundles that were installed before the manager was present and/or activated.
+In this case, a normal update is not completely sufficient since the manager really wants to update the bundle to a virtual bundle, but keep its existing content.
+Technically, this is possible with the current API by using the entry-related <code>Bundle</code> methods to reconstruct the installed bundle, then performing an update on it to convert it to a virtual bundle.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_resource_handling"><a class="anchor" href="#_resource_handling"></a>Resource handling</h3>
+<div class="paragraph">
+<p>Typically, a framework implementation has to know something about the content of a bundle to create resource URLs.
+For example, both Felix and Equinox create resource URLs something like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>bundle://&lt;framework-id&gt;&lt;bundle-id&gt;:&lt;classpath-idx&gt;/path/to/resource.txt</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This sort of approach is necessary since the specification requires that resource URLs can be used as the context to create other resource URLs.
+Unfortunately, this breaks the module&#8217;s encapsulation of its content (i.e., the framework must be aware that there is a bundle class path concept).</p>
+</div>
+<div class="paragraph">
+<p>Currently, a manager must manager register a URL stream handler to provide a protocol to access its virtual modules' content as resources if it cannot be handled via an existing protocol.
+The downside of this approach is that, for now, a manager has to be active to provide a stream handler service, which means resource access will stop working if the manager is stopped.</p>
+</div>
+<div class="paragraph">
+<p>A potential solution to this is to inject the virtual module with a resource URL factory which allows the manager to inject its own &#8220;opaque&#8221; index integer into the framework&#8217;s normal resource URL.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dynamic_imports"><a class="anchor" href="#_dynamic_imports"></a>Dynamic imports</h3>
+<div class="paragraph">
+<p>It is possible to add support for dynamic imports through the injection of a special type of wire in the <code>VirtualModule.resolve()</code> method.
+Like the boot wire, this dynamic wire would be special and would be searched by the manager-owned class loader after its own content and would potentially result in a dynamic import.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fragments"><a class="anchor" href="#_fragments"></a>Fragments</h3>
+<div class="paragraph">
+<p>It may technically be possible to support fragments.
+Currently, a virtual module is injected with wires that provide access to classes and resources.
+Conceptually, we could handle fragments by injecting the virtual module with a set of fragment bundles from which it could load entries.
+The only trick is that the injected bundles could not be a normal bundle since a normal bundle can have multiple bundle revisions associated with it;
+the injected fragment bundle would need to be a wrapper around a specific revision.
+Other approach it to create a new wire-like interface for fragment access which could be injected into the virtual module.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_security"><a class="anchor" href="#_security"></a>Security</h3>
+<div class="paragraph">
+<p>One possible approach to deal with security is to inject the virtual module with a protection domain for it to use when defining classes.
+For virtual modules using predefined classes, then it won&#8217;t be possible to assign additional permissions to those classes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_lazy_activation"><a class="anchor" href="#_lazy_activation"></a>Lazy activation</h3>
+<div class="paragraph">
+<p>Too support lazy activation across normal bundles and virtual bundles, API would need to be defined for them to participate in this process.
+Mostly likely, the virtual module would need to be injected with some object for keep track of which classes are being created and which bundles need to be activated.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_considered_alternatives"><a class="anchor" href="#_considered_alternatives"></a>Considered alternatives</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Composite Bundles :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/miscellaneous/sandbox/composite-bundles.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="composite-bundles.html">Composite Bundles</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/miscellaneous/sandbox/composite-bundles.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Composite Bundles</h1>
+<div class="sect1">
+<h2 id="_1_overview"><a class="anchor" href="#_1_overview"></a>1. Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The OSGi framework supports deploying bundles into a flat and basically globally bundle space.
+The idea behind this approach can be summarized as, "the deployed set of bundles is your application configuration." This approach has performed well over the years;
+however, as OSGi technology is used in more and more complicated scenarios, this approach is not always sufficient.
+For example, when trying to run multiple applications in a single framework instance or when applications become so large that sets of bundles start mapping onto logical subsystems.
+In these types of situations, it is possible for the configurations of different applications or subsystems to interfere with each other.
+To address such issues, this proposal introduces a composite bundle concept built on top of virtual bundles.</p>
+</div>
+<div class="paragraph">
+<p>The two main goals of this proposal are:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To provide an isolation mechanism for groups of bundles, while still allowing collaboration among those groups.</p>
+</li>
+<li>
+<p>To implement this mechanism as a layer above the framework.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The remainder of this proposal describes the technical approach for achieving these two goals.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_use_cases"><a class="anchor" href="#_2_use_cases"></a>2. Use cases</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some potential use cases for composite bundles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Large application subsystems can be modeled as a composite bundle.</p>
+</li>
+<li>
+<p>Different applications running in the same framework instance can be isolated from each other inside of composite bundles.</p>
+</li>
+<li>
+<p>Application servers could model EARs and composite bundles to isolate inner libraries while allowing sharing from the server.</p>
+</li>
+<li>
+<p>Groups of bundles needing lifecycle management as a whole can be modeled as a composite bundle.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This list is not intended to be exhaustive.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_terminology"><a class="anchor" href="#_3_terminology"></a>3. Terminology</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following terms are used in this document:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Composite bundle - a bundle whose contents is actually a set of bundles that appear to be running inside of another framework instance.</p>
+</li>
+<li>
+<p>Constituent bundle - the bundles composing a composite bundle.</p>
+</li>
+<li>
+<p>Parent framework - the framework in which a composite bundle is installed.</p>
+</li>
+<li>
+<p>Required bundle - a bundle required by a composite bundle from the parent framework.</p>
+</li>
+<li>
+<p>Provided bundle - a constituent bundle from a composite bundle made available in the parent framework.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_technical_approach"><a class="anchor" href="#_4_technical_approach"></a>4. Technical approach</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The overall technical approach is to use the virtual bundle concept (proposed separately) to manage composite bundles as a layer above the framework.
+This proposal forgoes an API-based approach to support a simple, declarative approach.
+The technical approach is divided into two halves:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A simple composite model that supports only package and service sharing.</p>
+</li>
+<li>
+<p>A transparent composite model that extends the simple composite model with bundle sharing.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>NOTE 1: The purpose is not to actually treat the two models as separate entities, but to more clearly illustrate the extra cost in complexity by supporting transparency.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 2: Although this document is API-less, the goal is not to completely rule out any API, but to keep things simple until some real-world experience is gained at which point API could potentially be introduced.</p>
+</div>
+<div class="sect2">
+<h3 id="_4_1_simple_composite_model"><a class="anchor" href="#_4_1_simple_composite_model"></a>4.1 Simple composite model</h3>
+<div class="paragraph">
+<p>The simple composite model supports installing groups of bundles as a single composite bundle with the ability to import packages/services from the parent framework into the composite bundle and to export packages/services from the composite bundle to the parent framework.
+The lifecycle of the constituent bundles are managed by the lifecycle of the composite bundle in the parent framework.</p>
+</div>
+<div class="sect3">
+<h4 id="_4_1_1_simple_composite_description"><a class="anchor" href="#_4_1_1_simple_composite_description"></a>4.1.1 Simple composite description</h4>
+<div class="paragraph">
+<p>A composite bundle is declared using a set of manifest-like headers, which is familiar to bundle developers and fits well with the virtual bundle proposal, where virtual bundles are installed with a given set of headers.
+The following headers are reused for declaring a composite bundle:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Import-Package</code> - the packages imported by the composite bundle from the parent framework.</p>
+</li>
+<li>
+<p><code>Export-Package</code> - the packages exported by the composite bundle to the parent framework.</p>
+</li>
+<li>
+<p><code>Import-Service</code> - the services imported by the composite bundle (exact syntax is yet to be defined, but a list of filters is a reasonable starting point).</p>
+</li>
+<li>
+<p><code>Export-Service</code> - the services exported by the composite bundle (exact syntax is yet to be defined, but a list of filters is a reasonable starting point).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>From the parent framework&#8217;s perspective, the composite bundle is a normal bundle importing/exporting packages and services.
+Internally, the imported/exported packages and services are mapped onto and made available to the composite bundle&#8217;s constituent bundles by the composite layer.
+A new header is introduced to declare the composite bundle&#8217;s constituent bundles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Include-Bundle</code> - A comma-separate list of bundle URLs.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The constituent bundles of a composite bundle are isolated from the other bundles in the parent framework.
+In other words, they can only see their sibling constituent bundles and bundles in the parent framework can only see the composite bundle, not its constituent bundles.</p>
+</div>
+<div class="paragraph">
+<p>To simplify mapping a composite bundle&#8217;s exported packages to its constituent bundles, this proposal introduces a new <code>from</code> directive for <code>Export-Package</code>, which is used to specify the symbolic name of the providing bundle.
+Consider the following composite declaration:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bundle-ManifestVersion: 2
+Bundle-Name: Paint Program
+Bundle-SymbolicName: org.foo.paint.composite
+Include-Bundle: \
+ file:/Users/rickhall/Projects/book-trunk/code/chapter04/paint-example/bundles/shape-4.0.jar, \
+ file:/Users/rickhall/Projects/book-trunk/code/chapter04/paint-example/bundles/paint-4.0.jar, \
+ file:/Users/rickhall/Projects/book-trunk/code/chapter04/paint-example/bundles/circle-4.0.jar, \
+ file:/Users/rickhall/Projects/book-trunk/code/chapter04/paint-example/bundles/square-4.0.jar, \
+ file:/Users/rickhall/Projects/book-trunk/code/chapter04/paint-example/bundles/triangle-4.0.jar
+Export-Package: org.foo.shape; from:=org.foo.shape.bundle; version="4.0"
+Import-Package: org.osgi.service.log; version=1.0.0
+Import-Service: org.foo.shape.SimpleShape</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This composite contains five bundles and exports <code>org.foo.shape</code> from the bundle with the symbolic name <code>org.foo.shape.bundle</code>.
+Further, it also imports the log service package and any services implementing the <code>org.foo.shape.SimpleShape</code> interface from the package it exports.</p>
+</div>
+<div class="paragraph">
+<p>These declarative headers define the entire capabilities of a simple composite bundle.
+To summarize, these capabilities are: containing bundles, importing/exporting packages, and importing/exporting services.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 1: It is not clear if <code>Import-Package</code> should essentially support an "export as" directive where the composite creator explicitly specifies how the imported package gets converted to an export internally or if this should be somehow automatically derived from the actual injected wire.
+If the latter, then this relates to the rich wiring section in the open issues.</p>
+</div>
+<div class="paragraph">
+<p>NOTE 2: Any "uses" constraints for the composite bundle&#8217;s exported packages must be specified in the metadata, which will be used by parent framework to ensure consistency like normal.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_4_1_2_simple_composite_lifecycle_management"><a class="anchor" href="#_4_1_2_simple_composite_lifecycle_management"></a>4.1.2 Simple composite lifecycle management</h4>
+<div class="paragraph">
+<p>Since composite bundles are implemented as virtual bundles, access to their content and portions of their lifecycle are controlled by an external manager.
+This section describes various lifecycle management issues for simple composite bundles.</p>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_1_composite_manager"><a class="anchor" href="#_4_1_2_1_composite_manager"></a>4.1.2.1 Composite manager</h5>
+<div class="paragraph">
+<p>The composite manager results from the use of virtual bundles and is largely responsible for realizing the capabilities embodied in the composite description.
+This means it is the composite manager&#8217;s responsibility to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Manage a composite bundle&#8217;s constituent bundles.</p>
+</li>
+<li>
+<p>Provide constituent bundles access to imported packages and imported services.</p>
+</li>
+<li>
+<p>Provide the parent framework access to exported packages and exported services.</p>
+</li>
+<li>
+<p>Manage the overall lifecycle of composite bundles.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The precise approach the composite manager uses to accomplish these responsibilities is not specified, but one potential approach is for the composite manager to create a separate framework instance for each composite bundle.
+Another approach would be to create a static wiring of the constituent bundles and just mimic framework behavior for them.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_2_installing_composites"><a class="anchor" href="#_4_1_2_2_installing_composites"></a>4.1.2.2 Installing composites</h5>
+<div class="paragraph">
+<p>If an "install hook" is introduced in the virtual bundle proposal, then the composite manager can use it to seamlessly install composite bundles via the <code>BundleContext.installBundle()</code> method like a normal bundle.
+If install hooks are not proposed, then it could provide a simple service for installing composites.
+A composite is installed with a complete composite description, which forms the manifest of the installed virtual bundle.
+As such, composite installation is effectively atomic from the perspective of the parent framework.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_3_resolving_composites"><a class="anchor" href="#_4_1_2_3_resolving_composites"></a>4.1.2.3 Resolving composites</h5>
+<div class="paragraph">
+<p>The composite bundle&#8217;s wires for its imported packages are injected into the composite&#8217;s virtual module by the framework, like for all virtual bundles.
+The composite manager uses these wires for delegation purposes out to the parent framework for the constituent bundles.
+If a composite bundle is resolved, then it is possible to load classes from it.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Resolving a composite bundle could actually be combined with some sort of verification step, where the manager verifies whether or not the composite bundle can provide what it says it can provide.
+It is not clear if this needs to be specified, since such verification does not happen for normal bundles.
+In other words, it is a reasonable approach to just trust the metadata.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_4_starting_and_stopping_composites"><a class="anchor" href="#_4_1_2_4_starting_and_stopping_composites"></a>4.1.2.4 Starting and stopping composites</h5>
+<div class="paragraph">
+<p>Starting a composite bundle starts all internal constituent bundles.
+Likewise, stopping a composite bundle stops all constituent bundles.
+Composite bundles do not have user-defined activators, although the composite manager may make use of an activator.
+For active composites, the composite manager must provide constituent bundles access to services imported from the parent framework and must make exported services available in the parent framework.
+Conversely, when a composite bundle is no longer active, it must stop providing access to these services.</p>
+</div>
+<div class="paragraph">
+<p>After a composite bundle is stopped, it should remain resolved and continue to provide access to its exported packages.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Since this proposal does not propose an API to expose the constituent bundles, individual lifecycle manipulation of the constituent bundles is not expected.
+To keep things simple, constituent bundles are either active or not based on the state of their composite bundle.
+If more fine-grained control is required it would be possible.
+Starting and stopping individual constituent bundles would offer no real issue, although allowing them to be refreshed or uninstalled might cause the composite manager to force the outer composite bundle to refresh if the export signature is impacted.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_5_updating_a_composite"><a class="anchor" href="#_4_1_2_5_updating_a_composite"></a>4.1.2.5 Updating a composite</h5>
+<div class="paragraph">
+<p>When a composite bundle is updated, the composite manager must continue to support the associated virtual module;
+i.e., it must still be possible to load classes from it.
+At the point in time when the bundle is refreshed and returned to the installed state, then the composite manager can dispose of the old virtual module.
+If the composite was updated to a normal bundle (or a different kind of virtual bundle), then the composite manager will no longer manage it.
+On the other hand, if was updated to another composite bundle, then the composite manager will reinstall a new virtual module for it.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_6_uninstalling_a_composite"><a class="anchor" href="#_4_1_2_6_uninstalling_a_composite"></a>4.1.2.6 Uninstalling a composite</h5>
+<div class="paragraph">
+<p>When a bundle is uninstalled, that does not mean that it is no longer in use by the framework, since it must still be possible to load classes from it.
+Unfortunately, the framework provides no additional callbacks or state changes to notify when it is really done with an uninstalled bundle.
+As a result, if a composite bundle is uninstalled, the composite manager must immediately refresh it to perform proper clean up, since it will not get a later lifecycle callback when the uninstalled bundle is eventually refreshed.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This could be improved with a <code>VirtualModule.dispose()</code> method, which would be invoked by the framework to indicate when it was done with the virtual module.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_7_refreshing_a_composite"><a class="anchor" href="#_4_1_2_7_refreshing_a_composite"></a>4.1.2.7 Refreshing a composite</h5>
+<div class="paragraph">
+<p>When refreshing a composite bundle, all constituent bundles are refreshed and the composite bundle returns to the installed state.
+Following normal framework behavior, any bundles depending on the composite bundle will also be refreshed.
+Likewise, if the composite bundle depends on another bundle being refreshed in the parent framework, then it too will be refreshed.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_1_2_8_relationship_to_composite_manager_lifecycle"><a class="anchor" href="#_4_1_2_8_relationship_to_composite_manager_lifecycle"></a>4.1.2.8 Relationship to composite manager lifecycle</h5>
+<div class="paragraph">
+<p>Since the composite manager manages all aspects of the composite&#8217;s content, its active lifetime scopes its managed composites.
+In other words, if the composite manager is stopped, then it explicitly causes all of its managed composites to refresh and return to the installed state.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_2_transparent_composite_model"><a class="anchor" href="#_4_2_transparent_composite_model"></a>4.2 Transparent composite model</h3>
+<div class="paragraph">
+<p>The simple composite model fits fairly well within the constraints of the OSGi framework since it aligns well with the concepts embodied in the original OSGi specification (i.e., packages and services).
+However, some use cases may require support beyond these original concepts.
+For such cases, this proposal defines a transparent composite model that extends the simple composite model to include additional support for provided and required bundles at the expense of added complexity.</p>
+</div>
+<div class="sect3">
+<h4 id="_4_2_1_transparent_composite_description"><a class="anchor" href="#_4_2_1_transparent_composite_description"></a>4.2.1 Transparent composite description</h4>
+<div class="paragraph">
+<p>Transparent composite bundles can require bundles using the following header:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Require-Bundle</code> - the bundles required by the composite from the parent framework.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The composite manager makes the required bundles available to the composite bundle&#8217;s constituent bundles.
+A new header is defined to provide access to constituent bundles in the parent framework:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Provide-Bundle</code> - a comma-delimited set of symbolic names specifying the constituent bundles provided by the composite bundle to the parent framework.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The provided bundles will be manifested in the parent framework as virtual bundles themselves.
+This means that in addition to the composite bundle in the parent framework, there will ultimately be additional virtual bundles installed by the composite manager for each provided bundle;
+since this is related to the transparent composite bundle lifecycle, more details will be present in the next section.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_4_2_2_transparent_composite_lifecycle_management"><a class="anchor" href="#_4_2_2_transparent_composite_lifecycle_management"></a>4.2.2 Transparent composite lifecycle management</h4>
+<div class="paragraph">
+<p>To provide access to constituent bundles into the parent framework, the composite manager must proxy provided constituent bundles as separate virtual bundles in the parent framework.
+This complicates lifecycle management since it creates separate points of control for the composite bundle and it also complicates maintaining class space consistency for clients of the provided bundle.
+This section discusses these issues in more detail.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Depending on how composite bundles are implemented, these issues may also apply to required bundles inside the composite bundle.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_4_2_2_1_two_phase_resolve"><a class="anchor" href="#_4_2_2_1_two_phase_resolve"></a>4.2.2.1 Two-phase resolve</h5>
+<div class="paragraph">
+<p>When a composite providing access to a constituent bundle is first installed, the provided bundle cannot be made available immediately.
+Once the composite bundle is resolved (i.e., the composite&#8217;s associated virtual module is injected with its wires), then the composite manager can install a virtual bundle proxying the provided bundle.
+At this point, the proxy provided bundle is available for use by other bundles in the parent framework, although it will still be in the installed state in the parent until someone actually causes it to resolve.
+However, resolving the proxy provided bundle technically has no real effect since it is actually resolved internal to the composite.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_2_2_2_maintaining_class_space_consistency"><a class="anchor" href="#_4_2_2_2_maintaining_class_space_consistency"></a>4.2.2.2 Maintaining class space consistency</h5>
+<div class="paragraph">
+<p>If the packages exported by a provided bundle do not have uses constraints or if the uses constraints are confined to other packages exported by the provided bundle itself, then the proxying described in the last section is sufficient to provide access in the parent framework.
+On the other hand, if the provided bundle&#8217;s exported packages have uses constraints on packages imported by the provided bundle, then this poses a potential issue for clients of the proxy provided bundle in the parent framework.
+The provided bundle&#8217;s uses constraints must be modeled in the parent framework so it can maintain class space consistency.</p>
+</div>
+<div class="paragraph">
+<p>To achieve this, when such a situation is detected, the composite manager must install an additional virtual bundle in the parent framework that acts as a uses constraint proxy bundle by exporting any packages imported by the provided bundle that are part of a uses constraint.
+Additionally, the proxy provided bundle must be generated such that it explicitly imports its packages from the uses constraint proxy bundle in the parent framework.
+This will ensure the parent framework correct observes the uses constraints and enforces them for potential clients.
+To clarify via an example, consider the following hypothetical (and completely irrational) composite description:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bundle-ManifestVersion: 2
+Bundle-Name: HTTP Composite
+Bundle-SymbolicName: org.foo.composite.http
+Include-Bundle: \
+ http://www.foo.org/org.foo.http.jar, \
+ http://www.foo.org/javax.servlet.jar
+Provide-Bundle: org.foo.http</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This composite contains two constituent bundles and provides access to the <code>org.foo.http</code> constituent bundle.
+Assume the <code>org.foo.http</code> bundle has the following metadata:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bundle-ManifestVersion: 2
+Bundle-Name: HTTP Service
+Bundle-SymbolicName: org.foo.http
+Import-Package: javax.servlet, javax.servlet.http
+Export-Package: org.foo.http; uses:="javax.servlet", org.foo.http.util</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the <code>org.foo.http</code> imports two packages (<code>javax.servlet</code> and <code>javax,servlet.http</code>), presumably both come from the other constituent bundle in the composite, and exports two packages (<code>org.foo.http</code> and <code>org.foo.http.util</code>), where <code>org.foo.http</code> has a uses constraint on the imported <code>javax.servlet</code> package.
+To properly proxy this provided bundle, the composite manager would install a virtual bundle in the parent framework that looked like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bundle-ManifestVersion: 2
+Bundle-Name: HTTP Service
+Bundle-SymbolicName: org.foo.http
+Import-Package: javax.servlet; bundle-symbolic-name="USES.12312"
+Export-Package: org.foo.http; uses:="javax.servlet", org.foo.http.util</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This proxy provided bundle enables access to the exported packages of the original provided bundle and correctly models its uses constraints on a second uses constraint virtual bundle.
+The composite manager generates the proxy provided bundle metadata so that it can only resolve to the generated uses constraint virtual bundle, which would look something like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bundle-ManifestVersion: 2
+Bundle-Name: HTTP Service Uses Constraints
+Bundle-SymbolicName: USES.12312
+Export-Package: javax.servlet</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since there is no uses constraint on the <code>javax.servlet.http</code> package, then it need not be provided by the uses constraint bundle.
+On the other hand, if there was then it would need to be exported as well.
+Further, if these exported packages had uses constraints on other imported packages, then these would need to be modeled as well.
+However, these could be modeled by simply having the uses constraint bundle export them in addition to the original exports (effectively reexporting the imported packages).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The approach to proxy the provided bundle as two bundles (the proxy bundle and the uses constraint bundle) is necessary to maintain the semantics of <code>Require-Bundle</code> which only gives access to the target bundle&#8217;s exported packages.
+A different, but not completely consistent approach is to just proxy the provided bundle and turn all of its imports into exports so that all uses constraints are satisfied by the proxy itself.
+The main downside of this approach is that client bundles in the parent framework would end up with greater visibility of packages than if they required the bundle directly.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If a composite provides multiple bundles, then shared and potentially conflicting packages among the provided bundles would need to be correctly modeled.
+For each provided bundle, a package space would need to be calculated for any imported package participating in a uses constraint.
+Any common packages with the same provider among the provided bundles would need to be modeled on a common uses constraint bundle in the parent framework, where the same package coming from different providers would need to be modeled with a separate uses constraint bundles.
+Non-overlapping packages could be lumped into a single uses constraint bundle.
+This algorithm would be non-trivial, but since it is just walking existing wires, it should not suffer from similar performance issues like the resolver algorithm.</p>
+</div>
+<div class="paragraph">
+<p>One special case to note, if the provided bundle has a uses constraint on an imported package that was actually imported from the parent framework via the composite description, then it is not necessary to model this import in the parent framework since it already exists.
+For this case, the generated proxy provided bundle must simply explicitly import the package from the original bundle in the parent framework.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This approach requires richer wiring information as discussed in the open issues.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_4_2_2_3_lifecycle_of_proxied_bundles"><a class="anchor" href="#_4_2_2_3_lifecycle_of_proxied_bundles"></a>4.2.2.3 Lifecycle of proxied bundles</h5>
+<div class="paragraph">
+<p>As discussed, the support for providing bundles results in the composite manager installing proxy bundles for the provided bundle and its uses constraints in the parent framework in addition to the original composite bundle.
+This raises questions about the lifecycle of proxied bundles.</p>
+</div>
+<div class="paragraph">
+<p>The lifetime of the proxied bundles is dependent on the resolved lifetime of the associated composite bundle.
+If the composite is refreshed, then the provided bundles should be uninstalled and refreshed.
+(Technically, it would be possible to simply refresh them and leave them unresolvable.)</p>
+</div>
+<div class="paragraph">
+<p>Performing individual lifecycle operations on the proxied bundles should function like normal in the parent framework, but should have no impact on the internal constituent bundles of the composite.
+For example, you can start, stop, and even uninstall provided bundles, but this just impacts the state of the bundles in the parent framework, which may render them unresolvable.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_open_issues"><a class="anchor" href="#_5_open_issues"></a>5. Open issues</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_5_1_rich_wiring_information"><a class="anchor" href="#_5_1_rich_wiring_information"></a>5.1 Rich wiring information</h3>
+<div class="paragraph">
+<p>Currently, the wiring information provided by the virtual bundle proposal has been kept purposely simplistic.
+To fully implement aspects of composites, like requiring/providing bundles, it is necessary to get richer information from the wires, such as the type of capability.
+Further, the wiring information needs to be at the module-level (i.e., bundle revision level), not at the bundle level.
+The refactoring of the Package Admin API addresses some of these issues, but not all of them.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_considered_alternatives"><a class="anchor" href="#_6_considered_alternatives"></a>6. Considered alternatives</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_scoping_approach"><a class="anchor" href="#_scoping_approach"></a>Scoping approach</h3>
+<div class="paragraph">
+<p>Another potential approach for providing similar capabilities is to try to use virtual bundles to implement a scoping approach.
+Scoping can be modeled reasonably well as manifest rewriting (i.e., mandatory attributes and renaming).
+If it were possible to install bundles and "lock" them in the <code>INSTALLED</code> state, then these bundles could be used like templates for creating scopes via manifest rewriting in a virtual bundle.
+The same template bundle could be copied into different scopes using different virtual bundles in the different scopes or could be shared among scopes by appropriately rewriting the metadata.
+This approach could also scope the service registry, since it would be possible to inject proxied bundle contexts into the scoped bundles (via their virtual bundle wrapper) that only show services in the appropriate scope.</p>
+</div>
+<div class="paragraph">
+<p>The biggest issue here is achieving complete fidelity with the OSGi specification for handling of bundles.
+The virtual bundle mechanism would need to include support for dynamic imports, fragments, and lazy activation.
+All of these are potentially feasible, but would need to be fleshed out.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

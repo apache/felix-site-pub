@@ -1,151 +1,625 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Dependency Manager - Development</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dependency Manager - Development :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-dependency-manager/guides/development.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <link rel="icon" href="../../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
     </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
-      </div>
-
-      <h1>Dependency Manager - Development</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../../index.html">Documentation</a></li>
+    <li><a href="../../../subprojects.html">Subprojects</a></li>
+    <li><a href="../../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a></li>
+    <li>Guides</li>
+    <li><a href="development.html">Dependency Manager - Development</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-dependency-manager/guides/development.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Dependency Manager - Development</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
 <p>When downloading or checking out the source code, please also consult release/resources/src/README.src for up to date instructions on how to build that particular version.</p>
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>If you are using a corporate http proxy, you should set the following environment variables:</p>
-<div class="codehilite"><pre>$ <span class="n">export</span> <span class="n">GRADLE_OPTS</span><span class="p">=</span>&quot;<span class="o">-</span><span class="n">Dhttp</span><span class="p">.</span><span class="n">proxyHost</span><span class="p">=</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">ip</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">Dhttp</span><span class="p">.</span><span class="n">proxyPort</span><span class="p">=</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">port</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">Dhttps</span><span class="p">.</span><span class="n">proxyHost</span><span class="p">=</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">ip</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">Dhttps</span><span class="p">.</span><span class="n">proxyPort</span><span class="p">=</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">port</span><span class="o">&gt;</span>&quot;
-$ <span class="n">export</span> <span class="n">http_proxy</span><span class="p">=</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">ip</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">port</span><span class="o">&gt;</span>
-$ <span class="n">export</span> <span class="n">https_proxy</span><span class="p">=</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">ip</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">your</span> <span class="n">proxy</span> <span class="n">port</span><span class="o">&gt;</span>
-</pre></div>
-
-
-<h2 id="compilation-using-gradle">Compilation Using gradle:<a class="headerlink" href="#compilation-using-gradle" title="Permanent link">&para;</a></h2>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ export GRADLE_OPTS="-Dhttp.proxyHost=&lt;your proxy ip&gt; -Dhttp.proxyPort=&lt;your proxy port&gt; -Dhttps.proxyHost=&lt;your proxy ip&gt; -Dhttps.proxyPort=&lt;your proxy port&gt;"
+$ export http_proxy=&lt;your proxy ip&gt;:&lt;your proxy port&gt;
+$ export https_proxy=&lt;your proxy ip&gt;:&lt;your proxy port&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_compilation_using_gradle"><a class="anchor" href="#_compilation_using_gradle"></a>Compilation Using gradle:</h2>
+<div class="sectionbody">
+<div class="ulist">
 <ul>
 <li>
 <p>Install latest Java 8 (the dm libraries has been built and tested with java 1.8.0_74)</p>
 </li>
 <li>
 <p>Compile Dependendency Manager annotations bndtools plugin:</p>
+<div class="paragraph">
 <p>$ ./gradlew org.apache.felix.dependencymanager.annotation:jar</p>
+</div>
 </li>
 <li>
 <p>Compile all other bundles:</p>
+<div class="paragraph">
 <p>$ ./gradlew jar</p>
+</div>
 </li>
 <li>
 <p>Run junit tests:</p>
+<div class="paragraph">
 <p>$ ./gradlew test</p>
+</div>
 </li>
 <li>
 <p>Run integration tests:</p>
+<div class="paragraph">
 <p>$ ./gradlew check</p>
+</div>
 </li>
 </ul>
-<h2 id="compilation-using-eclipse">Compilation Using Eclipse:<a class="headerlink" href="#compilation-using-eclipse" title="Permanent link">&para;</a></h2>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_compilation_using_eclipse"><a class="anchor" href="#_compilation_using_eclipse"></a>Compilation Using Eclipse:</h2>
+<div class="sectionbody">
+<div class="ulist">
 <ul>
-<li>Install Latest Eclipse Mars.</li>
-<li>Use the dependency manager folder as the root of your workspace.</li>
-<li>Configure two JREs for Java 8:<ul>
-<li>Go to Windows -&gt; Preferences -&gt; Java -&gt; Installed JREs</li>
-<li>Add your jdk8 JRE</li>
-</ul>
+<li>
+<p>Install Latest Eclipse Mars.</p>
 </li>
-<li>Install BndTools 3.4.0 or later version and (optionally) a subversion plugin for Eclipse.</li>
-<li>Open BndTools perspective</li>
-<li>Import Dependency Manager into Eclipse, and compile everything</li>
-<li>if it's the first time you import the project into eclipse, it may happen that some modules that requires the Dependency Manager Annotations bnd plugin don't compile: It's a know issue. To work around, restart eclipse and rebuild every modules. </li>
-<li>Click on org.apache.felix.dependencymanager project and run it as "JUnit test".</li>
-<li>Click on org.apache.felix.dependencymanager.shell and run it as "JUnit test"</li>
-<li>Click on org.apache.felix.dependencymanager.itest and run it as "Bnd OSGi Test Launcher (Junit)".</li>
-<li>Click on org.apache.felix.dependencymanager.runtime.itest and run it as ""Bnd OSGi Test Launcer (Junit)".</li>
-<li>Click on org.apache.felix.dependencymanager.lambda.itest and run it as ""Bnd OSGi Test Launcer (Junit)".</li>
+<li>
+<p>Use the dependency manager folder as the root of your workspace.</p>
+</li>
+<li>
+<p>Configure two JREs for Java 8:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Go to Windows -&gt; Preferences -&gt; Java -&gt; Installed JREs</p>
+</li>
+<li>
+<p>Add your jdk8 JRE</p>
+</li>
 </ul>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1843259 by pderop on Tue, 9 Oct 2018 13:29:05 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+</div>
+</li>
+<li>
+<p>Install BndTools 3.4.0 or later version and (optionally) a subversion plugin for Eclipse.</p>
+</li>
+<li>
+<p>Open BndTools perspective</p>
+</li>
+<li>
+<p>Import Dependency Manager into Eclipse, and compile everything</p>
+</li>
+<li>
+<p>if it&#8217;s the first time you import the project into eclipse, it may happen that some modules that requires the Dependency Manager Annotations bnd plugin don&#8217;t compile: It&#8217;s a know issue.
+To work around, restart eclipse and rebuild every modules.</p>
+</li>
+<li>
+<p>Click on org.apache.felix.dependencymanager project and run it as "JUnit test".</p>
+</li>
+<li>
+<p>Click on org.apache.felix.dependencymanager.shell and run it as "JUnit test"</p>
+</li>
+<li>
+<p>Click on org.apache.felix.dependencymanager.itest and run it as "Bnd OSGi Test Launcher (Junit)".</p>
+</li>
+<li>
+<p>Click on org.apache.felix.dependencymanager.runtime.itest and run it as ""Bnd OSGi Test Launcer (Junit)".</p>
+</li>
+<li>
+<p>Click on org.apache.felix.dependencymanager.lambda.itest and run it as ""Bnd OSGi Test Launcer (Junit)".</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

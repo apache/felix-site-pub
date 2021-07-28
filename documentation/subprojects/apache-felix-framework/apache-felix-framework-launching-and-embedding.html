@@ -1,794 +1,1530 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Apache Felix Framework Launching and Embedding</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Apache Felix Framework Launching and Embedding :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-framework/apache-felix-framework-launching-and-embedding.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-framework.html">Apache Felix Framework</a>
-      </div>
-
-      <h1>Apache Felix Framework Launching and Embedding</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><em>[This document describes framework launching introduced in Felix Framework 2.0.0 and continuing with the latest releases; it is incompatible with older versions of the Felix framework.]()</em></p>
-<ul>
-<li><a href="">Introduction</a></li>
-<li><a href="">OSGi Launching and Embedding API Overview</a>
-<strong> <a href="">Creating and Configuring the Framework Instance</a>
-</strong> <a href="">Starting the Framework Instance</a>
-** <a href="">Stopping the Framework Instance</a></li>
-<li><a href="">Launching Felix</a>
-<strong> <a href="">Standard Felix Launcher</a>
-</strong> <a href="">Custom Felix Launcher</a></li>
-<li><a href="">Embedding Felix</a>
-<strong> <a href="">Host/Felix Interaction</a>
-</strong> <a href="">Providing Host Application Services</a>
-** <a href="">Using Services Provided by Bundles</a>
-<strong><em> <a href="">Using Bundle Services via Reflection</a>
-</em></strong> <a href="">Other Approaches</a></li>
-<li><a href="">Caveat</a></li>
-<li><a href="">Feedback</a></li>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
 </ul>
-<h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
-<p>The Apache Felix Framework is intended to be easily launchable and embeddable. For example, the Felix framework implementation avoids the use of system properties for configuration, since these are globals and can cause interference if multiple framework instances are created in the same VM. The framework also tries to multiplex singleton facilities, like the URL stream handler factory. The goal is to make it possible to use the framework in a variety of scenarios; however, this is still just a goal. In other words, this is a work in progress and if any issues arise, it would be greatly appreciated if they are brought to the attention of the Felix community. The next section provides an overview of the standard OSGi launching and embedding API for frameworks, while the remainder of the document is divided into two sections, one focusing on how to launch Felix and one focusing on how to embed Felix into a host application.</p>
-<h1 id="osgi-launching-and-embedding-api-overview">OSGi Launching and Embedding API Overview<a class="headerlink" href="#osgi-launching-and-embedding-api-overview" title="Permanent link">&para;</a></h1>
-<p>The Felix framework is implemented by the <code>org.apache.felix.framework.Felix</code> class or just <code>Felix</code> for short. As part of the R4.2 OSGi specification, the launching and embedding API of the OSGi framework has been standardized. The approach is to have the framework implement the <code>org.osgi.framework.launch.Framework</code> interface, which extends the <code>org.osgi.framework.Bundle</code> interface. These interfaces provide the necessary means to launch and manage framework instances. The <code>Bundle</code> interface is defined as:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Bundle</span>
-<span class="p">{</span>
-    <span class="n">BundleContext</span> <span class="n">getBundleContext</span><span class="p">();</span>
-    <span class="n">long</span> <span class="n">getBundleId</span><span class="p">();</span>
-    <span class="n">URL</span> <span class="n">getEntry</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
-    <span class="n">Enumeration</span> <span class="n">getEntryPaths</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">);</span>
-    <span class="n">Enumeration</span> <span class="n">findEntries</span><span class="p">(</span><span class="n">String</span> <span class="n">path</span><span class="p">,</span> <span class="n">String</span> <span class="n">filePattern</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">recurse</span><span class="p">);</span>
-    <span class="n">Dictionary</span> <span class="n">getHeaders</span><span class="p">();</span>
-    <span class="n">Dictionary</span> <span class="n">getHeaders</span><span class="p">(</span><span class="n">String</span> <span class="n">locale</span><span class="p">);</span>
-    <span class="n">long</span> <span class="n">getLastModified</span><span class="p">();</span>
-    <span class="n">String</span> <span class="n">getLocation</span><span class="p">();</span>
-    <span class="n">URL</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
-    <span class="n">Enumeration</span> <span class="n">getResources</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">IOException</span><span class="p">;</span>
-    <span class="n">ServiceReference</span><span class="p">[]</span> <span class="n">getRegisteredServices</span><span class="p">();</span>
-    <span class="n">ServiceReference</span><span class="p">[]</span> <span class="n">getServicesInUse</span><span class="p">();</span>
-    <span class="n">int</span> <span class="n">getState</span><span class="p">();</span>
-    <span class="n">String</span> <span class="n">getSymbolicName</span><span class="p">();</span>
-    <span class="n">Version</span> <span class="n">getVersion</span><span class="p">();</span>
-    <span class="n">boolean</span> <span class="n">hasPermission</span><span class="p">(</span><span class="n">Object</span> <span class="n">obj</span><span class="p">);</span>
-    <span class="n">Class</span> <span class="n">loadClass</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ClassNotFoundException</span><span class="p">;</span>
-    <span class="n">void</span> <span class="n">start</span><span class="p">()</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
-    <span class="n">void</span> <span class="n">stop</span><span class="p">()</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
-    <span class="n">void</span> <span class="n">uninstall</span><span class="p">()</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
-    <span class="n">void</span> <span class="n">update</span><span class="p">()</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
-    <span class="n">void</span> <span class="n">update</span><span class="p">(</span><span class="n">InputStream</span> <span class="n">is</span><span class="p">)</span> <span class="n">throws</span> <span class="n">BundleException</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../subprojects.html">Subprojects</a></li>
+    <li><a href="../apache-felix-framework.html">Apache Felix Framework</a></li>
+    <li><a href="apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-framework/apache-felix-framework-launching-and-embedding.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Apache Felix Framework Launching and Embedding</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This document describes framework launching introduced in Felix Framework 2.0.0 and continuing with the latest releases;
+it is incompatible with older versions of the Felix framework.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Apache Felix Framework is intended to be easily launchable and embeddable.
+For example, the Felix framework implementation avoids the use of system properties for configuration, since these are globals and can cause interference if multiple framework instances are created in the same VM.
+The framework also tries to multiplex singleton facilities, like the URL stream handler factory.
+The goal is to make it possible to use the framework in a variety of scenarios;
+however, this is still just a goal.
+In other words, this is a work in progress and if any issues arise, it would be greatly appreciated if they are brought to the attention of the Felix community.
+The next section provides an overview of the standard OSGi launching and embedding API for frameworks, while the remainder of the document is divided into two sections, one focusing on how to launch Felix and one focusing on how to embed Felix into a host application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_osgi_launching_and_embedding_api_overview"><a class="anchor" href="#_osgi_launching_and_embedding_api_overview"></a>OSGi Launching and Embedding API Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Felix framework is implemented by the <code>org.apache.felix.framework.Felix</code> class or just <code>Felix</code> for short.
+As part of the R4.2 OSGi specification, the launching and embedding API of the OSGi framework has been standardized.
+The approach is to have the framework implement the <code>org.osgi.framework.launch.Framework</code> interface, which extends the <code>org.osgi.framework.Bundle</code> interface.
+These interfaces provide the necessary means to launch and manage framework instances.
+The <code>Bundle</code> interface is defined as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> public interface Bundle
+ {
+     BundleContext getBundleContext();
+     long getBundleId();
+     URL getEntry(String name);
+     Enumeration getEntryPaths(String path);
+     Enumeration findEntries(String path, String filePattern, boolean recurse);
+     Dictionary getHeaders();
+     Dictionary getHeaders(String locale);
+     long getLastModified();
+     String getLocation();
+     URL getResource(String name);
+     Enumeration getResources(String name) throws IOException;
+     ServiceReference[] getRegisteredServices();
+     ServiceReference[] getServicesInUse();
+     int getState();
+     String getSymbolicName();
+     Version getVersion();
+     boolean hasPermission(Object obj);
+     Class loadClass(String name) throws ClassNotFoundException;
+     void start() throws BundleException;
+     void stop() throws BundleException;
+     void uninstall() throws BundleException;
+     void update() throws BundleException;
+     void update(InputStream is) throws BundleException;
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>The <code>Framework</code> interface is defined as:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Framework</span> <span class="n">extends</span> <span class="n">Bundle</span>
-<span class="p">{</span>
-    <span class="n">void</span> <span class="n">init</span><span class="p">();</span>
-    <span class="n">FrameworkEvent</span> <span class="n">waitForStop</span><span class="p">(</span><span class="n">long</span> <span class="n">timeout</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> public interface Framework extends Bundle
+ {
+     void init();
+     FrameworkEvent waitForStop(long timeout);
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>To actually construct a framework instance, the R4.2 specification defines the <code>FrameworkFactory</code> interface:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">FrameworkFactory</span>
-<span class="p">{</span>
-    <span class="n">Framework</span> <span class="n">newFramework</span><span class="p">(</span><span class="n">Map</span> <span class="n">config</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>The framework factory can be used to create configured framework instances. It is obtained following the standard <code>META-INF/services</code> approach.</p>
-<h2 id="creating-and-configuring-the-framework-instance">Creating and Configuring the Framework Instance<a class="headerlink" href="#creating-and-configuring-the-framework-instance" title="Permanent link">&para;</a></h2>
-<p>You use the framework factory to construct and configure a framework instance (or by directly instantiating the Felix class). The configuration map may contain any of the framework configuration properties listed in the <a href="/documentation/subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a> document, not the launcher configuration properties. The configuration map is copied and the keys are treated as case insensitive. You are not able to change the framework's configuration after construction. If you need a different configuration, you must create a new framework instance.</p>
-<div class="warning" markdown="1">
-**WARNING**
-Felix configuration properties have change considerably starting from `1.4.0`; if you are upgrading from an earlier version, the [configuration property document]() describes the configuration property changes.
 </div>
-
-<h2 id="starting-the-framework-instance">Starting the Framework Instance<a class="headerlink" href="#starting-the-framework-instance" title="Permanent link">&para;</a></h2>
-<p>The <code>start()</code> method is used to start the framework instance. If the <code>init()</code> method was not invoked prior to calling <code>start()</code>, then it is invoked by <code>start()</code>. The two methods result in two different framework state transitions:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> public interface FrameworkFactory
+ {
+     Framework newFramework(Map config);
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The framework factory can be used to create configured framework instances.
+It is obtained following the standard <code>META-INF/services</code> approach.</p>
+</div>
+<div class="sect2">
+<h3 id="_creating_and_configuring_the_framework_instance"><a class="anchor" href="#_creating_and_configuring_the_framework_instance"></a>Creating and Configuring the Framework Instance</h3>
+<div class="paragraph">
+<p>You use the framework factory to construct and configure a framework instance (or by directly instantiating the Felix class).
+The configuration map may contain any of the framework configuration properties listed in the <a href="apache-felix-framework-configuration-properties.html" class="page">Apache Felix Framework Configuration Properties</a> document, not the launcher configuration properties.
+The configuration map is copied and the keys are treated as case insensitive.
+You are not able to change the framework&#8217;s configuration after construction.
+If you need a different configuration, you must create a new framework instance.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<strong>WARNING</strong> Felix configuration properties have change considerably starting from <code>1.4.0</code>;
+if you are upgrading from an earlier version, the <a href="apache-felix-framework-configuration-properties.html#_migrating_from_earlier_versions" class="page">configuration property document</a> describes the configuration property changes.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_starting_the_framework_instance"><a class="anchor" href="#_starting_the_framework_instance"></a>Starting the Framework Instance</h3>
+<div class="paragraph">
+<p>The <code>start()</code> method is used to start the framework instance.
+If the <code>init()</code> method was not invoked prior to calling <code>start()</code>, then it is invoked by <code>start()</code>.
+The two methods result in two different framework state transitions:</p>
+</div>
+<div class="ulist">
 <ul>
-<li><code>init()</code> results in the framework instance in the <code>Bundle.STARTING</code> state.</li>
-<li><code>start()</code> results in the framework instance in the <code>Bundle.ACTIVE</code> state.</li>
+<li>
+<p><code>init()</code> results in the framework instance in the <code>Bundle.STARTING</code> state.</p>
+</li>
+<li>
+<p><code>start()</code> results in the framework instance in the <code>Bundle.ACTIVE</code> state.</p>
+</li>
 </ul>
-<p>The <code>init()</code> method is necessary since the framework does not have a <code>BundleContext</code> when it is first created, so a transition to the <code>Bundle.STARTING</code> state is required to acquire its context (via <code>Bundle.getBundleContext()</code>) for performing various tasks, such as installing bundles. Note that the Felix framework also provides the <code>felix.systembundle.activators</code> property that serves a similar purpose, but is not standard. After the <code>init()</code> method completes, the follow actions have been performed:</p>
+</div>
+<div class="paragraph">
+<p>The <code>init()</code> method is necessary since the framework does not have a <code>BundleContext</code> when it is first created, so a transition to the <code>Bundle.STARTING</code> state is required to acquire its context (via <code>Bundle.getBundleContext()</code>) for performing various tasks, such as installing bundles.
+Note that the Felix framework also provides the <code>felix.systembundle.activators</code> property that serves a similar purpose, but is not standard.
+After the <code>init()</code> method completes, the follow actions have been performed:</p>
+</div>
+<div class="ulist">
 <ul>
-<li>Event handling is enabled.</li>
-<li>The security manager is installed if it is enabled.</li>
-<li>The framework is set to start level 0.</li>
-<li>All bundles in the bundle caches are reified and their state is set to <code>Bundle.INSTALLED</code>.</li>
-<li>The framework gets a valid <code>BundleContext</code>.</li>
-<li>All framework-provided services are made available (e.g., PackageAdmin, StartLevel, etc.).</li>
-<li>The framework enters the <code>Bundle.STARTING</code> state.</li>
+<li>
+<p>Event handling is enabled.</p>
+</li>
+<li>
+<p>The security manager is installed if it is enabled.</p>
+</li>
+<li>
+<p>The framework is set to start level 0.</p>
+</li>
+<li>
+<p>All bundles in the bundle caches are reified and their state is set to <code>Bundle.INSTALLED</code>.</p>
+</li>
+<li>
+<p>The framework gets a valid <code>BundleContext</code>.</p>
+</li>
+<li>
+<p>All framework-provided services are made available (e.g., PackageAdmin, StartLevel, etc.).</p>
+</li>
+<li>
+<p>The framework enters the <code>Bundle.STARTING</code> state.</p>
+</li>
 </ul>
-<p>A call to <code>start()</code> is necessary to start the framework instance, if the <code>init()</code> method is invoked manually. Invoking <code>init()</code> or <code>start()</code> on an already started framework as no effect.</p>
-<h2 id="stopping-the-framework-instance">Stopping the Framework Instance<a class="headerlink" href="#stopping-the-framework-instance" title="Permanent link">&para;</a></h2>
-<p>To stop the framework instance, invoke the <code>stop()</code> method, which will asynchronously stop the framework. To know when the framework has finished its shutdown sequence, use the <code>waitForStop()</code> method to wait until it is complete. A stopped framework will be in the <code>Bundle.RESOLVED</code> state. It is possible to restart the framework, using the normal combination of <code>init()</code>/<code>start()</code> methods as previously described.</p>
-<h1 id="launching-a-framework">Launching a Framework<a class="headerlink" href="#launching-a-framework" title="Permanent link">&para;</a></h1>
+</div>
+<div class="paragraph">
+<p>A call to <code>start()</code> is necessary to start the framework instance, if the <code>init()</code> method is invoked manually.
+Invoking <code>init()</code> or <code>start()</code> on an already started framework as no effect.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_stopping_the_framework_instance"><a class="anchor" href="#_stopping_the_framework_instance"></a>Stopping the Framework Instance</h3>
+<div class="paragraph">
+<p>To stop the framework instance, invoke the <code>stop()</code> method, which will asynchronously stop the framework.
+To know when the framework has finished its shutdown sequence, use the <code>waitForStop()</code> method to wait until it is complete.
+A stopped framework will be in the <code>Bundle.RESOLVED</code> state.
+It is possible to restart the framework, using the normal combination of <code>init()</code>/<code>start()</code> methods as previously described.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_launching_a_framework"><a class="anchor" href="#_launching_a_framework"></a>Launching a Framework</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>Launching a framework is fairly simple and involves only four steps:</p>
-<ol>
-<li>Define some configuration properties.</li>
-<li>Obtain framework factory.</li>
-<li>Use factory to create framework with the configuration properties.</li>
-<li>Invoke the <code>Framework.start()</code> method.</li>
-</ol>
-<p>In reality, the first step is optional, since all properties will have reasonable defaults, but if you are creating a launcher you will generally want to more than that, such as automatically installing and starting bundles when you start the framework instance. The default Felix launcher defines reusable functionality to automatically install and/or start bundles upon framework startup; see the <a href="">usage document</a> for more information on configuring the Felix framework and on the various configuration properties.</p>
-<p>The remainder of this section describes how the standard Felix launcher works as well as how to create a custom launcher.</p>
-<h2 id="standard-felix-framework-launcher">Standard Felix Framework Launcher<a class="headerlink" href="#standard-felix-framework-launcher" title="Permanent link">&para;</a></h2>
-<p>The standard Felix framework launcher is very simple and is not intended to solve every possible requirement; it is intended to work for most standard situations. Most special launching requirements should be resolved by creating a custom launcher. This section describes how the standard launcher works. The following code represents the complete <code>main()</code> method of the standard launcher, each numbered comment will be described in more detail below:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
-<span class="p">{</span>
-    <span class="o">//</span> <span class="p">(</span>1<span class="p">)</span> <span class="n">Check</span> <span class="k">for</span> <span class="n">command</span> <span class="n">line</span> <span class="n">arguments</span> <span class="n">and</span> <span class="n">verify</span> <span class="n">usage</span><span class="p">.</span>
-    <span class="n">String</span> <span class="n">bundleDir</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">String</span> <span class="n">cacheDir</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">boolean</span> <span class="n">expectBundleDir</span> <span class="p">=</span> <span class="n">false</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="nb">i</span> <span class="p">=</span> 0<span class="p">;</span> <span class="nb">i</span> <span class="o">&lt;</span> <span class="n">args</span><span class="p">.</span><span class="nb">length</span><span class="p">;</span> <span class="nb">i</span><span class="o">++</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="nb">i</span><span class="p">].</span><span class="n">equals</span><span class="p">(</span><span class="n">BUNDLE_DIR_SWITCH</span><span class="p">))</span>
-        <span class="p">{</span>
-            <span class="n">expectBundleDir</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">expectBundleDir</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">bundleDir</span> <span class="p">=</span> <span class="n">args</span><span class="p">[</span><span class="nb">i</span><span class="p">];</span>
-            <span class="n">expectBundleDir</span> <span class="p">=</span> <span class="n">false</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">else</span>
-        <span class="p">{</span>
-            <span class="n">cacheDir</span> <span class="p">=</span> <span class="n">args</span><span class="p">[</span><span class="nb">i</span><span class="p">];</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">((</span><span class="n">args</span><span class="p">.</span><span class="nb">length</span> <span class="o">&gt;</span> 3<span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">expectBundleDir</span> <span class="o">&amp;&amp;</span> <span class="n">bundleDir</span> <span class="o">==</span> <span class="n">null</span><span class="p">))</span>
-    <span class="p">{</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Usage</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">deploy</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">cache</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span><span class="p">]</span>&quot;<span class="p">);</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="o">//</span> <span class="p">(</span>2<span class="p">)</span> <span class="n">Load</span> <span class="n">system</span> <span class="k">properties</span><span class="p">.</span>
-    <span class="n">Main</span><span class="p">.</span><span class="n">loadSystemProperties</span><span class="p">();</span>
-
-    <span class="o">//</span> <span class="p">(</span>3<span class="p">)</span> <span class="n">Read</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
-    <span class="n">Properties</span> <span class="n">configProps</span> <span class="p">=</span> <span class="n">Main</span><span class="p">.</span><span class="n">loadConfigProperties</span><span class="p">();</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">configProps</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">No</span> &quot; <span class="o">+</span> <span class="n">CONFIG_PROPERTIES_FILE_VALUE</span> <span class="o">+</span> &quot; <span class="n">found</span><span class="p">.</span>&quot;<span class="p">);</span>
-        <span class="n">configProps</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Properties</span><span class="p">();</span>
-    <span class="p">}</span>
-
-    <span class="o">//</span> <span class="p">(</span>4<span class="p">)</span> <span class="n">Copy</span> <span class="n">framework</span> <span class="k">properties</span> <span class="n">from</span> <span class="n">the</span> <span class="n">system</span> <span class="k">properties</span><span class="p">.</span>
-    <span class="n">Main</span><span class="p">.</span><span class="n">copySystemProperties</span><span class="p">(</span><span class="n">configProps</span><span class="p">);</span>
-
-    <span class="o">//</span> <span class="p">(</span>5<span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">auto</span><span class="o">-</span><span class="n">deploy</span> <span class="n">directory</span> <span class="n">over</span> <span class="n">default</span><span class="p">.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">bundleDir</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">configProps</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="n">AutoProcessor</span><span class="p">.</span><span class="n">AUTO_DEPLOY_DIR_PROPERY</span><span class="p">,</span> <span class="n">bundleDir</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="o">//</span> <span class="p">(</span>6<span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">bundle</span> <span class="n">cache</span> <span class="n">directory</span> <span class="n">over</span> <span class="n">default</span><span class="p">.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">cacheDir</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">configProps</span><span class="p">.</span><span class="n">setProperty</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">FRAMEWORK_STORAGE</span><span class="p">,</span> <span class="n">cacheDir</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="o">//</span> <span class="p">(</span>7<span class="p">)</span> <span class="n">Add</span> <span class="n">a</span> <span class="n">shutdown</span> <span class="n">hook</span> <span class="n">to</span> <span class="n">clean</span> <span class="n">stop</span> <span class="n">the</span> <span class="n">framework</span><span class="p">.</span>
-    <span class="n">String</span> <span class="n">enableHook</span> <span class="p">=</span> <span class="n">configProps</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">SHUTDOWN_HOOK_PROP</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">enableHook</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="o">||</span> !<span class="n">enableHook</span><span class="p">.</span><span class="n">equalsIgnoreCase</span><span class="p">(</span>&quot;<span class="n">false</span>&quot;<span class="p">))</span>
-    <span class="p">{</span>
-        <span class="n">Runtime</span><span class="p">.</span><span class="n">getRuntime</span><span class="p">().</span><span class="n">addShutdownHook</span><span class="p">(</span><span class="n">new</span> <span class="n">Thread</span><span class="p">(</span>&quot;<span class="n">Felix</span> <span class="n">Shutdown</span> <span class="n">Hook</span>&quot;<span class="p">)</span> <span class="p">{</span>
-            <span class="n">public</span> <span class="n">void</span> <span class="n">run</span><span class="p">()</span>
-            <span class="p">{</span>
-                <span class="k">try</span>
-                <span class="p">{</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">m_fwk</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
-                    <span class="p">{</span>
-                        <span class="n">m_fwk</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
-                        <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-                <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-                <span class="p">{</span>
-                    <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Error</span> <span class="n">stopping</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">});</span>
-    <span class="p">}</span>
-
-    <span class="k">try</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="p">(</span>8<span class="p">)</span> <span class="n">Create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">and</span> <span class="n">initialize</span> <span class="n">the</span> <span class="n">framework</span><span class="p">.</span>
-        <span class="n">FrameworkFactory</span> <span class="n">factory</span> <span class="p">=</span> <span class="n">getFrameworkFactory</span><span class="p">();</span>
-        <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">factory</span><span class="p">.</span><span class="n">newFramework</span><span class="p">(</span><span class="n">configProps</span><span class="p">);</span>
-        <span class="n">m_fwk</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
-        <span class="o">//</span> <span class="p">(</span>9<span class="p">)</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">system</span> <span class="n">bundle</span> <span class="n">context</span> <span class="n">to</span> <span class="n">process</span> <span class="n">the</span> <span class="n">auto</span><span class="o">-</span><span class="n">deploy</span>
-        <span class="o">//</span> <span class="n">and</span> <span class="n">auto</span><span class="o">-</span><span class="n">install</span><span class="o">/</span><span class="n">auto</span><span class="o">-</span><span class="n">start</span> <span class="k">properties</span><span class="p">.</span>
-        <span class="n">AutoProcessor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">configProps</span><span class="p">,</span> <span class="n">m_fwk</span><span class="p">.</span><span class="n">getBundleContext</span><span class="p">());</span>
-        <span class="o">//</span> <span class="p">(</span>10<span class="p">)</span> <span class="n">Start</span> <span class="n">the</span> <span class="n">framework</span><span class="p">.</span>
-        <span class="n">m_fwk</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
-        <span class="o">//</span> <span class="p">(</span>11<span class="p">)</span> <span class="n">Wait</span> <span class="k">for</span> <span class="n">framework</span> <span class="n">to</span> <span class="n">stop</span> <span class="n">to</span> <span class="n">exit</span> <span class="n">the</span> <span class="n">VM</span><span class="p">.</span>
-        <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-        <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>The general steps of the standard launcher are quite straightforward:</p>
-<ol>
-<li>The launcher supports setting the auto-deploy directory (with the <code>-b</code> switch) and setting the bundle cache path with a single argument, so check for this and issue a usage message it there are more than one arguments.</li>
-<li>Load any system properties specified in the <code>system.properties</code> file; this file is typically located in the <code>conf/</code> directory of the Felix installation directory, but it can be specified directly using the <code>felix.system.properties</code> system property. This file is not needed to launch Felix and is provided merely for convenience when system properties must be specified. The file is a standard Java properties file, but it also supports property substitution using <code>$\{&lt;property-name</code>} syntax. Property substitution can be nested; only system properties will be used for substitution.</li>
-<li>Load any configuration properties specified in the <code>config.properties</code> file; this file is typically located in the <code>conf/</code> directory of the Felix installation directory, but it can be specified directly using the <code>felix.config.properties</code> system property. This file is used to configure the framework instance created by the launcher. The file is a standard Java properties file, but it also supports property substitution using "<code>$\{&lt;property-name&gt;</code>}" syntax. Property substitution can be nested; configuration and system properties will be used for substitution with configuration properties having precedence.</li>
-<li>For convenience, any configuration properties that are set as system properties are copied into the set of configuration properties. This provide an easy way to add to or override configuration properties specified in the <code>config.properties</code> file, since the Felix instance will never look at system properties for configuration.</li>
-<li>If the <code>-b</code> switch was used to specify an auto-deploy directory, then use that to set the value of <code>felix.auto.deploy.dir</code>.</li>
-<li>If a single command-line argument is specified, then use that to set the value of <code>org.osgi.framework.storage</code>; relative paths are relative to the current directory unless the <code>felix.cache.rootdir</code> property is set.</li>
-<li>Add a shutdown hook to cleanly stop the framework, unless the hook is disabled.</li>
-<li>Create a framework instance using the <code>FrameworkFactory</code> passing in the configuration properties, then initialize the factory instance; see the <a href="">custom launcher example</a> below to see how the META-INF/services <code>FrameworkFactory</code> is obtained.</li>
-<li>Use <code>org.apache.felix.main.AutoProcessor</code>, which will automatically deploy any bundles in the auto-deploy directory as well as bundles specified in the <code>felix.auto.install</code> and <code>felix.auto.start</code> configuration properties during framework startup to automatically install and/or start bundles; see the usage document for more information <a href="">configuration properties</a> and [bundle auto-deploy|Apache Felix Framework Usage Documentation#auto-deploy].</li>
-<li>Invoke <code>waitForStop()</code> to wait for the framework to stop to force the VM to exit; this is necessary because the framework never calls <code>System.exit()</code> and some libraries (e.g., Swing) create threads that will not allow the VM to exit.</li>
-</ol>
-<p>The framework is not active until the <code>start()</code> method is called. If no shell bundles are installed and started or if there is difficulty locating the shell bundles specified in the auto-start property, then it will appear as if the framework is hung, but it is actually running without any way to interact with it since the shell bundles provide the only means of interaction.</p>
-<h2 id="custom-framework-launcher">Custom Framework Launcher<a class="headerlink" href="#custom-framework-launcher" title="Permanent link">&para;</a></h2>
-<p>This section creates a bare-bones launcher to demonstrate the minimum requirements for creating an interactive launcher for the Felix framework. This example uses the standard Gogo shell bundles for interactivity, but any other bundles could be used instead. This example launcher project has the following directory structure:</p>
-<div class="codehilite"><pre><span class="n">launcher</span><span class="o">/</span>
-   <span class="n">lib</span><span class="o">/</span>
-      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="o">-</span>3<span class="p">.</span>0<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
-   <span class="n">bundle</span><span class="o">/</span>
-      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">gogo</span><span class="p">.</span><span class="n">command</span><span class="o">-</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
-      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">gogo</span><span class="p">.</span><span class="n">runtime</span><span class="o">-</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
-      <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">gogo</span><span class="p">.</span><span class="n">shell</span><span class="o">-</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span>
-   <span class="n">src</span><span class="o">/</span>
-      <span class="n">example</span><span class="o">/</span>
-         <span class="n">Main</span><span class="p">.</span><span class="n">java</span>
-</pre></div>
-
-
-<p>The <code>lib/</code> directory contains Felix' main JAR file, which also contains the OSGi core interfaces. The main JAR file is used so that we can reuse the default launcher's auto-install/auto-start configuration property handling; if these capabilities are not needed, then it would be possible to use the framework JAR file instead of the main JAR file. The <code>bundle/</code> directory contains the shell service and textual shell interface bundles that will be used for interacting with the framework instance. Note: If you do not launch the framework with interactive bundles, it will appear as if the framework instance is hung, but it is actually just sitting there waiting for someone to tell it to do something. The <code>src/example/</code> directory contains the following <code>Main.java</code> file, which is a very simplistic framework launcher.</p>
-<div class="codehilite"><pre><span class="n">package</span> <span class="n">example</span><span class="p">;</span>
-
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">io</span><span class="o">.*</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">launch</span><span class="o">.*</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="p">.</span><span class="n">AutoProcessor</span><span class="p">;</span>
-
-<span class="n">public</span> <span class="n">class</span> <span class="n">Main</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">static</span> <span class="n">Framework</span> <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-
-    <span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">argv</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Print</span> <span class="n">welcome</span> <span class="n">banner</span><span class="p">.</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="o">\</span><span class="n">nWelcome</span> <span class="n">to</span> <span class="n">My</span> <span class="n">Launcher</span>&quot;<span class="p">);</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="o">======================\</span><span class="n">n</span>&quot;<span class="p">);</span>
-
-        <span class="k">try</span>
-        <span class="p">{</span>
-            <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">getFrameworkFactory</span><span class="p">().</span><span class="n">newFramework</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
-            <span class="n">m_fwk</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
-            <span class="n">AutoProcessor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">m_fwk</span><span class="p">.</span><span class="n">getBundleContext</span><span class="p">());</span>
-            <span class="n">m_fwk</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
-            <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
-            <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-            <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span>1<span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="n">private</span> <span class="n">static</span> <span class="n">FrameworkFactory</span> <span class="n">getFrameworkFactory</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span>
-    <span class="p">{</span>
-        <span class="n">java</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">URL</span> <span class="n">url</span> <span class="p">=</span> <span class="n">Main</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getClassLoader</span><span class="p">().</span><span class="n">getResource</span><span class="p">(</span>
-            &quot;<span class="n">META</span><span class="o">-</span><span class="n">INF</span><span class="o">/</span><span class="n">services</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">launch</span><span class="p">.</span><span class="n">FrameworkFactory</span>&quot;<span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">url</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">BufferedReader</span> <span class="n">br</span> <span class="p">=</span> <span class="n">new</span> <span class="n">BufferedReader</span><span class="p">(</span><span class="n">new</span> <span class="n">InputStreamReader</span><span class="p">(</span><span class="n">url</span><span class="p">.</span><span class="n">openStream</span><span class="p">()));</span>
-            <span class="k">try</span>
-            <span class="p">{</span>
-                <span class="k">for</span> <span class="p">(</span><span class="n">String</span> <span class="n">s</span> <span class="p">=</span> <span class="n">br</span><span class="p">.</span><span class="n">readLine</span><span class="p">();</span> <span class="n">s</span> !<span class="p">=</span> <span class="n">null</span><span class="p">;</span> <span class="n">s</span> <span class="p">=</span> <span class="n">br</span><span class="p">.</span><span class="n">readLine</span><span class="p">())</span>
-                <span class="p">{</span>
-                    <span class="n">s</span> <span class="p">=</span> <span class="n">s</span><span class="p">.</span><span class="n">trim</span><span class="p">();</span>
-                    <span class="o">//</span> <span class="n">Try</span> <span class="n">to</span> <span class="n">load</span> <span class="n">first</span> <span class="n">non</span><span class="o">-</span><span class="n">empty</span><span class="p">,</span> <span class="n">non</span><span class="o">-</span><span class="n">commented</span> <span class="n">line</span><span class="p">.</span>
-                    <span class="k">if</span> <span class="p">((</span><span class="n">s</span><span class="p">.</span><span class="nb">length</span><span class="p">()</span> <span class="o">&gt;</span> 0<span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">charAt</span><span class="p">(</span>0<span class="p">)</span> !<span class="p">=</span> <span class="s">&#39;#&#39;</span><span class="p">))</span>
-                    <span class="p">{</span>
-                        <span class="k">return</span> <span class="p">(</span><span class="n">FrameworkFactory</span><span class="p">)</span> <span class="n">Class</span><span class="p">.</span><span class="n">forName</span><span class="p">(</span><span class="n">s</span><span class="p">).</span><span class="n">newInstance</span><span class="p">();</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-            <span class="n">finally</span>
-            <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">br</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> <span class="n">br</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-
-        <span class="n">throw</span> <span class="n">new</span> <span class="n">Exception</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="nb">find</span> <span class="n">framework</span> <span class="n">factory</span><span class="p">.</span>&quot;<span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>This launcher relies on the default behavior of <code>AutoProcessor</code> to automatically deploy the shell bundles. This simple, generic launcher provides a good starting point if the default Felix launcher is not sufficient. Since very few configuration properties are specified, the default values are used. For the bundle auto-deploy directory, "<code>bundle</code>" in the current directory is used, while for the framework bundle cache, "<code>felix-cache</code>" in the current directory is used.</p>
-<p>By breaking down the above source code into small chunks, it is quite easy to see what is going on.</p>
-<div class="codehilite"><pre>            <span class="n">m_fwk</span> <span class="p">=</span> <span class="n">getFrameworkFactory</span><span class="p">().</span><span class="n">newFramework</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
-            <span class="n">m_fwk</span><span class="p">.</span><span class="n">init</span><span class="p">()</span>
-</pre></div>
-
-
-<p>These steps get a the framework factory service and use it to create a framework instance with a default configuration. Once the framework instance is created, it is initialized with <code>init()</code>.</p>
-<div class="codehilite"><pre>            <span class="n">AutoProcessor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">m_fwk</span><span class="p">.</span><span class="n">getBundleContext</span><span class="p">());</span>
-</pre></div>
-
-
-<p>The <code>AutorProcessor</code> will automatically deploy bundles in the auto-deploy directory and any referenced from the auto-install/start properties. Since we are using an empty configuration, the auto-deploy directory is the <code>bundle</code> directory in the current directory and there are no auto properties. Therefore, in this case, the shell bundles will be installed.</p>
-<div class="codehilite"><pre>            <span class="n">m_fwk</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
-            <span class="n">m_fwk</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
-            <span class="n">System</span><span class="p">.</span><span class="n">exit</span><span class="p">(</span>0<span class="p">);</span>
-</pre></div>
-
-
-<p>These final steps start the framework and cause the launching application thread to wait for the framework to stop and when it does the launching thread calls <code>System.exit()</code> to make sure the VM actually exits.</p>
-<div class="codehilite"><pre>    <span class="n">private</span> <span class="n">static</span> <span class="n">FrameworkFactory</span> <span class="n">getFrameworkFactory</span><span class="p">()</span> <span class="n">throws</span> <span class="n">Exception</span>
-    <span class="p">{</span>
-        <span class="p">...</span>
-    <span class="p">}</span>
-</pre></div>
-
-
-<p>This method retrieves the framework factory service by doing a META-INF/services resource lookup, which it can use to obtain the concrete class name for the factory. If you are using Java 6, then you can use the <code>ServiceLoader</code> API in the JRE to further simplify the factory service lookup.</p>
-<p>The following command compiles the launcher when run from the root directory of the launcher project:</p>
-<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="p">.</span> <span class="o">-</span><span class="n">classpath</span> <span class="n">lib</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="o">-</span>3<span class="p">.</span>0<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span> <span class="n">src</span><span class="o">/</span><span class="n">example</span><span class="o">/</span><span class="n">Main</span><span class="p">.</span><span class="n">java</span>
-</pre></div>
-
-
-<p>After executing this command, an <code>example/</code> directory is created in the current directory, which contains the generated class file. The following command executes the simple launcher when run from the root directory of the launcher project:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">cp</span> <span class="p">.:</span><span class="n">lib</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">main</span><span class="o">-</span>3<span class="p">.</span>0<span class="p">.</span>0<span class="p">.</span><span class="n">jar</span> <span class="n">example</span><span class="p">.</span><span class="n">Main</span>
-</pre></div>
-
-
-<p>After executing this command, a "<code>felix-cache/</code>" directory is created that contains the cached bundles, which were installed from the <code>bundle/</code> directory.</p>
-<h1 id="embedding-the-felix-framework">Embedding the Felix Framework<a class="headerlink" href="#embedding-the-felix-framework" title="Permanent link">&para;</a></h1>
-<p>Embedding the Felix framework into a host application is a simple way to provide a sophisticated extensibility mechanism (i.e., a plugin system) to the host application. Embedding the Felix framework is very similar to launching it as described above, the main difference is that the host application typically wants to interact with the framework instance and/or installed bundles/services from the outside. This is fairly easy to achieve, but there are some subtle issues to understand. This section presents the mechanisms for embedding Felix into a host application and the issues in doing so.</p>
-<h2 id="hostfelix-interaction">Host/Felix Interaction<a class="headerlink" href="#hostfelix-interaction" title="Permanent link">&para;</a></h2>
-<p>In the section on <a href="">launching</a> the framework above, the <code>Felix</code> class accepts a configuration property called <code>felix.systembundle.activators</code>, which is a list of bundle activator instances. These bundle activator instances provide a convenient way for host applications to interact with the Felix framework.</p>
-<div class="warning" markdown="1">
-**WARNING**
-The `felix.systembundle.activators` configuration property is specific to the Felix framework implementation. If you want your code to work with other framework implementations, you should call `init()` on the framework instance and use `getBundleContext()` directly. Otherwise, the approach would be very similar.
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Define some configuration properties.</p>
+</li>
+<li>
+<p>Obtain framework factory.</p>
+</li>
+<li>
+<p>Use factory to create framework with the configuration properties.</p>
+</li>
+<li>
+<p>Invoke the <code>Framework.start()</code> method.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In reality, the first step is optional, since all properties will have reasonable defaults, but if you are creating a launcher you will generally want to more than that, such as automatically installing and starting bundles when you start the framework instance.
+The default Felix launcher defines reusable functionality to automatically install and/or start bundles upon framework startup;
+see the <a href="apache-felix-framework-usage-documentation.html#_configuring_the_framework" class="page">usage document</a> for more information on configuring the Felix framework and on the various configuration properties.</p>
+</div>
+<div class="paragraph">
+<p>The remainder of this section describes how the standard Felix launcher works as well as how to create a custom launcher.</p>
+</div>
+<div class="sect2">
+<h3 id="_standard_felix_framework_launcher"><a class="anchor" href="#_standard_felix_framework_launcher"></a>Standard Felix Framework Launcher</h3>
+<div class="paragraph">
+<p>The standard Felix framework launcher is very simple and is not intended to solve every possible requirement;
+it is intended to work for most standard situations.
+Most special launching requirements should be resolved by creating a custom launcher.
+This section describes how the standard launcher works.
+The following code represents the complete <code>main()</code> method of the standard launcher, each numbered comment will be described in more detail below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static void main(String[] args) throws Exception
+{
+    // (1) Check for command line arguments and verify usage.
+    String bundleDir = null;
+    String cacheDir = null;
+    boolean expectBundleDir = false;
+    for (int i = 0; i &lt; args.length; i++)
+    {
+        if (args[i].equals(BUNDLE_DIR_SWITCH))
+        {
+            expectBundleDir = true;
+        }
+        else if (expectBundleDir)
+        {
+            bundleDir = args[i];
+            expectBundleDir = false;
+        }
+        else
+        {
+            cacheDir = args[i];
+        }
+    }
 
-<p>Each activator instance passed into the constructor effectively becomes part of the system bundle. This means that the <code>start()</code>/<code>stop()</code> methods of each activator instance in the list gets invoked when the system bundle's activator <code>start()</code>/<code>stop()</code> methods gets invoked, respectively. Each activator instance will be given the system bundle's <code>BundleContext</code> object so that they can interact with the framework. Consider following snippet of a bundle activator:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">HostActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    if ((args.length &gt; 3) || (expectBundleDir &amp;&amp; bundleDir == null))
+    {
+        System.out.println("Usage: [-b &lt;bundle-deploy-dir&gt;] [&lt;bundle-cache-dir&gt;]");
+        System.exit(0);
+    }
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
-    <span class="p">}</span>
+    // (2) Load system properties.
+    Main.loadSystemProperties();
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="p">}</span>
+    // (3) Read configuration properties.
+    Properties configProps = Main.loadConfigProperties();
+    if (configProps == null)
+    {
+        System.err.println("No " + CONFIG_PROPERTIES_FILE_VALUE + " found.");
+        configProps = new Properties();
+    }
 
-    <span class="n">public</span> <span class="n">Bundle</span><span class="p">[]</span> <span class="n">getBundles</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">m_context</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="k">return</span> <span class="n">m_context</span><span class="p">.</span><span class="n">getBundles</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
+    // (4) Copy framework properties from the system properties.
+    Main.copySystemProperties(configProps);
 
+    // (5) Use the specified auto-deploy directory over default.
+    if (bundleDir != null)
+    {
+        configProps.setProperty(AutoProcessor.AUTO_DEPLOY_DIR_PROPERY, bundleDir);
+    }
 
+    // (6) Use the specified bundle cache directory over default.
+    if (cacheDir != null)
+    {
+        configProps.setProperty(Constants.FRAMEWORK_STORAGE, cacheDir);
+    }
+
+    // (7) Add a shutdown hook to clean stop the framework.
+    String enableHook = configProps.getProperty(SHUTDOWN_HOOK_PROP);
+    if ((enableHook == null) || !enableHook.equalsIgnoreCase("false"))
+    {
+        Runtime.getRuntime().addShutdownHook(new Thread("Felix Shutdown Hook") {
+            public void run()
+            {
+                try
+                {
+                    if (m_fwk != null)
+                    {
+                        m_fwk.stop();
+                        m_fwk.waitForStop(0);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.err.println("Error stopping framework: " + ex);
+                }
+            }
+        });
+    }
+
+    try
+    {
+        // (8) Create an instance and initialize the framework.
+        FrameworkFactory factory = getFrameworkFactory();
+        m_fwk = factory.newFramework(configProps);
+        m_fwk.init();
+        // (9) Use the system bundle context to process the auto-deploy
+        // and auto-install/auto-start properties.
+        AutoProcessor.process(configProps, m_fwk.getBundleContext());
+        // (10) Start the framework.
+        m_fwk.start();
+        // (11) Wait for framework to stop to exit the VM.
+        m_fwk.waitForStop(0);
+        System.exit(0);
+    }
+    catch (Exception ex)
+    {
+        System.err.println("Could not create framework: " + ex);
+        ex.printStackTrace();
+        System.exit(0);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The general steps of the standard launcher are quite straightforward:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The launcher supports setting the auto-deploy directory (with the <code>-b</code> switch) and setting the bundle cache path with a single argument, so check for this and issue a usage message it there are more than one arguments.</p>
+</li>
+<li>
+<p>Load any system properties specified in the <code>system.properties</code> file;
+this file is typically located in the <code>conf/</code> directory of the Felix installation directory, but it can be specified directly using the <code>felix.system.properties</code> system property.
+This file is not needed to launch Felix and is provided merely for convenience when system properties must be specified.
+The file is a standard Java properties file, but it also supports property substitution using <code>$\{&lt;property-name</code>} syntax.
+Property substitution can be nested;
+only system properties will be used for substitution.</p>
+</li>
+<li>
+<p>Load any configuration properties specified in the <code>config.properties</code> file;
+this file is typically located in the <code>conf/</code> directory of the Felix installation directory, but it can be specified directly using the <code>felix.config.properties</code> system property.
+This file is used to configure the framework instance created by the launcher.
+The file is a standard Java properties file, but it also supports property substitution using "<code>$\{&lt;property-name&gt;</code>}" syntax.
+Property substitution can be nested;
+configuration and system properties will be used for substitution with configuration properties having precedence.</p>
+</li>
+<li>
+<p>For convenience, any configuration properties that are set as system properties are copied into the set of configuration properties.
+This provide an easy way to add to or override configuration properties specified in the <code>config.properties</code> file, since the Felix instance will never look at system properties for configuration.</p>
+</li>
+<li>
+<p>If the <code>-b</code> switch was used to specify an auto-deploy directory, then use that to set the value of <code>felix.auto.deploy.dir</code>.</p>
+</li>
+<li>
+<p>If a single command-line argument is specified, then use that to set the value of <code>org.osgi.framework.storage</code>;
+relative paths are relative to the current directory unless the <code>felix.cache.rootdir</code> property is set.</p>
+</li>
+<li>
+<p>Add a shutdown hook to cleanly stop the framework, unless the hook is disabled.</p>
+</li>
+<li>
+<p>Create a framework instance using the <code>FrameworkFactory</code> passing in the configuration properties, then initialize the factory instance;
+see the <a href="#_custom-launcher">custom launcher example</a> below to see how the META-INF/services <code>FrameworkFactory</code> is obtained.</p>
+</li>
+<li>
+<p></p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use <code>org.apache.felix.main.AutoProcessor</code>, which will automatically deploy any bundles in the auto-deploy directory as well as bundles specified in the <code>felix.auto.install</code> and <code>felix.auto.start</code> configuration properties during framework startup to automatically install and/or start bundles;
+see the usage document for more information <a href="apache-felix-framework-usage-documentation.html#_configuring_the_framework" class="page">configuration properties</a> and [bundle auto-deploy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Felix Framework Usage Documentation#auto-deploy].</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>Invoke <code>waitForStop()</code> to wait for the framework to stop to force the VM to exit;
+this is necessary because the framework never calls <code>System.exit()</code> and some libraries (e.g., Swing) create threads that will not allow the VM to exit.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The framework is not active until the <code>start()</code> method is called.
+If no shell bundles are installed and started or if there is difficulty locating the shell bundles specified in the auto-start property, then it will appear as if the framework is hung, but it is actually running without any way to interact with it since the shell bundles provide the only means of interaction.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_framework_launcher"><a class="anchor" href="#_custom_framework_launcher"></a>Custom Framework Launcher</h3>
+<div class="paragraph">
+<p>This section creates a bare-bones launcher to demonstrate the minimum requirements for creating an interactive launcher for the Felix framework.
+This example uses the standard Gogo shell bundles for interactivity, but any other bundles could be used instead.
+This example launcher project has the following directory structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text"> launcher/
+    lib/
+       org.apache.felix.main-3.0.0.jar
+    bundle/
+       org.apache.felix.gogo.command-0.6.0.jar
+       org.apache.felix.gogo.runtime-0.6.0.jar
+       org.apache.felix.gogo.shell-0.6.0.jar
+    src/
+       example/
+          Main.java</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>lib/</code> directory contains Felix' main JAR file, which also contains the OSGi core interfaces.
+The main JAR file is used so that we can reuse the default launcher&#8217;s auto-install/auto-start configuration property handling;
+if these capabilities are not needed, then it would be possible to use the framework JAR file instead of the main JAR file.
+The <code>bundle/</code> directory contains the shell service and textual shell interface bundles that will be used for interacting with the framework instance.
+Note: If you do not launch the framework with interactive bundles, it will appear as if the framework instance is hung, but it is actually just sitting there waiting for someone to tell it to do something.
+The <code>src/example/</code> directory contains the following <code>Main.java</code> file, which is a very simplistic framework launcher.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package example;
+
+import java.io.*;
+import org.osgi.framework.launch.*;
+import org.apache.felix.main.AutoProcessor;
+
+public class Main
+{
+    private static Framework m_fwk = null;
+
+    public static void main(String[] argv) throws Exception
+    {
+        // Print welcome banner.
+        System.out.println("\nWelcome to My Launcher");
+        System.out.println("======================\n");
+
+        try
+        {
+            m_fwk = getFrameworkFactory().newFramework(null);
+            m_fwk.init();
+            AutoProcessor.process(null, m_fwk.getBundleContext());
+            m_fwk.start();
+            m_fwk.waitForStop(0);
+            System.exit(0);
+        }
+        catch (Exception ex)
+        {
+            System.err.println("Could not create framework: " + ex);
+            ex.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+    private static FrameworkFactory getFrameworkFactory() throws Exception
+    {
+        java.net.URL url = Main.class.getClassLoader().getResource(
+            "META-INF/services/org.osgi.framework.launch.FrameworkFactory");
+        if (url != null)
+        {
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            try
+            {
+                for (String s = br.readLine(); s != null; s = br.readLine())
+                {
+                    s = s.trim();
+                    // Try to load first non-empty, non-commented line.
+                    if ((s.length() &gt; 0) &amp;&amp; (s.charAt(0) != '#'))
+                    {
+                        return (FrameworkFactory) Class.forName(s).newInstance();
+                    }
+                }
+            }
+            finally
+            {
+                if (br != null) br.close();
+            }
+        }
+
+        throw new Exception("Could not find framework factory.");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This launcher relies on the default behavior of <code>AutoProcessor</code> to automatically deploy the shell bundles.
+This simple, generic launcher provides a good starting point if the default Felix launcher is not sufficient.
+Since very few configuration properties are specified, the default values are used.
+For the bundle auto-deploy directory, "<code class="code">bundle</code>" in the current directory is used, while for the framework bundle cache, "<code class="code">felix-cache</code>" in the current directory is used.</p>
+</div>
+<div class="paragraph">
+<p>By breaking down the above source code into small chunks, it is quite easy to see what is going on.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">             m_fwk = getFrameworkFactory().newFramework(null);
+             m_fwk.init()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These steps get a the framework factory service and use it to create a framework instance with a default configuration.
+Once the framework instance is created, it is initialized with <code>init()</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">             AutoProcessor.process(null, m_fwk.getBundleContext());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>AutorProcessor</code> will automatically deploy bundles in the auto-deploy directory and any referenced from the auto-install/start properties.
+Since we are using an empty configuration, the auto-deploy directory is the <code>bundle</code> directory in the current directory and there are no auto properties.
+Therefore, in this case, the shell bundles will be installed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">             m_fwk.start();
+             m_fwk.waitForStop(0);
+             System.exit(0);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These final steps start the framework and cause the launching application thread to wait for the framework to stop and when it does the launching thread calls <code>System.exit()</code> to make sure the VM actually exits.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">     private static FrameworkFactory getFrameworkFactory() throws Exception
+     {
+         ...
+     }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method retrieves the framework factory service by doing a META-INF/services resource lookup, which it can use to obtain the concrete class name for the factory.
+If you are using Java 6, then you can use the <code>ServiceLoader</code> API in the JRE to further simplify the factory service lookup.</p>
+</div>
+<div class="paragraph">
+<p>The following command compiles the launcher when run from the root directory of the launcher project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> javac -d . -classpath lib/org.apache.felix.main-3.0.0.jar src/example/Main.java</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After executing this command, an <code>example/</code> directory is created in the current directory, which contains the generated class file.
+The following command executes the simple launcher when run from the root directory of the launcher project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"> java -cp .:lib/org.apache.felix.main-3.0.0.jar example.Main</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After executing this command, a "<code class="code">felix-cache/</code>" directory is created that contains the cached bundles, which were installed from the <code>bundle/</code> directory.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embedding_the_felix_framework"><a class="anchor" href="#_embedding_the_felix_framework"></a>Embedding the Felix Framework</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Embedding the Felix framework into a host application is a simple way to provide a sophisticated extensibility mechanism (i.e., a plugin system) to the host application.
+Embedding the Felix framework is very similar to launching it as described above, the main difference is that the host application typically wants to interact with the framework instance and/or installed bundles/services from the outside.
+This is fairly easy to achieve, but there are some subtle issues to understand.
+This section presents the mechanisms for embedding Felix into a host application and the issues in doing so.</p>
+</div>
+<div class="sect2">
+<h3 id="_hostfelix_interaction"><a class="anchor" href="#_hostfelix_interaction"></a>Host/Felix Interaction</h3>
+<div class="paragraph">
+<p>In the section on <a href="#_launching">launching</a> the framework above, the <code>Felix</code> class accepts a configuration property called <code>felix.systembundle.activators</code>, which is a list of bundle activator instances.
+These bundle activator instances provide a convenient way for host applications to interact with the Felix framework.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<strong>WARNING</strong> The <code>felix.systembundle.activators</code> configuration property is specific to the Felix framework implementation.
+If you want your code to work with other framework implementations, you should call <code>init()</code> on the framework instance and use <code>getBundleContext()</code> directly.
+Otherwise, the approach would be very similar.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Each activator instance passed into the constructor effectively becomes part of the system bundle.
+This means that the <code>start()</code>/<code>stop()</code> methods of each activator instance in the list gets invoked when the system bundle&#8217;s activator <code>start()</code>/<code>stop()</code> methods gets invoked, respectively.
+Each activator instance will be given the system bundle&#8217;s <code>BundleContext</code> object so that they can interact with the framework.
+Consider following snippet of a bundle activator:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class HostActivator implements BundleActivator
+{
+    private BundleContext m_context = null;
+
+    public void start(BundleContext context)
+    {
+        m_context = context;
+    }
+
+    public void stop(BundleContext context)
+    {
+        m_context = null;
+    }
+
+    public Bundle[] getBundles()
+    {
+        if (m_context != null)
+        {
+            return m_context.getBundles();
+        }
+        return null;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Given the above bundle activator, it is now possible to embed the Felix framework into a host application and interact with it as the following snippet illustrates:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">HostApplication</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class HostApplication
+{
+    private HostActivator m_activator = null;
+    private Felix m_felix = null;
 
-    <span class="n">public</span> <span class="n">HostApplication</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="n">map</span><span class="p">.</span>
-        <span class="n">Map</span> <span class="n">config</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
-        <span class="o">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
-        <span class="n">m_activator</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HostActivator</span><span class="p">();</span>
-        <span class="n">List</span> <span class="n">list</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-        <span class="n">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
-        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="p">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
+    public HostApplication()
+    {
+        // Create a configuration property map.
+        Map config = new HashMap();
+        // Create host activator;
+        m_activator = new HostActivator();
+        List list = new ArrayList();
+        list.add(m_activator);
+        configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, list);
 
-        <span class="k">try</span>
-        <span class="p">{</span>
-            <span class="o">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
-            <span class="o">//</span> <span class="n">our</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
-            <span class="n">m_felix</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
-            <span class="o">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="p">.</span>
-            <span class="n">m_felix</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+        try
+        {
+            // Now create an instance of the framework with
+            // our configuration properties.
+            m_felix = new Felix(config);
+            // Now start Felix instance.
+            m_felix.start();
+        }
+        catch (Exception ex)
+        {
+            System.err.println("Could not create framework: " + ex);
+            ex.printStackTrace();
+        }
+    }
 
-    <span class="n">public</span> <span class="n">Bundle</span><span class="p">[]</span> <span class="n">getInstalledBundles</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Use</span> <span class="n">the</span> <span class="n">system</span> <span class="n">bundle</span> <span class="n">activator</span> <span class="n">to</span> <span class="n">gain</span> <span class="n">external</span>
-        <span class="o">//</span> <span class="n">access</span> <span class="n">to</span> <span class="n">the</span> <span class="n">set</span> <span class="n">of</span> <span class="n">installed</span> <span class="n">bundles</span><span class="p">.</span>
-        <span class="k">return</span> <span class="n">m_activator</span><span class="p">.</span><span class="n">getBundles</span><span class="p">();</span>
-    <span class="p">}</span>
+    public Bundle[] getInstalledBundles()
+    {
+        // Use the system bundle activator to gain external
+        // access to the set of installed bundles.
+        return m_activator.getBundles();
+    }
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">shutdownApplication</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
-        <span class="o">//</span> <span class="n">host</span> <span class="n">application</span><span class="p">.</span>
-        <span class="n">m_felix</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
-        <span class="n">m_felix</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Notice how the <code>HostApplication.getInstalledBundles()</code> method uses its activator instance to get access to the system bundle's context in order to interact with the embedded Felix framework instance. This approach provides the foundation for all interaction between the host application and the embedded framework instance.</p>
-<h2 id="providing-host-application-services">Providing Host Application Services<a class="headerlink" href="#providing-host-application-services" title="Permanent link">&para;</a></h2>
-<p>Providing services from the host application to bundles inside the embedded Felix framework instance follows the basic approach laid out in <a href="">above</a>. The main complication for providing a host application service to bundles is the fact that both the host application and the bundles must be using the same class definitions for the service interface classes. Since the host application cannot import classes from a bundle, this means that the service interface classes <em>must</em> be accessible on the class path, typically as part of the host application itself. The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it. This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
+    public void shutdownApplication()
+    {
+        // Shut down the felix framework when stopping the
+        // host application.
+        m_felix.stop();
+        m_felix.waitForStop(0);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice how the <code>HostApplication.getInstalledBundles()</code> method uses its activator instance to get access to the system bundle&#8217;s context in order to interact with the embedded Felix framework instance.
+This approach provides the foundation for all interaction between the host application and the embedded framework instance.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_providing_host_application_services"><a class="anchor" href="#_providing_host_application_services"></a>Providing Host Application Services</h3>
+<div class="paragraph">
+<p>Providing services from the host application to bundles inside the embedded Felix framework instance follows the basic approach laid out in <a href="#<em>hostfelix_interaction">above</a>.
+The main complication for providing a host application service to bundles is the fact that both the host application and the bundles must be using the same class definitions for the service interface classes.
+Since the host application cannot import classes from a bundle, this means that the service interface classes _must</em> be accessible on the class path, typically as part of the host application itself.
+The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it.
+This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
+</div>
+<div class="paragraph">
 <p>Consider the follow simple property lookup service:</p>
-<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">;</span>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package host.service.lookup;
 
-<span class="n">public</span> <span class="n">interface</span> <span class="n">Lookup</span>
-<span class="p">{</span>
-    <span class="n">public</span> <span class="n">Object</span> <span class="n">lookup</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
+public interface Lookup
+{
+    public Object lookup(String name);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This package is simply part of the host application, which is potentially packaged into a JAR file and started with the "<code class="code">java -jar</code>" command.
+Now consider the following host application bundle activator, which will be used to register/unregister the property lookup service when the embedded framework instance starts/stops:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package host.core;
 
+import java.util.Map;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import host.service.lookup;
 
-<p>This package is simply part of the host application, which is potentially packaged into a JAR file and started with the "<code>java -jar</code>" command. Now consider the following host application bundle activator, which will be used to register/unregister the property lookup service when the embedded framework instance starts/stops:</p>
-<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
+public class HostActivator implements BundleActivator
+{
+    private Map m_lookupMap = null;
+    private BundleContext m_context = null;
+    private ServiceRegistration m_registration = null;
 
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Map</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleActivator</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceRegistration</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">;</span>
+    public HostActivator(Map lookupMap)
+    {
+        // Save a reference to the service's backing store.
+        m_lookupMap = lookupMap;
+    }
 
-<span class="n">public</span> <span class="n">class</span> <span class="n">HostActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_lookupMap</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">m_registration</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    public void start(BundleContext context)
+    {
+        // Save a reference to the bundle context.
+        m_context = context;
+        // Create a property lookup service implementation.
+        Lookup lookup = new Lookup() {
+            public Object lookup(String name)
+            {
+                return m_lookupMap.get(name);
+            }
+        };
+        // Register the property lookup service and save
+        // the service registration.
+        m_registration = m_context.registerService(
+            Lookup.class.getName(), lookup, null);
+    }
 
-    <span class="n">public</span> <span class="n">HostActivator</span><span class="p">(</span><span class="n">Map</span> <span class="n">lookupMap</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Save</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">service</span><span class="o">&#39;</span><span class="n">s</span> <span class="n">backing</span> <span class="n">store</span><span class="p">.</span>
-        <span class="n">m_lookupMap</span> <span class="p">=</span> <span class="n">lookupMap</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Save</span> <span class="n">a</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">context</span><span class="p">.</span>
-        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
-        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span> <span class="n">implementation</span><span class="p">.</span>
-        <span class="n">Lookup</span> <span class="n">lookup</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Lookup</span><span class="p">()</span> <span class="p">{</span>
-            <span class="n">public</span> <span class="n">Object</span> <span class="n">lookup</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="k">return</span> <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">};</span>
-        <span class="o">//</span> <span class="n">Register</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span> <span class="n">and</span> <span class="n">save</span>
-        <span class="o">//</span> <span class="n">the</span> <span class="n">service</span> <span class="n">registration</span><span class="p">.</span>
-        <span class="n">m_registration</span> <span class="p">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span>
-            <span class="n">Lookup</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">lookup</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Unregister</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span><span class="p">.</span>
-        <span class="n">m_registration</span><span class="p">.</span><span class="n">unregister</span><span class="p">();</span>
-        <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
+    public void stop(BundleContext context)
+    {
+        // Unregister the property lookup service.
+        m_registration.unregister();
+        m_context = null;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Given the above host application bundle activator, the following code snippet shows how the host application could create an embedded version of the Felix framework and provide the property lookup service to installed bundles:</p>
-<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package host.core;
 
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">List</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">ArrayList</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Map</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">HashMap</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">.</span><span class="n">Lookup</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Felix</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">FelixConstants</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Constants</span><span class="p">;</span>
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import host.service.lookup.Lookup;
+import org.apache.felix.framework.Felix;
+import org.apache.felix.framework.util.FelixConstants;
+import org.osgi.framework.Constants;
 
-<span class="n">public</span> <span class="n">class</span> <span class="n">HostApplication</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Map</span> <span class="n">m_lookupMap</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
+public class HostApplication
+{
+    private HostActivator m_activator = null;
+    private Felix m_felix = null;
+    private Map m_lookupMap = new HashMap();
 
-    <span class="n">public</span> <span class="n">HostApplication</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Initialize</span> <span class="n">the</span> <span class="n">map</span> <span class="k">for</span> <span class="n">the</span> <span class="n">property</span> <span class="n">lookup</span> <span class="n">service</span><span class="p">.</span>
-        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name1</span>&quot;<span class="p">,</span> &quot;<span class="n">value1</span>&quot;<span class="p">);</span>
+    public HostApplication()
+    {
+        // Initialize the map for the property lookup service.
+        m_lookupMap.put("name1", "value1");
 
-        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name2</span>&quot;<span class="p">,</span> &quot;<span class="n">value2</span>&quot;<span class="p">);</span>
-        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name3</span>&quot;<span class="p">,</span> &quot;<span class="n">value3</span>&quot;<span class="p">);</span>
-        <span class="n">m_lookupMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span>&quot;<span class="n">name4</span>&quot;<span class="p">,</span> &quot;<span class="n">value4</span>&quot;<span class="p">);</span>
+        m_lookupMap.put("name2", "value2");
+        m_lookupMap.put("name3", "value3");
+        m_lookupMap.put("name4", "value4");
 
-        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="n">map</span><span class="p">.</span>
-        <span class="n">Map</span> <span class="n">configMap</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
-        <span class="o">//</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">host</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">interface</span> <span class="n">package</span><span class="p">.</span>
-        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">FRAMEWORK_SYSTEMPACKAGES_EXTRA</span><span class="p">,</span>
-            &quot;<span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">lookup</span><span class="p">;</span> <span class="n">version</span><span class="p">=</span>1<span class="p">.</span>0<span class="p">.</span>0&quot;<span class="p">);</span>
-        <span class="o">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
-        <span class="n">m_activator</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HostActivator</span><span class="p">(</span><span class="n">m_lookupMap</span><span class="p">);</span>
-        <span class="n">List</span> <span class="n">list</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-        <span class="n">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
-        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="p">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
+        // Create a configuration property map.
+        Map configMap = new HashMap();
+        // Export the host provided service interface package.
+        configMap.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA,
+            "host.service.lookup; version=1.0.0");
+        // Create host activator;
+        m_activator = new HostActivator(m_lookupMap);
+        List list = new ArrayList();
+        list.add(m_activator);
+        configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, list);
 
-        <span class="k">try</span>
-        <span class="p">{</span>
-            <span class="o">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
-            <span class="o">//</span> <span class="n">our</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
-            <span class="n">m_felix</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">configMap</span><span class="p">);</span>
-            <span class="o">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="p">.</span>
-            <span class="n">m_felix</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+        try
+        {
+            // Now create an instance of the framework with
+            // our configuration properties.
+            m_felix = new Felix(configMap);
+            // Now start Felix instance.
+            m_felix.start();
+        }
+        catch (Exception ex)
+        {
+            System.err.println("Could not create framework: " + ex);
+            ex.printStackTrace();
+        }
+    }
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">shutdownApplication</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
-        <span class="o">//</span> <span class="n">host</span> <span class="n">application</span><span class="p">.</span>
-        <span class="n">m_felix</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
-        <span class="n">m_felix</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
+    public void shutdownApplication()
+    {
+        // Shut down the felix framework when stopping the
+        // host application.
+        m_felix.stop();
+        m_felix.waitForStop(0);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Rather than having the host application bundle activator register the service, it is also possible for the the host application to simply get the bundle context from the bundle activator and register the service directly, but the presented approach is perhaps a little cleaner since it allows the host application to register/unregister the service when the system bundle starts/stops.</p>
-<h2 id="using-services-provided-by-bundles">Using Services Provided by Bundles<a class="headerlink" href="#using-services-provided-by-bundles" title="Permanent link">&para;</a></h2>
-<p>Using services provided by bundles follows the same general approach of using a host application bundle activator. The main complication for the host application using a service from a bundle is the fact that both the host application and the bundle must be using the same class definitions for the service interface classes. Since the host application cannot import classes from a bundle, this means that the service interface classes <em>must</em> be accessible on the class path, typically as part of the host application itself. The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it. This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_services_provided_by_bundles"><a class="anchor" href="#_using_services_provided_by_bundles"></a>Using Services Provided by Bundles</h3>
+<div class="paragraph">
+<p>Using services provided by bundles follows the same general approach of using a host application bundle activator.
+The main complication for the host application using a service from a bundle is the fact that both the host application and the bundle must be using the same class definitions for the service interface classes.
+Since the host application cannot import classes from a bundle, this means that the service interface classes <em>must</em> be accessible on the class path, typically as part of the host application itself.
+The host application then must export the service interface package via the system bundle so that bundles installed into the embedded framework instance can import it.
+This is achieved using the <code>org.osgi.framework.system.packages.extra</code> configuration property previously presented.</p>
+</div>
+<div class="paragraph">
 <p>Consider the following simple command service interface for which bundles provide implementations, such as might be used to create an extensible interactive shell:</p>
-<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">command</span><span class="p">;</span>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package host.service.command;
 
-<span class="n">public</span> <span class="n">class</span> <span class="n">Command</span>
-<span class="p">{</span>
-    <span class="n">public</span> <span class="n">String</span> <span class="n">getName</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">String</span> <span class="n">getDescription</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">execute</span><span class="p">(</span><span class="n">String</span> <span class="n">commandline</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
+public class Command
+{
+    public String getName();
+    public String getDescription();
+    public boolean execute(String commandline);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This package is simply part of the host application, which is potentially packaged into a JAR file and started with the "<code class="code">java -jar</code>" command.
+Now consider the previously introduced host application bundle activator below, which simply provides access to the system bundle context:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package host.core;
 
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-<p>This package is simply part of the host application, which is potentially packaged into a JAR file and started with the "<code>java -jar</code>" command. Now consider the previously introduced host application bundle activator below, which simply provides access to the system bundle context:</p>
-<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
+public class HostActivator implements BundleActivator
+{
+    private BundleContext m_context = null;
 
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleActivator</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
+    public void start(BundleContext context)
+    {
+        m_context = context;
+    }
 
-<span class="n">public</span> <span class="n">class</span> <span class="n">HostActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    public void stop(BundleContext context)
+    {
+        m_context = null;
+    }
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">m_context</span> <span class="p">=</span> <span class="n">context</span><span class="p">;</span>
-    <span class="p">}</span>
+    public BundleContext getContext()
+    {
+        return m_context;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this bundle activator, the host application can use command services provided by bundles installed inside its embedded Felix framework instance.
+The following code snippet illustrates one possible approach:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package host.core;
 
-    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">m_context</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="p">}</span>
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import host.service.command.Command;
+import org.apache.felix.framework.Felix;
+import org.apache.felix.framework.util.FelixConstants;
+import org.apache.felix.framework.cache.BundleCache;
+import org.osgi.framework.Constants;
+import org.osgi.util.tracker.ServiceTracker;
 
-    <span class="n">public</span> <span class="n">BundleContext</span> <span class="n">getContext</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="n">m_context</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
+public class HostApplication
+{
+    private HostActivator m_activator = null;
+    private Felix m_felix = null;
+    private ServiceTracker m_tracker = null;
 
+    public HostApplication()
+    {
+        // Create a configuration property map.
+        Map configMap = new HashMap();
+        // Export the host provided service interface package.
+        configMap.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA,
+            "host.service.command; version=1.0.0");
+        // Create host activator;
+        m_activator = new HostActivator();
+        List list = new ArrayList();
+        list.add(m_activator);
+        configMap.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, list);
 
-<p>With this bundle activator, the host application can use command services provided by bundles installed inside its embedded Felix framework instance. The following code snippet illustrates one possible approach:</p>
-<div class="codehilite"><pre><span class="n">package</span> <span class="n">host</span><span class="p">.</span><span class="n">core</span><span class="p">;</span>
+        try
+        {
+            // Now create an instance of the framework with
+            // our configuration properties.
+            m_felix = new Felix(configMap);
+            // Now start Felix instance.
+            m_felix.start();
+        }
+        catch (Exception ex)
+        {
+            System.err.println("Could not create framework: " + ex);
+            ex.printStackTrace();
+        }
 
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">List</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">ArrayList</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Map</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">command</span><span class="p">.</span><span class="n">Command</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Felix</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">FelixConstants</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">cache</span><span class="p">.</span><span class="n">BundleCache</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">Constants</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">tracker</span><span class="p">.</span><span class="n">ServiceTracker</span><span class="p">;</span>
+        m_tracker = new ServiceTracker(
+            m_activator.getContext(), Command.class.getName(), null);
+        m_tracker.open();
+    }
 
-<span class="n">public</span> <span class="n">class</span> <span class="n">HostApplication</span>
-<span class="p">{</span>
-    <span class="n">private</span> <span class="n">HostActivator</span> <span class="n">m_activator</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">Felix</span> <span class="n">m_felix</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="n">private</span> <span class="n">ServiceTracker</span> <span class="n">m_tracker</span> <span class="p">=</span> <span class="n">null</span><span class="p">;</span>
+    public boolean execute(String name, String commandline)
+    {
+        // See if any of the currently tracked command services
+        // match the specified command name, if so then execute it.
+        Object[] services = m_tracker.getServices();
+        for (int i = 0; (services != null) &amp;&amp; (i &lt; services.length); i++)
+        {
+            try
+            {
+                if (((Command) services[i]).getName().equals(name))
+                {
+                    return ((Command) services[i]).execute(commandline);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Since the services returned by the tracker could become
+                // invalid at any moment, we will catch all exceptions, log
+                // a message, and then ignore faulty services.
+                System.err.println(ex);
+            }
+        }
+        return false;
+    }
 
-    <span class="n">public</span> <span class="n">HostApplication</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">configuration</span> <span class="n">property</span> <span class="n">map</span><span class="p">.</span>
-        <span class="n">Map</span> <span class="n">configMap</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="p">();</span>
-        <span class="o">//</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">host</span> <span class="n">provided</span> <span class="n">service</span> <span class="n">interface</span> <span class="n">package</span><span class="p">.</span>
-        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">Constants</span><span class="p">.</span><span class="n">FRAMEWORK_SYSTEMPACKAGES_EXTRA</span><span class="p">,</span>
-            &quot;<span class="n">host</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">command</span><span class="p">;</span> <span class="n">version</span><span class="p">=</span>1<span class="p">.</span>0<span class="p">.</span>0&quot;<span class="p">);</span>
-        <span class="o">//</span> <span class="n">Create</span> <span class="n">host</span> <span class="n">activator</span><span class="p">;</span>
-        <span class="n">m_activator</span> <span class="p">=</span> <span class="n">new</span> <span class="n">HostActivator</span><span class="p">();</span>
-        <span class="n">List</span> <span class="n">list</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-        <span class="n">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">m_activator</span><span class="p">);</span>
-        <span class="n">configMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">FelixConstants</span><span class="p">.</span><span class="n">SYSTEMBUNDLE_ACTIVATORS_PROP</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span>
-
-        <span class="k">try</span>
-        <span class="p">{</span>
-            <span class="o">//</span> <span class="n">Now</span> <span class="n">create</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">the</span> <span class="n">framework</span> <span class="n">with</span>
-            <span class="o">//</span> <span class="n">our</span> <span class="n">configuration</span> <span class="k">properties</span><span class="p">.</span>
-            <span class="n">m_felix</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Felix</span><span class="p">(</span><span class="n">configMap</span><span class="p">);</span>
-            <span class="o">//</span> <span class="n">Now</span> <span class="n">start</span> <span class="n">Felix</span> <span class="n">instance</span><span class="p">.</span>
-            <span class="n">m_felix</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Could</span> <span class="n">not</span> <span class="n">create</span> <span class="n">framework</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
-            <span class="n">ex</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
-        <span class="p">}</span>
-
-        <span class="n">m_tracker</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ServiceTracker</span><span class="p">(</span>
-            <span class="n">m_activator</span><span class="p">.</span><span class="n">getContext</span><span class="p">(),</span> <span class="n">Command</span><span class="p">.</span><span class="n">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">null</span><span class="p">);</span>
-        <span class="n">m_tracker</span><span class="p">.</span><span class="n">open</span><span class="p">();</span>
-    <span class="p">}</span>
-
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">execute</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">,</span> <span class="n">String</span> <span class="n">commandline</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">See</span> <span class="k">if</span> <span class="n">any</span> <span class="n">of</span> <span class="n">the</span> <span class="n">currently</span> <span class="n">tracked</span> <span class="n">command</span> <span class="n">services</span>
-        <span class="o">//</span> <span class="n">match</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">command</span> <span class="n">name</span><span class="p">,</span> <span class="k">if</span> <span class="n">so</span> <span class="n">then</span> <span class="n">execute</span> <span class="n">it</span><span class="p">.</span>
-        <span class="n">Object</span><span class="p">[]</span> <span class="n">services</span> <span class="p">=</span> <span class="n">m_tracker</span><span class="p">.</span><span class="n">getServices</span><span class="p">();</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="nb">i</span> <span class="p">=</span> 0<span class="p">;</span> <span class="p">(</span><span class="n">services</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nb">i</span> <span class="o">&lt;</span> <span class="n">services</span><span class="p">.</span><span class="nb">length</span><span class="p">);</span> <span class="nb">i</span><span class="o">++</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="k">try</span>
-            <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(((</span><span class="n">Command</span><span class="p">)</span> <span class="n">services</span><span class="p">[</span><span class="nb">i</span><span class="p">]).</span><span class="n">getName</span><span class="p">().</span><span class="n">equals</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-                <span class="p">{</span>
-                    <span class="k">return</span> <span class="p">((</span><span class="n">Command</span><span class="p">)</span> <span class="n">services</span><span class="p">[</span><span class="nb">i</span><span class="p">]).</span><span class="n">execute</span><span class="p">(</span><span class="n">commandline</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-            <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="o">//</span> <span class="n">Since</span> <span class="n">the</span> <span class="n">services</span> <span class="n">returned</span> <span class="n">by</span> <span class="n">the</span> <span class="n">tracker</span> <span class="n">could</span> <span class="n">become</span>
-                <span class="o">//</span> <span class="n">invalid</span> <span class="n">at</span> <span class="n">any</span> <span class="n">moment</span><span class="p">,</span> <span class="n">we</span> <span class="n">will</span> <span class="k">catch</span> <span class="n">all</span> <span class="n">exceptions</span><span class="p">,</span> <span class="nb">log</span>
-                <span class="o">//</span> <span class="n">a</span> <span class="n">message</span><span class="p">,</span> <span class="n">and</span> <span class="n">then</span> <span class="n">ignore</span> <span class="n">faulty</span> <span class="n">services</span><span class="p">.</span>
-                <span class="n">System</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">ex</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="n">public</span> <span class="n">void</span> <span class="n">shutdownApplication</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="o">//</span> <span class="n">Shut</span> <span class="n">down</span> <span class="n">the</span> <span class="n">felix</span> <span class="n">framework</span> <span class="n">when</span> <span class="n">stopping</span> <span class="n">the</span>
-        <span class="o">//</span> <span class="n">host</span> <span class="n">application</span><span class="p">.</span>
-        <span class="n">m_felix</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
-        <span class="n">m_felix</span><span class="p">.</span><span class="n">waitForStop</span><span class="p">(</span>0<span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
+    public void shutdownApplication()
+    {
+        // Shut down the felix framework when stopping the
+        // host application.
+        m_felix.stop();
+        m_felix.waitForStop(0);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>The above example is overly simplistic with respect to concurrency issues and error conditions, but it demonstrates the overall approach for using bundle-provided services from the host application.</p>
-<h3 id="using-bundle-services-via-reflection">Using Bundle Services via Reflection<a class="headerlink" href="#using-bundle-services-via-reflection" title="Permanent link">&para;</a></h3>
-<p>It possible for the host application to use services provided by bundles without having access to the service interface classes and thus not needing to put the service interface classes on the class path. To do this, the host application uses the same general approach to acquire the system bundle context object, which it can use to look up service objects. Using either an LDAP filter or the service interface class name, the host application can retrieve the service object and then use standard Java reflection to invoke methods on the service object.</p>
-<h3 id="other-approaches">Other Approaches<a class="headerlink" href="#other-approaches" title="Permanent link">&para;</a></h3>
+</div>
+<div class="sect3">
+<h4 id="_using_bundle_services_via_reflection"><a class="anchor" href="#_using_bundle_services_via_reflection"></a>Using Bundle Services via Reflection</h4>
+<div class="paragraph">
+<p>It possible for the host application to use services provided by bundles without having access to the service interface classes and thus not needing to put the service interface classes on the class path.
+To do this, the host application uses the same general approach to acquire the system bundle context object, which it can use to look up service objects.
+Using either an LDAP filter or the service interface class name, the host application can retrieve the service object and then use standard Java reflection to invoke methods on the service object.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_other_approaches"><a class="anchor" href="#_other_approaches"></a>Other Approaches</h4>
+<div class="paragraph">
 <p>The <a href="http://code.google.com/p/transloader/">Transloader</a> project is another attempt at dealing with issues of classes loaded from different class loaders and may be of interest.</p>
-<h1 id="caveat">Caveat<a class="headerlink" href="#caveat" title="Permanent link">&para;</a></h1>
-<p>The code in this document has not been thoroughly tested nor even compiled and may be out of date with respect to the current Felix source code. If you find errors please report them so the that they can be corrected.</p>
-<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h2>
-<p>Subscribe to the Felix users mailing list by sending a message to <a href="">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [users@felix.apache.org|mailto:users@felix.apache.org].</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1712598 by cziegeler on Wed, 4 Nov 2015 17:48:20 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_caveat"><a class="anchor" href="#_caveat"></a>Caveat</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The code in this document has not been thoroughly tested nor even compiled and may be out of date with respect to the current Felix source code.
+If you find errors please report them so the that they can be corrected.</p>
+</div>
+<div class="sect2">
+<h3 id="_feedback"><a class="anchor" href="#_feedback"></a>Feedback</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>;
+after subscribing, email questions or feedback to [<a href="mailto:users@felix.apache.org">users@felix.apache.org</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mailto:users@felix.apache.org].</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

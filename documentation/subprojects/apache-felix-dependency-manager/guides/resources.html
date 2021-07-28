@@ -1,185 +1,812 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Dependency Manager - Resource adapters</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dependency Manager - Resource adapters :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-dependency-manager/guides/resources.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <link rel="icon" href="../../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
-      </div>
-
-      <h1>Dependency Manager - Resource adapters</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p>Resource adapters are a special type of adapters which can adapt a resource into an OSGi service. These resources can be all kinds of resources, e.g. bundle resources, files, database records, anything as long as it can be resolved though a URL.</p>
-<p>The diagram below illustrates the classes involved in the resource adapter pattern:</p>
-<p><img src="./diagrams/resources.png" alt="Resource adapters" style="width: 780px"/></p>
-<p>The yellow elements have to be implemented in order to use the pattern.</p>
-<p>A resource adapter is configured as follows:</p>
-<div class="codehilite"><pre><span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createResourceAdapter</span><span class="p">(</span>&quot;<span class="o">*</span><span class="p">.</span><span class="n">MF</span>&quot;<span class="p">,</span> <span class="n">true</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span> &quot;<span class="n">changed</span>&quot;<span class="p">)</span>
-            <span class="p">.</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">ManifestAdapter</span><span class="p">.</span><span class="n">class</span><span class="p">));</span>
-</pre></div>
-
-
-<p>The filter semantics depend on the resource repository. In this example the resource repository will be serving bundle resources, so we're using a standard file wildcard filter. As the filter specifies in this case the resource of interest is the bundle manifest. For each MANIFEST.MF found a new instance of ManifestAdapter will be created and registered. Each instance gets access to the resource by injecting the URL of the resource into the implementation object.</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">ManifestAdapter</span> <span class="p">{</span>
-
-    <span class="n">private</span> <span class="n">volatile</span> <span class="n">URL</span> <span class="n">url</span><span class="p">;</span>
-
-    <span class="n">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">started</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">url</span><span class="p">);</span>
-    <span class="p">}</span>
-
-<span class="p">}</span>
-</pre></div>
-
-
-<p>But how does DM know where to go looking for manifest files? We'll it does not automatically. It requires you to implement a resource repository component. For each resource adapter service DM launches a ResourceHandler service tracking the resources the resource adapter is interested in. A resource repository is responsible for tracking resources and notifying adding / changing and removal of the resources from the repository. Notifying these resource 'events' is done by invoking the corresponding method on the ResourceHandler service.</p>
-<p>We'll explain how to implement a resource repository by an example. The example resource repository is a bundle resource repository which as it's name says, is capable of serving bundle resources.</p>
-<p>A simplified bundle resource repository looks as follows:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">class</span> <span class="n">BundleResourceRepositoryImpl</span> <span class="p">{</span>
-
-    <span class="n">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">ServiceReference</span><span class="p">,</span> <span class="n">ResourceHandler</span><span class="o">&gt;</span> <span class="n">handlers</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ConcurrentHashMap</span><span class="o">&lt;&gt;</span><span class="p">();</span>
-    <span class="n">private</span> <span class="n">volatile</span> <span class="n">BundleContext</span> <span class="n">context</span><span class="p">;</span>
-
-    <span class="o">//</span> <span class="n">added</span> <span class="n">callback</span>
-    <span class="n">void</span> <span class="n">addHandler</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">handlers</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">handler</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">ref</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">URL</span><span class="p">)</span> !<span class="p">=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">URL</span> <span class="n">url</span> <span class="p">=</span> <span class="p">(</span><span class="n">URL</span><span class="p">)</span> <span class="n">ref</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">URL</span><span class="p">);</span>
-            <span class="n">notifyMatchingInitialResource</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">handler</span><span class="p">);</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="n">String</span> <span class="n">filter</span> <span class="p">=</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">ref</span><span class="p">.</span><span class="n">getProperty</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">FILTER</span><span class="p">);</span>
-            <span class="n">notifyMatchingInitialResources</span><span class="p">(</span><span class="n">filter</span><span class="p">,</span> <span class="n">handler</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="o">//</span> <span class="n">removed</span> <span class="n">callback</span>
-    <span class="n">void</span> <span class="n">removeHandler</span><span class="p">(</span><span class="n">ServiceReference</span> <span class="n">ref</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">handlers</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="n">private</span> <span class="n">void</span> <span class="n">notifyMatchingInitialResource</span><span class="p">(</span><span class="n">URL</span> <span class="n">url</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">bundleContainsResource</span><span class="p">(</span><span class="n">url</span><span class="p">))</span> <span class="p">{</span>
-            <span class="n">handler</span><span class="p">.</span><span class="n">added</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="p">());</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="p">@</span><span class="n">SuppressWarnings</span><span class="p">(</span>&quot;<span class="n">unchecked</span>&quot;<span class="p">)</span>
-    <span class="n">private</span> <span class="n">void</span> <span class="n">notifyMatchingInitialResources</span><span class="p">(</span><span class="n">String</span> <span class="n">filter</span><span class="p">,</span> <span class="n">ResourceHandler</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">Enumeration</span><span class="o">&lt;</span><span class="n">URL</span><span class="o">&gt;</span> <span class="n">entries</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">getBundle</span><span class="p">().</span><span class="n">findEntries</span><span class="p">(</span>&quot;<span class="o">/</span>&quot;<span class="p">,</span> <span class="n">filter</span><span class="p">,</span> <span class="n">true</span><span class="p">);</span>
-        <span class="k">while</span> <span class="p">(</span><span class="n">entries</span><span class="p">.</span><span class="n">hasMoreElements</span><span class="p">())</span> <span class="p">{</span>
-            <span class="n">URL</span> <span class="n">entry</span> <span class="p">=</span> <span class="n">entries</span><span class="p">.</span><span class="n">nextElement</span><span class="p">();</span>
-            <span class="n">handler</span><span class="p">.</span><span class="n">added</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="p">());</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="n">private</span> <span class="n">boolean</span> <span class="n">bundleContainsResource</span><span class="p">(</span><span class="n">URL</span> <span class="n">url</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">true</span><span class="p">;</span> <span class="o">//</span> <span class="n">more</span> <span class="n">specific</span> <span class="n">checks</span> <span class="n">required</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>The resource repository is registered in the bundle activator as follows:</p>
-<div class="codehilite"><pre>    <span class="n">manager</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createComponent</span><span class="p">().</span><span class="n">setImplementation</span><span class="p">(</span><span class="n">BundleResourceRepositoryImpl</span><span class="p">.</span><span class="n">class</span><span class="p">)</span>
-            <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">createServiceDependency</span><span class="p">().</span><span class="n">setService</span><span class="p">(</span><span class="n">ResourceHandler</span><span class="p">.</span><span class="n">class</span><span class="p">).</span><span class="n">setCallbacks</span><span class="p">(</span>&quot;<span class="n">addHandler</span>&quot;<span class="p">,</span> &quot;<span class="n">removeHandler</span>&quot;<span class="p">)));</span>
-</pre></div>
-
-
-<p>A resource repository implementation must have a dependency on resource handlers. The ResourceHandler service has two important service properties:</p>
-<ul>
-<li>"filter" (<code>ResourceHandler.FILTER</code>)</li>
-<li>"url" (<code>ResourceHandler.URL</code>)</li>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
 </ul>
-<p>A resource handler service has either one of these properties, not both! A resource handler with a filter can match multiple resources whereas a resource handler with a url only matches a single resource. It's important the resource repository handles both situations.</p>
-<p>When a new handler is being added, the resource repository should inform the resource handler on the resources it has that match the handler's filter or url. This is done by invoking the <code>added(url, properties)</code> method on the ResourceHandler. This callback results in the ResourceAdapter's ResourceDependency being satisfied, the url being injected into the resource adapter implementation object and the resource adapter implementation component being started.</p>
-<p>Besides the added() callback the resource repository is also responsible for handling the changed() and removed() methods on change or removal of the resource from the resource repository. For a bundle resource repository that's not likely to happen, but for a filesystem resource repository this can very well be the case.</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1665701 by marrs on Tue, 10 Mar 2015 21:16:26 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
     </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../../index.html">Documentation</a></li>
+    <li><a href="../../../subprojects.html">Subprojects</a></li>
+    <li><a href="../../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a></li>
+    <li>Guides</li>
+    <li><a href="resources.html">Dependency Manager - Resource adapters</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-dependency-manager/guides/resources.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Dependency Manager - Resource adapters</h1>
+<div class="paragraph">
+<p>Resource adapters are a special type of adapters which can adapt a resource into an OSGi service.
+These resources can be all kinds of resources, e.g.
+bundle resources, files, database records, anything as long as it can be resolved though a URL.</p>
+</div>
+<div class="paragraph">
+<p>The diagram below illustrates the classes involved in the resource adapter pattern:</p>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
+          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg fill-opacity="1" xmlns:xlink="http://www.w3.org/1999/xlink" color-rendering="auto" color-interpolation="auto" text-rendering="auto" stroke="black" stroke-linecap="square" width="780" stroke-miterlimit="10" shape-rendering="auto" stroke-opacity="1" fill="black" stroke-dasharray="none" font-weight="normal" stroke-width="1" viewBox="10 10 780 470" height="470" xmlns="http://www.w3.org/2000/svg" font-family="'Dialog'" font-style="normal" stroke-linejoin="miter" font-size="12px" stroke-dashoffset="0" image-rendering="auto"
+><!--Generated by the Batik Graphics2D SVG Generator--><defs id="genericDefs"
+  /><g
+  ><defs id="defs1"
+    ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath1"
+      ><path d="M0 0 L2147483647 0 L2147483647 2147483647 L0 2147483647 L0 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath2"
+      ><path d="M0 0 L0 40 L160 40 L160 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath3"
+      ><path d="M0 0 L0 70 L100 70 L100 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath4"
+      ><path d="M0 0 L0 110 L30 110 L30 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath5"
+      ><path d="M0 0 L0 40 L150 40 L150 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath6"
+      ><path d="M0 0 L0 130 L170 130 L170 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath7"
+      ><path d="M0 0 L0 120 L30 120 L30 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath8"
+      ><path d="M0 0 L0 40 L170 40 L170 0 Z"
+      /></clipPath
+      ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath9"
+      ><path d="M0 0 L0 130 L190 130 L190 0 Z"
+      /></clipPath
+    ></defs
+    ><g fill="rgb(255,165,0)" fill-opacity="0.4902" transform="translate(610,30)" stroke-opacity="0.4902" stroke="rgb(255,165,0)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(610,30)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="26" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceAdapter</text
+      ><text x="54" font-size="14px" y="34.5" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >Instance</text
+    ></g
+    ><g fill="rgb(255,165,0)" font-size="14px" font-family="sans-serif" transform="translate(190,290)" stroke="rgb(255,165,0)"
+    ><text x="5" xml:space="preserve" y="18.25" clip-path="url(#clipPath3)" stroke="none"
+      >filter="...."</text
+    ></g
+    ><g fill="rgb(255,165,0)" font-size="14px" font-family="sans-serif" transform="translate(490,290)" stroke="rgb(255,165,0)"
+    ><text x="5" xml:space="preserve" y="18.25" clip-path="url(#clipPath3)" stroke="none"
+      >url="...."</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(330,280)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(330,280)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="26" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceHandler</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(330,160)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(330,160)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="12" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceDependency</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(330,30)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(330,30)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="26" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceAdapter</text
+      ><text x="17" font-size="14px" y="34.5" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >Instance Component</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(30,160)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(30,160)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="12" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceDependency</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(30,30)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(30,30)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="26" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceAdapter</text
+      ><text x="44" font-size="14px" y="34.5" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >Component</text
+    ></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(30,280)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(30,280)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="26" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceHandler</text
+    ></g
+    ><g fill="rgb(255,165,0)" fill-opacity="0.4902" transform="translate(190,420)" stroke-opacity="0.4902" stroke="rgb(255,165,0)"
+    ><rect x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)" stroke="none"
+    /></g
+    ><g transform="translate(190,420)"
+    ><rect fill="none" x="0.5" width="158.5" height="38.5" y="0.5" clip-path="url(#clipPath2)"
+      /><text x="18" font-size="14px" y="18.25" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >ResourceRepository</text
+    ></g
+    ><g stroke-dasharray="8,5" stroke-miterlimit="5" transform="translate(400,190)" stroke-linecap="butt"
+    ><path fill="none" d="M10.5 89.5 L10.5 10.5" clip-path="url(#clipPath4)"
+      /><path fill="white" d="M17 78.7417 L10.5 90 L4 78.7417 Z" clip-path="url(#clipPath4)" stroke="none"
+      /><path fill="none" stroke-miterlimit="10" stroke-dasharray="none" d="M17 78.7417 L10.5 90 L4 78.7417 Z" clip-path="url(#clipPath4)" stroke-linecap="square"
+    /></g
+    ><g stroke-dasharray="8,5" stroke-miterlimit="5" transform="translate(100,190)" stroke-linecap="butt"
+    ><path fill="none" d="M10.5 89.5 L10.5 10.5" clip-path="url(#clipPath4)"
+      /><path fill="white" d="M17 78.7417 L10.5 90 L4 78.7417 Z" clip-path="url(#clipPath4)" stroke="none"
+      /><path fill="none" stroke-miterlimit="10" stroke-dasharray="none" d="M17 78.7417 L10.5 90 L4 78.7417 Z" clip-path="url(#clipPath4)" stroke-linecap="square"
+    /></g
+    ><g transform="translate(480,30)"
+    ><path fill="none" d="M129.5 20.5 L10.5 20.5" clip-path="url(#clipPath5)"
+      /><path fill="none" d="M118.7417 14 L130 20.5 L118.7417 27" clip-path="url(#clipPath5)"
+      /><text x="35.2591" font-size="14px" y="16" clip-path="url(#clipPath5)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >instantiates</text
+    ></g
+    ><g transform="translate(260,310)"
+    ><path fill="none" d="M149.6863 11.0812 L10.5 110.5" clip-path="url(#clipPath6)"
+      /><path fill="none" d="M137.1538 12.0451 L150.0931 10.7906 L144.7099 22.6237" clip-path="url(#clipPath6)"
+      /><text x="55.2131" font-size="14px" y="56" clip-path="url(#clipPath6)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >requires</text
+    ></g
+    ><g transform="translate(400,60)"
+    ><path fill="none" d="M10.5 11.5 L10.5 100.5" clip-path="url(#clipPath7)"
+      /><path fill="white" d="M4 22.2583 L10.5 11 L17 22.2583 L10.5 33.0167 Z" clip-path="url(#clipPath7)" stroke="none"
+      /><path fill="none" d="M4 22.2583 L10.5 11 L17 22.2583 L10.5 33.0167 Z" clip-path="url(#clipPath7)"
+    /></g
+    ><g transform="translate(100,60)"
+    ><path fill="none" d="M10.5 11.5 L10.5 100.5" clip-path="url(#clipPath7)"
+      /><path fill="white" d="M4 22.2583 L10.5 11 L17 22.2583 L10.5 33.0167 Z" clip-path="url(#clipPath7)" stroke="none"
+      /><path fill="none" d="M4 22.2583 L10.5 11 L17 22.2583 L10.5 33.0167 Z" clip-path="url(#clipPath7)"
+    /></g
+    ><g transform="translate(180,30)"
+    ><path fill="none" d="M149.5 20.5 L10.5 20.5" clip-path="url(#clipPath8)"
+      /><path fill="none" d="M138.7417 14 L150 20.5 L138.7417 27" clip-path="url(#clipPath8)"
+      /><text x="53.6241" font-size="14px" y="16" clip-path="url(#clipPath8)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >registers</text
+    ></g
+    ><g transform="translate(100,310)"
+    ><path fill="none" d="M11.348 11.03 L170.5 110.5" clip-path="url(#clipPath9)"
+      /><path fill="none" d="M17.0261 22.2439 L10.924 10.765 L23.916 11.2199" clip-path="url(#clipPath9)"
+      /><text x="65.2131" font-size="14px" y="56" clip-path="url(#clipPath9)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >requires</text
+    ></g
+  ></g
+></svg
+>
+</div>
+</div>
+<div class="paragraph">
+<p>The yellow elements have to be implemented in order to use the pattern.</p>
+</div>
+<div class="paragraph">
+<p>A resource adapter is configured as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>manager.add(createResourceAdapter("*.MF", true, null, "changed")
+			.setImplementation(ManifestAdapter.class));</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The filter semantics depend on the resource repository.
+In this example the resource repository will be serving bundle resources, so we&#8217;re using a standard file wildcard filter.
+As the filter specifies in this case the resource of interest is the bundle manifest.
+For each MANIFEST.MF found a new instance of ManifestAdapter will be created and registered.
+Each instance gets access to the resource by injecting the URL of the resource into the implementation object.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class ManifestAdapter {
+
+	private volatile URL url;
+
+	void start() {
+		System.out.println("started: " + url);
+	}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But how does DM know where to go looking for manifest files?
+We&#8217;ll it does not automatically.
+It requires you to implement a resource repository component.
+For each resource adapter service DM launches a ResourceHandler service tracking the resources the resource adapter is interested in.
+A resource repository is responsible for tracking resources and notifying adding / changing and removal of the resources from the repository.
+Notifying these resource 'events' is done by invoking the corresponding method on the ResourceHandler service.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll explain how to implement a resource repository by an example.
+The example resource repository is a bundle resource repository which as it&#8217;s name says, is capable of serving bundle resources.</p>
+</div>
+<div class="paragraph">
+<p>A simplified bundle resource repository looks as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class BundleResourceRepositoryImpl {
+
+	private Map&lt;ServiceReference, ResourceHandler&gt; handlers = new ConcurrentHashMap&lt;&gt;();
+	private volatile BundleContext context;
+
+	// added callback
+	void addHandler(ServiceReference ref, ResourceHandler handler) {
+		handlers.put(ref, handler);
+		if (ref.getProperty(ResourceHandler.URL) != null) {
+			URL url = (URL) ref.getProperty(ResourceHandler.URL);
+			notifyMatchingInitialResource(url, handler);
+		} else {
+			String filter = (String) ref.getProperty(ResourceHandler.FILTER);
+			notifyMatchingInitialResources(filter, handler);
+		}
+	}
+
+	// removed callback
+	void removeHandler(ServiceReference ref, ResourceHandler handler) {
+		handlers.remove(ref);
+	}
+
+	private void notifyMatchingInitialResource(URL url, ResourceHandler handler) {
+		if (bundleContainsResource(url)) {
+			handler.added(url, new Hashtable&lt;String, String&gt;());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void notifyMatchingInitialResources(String filter, ResourceHandler handler) {
+		Enumeration&lt;URL&gt; entries = context.getBundle().findEntries("/", filter, true);
+		while (entries.hasMoreElements()) {
+			URL entry = entries.nextElement();
+			handler.added(entry, new Hashtable&lt;String, String&gt;());
+		}
+	}
+
+	private boolean bundleContainsResource(URL url) {
+		return true; // more specific checks required
+	}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resource repository is registered in the bundle activator as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java"> 	manager.add(createComponent().setImplementation(BundleResourceRepositoryImpl.class)
+ 			.add(createServiceDependency().setService(ResourceHandler.class).setCallbacks("addHandler", "removeHandler")));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A resource repository implementation must have a dependency on resource handlers.
+The ResourceHandler service has two important service properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>"filter" (<code>ResourceHandler.FILTER</code>)</p>
+</li>
+<li>
+<p>"url" (<code>ResourceHandler.URL</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A resource handler service has either one of these properties, not both!
+A resource handler with a filter can match multiple resources whereas a resource handler with a url only matches a single resource.
+It&#8217;s important the resource repository handles both situations.</p>
+</div>
+<div class="paragraph">
+<p>When a new handler is being added, the resource repository should inform the resource handler on the resources it has that match the handler&#8217;s filter or url.
+This is done by invoking the <code>added(url, properties)</code> method on the ResourceHandler.
+This callback results in the ResourceAdapter&#8217;s ResourceDependency being satisfied, the url being injected into the resource adapter implementation object and the resource adapter implementation component being started.</p>
+</div>
+<div class="paragraph">
+<p>Besides the added() callback the resource repository is also responsible for handling the changed() and removed() methods on change or removal of the resource from the resource repository.
+For a bundle resource repository that&#8217;s not likely to happen, but for a filesystem resource repository this can very well be the case.</p>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

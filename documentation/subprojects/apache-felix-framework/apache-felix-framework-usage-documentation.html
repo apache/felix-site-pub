@@ -1,232 +1,810 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Apache Felix Framework Usage Documentation</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Apache Felix Framework Usage Documentation :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-framework/apache-felix-framework-usage-documentation.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
     </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-framework.html">Apache Felix Framework</a>
-      </div>
-
-      <h1>Apache Felix Framework Usage Documentation</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../subprojects.html">Subprojects</a></li>
+    <li><a href="../apache-felix-framework.html">Apache Felix Framework</a></li>
+    <li><a href="apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-framework/apache-felix-framework-usage-documentation.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Apache Felix Framework Usage Documentation</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="ulist">
 <ul>
-<li><a href="#downloading-the-framework">Downloading the Framework</a></li>
-<li><a href="#starting-the-framework">Starting the Framework</a></li>
-<li><a href="#framework-shell">Framework Shell</a><ul>
-<li><a href="#installing-bundles">Installing Bundles</a></li>
-<li><a href="#web-proxy-issues-when-installing-bundles">Web Proxy Issues when Installing Bundles</a></li>
-</ul>
+<li>
+<p><a href="#downloading-the-framework">Downloading the Framework</a></p>
 </li>
-<li><a href="#bundle-auto-deploy">Bundle Auto-Deploy</a></li>
-<li><a href="#configuring-the-framework">Configuring the Framework</a><ul>
-<li><a href="#system-property-substitution">System Property Substitution</a></li>
-</ul>
+<li>
+<p><a href="#starting-the-framework">Starting the Framework</a></p>
 </li>
-<li><a href="#configuring-bundles">Configuring Bundles</a></li>
-<li><a href="#feedback">Feedback</a></li>
+<li>
+<p><a href="#framework-shell">Framework Shell</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#installing-bundles">Installing Bundles</a></p>
+</li>
+<li>
+<p><a href="#web-proxy-issues-when-installing-bundles">Web Proxy Issues when Installing Bundles</a></p>
+</li>
 </ul>
-<h2 id="downloading-the-framework">Downloading the Framework<a class="headerlink" href="#downloading-the-framework" title="Permanent link">&para;</a></h2>
-<p>Go to the <a href="">downloads</a> page and download the latest Felix framework distribution.</p>
-<h2 id="starting-the-framework">Starting the Framework<a class="headerlink" href="#starting-the-framework" title="Permanent link">&para;</a></h2>
+</div>
+</li>
+<li>
+<p><a href="#bundle-auto-deploy">Bundle Auto-Deploy</a></p>
+</li>
+<li>
+<p><a href="#configuring-the-framework">Configuring the Framework</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#system-property-substitution">System Property Substitution</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="#configuring-bundles">Configuring Bundles</a></p>
+</li>
+<li>
+<p><a href="#feedback">Feedback</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_downloading_the_framework"><a class="anchor" href="#_downloading_the_framework"></a>Downloading the Framework</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Go to the link:{{ refs.downloads.path }}[downloads] page and download the latest Felix framework distribution.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_starting_the_framework"><a class="anchor" href="#_starting_the_framework"></a>Starting the Framework</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>Start the framework from the installation directory by typing:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="o">/</span><span class="n">felix</span><span class="p">.</span><span class="n">jar</span>
-</pre></div>
-
-
-<p>The framework launcher starts the framework and installs and starts all bundles contained in the <code>bundle</code> directory of the current directory. By default, the bundle directory contains shell-related bundles providing a textual user interface to interact with the framework. Bundles installed into the framework are copied into a bundle cache directory for subsequent executions. By default, the framework creates a cache directory, called <code>felix-cache</code>, in your current working directory. If you want to start the framework using a different bundle cache directory, you can do so like this:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="o">/</span><span class="n">felix</span><span class="p">.</span><span class="n">jar</span> <span class="o">&lt;</span><span class="n">cache</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;</span>
-</pre></div>
-
-
-<p>Where <code>&lt;cache-path&gt;</code> is the path you want to use as the bundle cache. If you specify a relative cache path, then it will be treated as relative to the current working directory.</p>
-<div class="info" markdown="1">
-<b>Useful Information</b><br/>
-Previous versions of the framework prompted for a profile name when executed. The profile name
-was used to create a directory inside <code>.felix/</code> in the user home directory. This
-approach allowed users to have different sets of bundles for different purposes, e.g., testing,
-production, etc. If this behavior is still desired, it is very easy to mimic. Modify
-<code>conf/config.properties</code> to include "<code>felix.cache.rootdir=${user.home}/.felix</code>".
-Now, if you start Felix with something like "<code>java -jar bin/felix.jar foo</code>", it will use
-"<code>${user.home}/.felix/foo/</code>" as the bundle cache directory, where
-"<code>${user.home}</code>" is automatically substituted with the appropriate system property by
-the launcher.
 </div>
-
-<h2 id="framework-shell">Framework Shell<a class="headerlink" href="#framework-shell" title="Permanent link">&para;</a></h2>
-<p>The main way to interact with the framework is via the supplied Apache Felix Gogo shell. After starting the framework, type <code>help</code> into the shell to see the list of the available commands and <code>help &lt;command-name&gt;</code> to get help for a specific command.</p>
-<div class="info" markdown="1">
-<b>Useful Information</b><br/>
-In Gogo, command names are made up of two parts: <code>&lt;scope&gt;:&lt;name&gt;</code>. This is similar
-to a fully qualified class name in Java and is used to avoid naming collisions. If the
-<code>&lt;name&gt;</code> portion of the command is unique, then you only need to type it. If not,
-then you must either type the full <code>&lt;scope&gt;:&lt;name&gt;</code> or arrange the scope search path accordingly.
+<div class="literalblock">
+<div class="content">
+<pre>java -jar bin/felix.jar</pre>
 </div>
-
-<p>To install bundles, use the <code>felix:install</code> command, which is described in more detail in the next <a href="">sub-section</a>. To list installed bundles, use the <code>felix:lb</code> command. To stop the framework type <code>stop 0</code> to stop the System Bundle; any installed bundles will automatically be reloaded (and potentially restarted) the next time you launch with the associated cache.</p>
-<h3 id="installing-bundles">Installing Bundles<a class="headerlink" href="#installing-bundles" title="Permanent link">&para;</a></h3>
-<p>A bundle is the OSGi term for a component for the OSGi framework. A bundle is simply a JAR file containing a manifest and some combination of Java classes, embedded JAR files, native code, and resources. A bundle may provide some specific functionality for the user or it may implement a service that other bundles can use; bundles can only use functionality from other bundles through shared services and packages.</p>
-<p>The Felix framework distribution comes with three bundles, which are located in the <code>bundle/</code> directory of the framework distribution installation directory. These bundles include the Gogo Runtime (core command processing functionality), Gogo Shell (text-based shell user interface), Gogo Command (basic set of commands), and Bundle Repository (a bundle repository service). In addition to these bundles, the bundle repository provides access to other bundles for easy installation. The bundle repository service provides a set of shell commands in the <code>obr:*</code> scope; refer to the <a href="/documentation/subprojects/apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository</a> for more information.</p>
-<p>Before installing any bundles, it is important to understand how bundles are manually deployed into the framework. Bundles are deployed in two stages; first they are installed, then they are started. To install a bundle use the <code>felix:install</code> shell command followed by a bundle URL. For example, to install a <code>bundle.jar</code> bundle you type:</p>
-<div class="codehilite"><pre><span class="n">felix</span><span class="o">:</span><span class="n">install</span> <span class="n">file</span><span class="o">:/</span><span class="n">path</span><span class="sr">/to/bundle/</span><span class="n">bundle</span><span class="o">.</span><span class="na">jar</span>
-</pre></div>
-
-
-<p>Once a bundle is installed, it can then be started by using the <code>felix:start</code> command and the bundle identifier of the desired bundle. The <code>felix:lb</code> command is used to list installed bundles and to obtain the bundle's identifier. The following Felix shell session illustrates how to start the <code>bundle.jar</code> bundle:</p>
-<div class="codehilite"><pre><span class="n">g</span>! <span class="n">install</span> <span class="n">file</span><span class="p">:</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">bundle</span><span class="p">.</span><span class="n">jar</span>
-<span class="n">g</span>! <span class="n">lb</span>
-<span class="n">START</span> <span class="n">LEVEL</span> 1
-   <span class="n">ID</span><span class="o">|</span><span class="n">State</span>      <span class="o">|</span><span class="n">Level</span><span class="o">|</span><span class="n">Name</span>
-    0<span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    0<span class="o">|</span><span class="n">System</span> <span class="n">Bundle</span> <span class="p">(</span>3<span class="p">.</span>0<span class="p">.</span>0<span class="p">)</span>
-    1<span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    1<span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Bundle</span> <span class="n">Repository</span> <span class="p">(</span>1<span class="p">.</span>6<span class="p">.</span>2<span class="p">)</span>
-    2<span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    1<span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Gogo</span> <span class="n">Command</span> <span class="p">(</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">)</span>
-    3<span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    1<span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Gogo</span> <span class="n">Runtime</span> <span class="p">(</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">)</span>
-    4<span class="o">|</span><span class="n">Active</span>     <span class="o">|</span>    1<span class="o">|</span><span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Gogo</span> <span class="n">Shell</span> <span class="p">(</span>0<span class="p">.</span>6<span class="p">.</span>0<span class="p">)</span>
-    5<span class="o">|</span><span class="n">Installed</span>  <span class="o">|</span>    1<span class="o">|</span><span class="n">Example</span> <span class="n">Bundle</span> <span class="p">(</span>1<span class="p">.</span>0<span class="p">.</span>0<span class="p">)</span>
-<span class="n">g</span>! <span class="n">start</span> 5
-<span class="n">Hello</span> <span class="n">from</span> <span class="n">Bundle</span> 5<span class="p">.</span>
-<span class="n">g</span>!
-</pre></div>
-
-
-<p>The <code>felix:stop</code> command is used to stop a bundle and the <code>felix:uninstall</code> command is used to remove a bundle from the bundle cache. As an alternative to using the <code>felix:install</code> and <code>felix:start</code> commands explicitly, it is also possible to install and start a bundle in one step by using the <code>felix:start</code> command with a bundle URL.</p>
-<p>Bundles can be updated using the <code>felix:update</code> command. The update command allows you to specify an URL from which to retrieve the updated bundle, but if one is not specified it will try to update the bundle from the bundle's <code>Bundle-UpdateLocation</code> manifest attribute, if present, or the bundle's original location URL.</p>
-<div class="info" markdown="1">
-<b>Useful Information</b><br/>
-When you use <code>felix:update</code> or <code>felix:uninstall</code>, the changes appear to take
-effect immediately, but in reality the changes are only partially enacted. If a bundle is updated
-or uninstalled and it was exporting packages, these packages are not removed until the framework
-is refreshed using the <code>PackageAdmin</code> service. The Felix shell offers a convenient
-<code>refresh</code> command for this purpose. This is the correct behavior as defined by the OSGi
-specification.
 </div>
-
+<div class="paragraph">
+<p>The framework launcher starts the framework and installs and starts all bundles contained in the <code>bundle</code> directory of the current directory.
+By default, the bundle directory contains shell-related bundles providing a textual user interface to interact with the framework.
+Bundles installed into the framework are copied into a bundle cache directory for subsequent executions.
+By default, the framework creates a cache directory, called <code>felix-cache</code>, in your current working directory.
+If you want to start the framework using a different bundle cache directory, you can do so like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>java -jar bin/felix.jar &lt;cache-path&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <code>&lt;cache-path&gt;</code> is the path you want to use as the bundle cache.
+If you specify a relative cache path, then it will be treated as relative to the current working directory.
+INFO: <strong>Useful Information</strong> + Previous versions of the framework prompted for a profile name when executed.
+The profile name was used to create a directory inside <code>.felix/</code> in the user home directory.
+This approach allowed users to have different sets of bundles for different purposes, e.g., testing, production, etc.
+If this behavior is still desired, it is very easy to mimic.
+Modify <code>conf/config.properties</code> to include "<code class="code">felix.cache.rootdir=${user.home}/.felix</code>".
+Now, if you start Felix with something like "<code class="code">java -jar bin/felix.jar foo</code>", it will use "<code class="code">${user.home}/.felix/foo/</code>" as the bundle cache directory, where "<code class="code">${user.home}</code>" is automatically substituted with the appropriate system property by the launcher.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_framework_shell"><a class="anchor" href="#_framework_shell"></a>Framework Shell</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The main way to interact with the framework is via the supplied Apache Felix Gogo shell.
+After starting the framework, type <code>help</code> into the shell to see the list of the available commands and <code>help &lt;command-name&gt;</code> to get help for a specific command.
+INFO: <strong>Useful Information</strong> + In Gogo, command names are made up of two parts: <code>&lt;scope&gt;:&lt;name&gt;</code>.
+This is similar to a fully qualified class name in Java and is used to avoid naming collisions.
+If the <code>&lt;name&gt;</code> portion of the command is unique, then you only need to type it.
+If not, then you must either type the full <code>&lt;scope&gt;:&lt;name&gt;</code> or arrange the scope search path accordingly.</p>
+</div>
+<div class="paragraph">
+<p>To install bundles, use the <code>felix:install</code> command, which is described in more detail in the next <a href="#_installing_bundles">sub-section</a>.
+To list installed bundles, use the <code>felix:lb</code> command.
+To stop the framework type <code>stop 0</code> to stop the System Bundle;
+any installed bundles will automatically be reloaded (and potentially restarted) the next time you launch with the associated cache.</p>
+</div>
+<div class="sect2">
+<h3 id="_installing_bundles"><a class="anchor" href="#_installing_bundles"></a>Installing Bundles</h3>
+<div class="paragraph">
+<p>A bundle is the OSGi term for a component for the OSGi framework.
+A bundle is simply a JAR file containing a manifest and some combination of Java classes, embedded JAR files, native code, and resources.
+A bundle may provide some specific functionality for the user or it may implement a service that other bundles can use;
+bundles can only use functionality from other bundles through shared services and packages.</p>
+</div>
+<div class="paragraph">
+<p>The Felix framework distribution comes with three bundles, which are located in the <code>bundle/</code> directory of the framework distribution installation directory.
+These bundles include the Gogo Runtime (core command processing functionality), Gogo Shell (text-based shell user interface), Gogo Command (basic set of commands), and Bundle Repository (a bundle repository service).
+In addition to these bundles, the bundle repository provides access to other bundles for easy installation.
+The bundle repository service provides a set of shell commands in the <code>obr:*</code> scope;
+refer to the <a href="../apache-felix-osgi-bundle-repository.html" class="page">Apache Felix OSGi Bundle Repository</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>Before installing any bundles, it is important to understand how bundles are manually deployed into the framework.
+Bundles are deployed in two stages;
+first they are installed, then they are started.
+To install a bundle use the <code>felix:install</code> shell command followed by a bundle URL.
+For example, to install a <code>bundle.jar</code> bundle you type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>felix:install file:/path/to/bundle/bundle.jar</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once a bundle is installed, it can then be started by using the <code>felix:start</code> command and the bundle identifier of the desired bundle.
+The <code>felix:lb</code> command is used to list installed bundles and to obtain the bundle&#8217;s identifier.
+The following Felix shell session illustrates how to start the <code>bundle.jar</code> bundle:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>g! install file:/path/to/bundle/bundle.jar
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.0.0)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.6.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.6.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.6.0)
+    5|Installed  |    1|Example Bundle (1.0.0)
+g! start 5
+Hello from Bundle 5.
+g!</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>felix:stop</code> command is used to stop a bundle and the <code>felix:uninstall</code> command is used to remove a bundle from the bundle cache.
+As an alternative to using the <code>felix:install</code> and <code>felix:start</code> commands explicitly, it is also possible to install and start a bundle in one step by using the <code>felix:start</code> command with a bundle URL.</p>
+</div>
+<div class="paragraph">
+<p>Bundles can be updated using the <code>felix:update</code> command.
+The update command allows you to specify an URL from which to retrieve the updated bundle, but if one is not specified it will try to update the bundle from the bundle&#8217;s <code>Bundle-UpdateLocation</code> manifest attribute, if present, or the bundle&#8217;s original location URL.
+INFO: <strong>Useful Information</strong> + When you use <code>felix:update</code> or <code>felix:uninstall</code>, the changes appear to take effect immediately, but in reality the changes are only partially enacted.
+If a bundle is updated or uninstalled and it was exporting packages, these packages are not removed until the framework is refreshed using the <code>PackageAdmin</code> service.
+The Felix shell offers a convenient <code>refresh</code> command for this purpose.
+This is the correct behavior as defined by the OSGi specification.</p>
+</div>
+<div class="paragraph">
 <p>For an introduction to writing bundles and services, refer to the Felix bundle tutorial.</p>
-<h3 id="web-proxy-issues-when-installing-bundles">Web Proxy Issues when Installing Bundles<a class="headerlink" href="#web-proxy-issues-when-installing-bundles" title="Permanent link">&para;</a></h3>
-<p>If you use a proxy for Web access, then you may run into difficulty using the Gogo shell to install bundles from remote URLs. To remedy this situation, certain system properties must be set to make the framework work with your proxy. These properties are:</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_web_proxy_issues_when_installing_bundles"><a class="anchor" href="#_web_proxy_issues_when_installing_bundles"></a>Web Proxy Issues when Installing Bundles</h3>
+<div class="paragraph">
+<p>If you use a proxy for Web access, then you may run into difficulty using the Gogo shell to install bundles from remote URLs.
+To remedy this situation, certain system properties must be set to make the framework work with your proxy.
+These properties are:</p>
+</div>
+<div class="ulist">
 <ul>
-<li><code>http.proxyHost</code> - the name of the proxy host.</li>
-<li><code>http.proxyPort</code> - the port of the proxy host.</li>
-<li><code>http.proxyAuth</code> - the user name and password to use when connecting to the proxy; this string should be the user name and password separated by a colon (e.g., <code>rickhall:mypassword</code>).</li>
+<li>
+<p><code>http.proxyHost</code> - the name of the proxy host.</p>
+</li>
+<li>
+<p><code>http.proxyPort</code> - the port of the proxy host.</p>
+</li>
+<li>
+<p><code>http.proxyAuth</code> - the user name and password to use when connecting to the proxy;
+this string should be the user name and password separated by a colon (e.g., <code>rickhall:mypassword</code>).</p>
+</li>
 </ul>
-<p>These system properties can be set directly on the command line when starting the JVM using the standard "<code>\-D&lt;prop&gt;=&lt;value&gt;</code>" syntax
-or you can put them in the <code>lib/system.properties</code> file of your Felix installation; see the next section on <a href="#configuring-the-framework">configuring Felix</a>
-for more information.</p>
-<h2 id="bundle-auto-deploy">Bundle Auto-Deploy<a class="headerlink" href="#bundle-auto-deploy" title="Permanent link">&para;</a></h2>
-<p>To minimize the amount of configuration necessary to install bundles when you launch the framework, the Felix launcher uses the concept of an "auto-deploy" directory. The Felix launcher deploys all bundles in the auto-deploy directory into the framework instance during startup. By default, the auto-deploy directory is "<code>bundle</code>" in the current directory, but it can be specified on the command line like this:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="o">/</span><span class="n">felix</span><span class="p">.</span><span class="n">jar</span> <span class="o">-</span><span class="n">b</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">dir</span>
-</pre></div>
-
-
-<p>Specifying an auto-deploy directory replaces the default directory, it does not augment it. The framework distribution is configured to install and start bundles in the auto-deploy directory. Both the location of the auto-deploy directory and the deployment actions performed can be controlled by the following configuration properties, respectively:</p>
+</div>
+<div class="paragraph">
+<p>These system properties can be set directly on the command line when starting the JVM using the standard "<code class="code">\-D&lt;prop&gt;=&lt;value&gt;</code>" syntax or you can put them in the <code>lib/system.properties</code> file of your Felix installation;
+see the next section on <a href="#configuring-the-framework">configuring Felix</a> for more information.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bundle_auto_deploy"><a class="anchor" href="#_bundle_auto_deploy"></a>Bundle Auto-Deploy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To minimize the amount of configuration necessary to install bundles when you launch the framework, the Felix launcher uses the concept of an "auto-deploy" directory.
+The Felix launcher deploys all bundles in the auto-deploy directory into the framework instance during startup.
+By default, the auto-deploy directory is "<code class="code">bundle</code>" in the current directory, but it can be specified on the command line like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>java -jar bin/felix.jar -b /path/to/dir</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specifying an auto-deploy directory replaces the default directory, it does not augment it.
+The framework distribution is configured to install and start bundles in the auto-deploy directory.
+Both the location of the auto-deploy directory and the deployment actions performed can be controlled by the following configuration properties, respectively:</p>
+</div>
+<div class="ulist">
 <ul>
-<li><code>felix.auto.deploy.dir</code> - Specifies the auto-deploy directory from which bundles are automatically deploy at framework startup. The default is the <code>bundle/</code> directory of the current directory.</li>
-<li><code>felix.auto.deploy.action</code> - Specifies the auto-deploy actions to be performed on the bundle JAR files found in the auto-deploy directory. The possible actions are <code>install</code>, <code>update</code>, <code>start</code>, and <code>uninstall</code>. If no actions are specified, then the auto-deploy directory is not processed (i.e., it is disabled). There is no default value for this property, but the default <code>config.properties</code> file installed with the Felix framework distribution sets the value to: <code>install, start</code></li>
+<li>
+<p><code>felix.auto.deploy.dir</code> - Specifies the auto-deploy directory from which bundles are automatically deploy at framework startup.
+The default is the <code>bundle/</code> directory of the current directory.</p>
+</li>
+<li>
+<p><code>felix.auto.deploy.action</code> - Specifies the auto-deploy actions to be performed on the bundle JAR files found in the auto-deploy directory.
+The possible actions are <code>install</code>, <code>update</code>, <code>start</code>, and <code>uninstall</code>.
+If no actions are specified, then the auto-deploy directory is not processed (i.e., it is disabled).
+There is no default value for this property, but the default <code>config.properties</code> file installed with the Felix framework distribution sets the value to: <code>install, start</code></p>
+</li>
 </ul>
+</div>
+<div class="paragraph">
 <p>The next section describes how to set and use configuration properties.</p>
-<h2 id="configuring-the-framework">Configuring the Framework<a class="headerlink" href="#configuring-the-framework" title="Permanent link">&para;</a></h2>
-<p>Both the Felix framework and the launcher use configuration properties to alter their default behavior. The framework can only be configured by passing properties into its constructor, but the launcher provides a mechanism to configure the framework via a property file. The framework launcher reads configuration properties from <code>conf/config.properties</code>. This file uses standard Java property file syntax.</p>
-<p>The launcher also supports setting system properties via the <code>conf/system.properties</code> file. This file is purely for convenience when you need to repeatedly set system properties when running the framework. While the framework itself does not look at system properties, the launcher does copy any framework configuration properties found in the system properties into the framework configuration map, also for your convenience.</p>
-<p>It is possible to specify different locations for these property files using the <code>felix.config.properties</code> and <code>felix.system.properties</code> system properties when executing the framework. For example:</p>
-<div class="codehilite"><pre><span class="n">java</span> <span class="o">-</span><span class="n">Dfelix</span><span class="p">.</span><span class="n">config</span><span class="p">.</span><span class="k">properties</span><span class="p">=</span><span class="n">file</span><span class="p">:</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">rickhall</span><span class="o">/</span><span class="n">config</span><span class="p">.</span><span class="k">properties</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bin</span><span class="o">/</span><span class="n">felix</span><span class="p">.</span><span class="n">jar</span>
-</pre></div>
-
-
-<p>Configuration and system properties are accessible at run time via <code>BundleContext.getProperty()</code>, but configuration properties override system properties. For more information about available configuration properties, refer to the <a href="/documentation/subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a> document. The Felix framework distribution contains a default <code>conf/config.properties</code>.</p>
-<h3 id="system-property-substitution">System Property Substitution<a class="headerlink" href="#system-property-substitution" title="Permanent link">&para;</a></h3>
-<p>It is possible to use system properties to specify the values of properties in the <code>conf/config.properties</code> file. This is achieved through system property substitution, which is instigated by using <code>$\{&lt;property&gt;\</code>} syntax, where <code>&lt;property&gt;</code> is the name of a system property to substitute. When the properties file is read, any such property values are substituted as appropriate. It is possible to have nested system property substitution, in which case the inner-most property is substituted first, then the next inner most, until reaching the outer most.</p>
-<h2 id="configuring-bundles">Configuring Bundles<a class="headerlink" href="#configuring-bundles" title="Permanent link">&para;</a></h2>
-<p>Some bundles use properties to configure certain aspects of their behavior. It is a good idea, when implementing bundles, to parameterize them with properties where appropriate. To learn about the configuration options for specific bundles, refer to the documentation that accompanies them.</p>
-<p>Bundle properties may also be defined in the <code>conf/config.properties</code> property file. Any property placed in this file will be accessible via <code>BundleContext.getProperty()</code> at run time. The property file uses the standard Java property file syntax (i.e., attribute-value pairs). For information on changing the default location of this file, refer to the section on <a href="#configuring-the-framework">configuring Felix</a>.</p>
-<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h2>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_the_framework"><a class="anchor" href="#_configuring_the_framework"></a>Configuring the Framework</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Both the Felix framework and the launcher use configuration properties to alter their default behavior.
+The framework can only be configured by passing properties into its constructor, but the launcher provides a mechanism to configure the framework via a property file.
+The framework launcher reads configuration properties from <code>conf/config.properties</code>.
+This file uses standard Java property file syntax.</p>
+</div>
+<div class="paragraph">
+<p>The launcher also supports setting system properties via the <code>conf/system.properties</code> file.
+This file is purely for convenience when you need to repeatedly set system properties when running the framework.
+While the framework itself does not look at system properties, the launcher does copy any framework configuration properties found in the system properties into the framework configuration map, also for your convenience.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to specify different locations for these property files using the <code>felix.config.properties</code> and <code>felix.system.properties</code> system properties when executing the framework.
+For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>java -Dfelix.config.properties=file:/home/rickhall/config.properties -jar bin/felix.jar</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Configuration and system properties are accessible at run time via <code>BundleContext.getProperty()</code>, but configuration properties override system properties.
+For more information about available configuration properties, refer to the <a href="apache-felix-framework-configuration-properties.html" class="page">Apache Felix Framework Configuration Properties</a> document.
+The Felix framework distribution contains a default <code>conf/config.properties</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_system_property_substitution"><a class="anchor" href="#_system_property_substitution"></a>System Property Substitution</h3>
+<div class="paragraph">
+<p>It is possible to use system properties to specify the values of properties in the <code>conf/config.properties</code> file.
+This is achieved through system property substitution, which is instigated by using <code>$\{&lt;property&gt;\</code>} syntax, where <code>&lt;property&gt;</code> is the name of a system property to substitute.
+When the properties file is read, any such property values are substituted as appropriate.
+It is possible to have nested system property substitution, in which case the inner-most property is substituted first, then the next inner most, until reaching the outer most.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_bundles"><a class="anchor" href="#_configuring_bundles"></a>Configuring Bundles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some bundles use properties to configure certain aspects of their behavior.
+It is a good idea, when implementing bundles, to parameterize them with properties where appropriate.
+To learn about the configuration options for specific bundles, refer to the documentation that accompanies them.</p>
+</div>
+<div class="paragraph">
+<p>Bundle properties may also be defined in the <code>conf/config.properties</code> property file.
+Any property placed in this file will be accessible via <code>BundleContext.getProperty()</code> at run time.
+The property file uses the standard Java property file syntax (i.e., attribute-value pairs).
+For information on changing the default location of this file, refer to the section on <a href="#configuring-the-framework">configuring Felix</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_feedback"><a class="anchor" href="#_feedback"></a>Feedback</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>;
 after subscribing, email questions or feedback to <a href="mailto:users@felix.apache.org">users@felix.apache.org</a>.</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1455168 by fmeschbe on Mon, 11 Mar 2013 15:05:10 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

@@ -1,415 +1,892 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Apache Felix Tutorial Example 6</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Example 6 - Spell Checker Service Bundle :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
     </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
-      </div>
-
-      <h1>Apache Felix Tutorial Example 6</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<h1 id="example-6-spell-checker-service-bundle">Example 6 - Spell Checker Service Bundle<a class="headerlink" href="#example-6-spell-checker-service-bundle" title="Permanent link">&para;</a></h1>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../tutorials-examples-and-presentations.html">Tutorials</a></li>
+    <li>OSGI Tutorial</li>
+    <li><a href="apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Example 6 - Spell Checker Service Bundle</h1>
+<div class="paragraph">
 <p><em>(This example should be rewritten to use the Service Tracker.)</em></p>
-<p>In this example, we complicate things further by defining a new service that uses an arbitrary number of dictionary services to perform its function. More precisely, we define a spell checker service will aggregate all dictionary services and provide another service that allows us to spell check passages using our underlying dictionary services to verify the spelling of words. Our bundle will only provide the spell checker service if there is at least one dictionary service available. First, we will start by defining the spell checker service interface in a file called <code>SpellChecker.java</code>:</p>
-<div class="codehilite"><pre><span class="cm">/*</span>
-<span class="cm"> * Apache Felix OSGi tutorial.</span>
-<span class="cm">**/</span>
+</div>
+<div class="paragraph">
+<p>In this example, we complicate things further by defining a new service that uses an arbitrary number of dictionary services to perform its function.
+More precisely, we define a spell checker service will aggregate all dictionary services and provide another service that allows us to spell check passages using our underlying dictionary services to verify the spelling of words.
+Our bundle will only provide the spell checker service if there is at least one dictionary service available.
+First, we will start by defining the spell checker service interface in a file called <code>SpellChecker.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/*
+ * Apache Felix OSGi tutorial.
+**/
 
-<span class="kn">package</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example6</span><span class="p">.</span><span class="n">service</span><span class="p">;</span>
+package tutorial.example6.service;
 
-<span class="cm">/**</span>
-<span class="cm"> * A simple service interface that defines a spell checker service.</span>
-<span class="cm"> * A spell checker service checks the spelling of all words in a</span>
-<span class="cm"> * given passage. A passage is any number of words separated by</span>
-<span class="cm"> * a space character and the following punctuation marks: comma,</span>
-<span class="cm"> * period, exclamation mark, question mark, semi-colon, and colon.</span>
-<span class="cm">**/</span>
-<span class="n">public</span> <span class="k">interface</span> <span class="n">SpellChecker</span>
-<span class="p">{</span>
-    <span class="cm">/**</span>
-<span class="cm">     * Checks a given passage for spelling errors. A passage is any</span>
-<span class="cm">     * number of words separated by a space and any of the following</span>
-<span class="cm">     * punctuation marks: comma (,), period (.), exclamation mark (!),</span>
-<span class="cm">     * question mark (?), semi-colon (;), and colon(:).</span>
-<span class="cm">     * @param passage the passage to spell check.</span>
-<span class="cm">     * @return An array of misspelled words or null if no</span>
-<span class="cm">     *         words are misspelled.</span>
-<span class="cm">    **/</span>
-    <span class="n">public</span> <span class="n">String</span><span class="p">[]</span> <span class="n">check</span><span class="p">(</span><span class="n">String</span> <span class="n">passage</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
+/**
+ * A simple service interface that defines a spell checker service.
+ * A spell checker service checks the spelling of all words in a
+ * given passage. A passage is any number of words separated by
+ * a space character and the following punctuation marks: comma,
+ * period, exclamation mark, question mark, semi-colon, and colon.
+**/
+public interface SpellChecker
+{
+    /**
+     * Checks a given passage for spelling errors. A passage is any
+     * number of words separated by a space and any of the following
+     * punctuation marks: comma (,), period (.), exclamation mark (!),
+     * question mark (?), semi-colon (;), and colon(:).
+     * @param passage the passage to spell check.
+     * @return An array of misspelled words or null if no
+     *         words are misspelled.
+    **/
+    public String[] check(String passage);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service interface is quite simple, with only one method that needs to be implemented.
+Notice that we put the service interface in the package <code>tutorial.example6.service</code>, instead of just putting it in <code>tutorial.example6</code>.
+We did this because we need to share the interface definition with other bundles, therefore it is better to separate service interfaces that need to be shared from code that does not need to be shared.
+Such an approach ensures a strong separation between interface and implementation.</p>
+</div>
+<div class="paragraph">
+<p>In the following bundle source code, the bundle needs to create a complete list of all dictionary services;
+this is somewhat tricky and must be done carefully.
+First, the bundle uses its bundle context to register itself as a service event listener, then it queries for all currently available dictionary services.
+After creating the list of dictionary services, the bundle then registers its spell checker service if and only if there is at least one dictionary service available.
+These actions must be performed in a synchronized block to avoid interference from service events.
+Additionally, since the bundle is monitoring the dynamic availability of the dictionary services, when the number of dictionary services falls to zero or increases from zero, the bundle must unregister and register its spell checker service, respectively.
+We implement our bundle in a file called <code>Activator.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/*
+ * Apache Felix OSGi tutorial.
+**/
 
+package tutorial.example6;
 
-<p>The service interface is quite simple, with only one method that needs to be implemented. Notice that we put the service interface in the package <code>tutorial.example6.service</code>, instead of just putting it in <code>tutorial.example6</code>. We did this because we need to share the interface definition with other bundles, therefore it is better to separate service interfaces that need to be shared from code that does not need to be shared. Such an approach ensures a strong separation between interface and implementation.</p>
-<p>In the following bundle source code, the bundle needs to create a complete list of all dictionary services; this is somewhat tricky and must be done carefully. First, the bundle uses its bundle context to register itself as a service event listener, then it queries for all currently available dictionary services. After creating the list of dictionary services, the bundle then registers its spell checker service if and only if there is at least one dictionary service available. These actions must be performed in a synchronized block to avoid interference from service events. Additionally, since the bundle is monitoring the dynamic availability of the dictionary services, when the number of dictionary services falls to zero or increases from zero, the bundle must unregister and register its spell checker service, respectively. We implement our bundle in a file called <code>Activator.java</code>:</p>
-<div class="codehilite"><pre><span class="cm">/*</span>
-<span class="cm"> * Apache Felix OSGi tutorial.</span>
-<span class="cm">**/</span>
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
-<span class="kn">package</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example6</span><span class="p">;</span>
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceEvent;
 
-<span class="kn">import</span> <span class="nn">java</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">BufferedReader</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">java</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">InputStreamReader</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">java</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">IOException</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">ArrayList</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">HashMap</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">StringTokenizer</span><span class="p">;</span>
+import tutorial.example2.service.DictionaryService;
+import tutorial.example6.service.SpellChecker;
 
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleActivator</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceRegistration</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceReference</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceListener</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceEvent</span><span class="p">;</span>
+/**
+ * This class implements a bundle that implements a spell
+ * checker service. The spell checker service uses all available
+ * dictionary services to check for the existence of words in
+ * a given sentence. This bundle not only monitors the dynamic
+ * availability of dictionary services, but it manages the
+ * aggregation of all available dictionary services as they
+ * arrive and depart. The spell checker service is only registered
+ * if there are dictionary services available, thus the spell
+ * checker service will appear and disappear as dictionary
+ * services appear and disappear, respectively.
+**/
+public class Activator implements BundleActivator, ServiceListener
+{
+    // Bundle's context.
+    private BundleContext m_context = null;
+    // List of available dictionary service references.
+    private ArrayList m_refList = new ArrayList();
+    // Maps service references to service objects.
+    private HashMap m_refToObjMap = new HashMap();
+    // The spell checker service registration.
+    private ServiceRegistration m_reg = null;
 
-<span class="kn">import</span> <span class="nn">tutorial</span><span class="p">.</span><span class="n">example2</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">DictionaryService</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">tutorial</span><span class="p">.</span><span class="n">example6</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">SpellChecker</span><span class="p">;</span>
+    /**
+     * Implements BundleActivator.start(). Adds itself
+     * as a service listener and queries for all currently
+     * available dictionary services. Any available dictionary
+     * services are added to the service reference list. If
+     * dictionary services are found, then the spell checker
+     * service is registered.
+     * @param context the framework context for the bundle.
+    **/
+    public void start(BundleContext context) throws Exception
+    {
+        m_context = context;
 
-<span class="cm">/**</span>
-<span class="cm"> * This class implements a bundle that implements a spell</span>
-<span class="cm"> * checker service. The spell checker service uses all available</span>
-<span class="cm"> * dictionary services to check for the existence of words in</span>
-<span class="cm"> * a given sentence. This bundle not only monitors the dynamic</span>
-<span class="cm"> * availability of dictionary services, but it manages the</span>
-<span class="cm"> * aggregation of all available dictionary services as they</span>
-<span class="cm"> * arrive and depart. The spell checker service is only registered</span>
-<span class="cm"> * if there are dictionary services available, thus the spell</span>
-<span class="cm"> * checker service will appear and disappear as dictionary</span>
-<span class="cm"> * services appear and disappear, respectively.</span>
-<span class="cm">**/</span>
-<span class="n">public</span> <span class="k">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span><span class="p">,</span> <span class="n">ServiceListener</span>
-<span class="p">{</span>
-    <span class="c1">// Bundle&#39;s context.</span>
-    <span class="n">private</span> <span class="n">BundleContext</span> <span class="n">m_context</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
-    <span class="c1">// List of available dictionary service references.</span>
-    <span class="n">private</span> <span class="n">ArrayList</span> <span class="n">m_refList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
-    <span class="c1">// Maps service references to service objects.</span>
-    <span class="n">private</span> <span class="n">HashMap</span> <span class="n">m_refToObjMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="p">();</span>
-    <span class="c1">// The spell checker service registration.</span>
-    <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">m_reg</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+        synchronized (m_refList)
+        {
+            // Listen for events pertaining to dictionary services.
+            m_context.addServiceListener(this,
+                "(&amp;(objectClass=" + DictionaryService.class.getName() + ")" +
+                "(Language=*))");
 
-    <span class="cm">/**</span>
-<span class="cm">     * Implements BundleActivator.start(). Adds itself</span>
-<span class="cm">     * as a service listener and queries for all currently</span>
-<span class="cm">     * available dictionary services. Any available dictionary</span>
-<span class="cm">     * services are added to the service reference list. If</span>
-<span class="cm">     * dictionary services are found, then the spell checker</span>
-<span class="cm">     * service is registered.</span>
-<span class="cm">     * @param context the framework context for the bundle.</span>
-<span class="cm">    **/</span>
-    <span class="n">public</span> <span class="k">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="k">context</span><span class="p">)</span> <span class="n">throws</span> <span class="n">Exception</span>
-    <span class="p">{</span>
-        <span class="n">m_context</span> <span class="o">=</span> <span class="k">context</span><span class="p">;</span>
+            // Query for all dictionary services.
+            ServiceReference[] refs = m_context.getServiceReferences(
+                DictionaryService.class.getName(), "(Language=*)");
 
-        <span class="n">synchronized</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="c1">// Listen for events pertaining to dictionary services.</span>
-            <span class="n">m_context</span><span class="p">.</span><span class="n">addServiceListener</span><span class="p">(</span><span class="k">this</span><span class="p">,</span>
-                <span class="s">&quot;(&amp;(objectClass=&quot;</span> <span class="o">+</span> <span class="n">DictionaryService</span><span class="p">.</span><span class="k">class</span><span class="p">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span> <span class="o">+</span>
-                <span class="s">&quot;(Language=*))&quot;</span><span class="p">);</span>
+            // Add any dictionaries to the service reference list.
+            if (refs != null)
+            {
+                for (int i = 0; i &lt; refs.length; i++)
+                {
+                    // Get the service object.
+                    Object service = m_context.getService(refs[i]);
 
-            <span class="c1">// Query for all dictionary services.</span>
-            <span class="n">ServiceReference</span><span class="p">[]</span> <span class="n">refs</span> <span class="o">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">getServiceReferences</span><span class="p">(</span>
-                <span class="n">DictionaryService</span><span class="p">.</span><span class="k">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="s">&quot;(Language=*)&quot;</span><span class="p">);</span>
+                    // Make that the service is not being duplicated.
+                    if ((service != null) &amp;&amp;
+                        (m_refToObjMap.get(refs[i]) == null))
+                    {
+                        // Add to the reference list.
+                        m_refList.add(refs[i]);
+                        // Map reference to service object for easy look up.
+                        m_refToObjMap.put(refs[i], service);
+                    }
+                }
 
-            <span class="c1">// Add any dictionaries to the service reference list.</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">refs</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">refs</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-                <span class="p">{</span>
-                    <span class="c1">// Get the service object.</span>
-                    <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">getService</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+                // Register spell checker service if there are any
+                // dictionary services.
+                if (m_refList.size() &gt; 0)
+                {
+                    m_reg = m_context.registerService(
+                        SpellChecker.class.getName(),
+                        new SpellCheckerImpl(), null);
+                }
+            }
+        }
+    }
 
-                    <span class="c1">// Make that the service is not being duplicated.</span>
-                    <span class="k">if</span> <span class="p">((</span><span class="n">service</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
-                        <span class="p">(</span><span class="n">m_refToObjMap</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="k">null</span><span class="p">))</span>
-                    <span class="p">{</span>
-                        <span class="c1">// Add to the reference list.</span>
-                        <span class="n">m_refList</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-                        <span class="c1">// Map reference to service object for easy look up.</span>
-                        <span class="n">m_refToObjMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">service</span><span class="p">);</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
+    /**
+     * Implements BundleActivator.stop(). Does nothing since
+     * the framework will automatically unregister any registered services,
+     * release any used services, and remove any event listeners.
+     * @param context the framework context for the bundle.
+    **/
+    public void stop(BundleContext context)
+    {
+        // NOTE: The services automatically released.
+    }
 
-                <span class="c1">// Register spell checker service if there are any</span>
-                <span class="c1">// dictionary services.</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mh">0</span><span class="p">)</span>
-                <span class="p">{</span>
-                    <span class="n">m_reg</span> <span class="o">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span>
-                        <span class="n">SpellChecker</span><span class="p">.</span><span class="k">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span>
-                        <span class="k">new</span> <span class="n">SpellCheckerImpl</span><span class="p">(),</span> <span class="k">null</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+    /**
+     * Implements ServiceListener.serviceChanged(). Monitors
+     * the arrival and departure of dictionary services, adding and
+     * removing them from the service reference list, respectively.
+     * In the case where no more dictionary services are available,
+     * the spell checker service is unregistered. As soon as any dictionary
+     * service becomes available, the spell checker service is
+     * reregistered.
+     * @param event the fired service event.
+    **/
+    public void serviceChanged(ServiceEvent event)
+    {
+        synchronized (m_refList)
+        {
+            // Add the new dictionary service to the service list.
+            if (event.getType() == ServiceEvent.REGISTERED)
+            {
+                // Get the service object.
+                Object service = m_context.getService(event.getServiceReference());
 
-    <span class="cm">/**</span>
-<span class="cm">     * Implements BundleActivator.stop(). Does nothing since</span>
-<span class="cm">     * the framework will automatically unregister any registered services,</span>
-<span class="cm">     * release any used services, and remove any event listeners.</span>
-<span class="cm">     * @param context the framework context for the bundle.</span>
-<span class="cm">    **/</span>
-    <span class="n">public</span> <span class="k">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="k">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// NOTE: The services automatically released.</span>
-    <span class="p">}</span>
+                // Make that the service is not being duplicated.
+                if ((service != null) &amp;&amp;
+                    (m_refToObjMap.get(event.getServiceReference()) == null))
+                {
+                    // Add to the reference list.
+                    m_refList.add(event.getServiceReference());
+                    // Map reference to service object for easy look up.
+                    m_refToObjMap.put(event.getServiceReference(), service);
 
-    <span class="cm">/**</span>
-<span class="cm">     * Implements ServiceListener.serviceChanged(). Monitors</span>
-<span class="cm">     * the arrival and departure of dictionary services, adding and</span>
-<span class="cm">     * removing them from the service reference list, respectively.</span>
-<span class="cm">     * In the case where no more dictionary services are available,</span>
-<span class="cm">     * the spell checker service is unregistered. As soon as any dictionary</span>
-<span class="cm">     * service becomes available, the spell checker service is</span>
-<span class="cm">     * reregistered.</span>
-<span class="cm">     * @param event the fired service event.</span>
-<span class="cm">    **/</span>
-    <span class="n">public</span> <span class="k">void</span> <span class="n">serviceChanged</span><span class="p">(</span><span class="n">ServiceEvent</span> <span class="k">event</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">synchronized</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="c1">// Add the new dictionary service to the service list.</span>
-            <span class="k">if</span> <span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="p">.</span><span class="no">REGISTERED</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="c1">// Get the service object.</span>
-                <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">getService</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+                    // Register spell checker service if necessary.
+                    if (m_reg == null)
+                    {
+                        m_reg = m_context.registerService(
+                            SpellChecker.class.getName(),
+                            new SpellCheckerImpl(), null);
+                    }
+                }
+                else if (service != null)
+                {
+                    m_context.ungetService(event.getServiceReference());
+                }
+            }
+            // Remove the departing service from the service list.
+            else if (event.getType() == ServiceEvent.UNREGISTERING)
+            {
+                // Make sure the service is in the list.
+                if (m_refToObjMap.get(event.getServiceReference()) != null)
+                {
+                    // Unget the service object.
+                    m_context.ungetService(event.getServiceReference());
+                    // Remove service reference.
+                    m_refList.remove(event.getServiceReference());
+                    // Remove service reference from map.
+                    m_refToObjMap.remove(event.getServiceReference());
 
-                <span class="c1">// Make that the service is not being duplicated.</span>
-                <span class="k">if</span> <span class="p">((</span><span class="n">service</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
-                    <span class="p">(</span><span class="n">m_refToObjMap</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">())</span> <span class="o">==</span> <span class="k">null</span><span class="p">))</span>
-                <span class="p">{</span>
-                    <span class="c1">// Add to the reference list.</span>
-                    <span class="n">m_refList</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">());</span>
-                    <span class="c1">// Map reference to service object for easy look up.</span>
-                    <span class="n">m_refToObjMap</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">(),</span> <span class="n">service</span><span class="p">);</span>
+                    // If there are no more dictionary services,
+                    // then unregister spell checker service.
+                    if (m_refList.size() == 0)
+                    {
+                        m_reg.unregister();
+                        m_reg = null;
+                    }
+                }
+            }
+        }
+    }
 
-                    <span class="c1">// Register spell checker service if necessary.</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">m_reg</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span>
-                    <span class="p">{</span>
-                        <span class="n">m_reg</span> <span class="o">=</span> <span class="n">m_context</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span>
-                            <span class="n">SpellChecker</span><span class="p">.</span><span class="k">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span>
-                            <span class="k">new</span> <span class="n">SpellCheckerImpl</span><span class="p">(),</span> <span class="k">null</span><span class="p">);</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-                <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">service</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span>
-                <span class="p">{</span>
-                    <span class="n">m_context</span><span class="p">.</span><span class="n">ungetService</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">());</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-            <span class="c1">// Remove the departing service from the service list.</span>
-            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ServiceEvent</span><span class="p">.</span><span class="no">UNREGISTERING</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="c1">// Make sure the service is in the list.</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">m_refToObjMap</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">())</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span>
-                <span class="p">{</span>
-                    <span class="c1">// Unget the service object.</span>
-                    <span class="n">m_context</span><span class="p">.</span><span class="n">ungetService</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">());</span>
-                    <span class="c1">// Remove service reference.</span>
-                    <span class="n">m_refList</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">());</span>
-                    <span class="c1">// Remove service reference from map.</span>
-                    <span class="n">m_refToObjMap</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="k">event</span><span class="p">.</span><span class="n">getServiceReference</span><span class="p">());</span>
+    /**
+     * A private inner class that implements a spell checker service;
+     * see SpellChecker for details of the service.
+    **/
+    private class SpellCheckerImpl implements SpellChecker
+    {
+        /**
+         * Implements SpellChecker.check(). Checks the
+         * given passage for misspelled words.
+         * @param passage the passage to spell check.
+         * @return An array of misspelled words or null if no
+         *         words are misspelled.
+        **/
+        public String[] check(String passage)
+        {
+            // No misspelled words for an empty string.
+            if ((passage == null) || (passage.length() == 0))
+            {
+                return null;
+            }
 
-                    <span class="c1">// If there are no more dictionary services,</span>
-                    <span class="c1">// then unregister spell checker service.</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mh">0</span><span class="p">)</span>
-                    <span class="p">{</span>
-                        <span class="n">m_reg</span><span class="p">.</span><span class="n">unregister</span><span class="p">();</span>
-                        <span class="n">m_reg</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+            ArrayList errorList = new ArrayList();
 
-    <span class="cm">/**</span>
-<span class="cm">     * A private inner class that implements a spell checker service;</span>
-<span class="cm">     * see SpellChecker for details of the service.</span>
-<span class="cm">    **/</span>
-    <span class="n">private</span> <span class="k">class</span> <span class="n">SpellCheckerImpl</span> <span class="n">implements</span> <span class="n">SpellChecker</span>
-    <span class="p">{</span>
-        <span class="cm">/**</span>
-<span class="cm">         * Implements SpellChecker.check(). Checks the</span>
-<span class="cm">         * given passage for misspelled words.</span>
-<span class="cm">         * @param passage the passage to spell check.</span>
-<span class="cm">         * @return An array of misspelled words or null if no</span>
-<span class="cm">         *         words are misspelled.</span>
-<span class="cm">        **/</span>
-        <span class="n">public</span> <span class="n">String</span><span class="p">[]</span> <span class="n">check</span><span class="p">(</span><span class="n">String</span> <span class="n">passage</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="c1">// No misspelled words for an empty string.</span>
-            <span class="k">if</span> <span class="p">((</span><span class="n">passage</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">passage</span><span class="p">.</span><span class="n">length</span><span class="p">()</span> <span class="o">==</span> <span class="mh">0</span><span class="p">))</span>
-            <span class="p">{</span>
-                <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
-            <span class="p">}</span>
+            // Tokenize the passage using spaces and punctionation.
+            StringTokenizer st = new StringTokenizer(passage, " ,.!?;:");
 
-            <span class="n">ArrayList</span> <span class="n">errorList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+            // Lock the service list.
+            synchronized (m_refList)
+            {
+                // Loop through each word in the passage.
+                while (st.hasMoreTokens())
+                {
+                    String word = st.nextToken();
 
-            <span class="c1">// Tokenize the passage using spaces and punctionation.</span>
-            <span class="n">StringTokenizer</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringTokenizer</span><span class="p">(</span><span class="n">passage</span><span class="p">,</span> <span class="s">&quot; ,.!?;:&quot;</span><span class="p">);</span>
+                    boolean correct = false;
 
-            <span class="c1">// Lock the service list.</span>
-            <span class="n">synchronized</span> <span class="p">(</span><span class="n">m_refList</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="c1">// Loop through each word in the passage.</span>
-                <span class="k">while</span> <span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">hasMoreTokens</span><span class="p">())</span>
-                <span class="p">{</span>
-                    <span class="n">String</span> <span class="n">word</span> <span class="o">=</span> <span class="n">st</span><span class="p">.</span><span class="n">nextToken</span><span class="p">();</span>
+                    // Check each available dictionary for the current word.
+                    for (int i = 0; (!correct) &amp;&amp; (i &lt; m_refList.size()); i++)
+                    {
+                        DictionaryService dictionary =
+                            (DictionaryService) m_refToObjMap.get(m_refList.get(i));
 
-                    <span class="n">boolean</span> <span class="n">correct</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+                        if (dictionary.checkWord(word))
+                        {
+                            correct = true;
+                        }
+                    }
 
-                    <span class="c1">// Check each available dictionary for the current word.</span>
-                    <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="p">(</span><span class="o">!</span><span class="n">correct</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_refList</span><span class="p">.</span><span class="n">size</span><span class="p">());</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-                    <span class="p">{</span>
-                        <span class="n">DictionaryService</span> <span class="n">dictionary</span> <span class="o">=</span>
-                            <span class="p">(</span><span class="n">DictionaryService</span><span class="p">)</span> <span class="n">m_refToObjMap</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">m_refList</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+                    // If the word is not correct, then add it
+                    // to the incorrect word list.
+                    if (!correct)
+                    {
+                        errorList.add(word);
+                    }
+                }
+            }
 
-                        <span class="k">if</span> <span class="p">(</span><span class="n">dictionary</span><span class="p">.</span><span class="n">checkWord</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
-                        <span class="p">{</span>
-                            <span class="n">correct</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
-                        <span class="p">}</span>
-                    <span class="p">}</span>
+            // Return null if no words are incorrect.
+            if (errorList.size() == 0)
+            {
+                return null;
+            }
 
-                    <span class="c1">// If the word is not correct, then add it</span>
-                    <span class="c1">// to the incorrect word list.</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">correct</span><span class="p">)</span>
-                    <span class="p">{</span>
-                        <span class="n">errorList</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">word</span><span class="p">);</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-
-            <span class="c1">// Return null if no words are incorrect.</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">errorList</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mh">0</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
-            <span class="p">}</span>
-
-            <span class="c1">// Return the array of incorrect words.</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">String</span><span class="p">[])</span> <span class="n">errorList</span><span class="p">.</span><span class="n">toArray</span><span class="p">(</span><span class="k">new</span> <span class="n">String</span><span class="p">[</span><span class="n">errorList</span><span class="p">.</span><span class="n">size</span><span class="p">()]);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Note that we do not need to unregister the service in stop() method, because the OSGi framework will automatically do so for us. The spell checker service that we have implemented is very simple; it simply parses a given passage into words and then loops through all available dictionary services for each word until it determines that the word is correct. Any incorrect words are added to an error list that will be returned to the caller. This solution is not optimal and is only intended for educational purposes. Next, we create a <code>manifest.mf</code> file that contains the meta-data for our bundle:</p>
-<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name</span><span class="p">:</span> <span class="n">Spell</span> <span class="n">checker</span> <span class="n">service</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Description</span><span class="p">:</span> <span class="n">A</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">implements</span> <span class="n">a</span> <span class="n">simple</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">service</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Vendor</span><span class="p">:</span> <span class="n">Richard</span> <span class="n">Hall</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Version</span><span class="p">:</span> 1<span class="p">.</span>0<span class="p">.</span>0
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator</span><span class="p">:</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example6</span><span class="p">.</span><span class="n">Activator</span>
-<span class="n">Export</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example6</span><span class="p">.</span><span class="n">service</span>
-<span class="n">Import</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">,</span>
- <span class="n">tutorial</span><span class="p">.</span><span class="n">example2</span><span class="p">.</span><span class="n">service</span>
-</pre></div>
-
-
-<p>We specify which class used to activate the bundle via the <code>Bundle-Activator</code> attribute. Our bundle exports the spell checker service interface using the <code>Export-Package</code> attribute and imports the OSGi core framework and dictionary service interface packages using the <code>Import-Package</code> attribute. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
-<p>To compile our source, we need to have the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) and the example2.jar file in our class path. We compile the source file using a command like:</p>
-<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="n">c</span><span class="p">:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*</span><span class="p">.</span><span class="n">java</span>
-</pre></div>
-
-
-<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory; this subdirectory is <code>tutorial\example6</code>, named after the package we specified in the source file. For the above command to work, the <code>c:\classes</code> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</p>
-<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">example6</span><span class="p">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="p">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c</span><span class="p">:</span><span class="o">\</span><span class="n">classes</span> <span class="n">tutorial</span><span class="o">\</span><span class="n">example6</span>
-</pre></div>
-
-
-<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example6</code> directory inside of the <code>c:\classes</code> directory. Once the JAR file is created, we are ready to install and start the bundle.</p>
-<p>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>. After running Felix, we should stop all tutorial bundles except for the service bundles. Use the <code>lb</code> command to make sure that only the bundles from Example 2 and Example 2b are active; use the <code>start</code> and <code>stop</code> commands as appropriate to start and stop the various tutorial bundles, respectively. (Note: Felix uses some bundles to provide its command shell, so do not stop these bundles.) Now we can install and start our spell checker service bundle. Assuming that we created our bundle in the directory <code>c:\tutorial</code>, we can install and start it in Felix' shell using the following command:</p>
-<div class="codehilite"><pre><span class="n">start</span> <span class="n">file</span><span class="p">:</span><span class="o">/</span><span class="n">c</span><span class="p">:</span><span class="o">/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">example6</span><span class="p">.</span><span class="n">jar</span>
-</pre></div>
-
-
-<p>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands. To stop the bundle, use the Felix <code>stop</code> shell command. Using the Felix shell <code>lb</code> command to get the bundle identifier number for our spell checker service bundle and we can stop and restart it at will using the <code>stop</code> and <code>start</code> commands, respectively. Using the <code>services</code> command, we can see which services are currently available in the OSGi framework, including our dictionary and spell checker services. We can experiment with our spell checker service's dynamic availability by stopping the dictionary service bundles; when both dictionary services are stopped, the <code>services</code> command will reveal that our bundle is no longer offering its spell checker service. Likewise, when the dictionary services comeback, so will our spell checker service. We create a client for our spell checker service in Example 7. To exit Felix, we use the <code>shutdown</code> command.</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+            // Return the array of incorrect words.
+            return (String[]) errorList.toArray(new String[errorList.size()]);
+        }
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that we do not need to unregister the service in stop() method, because the OSGi framework will automatically do so for us.
+The spell checker service that we have implemented is very simple;
+it simply parses a given passage into words and then loops through all available dictionary services for each word until it determines that the word is correct.
+Any incorrect words are added to an error list that will be returned to the caller.
+This solution is not optimal and is only intended for educational purposes.
+Next, we create a <code>manifest.mf</code> file that contains the meta-data for our bundle:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bundle-Name: Spell checker service
+Bundle-Description: A bundle that implements a simple spell checker service
+Bundle-Vendor: Richard Hall
+Bundle-Version: 1.0.0
+Bundle-Activator: tutorial.example6.Activator
+Export-Package: tutorial.example6.service
+Import-Package: org.osgi.framework,
+ tutorial.example2.service</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We specify which class used to activate the bundle via the <code>Bundle-Activator</code> attribute.
+Our bundle exports the spell checker service interface using the <code>Export-Package</code> attribute and imports the OSGi core framework and dictionary service interface packages using the <code>Import-Package</code> attribute.
+(Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
+</div>
+<div class="paragraph">
+<p>To compile our source, we need to have the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) and the example2.jar file in our class path.
+We compile the source file using a command like:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>javac -d c:\classes *.java</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory;
+this subdirectory is <code>tutorial\example6</code>, named after the package we specified in the source file.
+For the above command to work, the <code>c:\classes</code> directory must exist.
+After compiling, we need to create a JAR file containing the generated package directories.
+We will also add our manifest file that contains the bundle&#8217;s meta-data to the JAR file.
+To create the JAR file, we issue the command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>jar cfm example6.jar manifest.mf -C c:\classes tutorial\example6</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example6</code> directory inside of the <code>c:\classes</code> directory.
+Once the JAR file is created, we are ready to install and start the bundle.</p>
+</div>
+<div class="paragraph">
+<p>To run Felix, we follow the instructions described in usage.html.
+When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>.
+After running Felix, we should stop all tutorial bundles except for the service bundles.
+Use the <code>lb</code> command to make sure that only the bundles from Example 2 and Example 2b are active;
+use the <code>start</code> and <code>stop</code> commands as appropriate to start and stop the various tutorial bundles, respectively.
+(Note: Felix uses some bundles to provide its command shell, so do not stop these bundles.) Now we can install and start our spell checker service bundle.
+Assuming that we created our bundle in the directory <code>c:\tutorial</code>, we can install and start it in Felix' shell using the following command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>start file:/c:/tutorial/example6.jar</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above command installs and starts the bundle in a single step;
+it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands.
+To stop the bundle, use the Felix <code>stop</code> shell command.
+Using the Felix shell <code>lb</code> command to get the bundle identifier number for our spell checker service bundle and we can stop and restart it at will using the <code>stop</code> and <code>start</code> commands, respectively.
+Using the <code>services</code> command, we can see which services are currently available in the OSGi framework, including our dictionary and spell checker services.
+We can experiment with our spell checker service&#8217;s dynamic availability by stopping the dictionary service bundles;
+when both dictionary services are stopped, the <code>services</code> command will reveal that our bundle is no longer offering its spell checker service.
+Likewise, when the dictionary services comeback, so will our spell checker service.
+We create a client for our spell checker service in Example 7.
+To exit Felix, we use the <code>shutdown</code> command.</p>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

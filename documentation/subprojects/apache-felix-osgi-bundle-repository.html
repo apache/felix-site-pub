@@ -1,365 +1,1070 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Apache Felix OSGi Bundle Repository (OBR)</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Apache Felix OSGi Bundle Repository (OBR) :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-osgi-bundle-repository.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../_/css/site.css">
+    <link rel="icon" href="../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
-    </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>
-      </div>
-
-      <h1>Apache Felix OSGi Bundle Repository (OBR)</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<div class="toc">
-<ul>
-<li><a href="#motivation">Motivation</a></li>
-<li><a href="#overview">Overview</a></li>
-<li><a href="#obr-repository-file">OBR Repository File</a></li>
-<li><a href="#obr-service-api">OBR Service API</a></li>
-<li><a href="#obr-shell-command">OBR Shell Command</a><ul>
-<li><a href="#obr-help">obr help</a></li>
-<li><a href="#obr-list-url">obr list-url</a></li>
-<li><a href="#obr-add-url">obr add-url</a></li>
-<li><a href="#obr-remove-url">obr remove-url</a></li>
-<li><a href="#obr-list">obr list</a></li>
-<li><a href="#obr-info">obr info</a></li>
-<li><a href="#obr-deploy">obr deploy</a></li>
-<li><a href="#obr-start">obr start</a></li>
-<li><a href="#obr-source">obr source</a></li>
-<li><a href="#obr-javadoc">obr javadoc</a></li>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
 </ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Documentation</a></li>
+    <li><a href="../subprojects.html">Subprojects</a></li>
+    <li><a href="apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-osgi-bundle-repository.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Apache Felix OSGi Bundle Repository (OBR)</h1>
+<div class="sect1">
+<h2 id="_motivation"><a class="anchor" href="#_motivation"></a>Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The goal of the Apache Felix OSGi Bundle Repository (OBR) is two-fold:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To simplify deploying and using available bundles with Felix.</p>
 </li>
-<li><a href="#using-obr-with-a-proxy">Using OBR with a Proxy</a></li>
-<li><a href="#bundle-source-packaging">Bundle Source Packaging</a></li>
-<li><a href="#note-on-osgi-r3-bundles">Note on OSGi R3 Bundles</a></li>
-<li><a href="#feedback">Feedback</a></li>
+<li>
+<p>To encourage independent bundle development so that communities of interest can grow.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>OBR achieves the first goal by providing a service that can automatically install a bundle, with its deployment dependencies, from a bundle repository.
+This makes it easier for people to experiment with existing bundles.
+The second goal is achieved by raising the visibility of the available bundles and providing access to both the executable bundle and its source code.
+Hopefully, by making OBR and the bundles themselves more visible, community members will be encouraged to provide or improve service implementations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+OBR provides access to the Felix' default bundle repository, but you can also use it to deploy your own bundles by creating a bundle repository meta-data file for your local bundles;
+see the <code>obr list-url</code>, <code>obr add-url</code>, and <code>obr remove-url</code> commands for more details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As of release 2.0.x Felix OBR also supports the OSGi Repository 1.0 specification.
+Chapter 132 in the <a href="http://www.osgi.org/Download/Release5">OSGi R5 Enterprise specification</a>.
+A client can look up the <a href="http://www.osgi.org/javadoc/r5/enterprise/org/osgi/service/repository/package-summary.html">OSGi Repository Service</a> in the service registry to interact with Felix OBR in a specification compliant way.</p>
+</div>
+<div class="paragraph">
+<p>For the most part, OBR is quite simple.
+An OBR "repository server" is not necessary, since all functionality may reside on the client side.
+OBR is able to provide its functionality by reading an XML-based meta-data file that describes the bundles available to it.
+The meta-data file essentially contains an XML encoding of the bundles' manifest information.
+From the meta-data, OBR is able to construct dependency information for deploying (i.e., installing and updating) bundles.</p>
+</div>
+<div class="paragraph">
+<p>OBR defines the following entities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Repository Admin</strong> - a service to access a federation of repositories.</p>
+</li>
+<li>
+<p><strong>Repository</strong> - provides access to a set of resources.</p>
+</li>
+<li>
+<p><strong>Resource</strong> - a description of an artifact to be installed on a device.</p>
+</li>
+<li>
+<p><strong>Capability</strong> - a named set of properties.</p>
+</li>
+<li>
+<p><strong>Requirement</strong> - an assertion on a capability.</p>
+</li>
+<li>
+<p><strong>Resolver</strong> - an object to resolve resource dependencies and to deploy them.</p>
+</li>
+<li>
+<p><strong>Repository file</strong> - XML file containing resource meta-data.</p>
+</li>
 </ul>
 </div>
-<h2 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h2>
-<p>The goal of the Apache Felix OSGi Bundle Repository (OBR) is two-fold:</p>
-<ol>
-<li>To simplify deploying and using available bundles with Felix.</li>
-<li>To encourage independent bundle development so that communities of interest can grow.</li>
-</ol>
-<p>OBR achieves the first goal by providing a service that can automatically install a bundle, with its deployment dependencies, from a bundle repository. This makes it easier for people to experiment with existing bundles. The second goal is achieved by raising the visibility of the available bundles and providing access to both the executable bundle and its source code. Hopefully, by making OBR and the bundles themselves more visible, community members will be encouraged to provide or improve service implementations.</p>
-<p>Note: OBR provides access to the Felix' default bundle repository, but you can also use it to deploy your own bundles by creating a bundle repository meta-data file for your local bundles; see the <code>obr list-url</code>, <code>obr add-url</code>, and <code>obr remove-url</code> commands for more details.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>As of release 2.0.x Felix OBR also supports the OSGi Repository 1.0 specification. Chapter 132 in the <a href="http://www.osgi.org/Download/Release5">OSGi R5 Enterprise specification</a>. A client can look up the <a href="http://www.osgi.org/javadoc/r5/enterprise/org/osgi/service/repository/package-summary.html">OSGi Repository Service</a> in the service registry to interact with Felix OBR in a specification compliant way.</p>
-<p>For the most part, OBR is quite simple. An OBR "repository server" is not necessary, since all functionality may reside on the client side. OBR is able to provide its functionality by reading an XML-based meta-data file that describes the bundles available to it. The meta-data file essentially contains an XML encoding of the bundles' manifest information. From the meta-data, OBR is able to construct dependency information for deploying (i.e., installing and updating) bundles.</p>
-<p>OBR defines the following entities:</p>
-<ul>
-<li><strong>Repository Admin</strong> - a service to access a federation of repositories.</li>
-<li><strong>Repository</strong> - provides access to a set of resources.</li>
-<li><strong>Resource</strong> - a description of an artifact to be installed on a device.</li>
-<li><strong>Capability</strong> - a named set of properties.</li>
-<li><strong>Requirement</strong> - an assertion on a capability.</li>
-<li><strong>Resolver</strong> - an object to resolve resource dependencies and to deploy them.</li>
-<li><strong>Repository file</strong> - XML file containing resource meta-data.</li>
-</ul>
+<div class="paragraph">
 <p>The following diagram illustrates the relationships among these entities:</p>
-<p><img alt="alt text" src="obr-entities.png" /></p>
-<p>The client has access to a federated set of repositories via the Repository Admin service; such as depicted in this view:</p>
-<p><img alt="alt text" src="obr-high-level.png" /></p>
-<h2 id="obr-repository-file">OBR Repository File<a class="headerlink" href="#obr-repository-file" title="Permanent link">&para;</a></h2>
-<p>The OBR repository file is an XML-based representation of bundle meta-data. The goal is provide a generic model for describing dependencies among resources; as such, the term <strong>resource</strong> is used instead of <strong>bundle</strong> in the OBR repository syntax. As of OBR release 2.0.2 two forms of metadata are supported:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/documentation/subprojects/obr-entities.png" alt="alt text">
+</div>
+</div>
+<div class="paragraph">
+<p>The client has access to a federated set of repositories via the Repository Admin service;
+such as depicted in this view:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/documentation/subprojects/obr-high-level.png" alt="alt text">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_obr_repository_file"><a class="anchor" href="#_obr_repository_file"></a>OBR Repository File</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The OBR repository file is an XML-based representation of bundle meta-data.
+The goal is provide a generic model for describing dependencies among resources;
+as such, the term <strong>resource</strong> is used instead of <strong>bundle</strong> in the OBR repository syntax.
+As of OBR release 2.0.2 two forms of metadata are supported:</p>
+</div>
+<div class="ulist">
 <ul>
-<li>Repository XML as defined by the OSGi Repository Specification 1.0. Such an XML file is in the http://www.osgi.org/xmlns/repository/v1.0.0 name space.</li>
-<li>A Felix OBR-specific metadata format is also supported. This format predates the format from the specification.</li>
+<li>
+<p>Repository XML as defined by the OSGi Repository Specification 1.0.
+Such an XML file is in the <a href="http://www.osgi.org/xmlns/repository/v1.0.0" class="bare">http://www.osgi.org/xmlns/repository/v1.0.0</a> name space.</p>
+</li>
+<li>
+<p>A Felix OBR-specific metadata format is also supported.
+This format predates the format from the specification.</p>
+</li>
 </ul>
-<p>A detailed description of the standard XML format is described in chapter 132 in the <a href="http://www.osgi.org/Download/Release5">OSGi R5 Enterprise specification</a>. The following XML snippet depicts the overall structure of a repository file, using the proprietary Felix OBR format:</p>
-<div class="codehilite"><pre><span class="nt">&lt;repository</span> <span class="na">presentationname=</span><span class="s">&quot;...&quot;</span> <span class="na">symbolicname=</span><span class="s">&quot;...&quot;</span> <span class="err">...</span> <span class="nt">&gt;</span>
-    <span class="nt">&lt;resource&gt;</span>
-        <span class="nt">&lt;description&gt;</span>...<span class="nt">&lt;/description&gt;</span>
-        <span class="nt">&lt;size&gt;</span>...<span class="nt">&lt;/size&gt;</span>
-        <span class="nt">&lt;documentation&gt;</span>...<span class="nt">&lt;/documentation&gt;</span>
-        <span class="nt">&lt;source&gt;</span>...<span class="nt">&lt;/source&gt;</span>
-        <span class="nt">&lt;category</span> <span class="na">id=</span><span class="s">&quot;...&quot;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;capability&gt;</span>...<span class="nt">&lt;/capability&gt;</span>
+</div>
+<div class="paragraph">
+<p>A detailed description of the standard XML format is described in chapter 132 in the <a href="http://www.osgi.org/Download/Release5">OSGi R5 Enterprise specification</a>.
+The following XML snippet depicts the overall structure of a repository file, using the proprietary Felix OBR format:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;repository presentationname="..." symbolicname="..." ... &gt;
+    &lt;resource&gt;
+        &lt;description&gt;...&lt;/description&gt;
+        &lt;size&gt;...&lt;/size&gt;
+        &lt;documentation&gt;...&lt;/documentation&gt;
+        &lt;source&gt;...&lt;/source&gt;
+        &lt;category id="..."/&gt;
+        &lt;capability&gt;...&lt;/capability&gt;
         ...
-        <span class="nt">&lt;requirement&gt;</span>...<span class="nt">&lt;/requirement&gt;</span>
+        &lt;requirement&gt;...&lt;/requirement&gt;
         ...
-    <span class="nt">&lt;/resource&gt;</span>
+    &lt;/resource&gt;
     ...
-<span class="nt">&lt;/repository&gt;</span>
-</pre></div>
-
-
-<p>The above repository defines a set of available resources, each described by a set of meta-data. Some resource meta-data is purely intended for human consumption; the most important aspects relate to the generic capability/requirement model.</p>
-<p>A resource can provide any number of capabilities. A capability is a typed set of properties. For example, the following is an exported package capability:</p>
-<div class="codehilite"><pre><span class="nt">&lt;capability</span> <span class="na">name=</span><span class="s">&#39;package&#39;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;p</span> <span class="na">n=</span><span class="s">&#39;package&#39;</span> <span class="na">v=</span><span class="s">&#39;org.foo.bar&#39;</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;p</span> <span class="na">n=</span><span class="s">&#39;version&#39;</span> <span class="na">t=</span><span class="s">&#39;version&#39;</span> <span class="na">v=</span><span class="s">&#39;1.0.0&#39;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/capability&gt;</span>
-</pre></div>
-
-
-<p>This capability is of type 'package' and exports 'org.foo.bar' at version '1.0.0'. Conversely, a requirement is a typed LDAP query over a set of capability properties. For example, the following is an imported package requirement:</p>
-<div class="codehilite"><pre><span class="nt">&lt;require</span> <span class="na">name=</span><span class="s">&#39;package&#39;</span> <span class="na">extend=</span><span class="s">&#39;false&#39;</span>
-    <span class="na">multiple=</span><span class="s">&#39;false&#39;</span> <span class="na">optional=</span><span class="s">&#39;false&#39;</span>
-    <span class="na">filter=</span><span class="s">&#39;(&amp;amp;(package=org.foo.bar)(version&amp;gt;=1.0.0))&#39;</span><span class="nt">&gt;</span>
+&lt;/repository&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above repository defines a set of available resources, each described by a set of meta-data.
+Some resource meta-data is purely intended for human consumption;
+the most important aspects relate to the generic capability/requirement model.</p>
+</div>
+<div class="paragraph">
+<p>A resource can provide any number of capabilities.
+A capability is a typed set of properties.
+For example, the following is an exported package capability:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;capability name='package'&gt;
+    &lt;p n='package' v='org.foo.bar'/&gt;
+    &lt;p n='version' t='version' v='1.0.0'/&gt;
+&lt;/capability&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This capability is of type 'package' and exports 'org.foo.bar' at version '1.0.0'.
+Conversely, a requirement is a typed LDAP query over a set of capability properties.
+For example, the following is an imported package requirement:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;require name='package' extend='false'
+    multiple='false' optional='false'
+    filter='(&amp;amp;(package=org.foo.bar)(version&amp;gt;=1.0.0))'&gt;
     Import package org.foo.bar
-<span class="nt">&lt;/require&gt;</span>
-</pre></div>
-
-
-<p>This requirement is of type 'package' and imports 'org.foo.bar' at versions greater than '1.0.0'. Although this syntax looks rather complicated with the '\&amp;' and '\&gt;=' syntax, it is simply the standard OSGi LDAP query syntax in XML form (additionally, Peter Kriens has created a tool called <code>bindex</code> to generate this meta-data from a bundle's manifest).</p>
-<p>With this generic dependency model, OBR is able to provide mappings for the various OSGi bundle dependencies; e.g., import/export package, provide/require bundle, host/fragment, import/export service, execution environment, and native code. In addition, it is possible for bundles to introduce arbitrary dependencies for custom purposes.</p>
-<p>Two other important pieces of meta-data are <code>Bundle-SymbolicName</code> and <code>Bundle-Version</code>; these are standard OSGi bundle manifest attributes that OBR uses to uniquely identify a bundle. For example, if you want to use OBR to update a locally installed bundle, OBR gets its symbolic name and version and searches the repository metadata for a matching symbolic name. If the matching symbolic name is found, then OBR checks if there is a newer version than the local copy using the bundle version number. Thus, the symbolic name plus bundle version forms a unique key to match locally installed bundles to remotely available bundles.</p>
-<h2 id="obr-service-api">OBR Service API<a class="headerlink" href="#obr-service-api" title="Permanent link">&para;</a></h2>
-<p>Typically, OBR service clients only need to interact with the Repository Admin service, which provides the mechanisms necessary to discover available resources. The Repository Admin interface is defined as follows:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">RepositoryAdmin</span>
-<span class="p">{</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">discoverResources</span><span class="p">(</span><span class="n">String</span> <span class="n">filterExpr</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Resolver</span> <span class="n">resolver</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Repository</span> <span class="n">addRepository</span><span class="p">(</span><span class="n">URL</span> <span class="n">repository</span><span class="p">)</span>?
-        <span class="n">throws</span> <span class="n">Exception</span><span class="p">;</span>
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">removeRepository</span><span class="p">(</span><span class="n">URL</span> <span class="n">repository</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Repository</span><span class="p">[]</span> <span class="n">listRepositories</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Resource</span> <span class="n">getResource</span><span class="p">(</span><span class="n">String</span> <span class="n">respositoryId</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
+&lt;/require&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This requirement is of type 'package' and imports 'org.foo.bar' at versions greater than '1.0.0'.
+Although this syntax looks rather complicated with the '\&amp;' and '\&gt;=' syntax, it is simply the standard OSGi LDAP query syntax in XML form (additionally, Peter Kriens has created a tool called <code>bindex</code> to generate this meta-data from a bundle&#8217;s manifest).</p>
+</div>
+<div class="paragraph">
+<p>With this generic dependency model, OBR is able to provide mappings for the various OSGi bundle dependencies;
+e.g., import/export package, provide/require bundle, host/fragment, import/export service, execution environment, and native code.
+In addition, it is possible for bundles to introduce arbitrary dependencies for custom purposes.</p>
+</div>
+<div class="paragraph">
+<p>Two other important pieces of meta-data are <code>Bundle-SymbolicName</code> and <code>Bundle-Version</code>;
+these are standard OSGi bundle manifest attributes that OBR uses to uniquely identify a bundle.
+For example, if you want to use OBR to update a locally installed bundle, OBR gets its symbolic name and version and searches the repository metadata for a matching symbolic name.
+If the matching symbolic name is found, then OBR checks if there is a newer version than the local copy using the bundle version number.
+Thus, the symbolic name plus bundle version forms a unique key to match locally installed bundles to remotely available bundles.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_obr_service_api"><a class="anchor" href="#_obr_service_api"></a>OBR Service API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Typically, OBR service clients only need to interact with the Repository Admin service, which provides the mechanisms necessary to discover available resources.
+The Repository Admin interface is defined as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>public interface RepositoryAdmin
+{
+    public Resource[] discoverResources(String filterExpr);
+    public Resolver resolver();
+    public Repository addRepository(URL repository)?
+        throws Exception;
+    public boolean removeRepository(URL repository);
+    public Repository[] listRepositories();
+    public Resource getResource(String respositoryId);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>In order to resolve and deploy available resources, the Repository Admin provides Resolver instances, which are defined as follows:</p>
-<div class="codehilite"><pre><span class="n">public</span> <span class="n">interface</span> <span class="n">Resolver</span>
-<span class="p">{</span>
-    <span class="n">public</span> <span class="n">void</span> <span class="n">add</span><span class="p">(</span><span class="n">Resource</span> <span class="n">resource</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Requirement</span><span class="p">[]</span> <span class="n">getUnsatisfiedRequirements</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getOptionalResources</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Requirement</span><span class="p">[]</span> <span class="n">getReason</span><span class="p">(</span><span class="n">Resource</span> <span class="n">resource</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getResources</span><span class="p">(</span><span class="n">Requirement</span> <span class="n">requirement</span><span class="p">);</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getRequiredResources</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">Resource</span><span class="p">[]</span> <span class="n">getAddedResources</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">resolve</span><span class="p">();</span>
-    <span class="n">public</span> <span class="n">void</span> <span class="n">deploy</span><span class="p">(</span><span class="n">boolean</span> <span class="n">start</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>When desired resources are discovered via the query mechanisms of the Repository Admin, they are added to a Resolver instance which will can be used to resolve all transitive dependencies and to reflect on any resolution result. The following code snippet depicts a typical usage scenario:</p>
-<div class="codehilite"><pre><span class="n">RepositoryAdmin</span> <span class="n">repoAdmin</span> <span class="p">=</span> <span class="p">...</span> <span class="o">//</span> <span class="n">Get</span> <span class="n">repo</span> <span class="n">admin</span> <span class="n">service</span>
-<span class="n">Resolver</span> <span class="n">resolver</span> <span class="p">=</span> <span class="n">repoAdmin</span><span class="p">.</span><span class="n">resolver</span><span class="p">();</span>
-<span class="n">Resource</span> <span class="n">resource</span> <span class="p">=</span> <span class="n">repoAdmin</span><span class="p">.</span><span class="n">discoverResources</span><span class="p">(</span><span class="n">filterStr</span><span class="p">);</span>
-<span class="n">resolver</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">resource</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">resolver</span><span class="p">.</span><span class="n">resolve</span><span class="p">())</span>
-<span class="p">{</span>
-    <span class="n">resolver</span><span class="p">.</span><span class="n">deploy</span><span class="p">(</span><span class="n">true</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="k">else</span>
-<span class="p">{</span>
-    <span class="n">Requirement</span><span class="p">[]</span> <span class="n">reqs</span> <span class="p">=</span> <span class="n">resolver</span><span class="p">.</span><span class="n">getUnsatisfiedRequirements</span><span class="p">();</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="nb">i</span> <span class="p">=</span> 0<span class="p">;</span> <span class="nb">i</span> <span class="o">&lt;</span> <span class="n">reqs</span><span class="p">.</span><span class="nb">length</span><span class="p">;</span> <span class="nb">i</span><span class="o">++</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span>&quot;<span class="n">Unable</span> <span class="n">to</span> <span class="n">resolve</span><span class="p">:</span> &quot; <span class="o">+</span> <span class="n">reqs</span><span class="p">[</span><span class="nb">i</span><span class="p">]);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>This code gets the Repository Admin service and then gets a Resolver instance from it. It then discovers an available resource and adds it to the resolver. Then it tries to resolve the resources dependencies. If successful it deploys the resource to the local framework instance; if not successful it prints the unsatisfied requirements.</p>
-<p>OBR's deployment algorithm appears simple at first glance, but it is actually somewhat complex due to the nature of deploying independently developed bundles. For example, in an ideal world, if an update for a bundle is made available, then updates for all of the bundles satisfying its dependencies are also made available. Unfortunately, this may not be the case, thus the deployment algorithm might have to install new bundles during an update to satisfy either new dependencies or updated dependencies that can no longer be satisfied by existing local bundles. In response to this type of scenario, the OBR deployment algorithm tries to favor updating existing bundles, if possible, as opposed to installing new bundles to satisfy dependencies.</p>
-<p>In the general case, OBR user's will not use the OBR API directly, but will use its functionality indirectly from another tool or user interface. For example, interactive access to OBR is available via a command for Felix' <a href="/documentation/subprojects/apache-felix-shell.html">shell service</a>. The OBR shell command is discussed in the next section.</p>
-<h2 id="obr-shell-command">OBR Shell Command<a class="headerlink" href="#obr-shell-command" title="Permanent link">&para;</a></h2>
-<p>Besides providing a service API, OBR implements a Felix shell command for accessing its functionality. For the end user, the OBR shell command is accessed using the text-based or GUI-based user interfaces for Felix' shell service. This section describes the syntax for the OBR shell command.</p>
-<h3 id="obr-help">obr help<a class="headerlink" href="#obr-help" title="Permanent link">&para;</a></h3>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>public interface Resolver
+{
+    public void add(Resource resource);
+    public Requirement[] getUnsatisfiedRequirements();
+    public Resource[] getOptionalResources();
+    public Requirement[] getReason(Resource resource);
+    public Resource[] getResources(Requirement requirement);
+    public Resource[] getRequiredResources();
+    public Resource[] getAddedResources();
+    public boolean resolve();
+    public void deploy(boolean start);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When desired resources are discovered via the query mechanisms of the Repository Admin, they are added to a Resolver instance which will can be used to resolve all transitive dependencies and to reflect on any resolution result.
+The following code snippet depicts a typical usage scenario:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>RepositoryAdmin repoAdmin = ... // Get repo admin service
+Resolver resolver = repoAdmin.resolver();
+Resource resource = repoAdmin.discoverResources(filterStr);
+resolver.add(resource);
+if (resolver.resolve())
+{
+    resolver.deploy(true);
+}
+else
+{
+    Requirement[] reqs = resolver.getUnsatisfiedRequirements();
+    for (int i = 0; i &lt; reqs.length; i++)
+    {
+        System.out.println("Unable to resolve: " + reqs[i]);
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code gets the Repository Admin service and then gets a Resolver instance from it.
+It then discovers an available resource and adds it to the resolver.
+Then it tries to resolve the resources dependencies.
+If successful it deploys the resource to the local framework instance;
+if not successful it prints the unsatisfied requirements.</p>
+</div>
+<div class="paragraph">
+<p>OBR&#8217;s deployment algorithm appears simple at first glance, but it is actually somewhat complex due to the nature of deploying independently developed bundles.
+For example, in an ideal world, if an update for a bundle is made available, then updates for all of the bundles satisfying its dependencies are also made available.
+Unfortunately, this may not be the case, thus the deployment algorithm might have to install new bundles during an update to satisfy either new dependencies or updated dependencies that can no longer be satisfied by existing local bundles.
+In response to this type of scenario, the OBR deployment algorithm tries to favor updating existing bundles, if possible, as opposed to installing new bundles to satisfy dependencies.</p>
+</div>
+<div class="paragraph">
+<p>In the general case, OBR user&#8217;s will not use the OBR API directly, but will use its functionality indirectly from another tool or user interface.
+For example, interactive access to OBR is available via a command for Felix' <a href="apache-felix-shell.html" class="page">shell service</a>.
+The OBR shell command is discussed in the next section.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_obr_shell_command"><a class="anchor" href="#_obr_shell_command"></a>OBR Shell Command</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Besides providing a service API, OBR implements a Felix shell command for accessing its functionality.
+For the end user, the OBR shell command is accessed using the text-based or GUI-based user interfaces for Felix' shell service.
+This section describes the syntax for the OBR shell command.</p>
+</div>
+<div class="sect2">
+<h3 id="_obr_help"><a class="anchor" href="#_obr_help"></a>obr help</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">help</span> <span class="p">[</span><span class="n">add</span><span class="o">-</span><span class="n">url</span> <span class="o">|</span> <span class="n">remove</span><span class="o">-</span><span class="n">url</span> <span class="o">|</span> <span class="n">list</span><span class="o">-</span><span class="n">url</span> <span class="o">|</span> <span class="n">list</span> <span class="o">|</span> <span class="n">info</span> <span class="o">|</span> <span class="n">deploy</span> <span class="o">|</span> <span class="n">start</span> <span class="o">|</span> <span class="n">source</span> <span class="o">|</span> <span class="n">javadoc</span><span class="p">]</span>
-</pre></div>
-
-
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr help [add-url | remove-url | list-url | list | info | deploy | start | source | javadoc]</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>This command is used to display additional information about the other OBR commands.</p>
-<h3 id="obr-list-url">obr list-url<a class="headerlink" href="#obr-list-url" title="Permanent link">&para;</a></h3>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_list_url"><a class="anchor" href="#_obr_list_url"></a>obr list-url</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">list</span><span class="o">-</span><span class="n">url</span>
-</pre></div>
-
-
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr list-url</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>This command gets the URLs to the repository files used by the Repository Admin.</p>
-<h3 id="obr-add-url">obr add-url<a class="headerlink" href="#obr-add-url" title="Permanent link">&para;</a></h3>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_add_url"><a class="anchor" href="#_obr_add_url"></a>obr add-url</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">add</span><span class="o">-</span><span class="n">url</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">repository</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">url</span><span class="o">&gt;</span> <span class="p">...]</span>
-</pre></div>
-
-
-<p>This command adds a repository file to the set of repository files for which the Repository Admin service provides access. The repository file is represented as a URL. If the repository file URL is already in the Repository Admin's set of repository files, the request is treated like a reload operation.</p>
-<h3 id="obr-remove-url">obr remove-url<a class="headerlink" href="#obr-remove-url" title="Permanent link">&para;</a></h3>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr add-url [&lt;repository-file-url&gt; ...]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command adds a repository file to the set of repository files for which the Repository Admin service provides access.
+The repository file is represented as a URL.
+If the repository file URL is already in the Repository Admin&#8217;s set of repository files, the request is treated like a reload operation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_remove_url"><a class="anchor" href="#_obr_remove_url"></a>obr remove-url</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">remove</span><span class="o">-</span><span class="n">url</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">repository</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">url</span><span class="o">&gt;</span> <span class="p">...]</span>
-</pre></div>
-
-
-<p>This command removes a repository file to the set of repository files for which the Repository Admin service provides access. The repository file is represented as a URL.</p>
-<h3 id="obr-list">obr list<a class="headerlink" href="#obr-list" title="Permanent link">&para;</a></h3>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr remove-url [&lt;repository-file-url&gt; ...]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command removes a repository file to the set of repository files for which the Repository Admin service provides access.
+The repository file is represented as a URL.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_list"><a class="anchor" href="#_obr_list"></a>obr list</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">list</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="p">...]</span>
-</pre></div>
-
-
-<p>This command lists bundles available in the bundle repository. If no arguments are specified, then all available bundles are listed, otherwise any arguments are concatenated with spaces and used as a substring filter on the bundle names.</p>
-<h3 id="obr-info">obr info<a class="headerlink" href="#obr-info" title="Permanent link">&para;</a></h3>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr list [&lt;string&gt; ...]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command lists bundles available in the bundle repository.
+If no arguments are specified, then all available bundles are listed, otherwise any arguments are concatenated with spaces and used as a substring filter on the bundle names.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_info"><a class="anchor" href="#_obr_info"></a>obr info</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">info</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
-</pre></div>
-
-
-<p>This command displays the meta-data for the specified bundles. If a bundle's name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">info</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
-</pre></div>
-
-
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr info &lt;bundle-name&gt;[;&lt;version&gt;] ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command displays the meta-data for the specified bundles.
+If a bundle&#8217;s name contains spaces, then it must be surrounded by quotes.
+It is also possible to specify a precise version if more than one version exists, such as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr info "Bundle Repository";1.0.0</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>The above example retrieves the meta-data for version "1.0.0" of the bundle named "Bundle Repository".</p>
-<h3 id="obr-deploy">obr deploy<a class="headerlink" href="#obr-deploy" title="Permanent link">&para;</a></h3>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_deploy"><a class="anchor" href="#_obr_deploy"></a>obr deploy</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">deploy</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">id</span><span class="o">&gt;</span> <span class="p">...</span>
-</pre></div>
-
-
-<p>This command tries to install or update the specified bundles and all of their dependencies by default. You can specify either the bundle name or the bundle identifier. If a bundle's name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">deploy</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
-</pre></div>
-
-
-<p>For the above example, if version "1.0.0" of "Bundle Repository" is already installed locally, then the command will attempt to update it and all of its dependencies; otherwise, the command will install it and all of its dependencies.</p>
-<h3 id="obr-start">obr start<a class="headerlink" href="#obr-start" title="Permanent link">&para;</a></h3>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr deploy &lt;bundle-name&gt;[;&lt;version&gt;] ... | &lt;bundle-id&gt; ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command tries to install or update the specified bundles and all of their dependencies by default.
+You can specify either the bundle name or the bundle identifier.
+If a bundle&#8217;s name contains spaces, then it must be surrounded by quotes.
+It is also possible to specify a precise version if more than one version exists, such as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr deploy "Bundle Repository";1.0.0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For the above example, if version "1.0.0" of "Bundle Repository" is already installed locally, then the command will attempt to update it and all of its dependencies;
+otherwise, the command will install it and all of its dependencies.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_start"><a class="anchor" href="#_obr_start"></a>obr start</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">start</span> <span class="p">[</span><span class="o">-</span><span class="n">nodeps</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
-</pre></div>
-
-
-<p>This command installs and starts the specified bundles and all of their dependencies by default; use the "-nodeps" switch to ignore dependencies. If a bundle's name contains spaces, then it must be surrounded by quotes. If a specified bundle is already installed, then this command has no effect. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">start</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
-</pre></div>
-
-
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr start [-nodeps] &lt;bundle-name&gt;[;&lt;version&gt;] ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command installs and starts the specified bundles and all of their dependencies by default;
+use the "-nodeps" switch to ignore dependencies.
+If a bundle&#8217;s name contains spaces, then it must be surrounded by quotes.
+If a specified bundle is already installed, then this command has no effect.
+It is also possible to specify a precise version if more than one version exists, such as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr start "Bundle Repository";1.0.0</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>The above example installs and starts the "1.0.0" version of the bundle named "Bundle Repository" and its dependencies.</p>
-<h3 id="obr-source">obr source<a class="headerlink" href="#obr-source" title="Permanent link">&para;</a></h3>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_source"><a class="anchor" href="#_obr_source"></a>obr source</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">source</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">local</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
-</pre></div>
-
-
-<p>This command retrieves the source archives of the specified bundles and saves them to the specified local directory; use the "-x" switch to automatically extract the source archives. If a bundle name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">source</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">rickhall</span><span class="o">/</span><span class="n">tmp</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
-</pre></div>
-
-
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr source [-x] &lt;local-dir&gt; &lt;bundle-name&gt;[;&lt;version&gt;] ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command retrieves the source archives of the specified bundles and saves them to the specified local directory;
+use the "-x" switch to automatically extract the source archives.
+If a bundle name contains spaces, then it must be surrounded by quotes.
+It is also possible to specify a precise version if more than one version exists, such as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr source /home/rickhall/tmp "Bundle Repository";1.0.0</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>The above example retrieves the source archive of version "1.0.0" of the bundle named "Bundle Repository" and saves it to the specified local directory.</p>
-<h3 id="obr-javadoc">obr javadoc<a class="headerlink" href="#obr-javadoc" title="Permanent link">&para;</a></h3>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obr_javadoc"><a class="anchor" href="#_obr_javadoc"></a>obr javadoc</h3>
+<div class="paragraph">
 <p>Syntax:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">javadoc</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">local</span><span class="o">-</span><span class="n">dir</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">bundle</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="p">[;</span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">...</span>
-</pre></div>
-
-
-<p>This command retrieves the javadoc archives of the specified bundles and saves them to the specified local directory; use the "-x" switch to automatically extract the javadoc archives. If a bundle name contains spaces, then it must be surrounded by quotes. It is also possible to specify a precise version if more than one version exists, such as:</p>
-<div class="codehilite"><pre><span class="n">obr</span> <span class="n">javadoc</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">rickhall</span><span class="o">/</span><span class="n">tmp</span> &quot;<span class="n">Bundle</span> <span class="n">Repository</span>&quot;<span class="p">;</span>1<span class="p">.</span>0<span class="p">.</span>0
-</pre></div>
-
-
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr javadoc [-x] &lt;local-dir&gt; &lt;bundle-name&gt;[;&lt;version&gt;] ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command retrieves the javadoc archives of the specified bundles and saves them to the specified local directory;
+use the "-x" switch to automatically extract the javadoc archives.
+If a bundle name contains spaces, then it must be surrounded by quotes.
+It is also possible to specify a precise version if more than one version exists, such as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>obr javadoc /home/rickhall/tmp "Bundle Repository";1.0.0</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>The above example retrieves the javadoc archive of version "1.0.0" of the bundle named "Bundle Repository" and saves it to the specified local directory.</p>
-<h2 id="using-obr-with-a-proxy">Using OBR with a Proxy<a class="headerlink" href="#using-obr-with-a-proxy" title="Permanent link">&para;</a></h2>
-<p>If you use a proxy for Web access, then OBR will not work for you in its default configuration; certain system properties must be set to enable OBR to work with a proxy. These properties are:</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_obr_with_a_proxy"><a class="anchor" href="#_using_obr_with_a_proxy"></a>Using OBR with a Proxy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you use a proxy for Web access, then OBR will not work for you in its default configuration;
+certain system properties must be set to enable OBR to work with a proxy.
+These properties are:</p>
+</div>
+<div class="ulist">
 <ul>
-<li>http.proxyHost - the name of the proxy host.</li>
-<li>http.proxyPort - the port of the proxy host.</li>
-<li>http.proxyAuth - the user name and password to use when connecting to the proxy; this string should be the user name and password separated by a colon (e.g., rickhall:mypassword).</li>
+<li>
+<p>http.proxyHost - the name of the proxy host.</p>
+</li>
+<li>
+<p>http.proxyPort - the port of the proxy host.</p>
+</li>
+<li>
+<p>http.proxyAuth - the user name and password to use when connecting to the proxy;
+this string should be the user name and password separated by a colon (e.g., rickhall:mypassword).</p>
+</li>
 </ul>
-<p>These system properties can be set directly on the command line when starting the JVM using the standard "-D<prop>=<value>" syntax or you can put them in the lib/system.properties file of your Felix installation; see documentation on configuring Felix for more information.</p>
-<h2 id="bundle-source-packaging">Bundle Source Packaging<a class="headerlink" href="#bundle-source-packaging" title="Permanent link">&para;</a></h2>
-<p>Coming soon...</p>
-<h2 id="note-on-osgi-r3-bundles">Note on OSGi R3 Bundles<a class="headerlink" href="#note-on-osgi-r3-bundles" title="Permanent link">&para;</a></h2>
-<p>In contrast to OSGi R4 the previous specifications, most notably R3, allowed bundles without the <code>Bundle-SymbolicName</code> header. The Felix OSGi Bundle Repository implementation heavily relies on the symbolic name being defined in bundles. As a consequence bundles without a symbolic name are not fully supported by the Bundle Repository:</p>
+</div>
+<div class="paragraph">
+<p>These system properties can be set directly on the command line when starting the JVM using the standard "-D&lt;prop&gt;=&lt;value&gt;" syntax or you can put them in the lib/system.properties file of your Felix installation;
+see documentation on configuring Felix for more information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bundle_source_packaging"><a class="anchor" href="#_bundle_source_packaging"></a>Bundle Source Packaging</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Coming soon&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_note_on_osgi_r3_bundles"><a class="anchor" href="#_note_on_osgi_r3_bundles"></a>Note on OSGi R3 Bundles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In contrast to OSGi R4 the previous specifications, most notably R3, allowed bundles without the <code>Bundle-SymbolicName</code> header.
+The Felix OSGi Bundle Repository implementation heavily relies on the symbolic name being defined in bundles.
+As a consequence bundles without a symbolic name are not fully supported by the Bundle Repository:</p>
+</div>
+<div class="ulist">
 <ul>
-<li>Bundles installed in the framework are used by the Bundle Repository implementation to resolve dependencies regardless of whether they have a <code>Bundle-SymbolicName</code> header or not. Resolution of dependencies against the installed bundles takes place based on the <code>Export-Package</code> headers.</li>
-<li>Bundles installed in the framework without a <code>Bundle-SymbolicName</code> header cannot be updated by the Bundle Repository implementation because updates from the bundle repository cannot be correlated to such "anonymous" bundles.</li>
+<li>
+<p>Bundles installed in the framework are used by the Bundle Repository implementation to resolve dependencies regardless of whether they have a <code>Bundle-SymbolicName</code> header or not.
+Resolution of dependencies against the installed bundles takes place based on the <code>Export-Package</code> headers.</p>
+</li>
+<li>
+<p>Bundles installed in the framework without a <code>Bundle-SymbolicName</code> header cannot be updated by the Bundle Repository implementation because updates from the bundle repository cannot be correlated to such "anonymous" bundles.</p>
+</li>
 </ul>
-<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h2>
-<p>Subscribe to the Felix users mailing list by sending a message to <a href="">users-subscribe@felix.apache.org</a>; after subscribing, email questions or feedback to [users@felix.apache.org|mailto:users@felix.apache.org].</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1712598 by cziegeler on Wed, 4 Nov 2015 17:48:20 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_feedback"><a class="anchor" href="#_feedback"></a>Feedback</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscribe to the Felix users mailing list by sending a message to <a href="mailto:users-subscribe@felix.apache.org">users-subscribe@felix.apache.org</a>;
+after subscribing, email questions or feedback to [<a href="mailto:users@felix.apache.org">users@felix.apache.org</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mailto:users@felix.apache.org].</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../_/js/site.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

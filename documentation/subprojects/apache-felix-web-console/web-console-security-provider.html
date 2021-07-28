@@ -1,198 +1,674 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Web Console Security Provider</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Web Console Security Provider :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-web-console/web-console-security-provider.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
     </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
-      </div>
-
-      <h1>Web Console Security Provider</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<div class="toc">
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../subprojects.html">Subprojects</a></li>
+    <li><a href="../apache-felix-web-console.html">Apache Felix Web Console</a></li>
+    <li><a href="web-console-security-provider.html">Web Console Security Provider</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-web-console/web-console-security-provider.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Web Console Security Provider</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>As of Apache Felix Web Console 3.1.0 security of the Web Console can be extended by providing a <code>WebConsoleSecurityProvicer</code> service.
+An extension to this service has been introduced with the <code>WebConsoleSecurityProvider2</code> service in Apache Felix Web Console 3.1.4.</p>
+</div>
+<div class="paragraph">
+<p>As of Web Console 4.3.16 it is now possible to <em>require</em> a WebConsoleSecurityProvider service to be present in order for the Web Console to become  active.
+This can be used to prevent bypassing the security provider if this is provided asynchronously.
+To do this, the WebConsoleSecurityProvider service needs to be registered with a <em>Service Registration</em> property to identify itself:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>"webconsole.security.provider.id" = "my.security.provider"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then the Web Console can be informed about the security providers it needs to operate by setting the following <em>OSGi Framework</em> property:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>"felix.webconsole.security.providers" = "my.security.provider"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this property specified, the Web Console will not activate until the service with the specified property is present.
+Local login as typically done with  <code>admin/password</code> is disabled when this property is specified.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_webconsolesecurityprovider"><a class="anchor" href="#_webconsolesecurityprovider"></a>WebConsoleSecurityProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>WebConsoleSecurityProvider</code> service provides two methods:</p>
+</div>
+<div class="paragraph">
+<p>{code:java} /**</p>
+</div>
+<div class="ulist">
 <ul>
-<li><a href="#webconsolesecurityprovider">WebConsoleSecurityProvider</a></li>
-<li><a href="#sample">Sample</a></li>
+<li>
+<p>Authenticates the user with the given user name and password.
+*</p>
+</li>
+<li>
+<p>@param username The name of the user presented by the client</p>
+</li>
+<li>
+<p>@param password The password presented by the client</p>
+</li>
+<li>
+<p>@return Some object representing the authenticated user indicating general</p>
+</li>
+<li>
+<p>access to be granted to the web console.
+If the user cannot be</p>
+</li>
+<li>
+<p>authenticated (e.g.
+unknown user name or wrong password) or the</p>
+</li>
+<li>
+<p>user must not be allowed access to the web console at all</p>
+</li>
+<li>
+<p><code>null</code> must be returned from this method.
+*/ public Object authenticate( String username, String password );</p>
+</li>
 </ul>
 </div>
-<p>As of Apache Felix Web Console 3.1.0 security of the Web Console can be extended by providing a <code>WebConsoleSecurityProvicer</code> service. An extension to this service has been introduced with the <code>WebConsoleSecurityProvider2</code> service in Apache Felix Web Console 3.1.4.</p>
-<p>As of Web Console 4.3.16 it is now possible to <em>require</em> a WebConsoleSecurityProvider service to be present in order for the Web Console to become 
-active. This can be used to prevent bypassing the security provider if this is provided asynchronously.
-To do this, the WebConsoleSecurityProvider service needs to be registered with a <em>Service Registration</em> property to identify itself:</p>
-<div class="codehilite"><pre>&quot;<span class="n">webconsole</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">provider</span><span class="p">.</span><span class="n">id</span>&quot; <span class="p">=</span> &quot;<span class="n">my</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">provider</span>&quot;
-</pre></div>
+<div class="paragraph">
+<p>/**</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Checks whether bthe authenticated user has the given role permission.
+*</p>
+</li>
+<li>
+<p>@param user The object referring to the authenticated user.
+This is the</p>
+</li>
+<li>
+<p>object returned from the {@link #authenticate(String, String)}</p>
+</li>
+<li>
+<p>method and will never be <code>null</code>.</p>
+</li>
+<li>
+<p>@param role The requested role</p>
+</li>
+<li>
+<p>@return <code>true</code> if the user is given permission for the given</p>
+</li>
+<li>
+<p>role.
+*/ public boolean authorize( Object user, String role );</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{note}
+Use of the {{authorize}} method is not currently implemented, though. Mainly this is because it is not readily clear, what exactly the {{role}} means. One possible interpretation could be that this is the label of the plugin whose access is checked. Or it might be a combination of the plugin called and the request method used.
+{note}
+
+The drawback of the {{WebConsoleSecurityProvider}} interface is that it just provides a mechanism to check for a user name and password using HTTP BASIC authentication. If other authenication mechanisms should be used the {{WebConsoleSecurityProvider2}} interface introduced in Apache Felix Web Console 3.1.4 can be used.
 
 
-<p>Then the Web Console can be informed about the security providers it needs to operate by setting the following <em>OSGi Framework</em> property:</p>
-<div class="codehilite"><pre>&quot;<span class="n">felix</span><span class="p">.</span><span class="n">webconsole</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">providers</span>&quot; <span class="p">=</span> &quot;<span class="n">my</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">provider</span>&quot;
-</pre></div>
+h2. WebConsoleSecurityProvider2
+
+The {{WebConsoleSecurityProvider2}} interface extends the {{WebConsoleSecurityProvider}} by a single method:
+
+{code:java}
+/**
+ * The name of the request attribute providing the object representing the
+ * authenticated user. This object is used to call the
+ * {@link WebConsoleSecurityProvider#authorize(Object, String)} to
+ * authorize access for certain roles.
+ */
+String USER_ATTRIBUTE = "org.apache.felix.webconsole.user";
 
 
-<p>With this property specified, the Web Console will not activate until the service with the specified property is present. Local login as typically done with 
-<code>admin/password</code> is disabled when this property is specified.</p>
-<h2 id="webconsolesecurityprovider">WebConsoleSecurityProvider<a class="headerlink" href="#webconsolesecurityprovider" title="Permanent link">&para;</a></h2>
-<p>The <code>WebConsoleSecurityProvider</code> service provides two methods:</p>
-<p>{code:java}
-/<em><em>
- * Authenticates the user with the given user name and password.
- </em>
- * @param username The name of the user presented by the client
- * @param password The password presented by the client
- * @return Some object representing the authenticated user indicating general
- *         access to be granted to the web console. If the user cannot be
- *         authenticated (e.g. unknown user name or wrong password) or the
- *         user must not be allowed access to the web console at all
- *         <code>null</code> must be returned from this method.
- </em>/
-public Object authenticate( String username, String password );</p>
-<p>/<em><em>
- * Checks whether bthe authenticated user has the given role permission.
- </em>
- * @param user The object referring to the authenticated user. This is the
- *      object returned from the {@link #authenticate(String, String)}
- *      method and will never be <code>null</code>.
- * @param role The requested role
- * @return <code>true</code> if the user is given permission for the given
- *      role.
- </em>/
-public boolean authorize( Object user, String role );</p>
-<div class="codehilite"><pre><span class="p">{</span><span class="n">note</span><span class="p">}</span>
-<span class="n">Use</span> <span class="n">of</span> <span class="n">the</span>  <span class="n">method</span> <span class="n">is</span> <span class="n">not</span> <span class="n">currently</span> <span class="n">implemented</span><span class="p">,</span> <span class="n">though</span><span class="p">.</span> <span class="n">Mainly</span> <span class="n">this</span> <span class="n">is</span> <span class="n">because</span> <span class="n">it</span> <span class="n">is</span> <span class="n">not</span> <span class="n">readily</span> <span class="n">clear</span><span class="p">,</span> <span class="n">what</span> <span class="n">exactly</span> <span class="n">the</span>  <span class="n">means</span><span class="p">.</span> <span class="n">One</span> <span class="n">possible</span> <span class="n">interpretation</span> <span class="n">could</span> <span class="n">be</span> <span class="n">that</span> <span class="n">this</span> <span class="n">is</span> <span class="n">the</span> <span class="n">label</span> <span class="n">of</span> <span class="n">the</span> <span class="n">plugin</span> <span class="n">whose</span> <span class="n">access</span> <span class="n">is</span> <span class="n">checked</span><span class="p">.</span> <span class="n">Or</span> <span class="n">it</span> <span class="n">might</span> <span class="n">be</span> <span class="n">a</span> <span class="n">combination</span> <span class="n">of</span> <span class="n">the</span> <span class="n">plugin</span> <span class="n">called</span> <span class="n">and</span> <span class="n">the</span> <span class="n">request</span> <span class="n">method</span> <span class="n">used</span><span class="p">.</span>
-<span class="p">{</span><span class="n">note</span><span class="p">}</span>
-
-<span class="n">The</span> <span class="n">drawback</span> <span class="n">of</span> <span class="n">the</span>  <span class="n">interface</span> <span class="n">is</span> <span class="n">that</span> <span class="n">it</span> <span class="n">just</span> <span class="n">provides</span> <span class="n">a</span> <span class="n">mechanism</span> <span class="n">to</span> <span class="n">check</span> <span class="k">for</span> <span class="n">a</span> <span class="n">user</span> <span class="n">name</span> <span class="n">and</span> <span class="n">password</span> <span class="n">using</span> <span class="n">HTTP</span> <span class="n">BASIC</span> <span class="n">authentication</span><span class="p">.</span> <span class="n">If</span> <span class="n">other</span> <span class="n">authenication</span> <span class="n">mechanisms</span> <span class="n">should</span> <span class="n">be</span> <span class="n">used</span> <span class="n">the</span>  <span class="n">interface</span> <span class="n">introduced</span> <span class="n">in</span> <span class="n">Apache</span> <span class="n">Felix</span> <span class="n">Web</span> <span class="n">Console</span> 3<span class="p">.</span>1<span class="p">.</span>4 <span class="n">can</span> <span class="n">be</span> <span class="n">used</span><span class="p">.</span>
-
-
-<span class="n">h2</span><span class="p">.</span> <span class="n">WebConsoleSecurityProvider2</span>
-
-<span class="n">The</span>  <span class="n">interface</span> <span class="n">extends</span> <span class="n">the</span>  <span class="n">by</span> <span class="n">a</span> <span class="n">single</span> <span class="n">method</span><span class="p">:</span>
-
-<span class="p">{</span><span class="n">code</span><span class="p">:</span><span class="n">java</span><span class="p">}</span>
-<span class="o">/**</span>
- <span class="o">*</span> <span class="n">The</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">request</span> <span class="n">attribute</span> <span class="n">providing</span> <span class="n">the</span> <span class="n">object</span> <span class="n">representing</span> <span class="n">the</span>
- <span class="o">*</span> <span class="n">authenticated</span> <span class="n">user</span><span class="p">.</span> <span class="n">This</span> <span class="n">object</span> <span class="n">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">call</span> <span class="n">the</span>
- <span class="o">*</span> <span class="p">{@</span><span class="n">link</span> <span class="n">WebConsoleSecurityProvider</span>#<span class="n">authorize</span><span class="p">(</span><span class="n">Object</span><span class="p">,</span> <span class="n">String</span><span class="p">)}</span> <span class="n">to</span>
- <span class="o">*</span> <span class="n">authorize</span> <span class="n">access</span> <span class="k">for</span> <span class="n">certain</span> <span class="n">roles</span><span class="p">.</span>
- <span class="o">*/</span>
-<span class="n">String</span> <span class="n">USER_ATTRIBUTE</span> <span class="p">=</span> &quot;<span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">felix</span><span class="p">.</span><span class="n">webconsole</span><span class="p">.</span><span class="n">user</span>&quot;<span class="p">;</span>
-
-
-<span class="o">/**</span>
- <span class="o">*</span> <span class="n">Authenticates</span> <span class="n">the</span> <span class="n">given</span> <span class="n">request</span> <span class="n">or</span> <span class="n">asks</span> <span class="n">the</span> <span class="n">client</span> <span class="k">for</span> <span class="n">credentials</span><span class="p">.</span>
- <span class="o">*</span> <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
- <span class="o">*</span> <span class="n">Implementations</span> <span class="n">of</span> <span class="n">this</span> <span class="n">method</span> <span class="n">are</span> <span class="n">expected</span> <span class="n">to</span> <span class="n">respect</span> <span class="n">and</span> <span class="n">implement</span>
- <span class="o">*</span> <span class="n">the</span> <span class="n">semantics</span> <span class="n">of</span> <span class="n">the</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">handleSecurity</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">method</span>
- <span class="o">*</span> <span class="n">as</span> <span class="n">specified</span> <span class="n">in</span> <span class="n">the</span> <span class="n">OSGi</span> <span class="n">HTTP</span> <span class="n">Service</span> <span class="n">specification</span><span class="p">.</span>
- <span class="o">*</span> <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
- <span class="o">*</span> <span class="n">If</span> <span class="n">this</span> <span class="n">method</span> <span class="n">returns</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">true</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">it</span> <span class="n">is</span> <span class="n">assumed</span> <span class="n">the</span> <span class="n">request</span>
- <span class="o">*</span> <span class="n">provided</span> <span class="n">valid</span> <span class="n">credentials</span> <span class="n">identifying</span> <span class="n">the</span> <span class="n">user</span> <span class="n">as</span> <span class="n">accepted</span> <span class="n">to</span> <span class="n">access</span>
- <span class="o">*</span> <span class="n">the</span> <span class="n">web</span> <span class="n">console</span><span class="p">.</span> <span class="n">In</span> <span class="n">addition</span><span class="p">,</span> <span class="n">the</span> <span class="p">{@</span><span class="n">link</span> #<span class="n">USER_ATTRIBUTE</span><span class="p">}</span> <span class="n">request</span>
- <span class="o">*</span> <span class="n">attribute</span> <span class="n">must</span> <span class="n">be</span> <span class="n">set</span> <span class="n">to</span> <span class="n">a</span> <span class="n">non</span><span class="o">-&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">null</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">object</span> <span class="n">reference</span>
- <span class="o">*</span> <span class="n">identifying</span> <span class="n">the</span> <span class="n">authenticated</span> <span class="n">user</span><span class="p">.</span>
- <span class="o">*</span> <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
- <span class="o">*</span> <span class="n">If</span> <span class="n">this</span> <span class="n">method</span> <span class="n">returns</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">false</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">the</span> <span class="n">request</span> <span class="n">to</span> <span class="n">the</span> <span class="n">web</span> <span class="n">console</span>
- <span class="o">*</span> <span class="n">is</span> <span class="n">terminated</span> <span class="n">without</span> <span class="n">any</span> <span class="n">more</span> <span class="n">response</span> <span class="n">sent</span> <span class="n">back</span> <span class="n">to</span> <span class="n">the</span> <span class="n">client</span><span class="p">.</span> <span class="n">That</span> <span class="n">is</span>
- <span class="o">*</span> <span class="n">the</span> <span class="n">implementation</span> <span class="n">is</span> <span class="n">expected</span> <span class="n">to</span> <span class="n">have</span> <span class="n">informed</span> <span class="n">the</span> <span class="n">client</span> <span class="n">in</span> <span class="k">case</span> <span class="n">of</span>
- <span class="o">*</span> <span class="n">non</span><span class="o">-</span><span class="n">granted</span> <span class="n">access</span><span class="p">.</span>
- <span class="o">*</span>
- <span class="o">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">request</span> <span class="n">The</span> <span class="n">request</span> <span class="n">object</span>
- <span class="o">*</span> <span class="p">@</span><span class="n">param</span> <span class="n">response</span> <span class="n">The</span> <span class="n">response</span> <span class="n">object</span>
- <span class="o">*</span> <span class="p">@</span><span class="k">return</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">true</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">If</span> <span class="n">the</span> <span class="n">request</span> <span class="n">provided</span> <span class="n">valid</span> <span class="n">credentials</span><span class="p">.</span>
- <span class="o">*/</span>
-<span class="n">public</span> <span class="n">boolean</span> <span class="n">authenticate</span><span class="p">(</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span> <span class="p">);</span>
-</pre></div>
-
-
+/**
+ * Authenticates the given request or asks the client for credentials.
+ * &lt;p&gt;
+ * Implementations of this method are expected to respect and implement
+ * the semantics of the &lt;code&gt;HttpContext.handleSecurity&lt;/code&gt; method
+ * as specified in the OSGi HTTP Service specification.
+ * &lt;p&gt;
+ * If this method returns &lt;code&gt;true&lt;/code&gt; it is assumed the request
+ * provided valid credentials identifying the user as accepted to access
+ * the web console. In addition, the {@link #USER_ATTRIBUTE} request
+ * attribute must be set to a non-&lt;code&gt;null&lt;/code&gt; object reference
+ * identifying the authenticated user.
+ * &lt;p&gt;
+ * If this method returns &lt;code&gt;false&lt;/code&gt; the request to the web console
+ * is terminated without any more response sent back to the client. That is
+ * the implementation is expected to have informed the client in case of
+ * non-granted access.
+ *
+ * @param request The request object
+ * @param response The response object
+ * @return &lt;code&gt;true&lt;/code&gt; If the request provided valid credentials.
+ */
+public boolean authenticate( HttpServletRequest request, HttpServletResponse response );</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>This method is in full control of authentication and thus has to extract the user credentials from the request and can also fail the request.</p>
-<h2 id="sample">Sample<a class="headerlink" href="#sample" title="Permanent link">&para;</a></h2>
-<p>A sample of a <code>WebConsoleSecurityProvider</code> service is the Apache Sling implementation <a href="http://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/webconsolesecurityprovider/src/main/java/org/apache/sling/extensions/webconsolesecurityprovider/internal/SlingWebConsoleSecurityProvider.java"><code>SlingWebConsoleSecurityProvider</code></a>. This implementation uses a JCR implementation to login to the repository and thus validate the credentials.</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1865611 by davidb on Wed, 21 Aug 2019 08:56:22 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sample"><a class="anchor" href="#_sample"></a>Sample</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A sample of a <code>WebConsoleSecurityProvider</code> service is the Apache Sling implementation <a href="http://svn.apache.org/repos/asf/sling/trunk/bundles/extensions/webconsolesecurityprovider/src/main/java/org/apache/sling/extensions/webconsolesecurityprovider/internal/SlingWebConsoleSecurityProvider.java"><code>SlingWebConsoleSecurityProvider</code></a>.
+This implementation uses a JCR implementation to login to the repository and thus validate the credentials.</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

@@ -1,428 +1,974 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Web Console RESTful API</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Web Console RESTful API :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-web-console/web-console-restful-api.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
     </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
-      </div>
-
-      <h1>Web Console RESTful API</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<div class="warning" markdown="1">
-Please note that the APIs described on this page have not been standardized or stabilized yet. As such they cannot be relied upon. They are merely a description of the current code. In future releases these APIs will be fixed to be properly RESTful.
+  </aside>
 </div>
-
-<div class="toc">
-<ul>
-<li><a href="#url-space">URL Space</a></li>
-<li><a href="#request-methods">Request Methods</a></li>
-<li><a href="#bundles-plugin">Bundles Plugin</a><ul>
-<li><a href="#urls">URLs</a></li>
-<li><a href="#get-requests">GET Requests</a><ul>
-<li><a href="#get-bundlesjson">GET .../bundles.json</a></li>
-<li><a href="#get-bundlesidjson">GET .../bundles/id.json</a></li>
-</ul>
-</li>
-<li><a href="#post-requests">POST Requests</a></li>
-</ul>
-</li>
-<li><a href="#services-plugin">Services Plugin</a></li>
-<li><a href="#configuration-admin-plugin">Configuration Admin Plugin</a><ul>
-<li><a href="#post-requests_1">POST Requests</a><ul>
-<li><a href="#create">Create</a></li>
-<li><a href="#apply">Apply</a></li>
-<li><a href="#delete">Delete</a></li>
-<li><a href="#unbind">Unbind</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../subprojects.html">Subprojects</a></li>
+    <li><a href="../apache-felix-web-console.html">Apache Felix Web Console</a></li>
+    <li><a href="web-console-restful-api.html">Web Console RESTful API</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-web-console/web-console-restful-api.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Web Console RESTful API</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Please note that the APIs described on this page have not been standardized or stabilized yet.
+As such they cannot be relied upon.
+They are merely a description of the current code.
+In future releases these APIs will be fixed to be properly RESTful.
+</td>
+</tr>
+</table>
 </div>
-<h2 id="url-space">URL Space<a class="headerlink" href="#url-space" title="Permanent link">&para;</a></h2>
-<p>The Web Console URL space is by default rooted at <code>/system/console</code> inside the Servlet Context used by the OSGi Http Service. This default can be reconfigured, though this is not really recommended.</p>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_url_space"><a class="anchor" href="#_url_space"></a>URL Space</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Web Console URL space is by default rooted at <code>/system/console</code> inside the Servlet Context used by the OSGi Http Service.
+This default can be reconfigured, though this is not really recommended.</p>
+</div>
+<div class="paragraph">
 <p>It is expected that the Web Console owns the complete URL space below the root path.</p>
-<p>The next level in the URL Space of the Web Console is defined by the labels defined by the registered Web Console plugins. For example the Bundles plugins registers itself with the <code>bundles</code> label.</p>
-<h2 id="request-methods">Request Methods<a class="headerlink" href="#request-methods" title="Permanent link">&para;</a></h2>
-<p>ALthough the HTTP RFC defines a number of request methods and the REST architectural style mandates to use these methods as intended by the specification, Web Browsers in general only support the GET and POST methods. Moreover, firewall administrators more often than not block all HTTP methods except GET and POST. For this reason the Web Console limits the used methods to just these two.</p>
-<h2 id="bundles-plugin">Bundles Plugin<a class="headerlink" href="#bundles-plugin" title="Permanent link">&para;</a></h2>
-<h3 id="urls">URLs<a class="headerlink" href="#urls" title="Permanent link">&para;</a></h3>
-<dl>
-<dt><code>.../bundles</code></dt>
-<dd>addresses all bundles in the framework</dd>
-<dt><code>.../bundles/*id*</code></dt>
-<dd>addresses a single bundle in the framework. The <code>*id*</code> can in this case be the bundle's ID
-(as per <code>Bundle.getBundleId()</code>), the bundle's symbolic name (which actually may
-cause multiple bundles to be addressed), or the bundle's symbolic name and version separated by a colon. Examples are <code>.../bundles/0</code>, <code>.../bundles/org.apache.felix.webconsole</code>, and <code>.../bundles/org.apache.felix.webconsole:3.1.4</code>.</dd>
-</dl>
-<h3 id="get-requests">GET Requests<a class="headerlink" href="#get-requests" title="Permanent link">&para;</a></h3>
-<p>GET requests are used to retrieve information on the bundles (or bundle) available in the framework. To response formats are currently supported: regular HTML and JSON if requests are sent with the <code>.json</code> extension; e.g. <code>.../bundles/0.json</code>. The HTML response is destined at browsers and is not further described here.</p>
-<h4 id="get-bundlesjson">GET .../bundles.json<a class="headerlink" href="#get-bundlesjson" title="Permanent link">&para;</a></h4>
-<div class="note" markdown="1">
-Due to a bug <a href="https://issues.apache.org/jira/browse/FELIX-3132">FELIX-3132</a> the form `.../bundles.json` only works in builds after SVN Revision 1175527. As a workaround request `.../bundles/.json`
 </div>
-
-<p>Request to this URL sends back an overview of all bundles along with an overview of all bundles (bundles existing, active, fragment, resolved, installed)</p>
-<div class="codehilite"><pre><span class="p">{</span>
-   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;Bundle information: 84 bundles in total - all 84 bundles active.&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">81</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">],</span>
-   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span>
-         <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-         <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;System Bundle&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;fragment&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;stateRaw&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
-         <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;Active&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;3.0.8&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;symbolicName&quot;</span><span class="p">:</span> <span class="s2">&quot;org.apache.felix.framework&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
-      <span class="p">},</span>
-      <span class="err">....</span>
-   <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<h4 id="get-bundlesidjson">GET .../bundles/id.json<a class="headerlink" href="#get-bundlesidjson" title="Permanent link">&para;</a></h4>
-<p>This URL returns detailed information of a bundle like the bundle headers, imported packages, exported packages, importing bundles, registered services.</p>
-<div class="codehilite"><pre><span class="p">{</span>
-    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;Bundle information: 84 bundles in total - all 84 bundles active.&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="mi">84</span><span class="p">,</span>
-        <span class="mi">81</span><span class="p">,</span>
-        <span class="mi">3</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span>
-    <span class="p">],</span>
-    <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
-            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Apache Felix Web Management Console&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;fragment&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-            <span class="nt">&quot;stateRaw&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
-            <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;Active&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;3.1.9.SNAPSHOT&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;symbolicName&quot;</span><span class="p">:</span> <span class="s2">&quot;org.apache.felix.webconsole&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Symbolic Name&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;org.apache.felix.webconsole&quot;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Version&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;3.1.9.SNAPSHOT&quot;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Bundle Location&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;slinginstall:org.apache.felix.webconsole-3.1.6.jar&quot;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Last Modification&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Sun Sep 25 20:59:46 CEST 2011&quot;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Bundle Documentation&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;http://felix.apache.org/site/apache-felix-web-console.html&quot;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Vendor&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;The Apache Software Foundation&quot;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Web Based Management Console for OSGi Frameworks. See http://felix.apache.org/site/apache-felix-web-console.html for more information on this bundle.&quot;</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Start Level&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mi">5</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Exported Packages&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;org.apache.felix.webconsole,version=3.1.2&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Imported Packages&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;javax.servlet,version=2.5.0 from &lt;a href=&#39;/system/console/bundles/15&#39;&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;javax.servlet.http,version=2.5.0 from &lt;a href=&#39;/system/console/bundles/15&#39;&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.apache.felix.scr,version=1.6.0 from &lt;a href=&#39;/system/console/bundles/11&#39;&gt;org.apache.felix.scr (11)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.osgi.framework,version=1.5.0 from &lt;a href=&#39;/system/console/bundles/0&#39;&gt;org.apache.felix.framework (0)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.osgi.service.cm,version=1.3.0 from &lt;a href=&#39;/system/console/bundles/9&#39;&gt;org.apache.felix.configadmin (9)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.osgi.service.http,version=1.2.0 from &lt;a href=&#39;/system/console/bundles/15&#39;&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.osgi.service.log,version=1.3.0 from &lt;a href=&#39;/system/console/bundles/6&#39;&gt;org.apache.sling.commons.logservice (6)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.osgi.service.metatype,version=1.1.0 from &lt;a href=&#39;/system/console/bundles/12&#39;&gt;org.apache.felix.metatype (12)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.osgi.service.packageadmin,version=1.2.0 from &lt;a href=&#39;/system/console/bundles/0&#39;&gt;org.apache.felix.framework (0)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;org.osgi.service.startlevel,version=1.1.0 from &lt;a href=&#39;/system/console/bundles/0&#39;&gt;org.apache.felix.framework (0)&lt;/a&gt;&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Importing Bundles&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;&lt;a href=&#39;/system/console/bundles/19&#39;&gt;org.apache.felix.webconsole.plugins.memoryusage (19)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;&lt;a href=&#39;/system/console/bundles/62&#39;&gt;org.apache.sling.commons.mime (62)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;&lt;a href=&#39;/system/console/bundles/14&#39;&gt;org.apache.sling.extensions.threaddump (14)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;&lt;a href=&#39;/system/console/bundles/20&#39;&gt;org.apache.sling.extensions.webconsolesecurityprovider (20)&lt;/a&gt;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;&lt;a href=&#39;/system/console/bundles/18&#39;&gt;org.apache.sling.jcr.webconsole (18)&lt;/a&gt;&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/369&#39;&gt;369&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/370&#39;&gt;370&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/371&#39;&gt;371&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/372&#39;&gt;372&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/373&#39;&gt;373&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/374&#39;&gt;374&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/375&#39;&gt;375&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/376&#39;&gt;376&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.osgi.service.cm.ManagedService, org.osgi.service.metatype.MetaTypeProvider&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Service PID: org.apache.felix.webconsole.internal.servlet.OsgiManager&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Description: OSGi Management Console Configuration Receiver&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Vendor: The Apache Software Foundation&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Service ID &lt;a href=&#39;/system/console/services/453&#39;&gt;453&lt;/a&gt;&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Types: org.apache.felix.webconsole.ConfigurationPrinter&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">},</span>
-                <span class="p">{</span>
-                    <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Manifest Headers&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span>
-                        <span class="s2">&quot;Bnd-LastModified: 1316977184980&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Build-Jdk: 1.6.0_13&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Built-By: fmeschbe&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-Activator: org.apache.felix.webconsole.internal.OsgiManagerActivator&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-Description: Web Based Management Console for OSGi Frameworks. See http://felix.apache.org/site/apache-felix-web-console.html for more information on this bundle.&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-DocURL: http://felix.apache.org/site/apache-felix-web-console.html&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-ManifestVersion: 2&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-Name: Apache Felix Web Management Console&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-SymbolicName: org.apache.felix.webconsole&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-Vendor: The Apache Software Foundation&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Bundle-Version: 3.1.9.SNAPSHOT&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Created-By: Apache Maven Bundle Plugin&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;DynamicImport-Package: org.apache.felix.bundlerepository, org.osgi.service.obr&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Export-Package: org.apache.felix.webconsole; uses:=\&quot;javax.servlet, org.osgi.framework, javax.servlet.http\&quot;; version=\&quot;3.1.2\&quot;&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Import-Package: javax.servlet; version=\&quot;2.4\&quot;, javax.servlet.http; version=\&quot;2.4\&quot;, org.apache.felix.scr; resolution:=optional; version=\&quot;1.0\&quot;, org.apache.felix.shell; resolution:=optional, org.apache.felix.webconsole; version=\&quot;3.1.2\&quot;, org.osgi.framework, org.osgi.service.cm; resolution:=optional, org.osgi.service.condpermadmin; resolution:=optional, org.osgi.service.deploymentadmin; resolution:=optional, org.osgi.service.http, org.osgi.service.log; resolution:=optional, org.osgi.service.metatype; resolution:=optional, org.osgi.service.packageadmin; resolution:=optional, org.osgi.service.permissionadmin; resolution:=optional, org.osgi.service.prefs; resolution:=optional, org.osgi.service.startlevel; resolution:=optional, org.osgi.service.wireadmin; resolution:=optional&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Manifest-Version: 1.0&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Tool: Bnd-0.0.255&quot;</span>
-                    <span class="p">]</span>
-                <span class="p">}</span>
-            <span class="p">]</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<h3 id="post-requests">POST Requests<a class="headerlink" href="#post-requests" title="Permanent link">&para;</a></h3>
-<p>To update the bundles the <code>action</code> request parameter is used to indicate the action:</p>
+<div class="paragraph">
+<p>The next level in the URL Space of the Web Console is defined by the labels defined by the registered Web Console plugins.
+For example the Bundles plugins registers itself with the <code>bundles</code> label.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_request_methods"><a class="anchor" href="#_request_methods"></a>Request Methods</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ALthough the HTTP RFC defines a number of request methods and the REST architectural style mandates to use these methods as intended by the specification, Web Browsers in general only support the GET and POST methods.
+Moreover, firewall administrators more often than not block all HTTP methods except GET and POST.
+For this reason the Web Console limits the used methods to just these two.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bundles_plugin"><a class="anchor" href="#_bundles_plugin"></a>Bundles Plugin</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_urls"><a class="anchor" href="#_urls"></a>URLs</h3>
+<div class="dlist">
 <dl>
-<dt><code>install</code></dt>
+<dt class="hdlist1"><code>.../bundles</code></dt>
 <dd>
-<p>Installs (or updates) and optionally starts one or more bundles. Parameters:</p>
-<ul>
-<li><code>bundlestart</code> -- whether to start newly installed bundles or not. Has no influence on updated bundles.</li>
-<li><code>bundlestartlevel</code> -- the start level to set on newly installed bundles. Has no influence on updated bundles.</li>
-<li><code>bundlefile</code> -- one or more uploaded files being the bundles to install or update. The manifests in the bundles are inspected to see whether any bundle is an update or new install.</li>
-<li><code>refreshPackages</code> -- whether to call <code>PackageAdmin.refreshPackages(Bundle[])</code> with the installed/updated bundles after installation/update.</li>
-</ul>
+<p>addresses all bundles in the framework</p>
 </dd>
-<dt><code>start</code></dt>
-<dd>Starts the bundle addressed by the request URL.</dd>
-<dt><code>stop</code></dt>
-<dd>Stops the bundle addressed by the request URL.</dd>
-<dt><code>refresh</code></dt>
-<dd>Calls <code>PackageAdmin.refreshPackages(Bundle[])</code> with the
-bundle as its sole argument thus forcing the bundle to be rewired. The bundle
-is required to be addressed by the request URL.</dd>
-<dt><code>update</code></dt>
-<dd>Calls <code>Bundle.update()</code> on the bundle addressed by the request URL or tries
-to update the bundle through the OBR.</dd>
-<dt><code>uninstall</code></dt>
-<dd>Calls <code>Bundle.uninstall()</code> on the bundle addressed by the request URL. After the
-installation the framework must be refreshed (see <code>refreshPackages</code> above).</dd>
-<dt><code>refreshPackages</code></dt>
-<dd>Calls <code>PackageAdmin.refreshPackages(Bundle[])</code> with a <code>null</code>
-argument thus refreshing all pending bundles. This action does not require a bundle
-in the URL and just ignores if one is provided.</dd>
+<dt class="hdlist1"><code>.../bundles/*id*</code></dt>
+<dd>
+<p>addresses a single bundle in the framework.
+The <code><strong>id</strong></code> can in this case be the bundle&#8217;s ID (as per <code>Bundle.getBundleId()</code>), the bundle&#8217;s symbolic name (which actually may cause multiple bundles to be addressed), or the bundle&#8217;s symbolic name and version separated by a colon.
+Examples are <code>.../bundles/0</code>, <code>.../bundles/org.apache.felix.webconsole</code>, and <code>.../bundles/org.apache.felix.webconsole:3.1.4</code>.</p>
+</dd>
 </dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_get_requests"><a class="anchor" href="#_get_requests"></a>GET Requests</h3>
+<div class="paragraph">
+<p>GET requests are used to retrieve information on the bundles (or bundle) available in the framework.
+To response formats are currently supported: regular HTML and JSON if requests are sent with the <code>.json</code> extension;
+e.g.
+<code>.../bundles/0.json</code>.
+The HTML response is destined at browsers and is not further described here.</p>
+</div>
+<div class="sect3">
+<h4 id="_get_bundles_json"><a class="anchor" href="#_get_bundles_json"></a>GET &#8230;&#8203;/bundles.json</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Due to a bug <a href="https://issues.apache.org/jira/browse/FELIX-3132">FELIX-3132</a> the form <code>.../bundles.json</code> only works in builds after SVN Revision 1175527.
+As a workaround request <code>.../bundles/.json</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Request to this URL sends back an overview of all bundles along with an overview of all bundles (bundles existing, active, fragment, resolved, installed)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json"> {
+    "status": "Bundle information: 84 bundles in total - all 84 bundles active.",
+    "s": [ 84, 81, 3, 0, 0 ],
+    "data": [
+       {
+          "id": 0,
+          "name": "System Bundle",
+          "fragment": false,
+          "stateRaw": 32,
+          "state": "Active",
+          "version": "3.0.8",
+          "symbolicName": "org.apache.felix.framework",
+          "category": ""
+       },
+       ----
+    ]
+ }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_bundlesid_json"><a class="anchor" href="#_get_bundlesid_json"></a>GET &#8230;&#8203;/bundles/id.json</h4>
+<div class="paragraph">
+<p>This URL returns detailed information of a bundle like the bundle headers, imported packages, exported packages, importing bundles, registered services.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json"> {
+     "status": "Bundle information: 84 bundles in total - all 84 bundles active.",
+     "s": [
+         84,
+         81,
+         3,
+         0,
+         0
+     ],
+     "data": [
+         {
+             "id": 23,
+             "name": "Apache Felix Web Management Console",
+             "fragment": false,
+             "stateRaw": 32,
+             "state": "Active",
+             "version": "3.1.9.SNAPSHOT",
+             "symbolicName": "org.apache.felix.webconsole",
+             "category": "",
+             "props": [
+                 {
+                     "key": "Symbolic Name",
+                     "value": "org.apache.felix.webconsole"
+                 },
+                 {
+                     "key": "Version",
+                     "value": "3.1.9.SNAPSHOT"
+                 },
+                 {
+                     "key": "Bundle Location",
+                     "value": "slinginstall:org.apache.felix.webconsole-3.1.6.jar"
+                 },
+                 {
+                     "key": "Last Modification",
+                     "value": "Sun Sep 25 20:59:46 CEST 2011"
+                 },
+                 {
+                     "key": "Bundle Documentation",
+                     "value": "http://felix.apache.org/site/apache-felix-web-console.html"
+                 },
+                 {
+                     "key": "Vendor",
+                     "value": "The Apache Software Foundation"
+                 },
+                 {
+                     "key": "Description",
+                     "value": "Web Based Management Console for OSGi Frameworks. See http://felix.apache.org/site/apache-felix-web-console.html for more information on this bundle."
+                 },
+                 {
+                     "key": "Start Level",
+                     "value": 5
+                 },
+                 {
+                     "key": "Exported Packages",
+                     "value": [
+                         "org.apache.felix.webconsole,version=3.1.2"
+                     ]
+                 },
+                 {
+                     "key": "Imported Packages",
+                     "value": [
+                         "javax.servlet,version=2.5.0 from &lt;a href='/system/console/bundles/15'&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;",
+                         "javax.servlet.http,version=2.5.0 from &lt;a href='/system/console/bundles/15'&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;",
+                         "org.apache.felix.scr,version=1.6.0 from &lt;a href='/system/console/bundles/11'&gt;org.apache.felix.scr (11)&lt;/a&gt;",
+                         "org.osgi.framework,version=1.5.0 from &lt;a href='/system/console/bundles/0'&gt;org.apache.felix.framework (0)&lt;/a&gt;",
+                         "org.osgi.service.cm,version=1.3.0 from &lt;a href='/system/console/bundles/9'&gt;org.apache.felix.configadmin (9)&lt;/a&gt;",
+                         "org.osgi.service.http,version=1.2.0 from &lt;a href='/system/console/bundles/15'&gt;org.apache.felix.http.jetty (15)&lt;/a&gt;",
+                         "org.osgi.service.log,version=1.3.0 from &lt;a href='/system/console/bundles/6'&gt;org.apache.sling.commons.logservice (6)&lt;/a&gt;",
+                         "org.osgi.service.metatype,version=1.1.0 from &lt;a href='/system/console/bundles/12'&gt;org.apache.felix.metatype (12)&lt;/a&gt;",
+                         "org.osgi.service.packageadmin,version=1.2.0 from &lt;a href='/system/console/bundles/0'&gt;org.apache.felix.framework (0)&lt;/a&gt;",
+                         "org.osgi.service.startlevel,version=1.1.0 from &lt;a href='/system/console/bundles/0'&gt;org.apache.felix.framework (0)&lt;/a&gt;"
+                     ]
+                 },
+                 {
+                     "key": "Importing Bundles",
+                     "value": [
+                         "&lt;a href='/system/console/bundles/19'&gt;org.apache.felix.webconsole.plugins.memoryusage (19)&lt;/a&gt;",
+                         "&lt;a href='/system/console/bundles/62'&gt;org.apache.sling.commons.mime (62)&lt;/a&gt;",
+                         "&lt;a href='/system/console/bundles/14'&gt;org.apache.sling.extensions.threaddump (14)&lt;/a&gt;",
+                         "&lt;a href='/system/console/bundles/20'&gt;org.apache.sling.extensions.webconsolesecurityprovider (20)&lt;/a&gt;",
+                         "&lt;a href='/system/console/bundles/18'&gt;org.apache.sling.jcr.webconsole (18)&lt;/a&gt;"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/369'&gt;369&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/370'&gt;370&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/371'&gt;371&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/372'&gt;372&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/373'&gt;373&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/374'&gt;374&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/375'&gt;375&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/376'&gt;376&lt;/a&gt;",
+                     "value": [
+                         "Types: org.osgi.service.cm.ManagedService, org.osgi.service.metatype.MetaTypeProvider",
+                         "Service PID: org.apache.felix.webconsole.internal.servlet.OsgiManager",
+                         "Description: OSGi Management Console Configuration Receiver",
+                         "Vendor: The Apache Software Foundation"
+                     ]
+                 },
+                 {
+                     "key": "Service ID &lt;a href='/system/console/services/453'&gt;453&lt;/a&gt;",
+                     "value": [
+                         "Types: org.apache.felix.webconsole.ConfigurationPrinter"
+                     ]
+                 },
+                 {
+                     "key": "Manifest Headers",
+                     "value": [
+                         "Bnd-LastModified: 1316977184980",
+                         "Build-Jdk: 1.6.0_13",
+                         "Built-By: fmeschbe",
+                         "Bundle-Activator: org.apache.felix.webconsole.internal.OsgiManagerActivator",
+                         "Bundle-Description: Web Based Management Console for OSGi Frameworks. See http://felix.apache.org/site/apache-felix-web-console.html for more information on this bundle.",
+                         "Bundle-DocURL: http://felix.apache.org/site/apache-felix-web-console.html",
+                         "Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt",
+                         "Bundle-ManifestVersion: 2",
+                         "Bundle-Name: Apache Felix Web Management Console",
+                         "Bundle-SymbolicName: org.apache.felix.webconsole",
+                         "Bundle-Vendor: The Apache Software Foundation",
+                         "Bundle-Version: 3.1.9.SNAPSHOT",
+                         "Created-By: Apache Maven Bundle Plugin",
+                         "DynamicImport-Package: org.apache.felix.bundlerepository, org.osgi.service.obr",
+                         "Export-Package: org.apache.felix.webconsole; uses:=\"javax.servlet, org.osgi.framework, javax.servlet.http\"; version=\"3.1.2\"",
+                         "Import-Package: javax.servlet; version=\"2.4\", javax.servlet.http; version=\"2.4\", org.apache.felix.scr; resolution:=optional; version=\"1.0\", org.apache.felix.shell; resolution:=optional, org.apache.felix.webconsole; version=\"3.1.2\", org.osgi.framework, org.osgi.service.cm; resolution:=optional, org.osgi.service.condpermadmin; resolution:=optional, org.osgi.service.deploymentadmin; resolution:=optional, org.osgi.service.http, org.osgi.service.log; resolution:=optional, org.osgi.service.metatype; resolution:=optional, org.osgi.service.packageadmin; resolution:=optional, org.osgi.service.permissionadmin; resolution:=optional, org.osgi.service.prefs; resolution:=optional, org.osgi.service.startlevel; resolution:=optional, org.osgi.service.wireadmin; resolution:=optional",
+                         "Manifest-Version: 1.0",
+                         "Tool: Bnd-0.0.255"
+                     ]
+                 }
+             ]
+         }
+     ]
+ }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_post_requests"><a class="anchor" href="#_post_requests"></a>POST Requests</h3>
+<div class="paragraph">
+<p>To update the bundles the <code>action</code> request parameter is used to indicate the action:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>install</code></dt>
+<dd>
+<p>Installs (or updates) and optionally starts one or more bundles.
+Parameters:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>bundlestart</code>&#8201;&#8212;&#8201;whether to start newly installed bundles or not.
+Has no influence on updated bundles.</p>
+</li>
+<li>
+<p><code>bundlestartlevel</code>&#8201;&#8212;&#8201;the start level to set on newly installed bundles.
+Has no influence on updated bundles.</p>
+</li>
+<li>
+<p><code>bundlefile</code>&#8201;&#8212;&#8201;one or more uploaded files being the bundles to install or update.
+The manifests in the bundles are inspected to see whether any bundle is an update or new install.</p>
+</li>
+<li>
+<p><code>refreshPackages</code>&#8201;&#8212;&#8201;whether to call <code>PackageAdmin.refreshPackages(Bundle[])</code> with the installed/updated bundles after installation/update.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><code>start</code></dt>
+<dd>
+<p>Starts the bundle addressed by the request URL.</p>
+</dd>
+<dt class="hdlist1"><code>stop</code></dt>
+<dd>
+<p>Stops the bundle addressed by the request URL.</p>
+</dd>
+<dt class="hdlist1"><code>refresh</code></dt>
+<dd>
+<p>Calls <code>PackageAdmin.refreshPackages(Bundle[])</code> with the bundle as its sole argument thus forcing the bundle to be rewired.
+The bundle is required to be addressed by the request URL.</p>
+</dd>
+<dt class="hdlist1"><code>update</code></dt>
+<dd>
+<p>Calls <code>Bundle.update()</code> on the bundle addressed by the request URL or tries to update the bundle through the OBR.</p>
+</dd>
+<dt class="hdlist1"><code>uninstall</code></dt>
+<dd>
+<p>Calls <code>Bundle.uninstall()</code> on the bundle addressed by the request URL.
+After the installation the framework must be refreshed (see <code>refreshPackages</code> above).</p>
+</dd>
+<dt class="hdlist1"><code>refreshPackages</code></dt>
+<dd>
+<p>Calls <code>PackageAdmin.refreshPackages(Bundle[])</code> with a <code>null</code> argument thus refreshing all pending bundles.
+This action does not require a bundle in the URL and just ignores if one is provided.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
 <p>The response on those actions requiring a bundle is a simple JSON response:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-    <span class="nt">&quot;fragment&quot;</span><span class="p">:</span> <span class="err">--</span> <span class="err">whether</span> <span class="err">the</span> <span class="err">bundle</span> <span class="err">is</span> <span class="err">a</span> <span class="err">fragement</span>
-    <span class="s2">&quot;stateRaw&quot;</span><span class="p">:</span> <span class="err">--</span> <span class="err">the</span> <span class="err">state</span> <span class="err">code</span> <span class="err">of</span> <span class="err">the</span> <span class="err">bundle</span> <span class="err">after</span> <span class="err">executing</span> <span class="err">the</span> <span class="err">action</span>
-<span class="p">}</span>
-</pre></div>
-
-
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json"> {
+     "fragment": -- whether the bundle is a fragement
+     "stateRaw": -- the state code of the bundle after executing the action
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Since some bundle operations take place asynchronously a short delay of 800ms is inserted before preparing and sending the response.</p>
-<p>The response on those actions not taking a bundle is the bundle overview of the bundles in the framework as if requesting <code>.../bundles.json</code>. Again a delay of 800ms is inserted since some operations are executed asynchronously.</p>
-<h2 id="services-plugin">Services Plugin<a class="headerlink" href="#services-plugin" title="Permanent link">&para;</a></h2>
+</div>
+<div class="paragraph">
+<p>The response on those actions not taking a bundle is the bundle overview of the bundles in the framework as if requesting <code>.../bundles.json</code>.
+Again a delay of 800ms is inserted since some operations are executed asynchronously.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_services_plugin"><a class="anchor" href="#_services_plugin"></a>Services Plugin</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>TBD</p>
-<h2 id="configuration-admin-plugin">Configuration Admin Plugin<a class="headerlink" href="#configuration-admin-plugin" title="Permanent link">&para;</a></h2>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_admin_plugin"><a class="anchor" href="#_configuration_admin_plugin"></a>Configuration Admin Plugin</h2>
+<div class="sectionbody">
+<div class="paragraph">
 <p>The Configuration Admin Plugin can be accessed directly by sending POST requests to it.</p>
-<h3 id="post-requests_1">POST Requests<a class="headerlink" href="#post-requests_1" title="Permanent link">&para;</a></h3>
-<p>Configuration handling is done based on the PID of the configuration. Each POST can either contain the PID as a suffix like <code>../PID</code> or with the parameter <code>pid</code>. The parameter <code>pidFilter</code> might contain an additional filter expression.
-For the action to execute, the following options are tested, one after the other. As soon as one is executed, the request is processed.</p>
-<h4 id="create">Create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h4>
-<p>If the parameter <code>create</code>is sent, a new configuration with the PID is created. The value of the parameter is not evaluated.</p>
-<h4 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">&para;</a></h4>
-<p>If the parameter <code>apply</code> is sent, the configuration is changeg. The value of the parameter is not evaluated.
+</div>
+<div class="sect2">
+<h3 id="_post_requests_2"><a class="anchor" href="#_post_requests_2"></a>POST Requests</h3>
+<div class="paragraph">
+<p>Configuration handling is done based on the PID of the configuration.
+Each POST can either contain the PID as a suffix like <code>../PID</code> or with the parameter <code>pid</code>.
+The parameter <code>pidFilter</code> might contain an additional filter expression.
+For the action to execute, the following options are tested, one after the other.
+As soon as one is executed, the request is processed.</p>
+</div>
+<div class="sect3">
+<h4 id="_create"><a class="anchor" href="#_create"></a>Create</h4>
+<div class="paragraph">
+<p>If the parameter <code>create</code>is sent, a new configuration with the PID is created.
+The value of the parameter is not evaluated.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_apply"><a class="anchor" href="#_apply"></a>Apply</h4>
+<div class="paragraph">
+<p>If the parameter <code>apply</code> is sent, the configuration is changed.
+The value of the parameter is not evaluated.
 The parameter <code>factoryPid</code> might contain the factory pid.
-The parameter <code>propertyList</code> contains a comma-separated list of all configuration property names that will be changed by this POST. For each name, the value of the corresponding request parameter is used to set the value. If such a parameter is missing, the property is not changed. Any existing property not listed in the property list will be removed from the configuration</p>
+The parameter <code>propertyList</code> contains a comma-separated list of all configuration property names that will be changed by this POST.
+For each name, the value of the corresponding request parameter is used to set the value.
+If such a parameter is missing, the property is not changed.
+Any existing property not listed in the property list will be removed from the configuration.</p>
+</div>
+<div class="paragraph">
 <p>For example to use <code>curl</code> to apply a configuration the following command line can be used:</p>
-<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">propertylist</span><span class="p">=</span><span class="n">foo</span><span class="p">,</span><span class="n">bar</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">foo</span><span class="p">=</span>51&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">bar</span><span class="p">=</span><span class="n">hello</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">MyPid</span>
-</pre></div>
-
-
-<p>If the configuration contains property where the names clash with the commands of the rest api like <code>apply</code> or <code>propertyList</code> the request parameter name gets prefixed with a dollar sign:</p>
-<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">propertylist</span><span class="p">=</span><span class="n">update</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;$<span class="n">update</span><span class="p">=</span><span class="n">yes</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">mypid</span>
-</pre></div>
-
-
-<p>To create a factory configuration, the special PID <code>[Temporary PID replaced by real PID upon save]</code> must be used, URL encoded. So to create a new factory configuration 
-for a factoryPid <code>com.acme.MyFactoryPid</code> the following can be used:</p>
-<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">propertylist</span><span class="p">=</span><span class="n">name</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">name</span><span class="p">=</span><span class="n">mycfg</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">factoryPid</span><span class="p">=</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">MyFactoryPid</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="c">%5BTemporary%20PID%20replaced%20by%20real%20PID%20upon%20save%5D</span>
-</pre></div>
-
-
-<h4 id="delete">Delete<a class="headerlink" href="#delete" title="Permanent link">&para;</a></h4>
-<p>If the parameters <code>apply</code> and <code>delete</code> are sent, the configuration is removed. The values of the parameters is not evaluated.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>curl -u admin:admin -X POST -d "apply=true" -d "propertylist=foo,bar" -d "foo=51" -d "bar=hello" http://localhost:8080/system/console/configMgr/com.acme.MyPid</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the configuration contains property where the names clash with the commands of the rest api like <code>apply</code> or <code>propertyList</code> the request parameter name must be prefixed with a dollar sign:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>curl -u admin:admin -X POST -d "apply=true" -d "propertylist=update" -d "$update=yes" http://localhost:8080/system/console/configMgr/com.acme.mypid</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To create a factory configuration, the special PID <code>[Temporary PID replaced by real PID upon save]</code> must be used, URL encoded.
+So to create a new factory configuration  for a factoryPid <code>com.acme.MyFactoryPid</code> the following can be used:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>curl -u admin:admin -X POST -d "apply=true" -d "propertylist=name" -d "name=mycfg" -d "factoryPid=com.acme.MyFactoryPid" http://localhost:8080/system/console/configMgr/%5BTemporary%20PID%20replaced%20by%20real%20PID%20upon%20save%5D</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_delete"><a class="anchor" href="#_delete"></a>Delete</h4>
+<div class="paragraph">
+<p>If the parameters <code>apply</code> and <code>delete</code> are sent, the configuration is removed.
+The values of the parameters is not evaluated.</p>
+</div>
+<div class="paragraph">
 <p>Example using <code>curl</code>:</p>
-<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">u</span> <span class="n">admin</span><span class="p">:</span><span class="n">admin</span>  <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> &quot;<span class="n">apply</span><span class="p">=</span><span class="n">true</span>&quot; <span class="o">-</span><span class="n">d</span> &quot;<span class="n">delete</span><span class="p">=</span><span class="n">true</span>&quot; <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span>8080<span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">/</span><span class="n">configMgr</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">acme</span><span class="p">.</span><span class="n">MyPid</span>
-</pre></div>
-
-
-<h4 id="unbind">Unbind<a class="headerlink" href="#unbind" title="Permanent link">&para;</a></h4>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>curl -u admin:admin  -X POST -d "apply=true" -d "delete=true" http://localhost:8080/system/console/configMgr/com.acme.MyPid</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_unbind"><a class="anchor" href="#_unbind"></a>Unbind</h4>
+<div class="paragraph">
 <p>If the parameter <code>unbind</code> is sent, the configuration is unbind.</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1884089 by cziegeler on Fri, 4 Dec 2020 07:34:08 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>

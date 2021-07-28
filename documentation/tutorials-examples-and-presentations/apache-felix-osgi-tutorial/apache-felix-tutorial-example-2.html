@@ -1,242 +1,718 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<!--
-
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-       https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Apache Felix - Apache Felix Tutorial Example 2</title>
-    <link rel="icon" href="/res/favicon.ico">
-    <link rel="stylesheet" href="/res/site.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/res/codehilite.css" type="text/css" media="all">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Apache Felix Tutorial Example 2 :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
   </head>
-  <body>
-    <div class="title">
-      <div class="logo">
-        <a href="https://felix.apache.org/">
-          <img border="0" alt="Apache Felix" src="/res/logo.png">
-        </a>
-      </div>
-      <div class="header">
-        <a href="https://www.apache.org/">
-          <img border="0" alt="Apache" src="/res/apache.png">
-        </a>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../../subprojects/apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../../subprojects/apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
       </div>
     </div>
-    
-    <div class="menu"> 
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<p><a href="/news.html">News</a>  <br />
-<a href="/license.html">License</a>  <br />
-<a href="/downloads.cgi">Downloads</a>  <br />
-<a href="/documentation.html">Documentation</a>  <br />
-<a href="/documentation/community/project-info.html">Project Info</a>  <br />
-<a href="/documentation/community/contributing.html">Contributing</a>  <br />
-<a href="/sitemap.html">Site Map</a>  <br />
-<a href="https://www.apache.org/">ASF</a>  <br />
-<a href="https://www.apache.org/security/">Security</a>  <br />
-<a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a>  <br />
-<a href="https://www.apache.org/foundation/thanks.html">Sponsors</a>    </p>
-<iframe
-    src="https://www.apache.org/ads/button.html"
-    style="border-width:0; float: left"
-    frameborder="0"
-    scrolling="no"
-    width="135"
-    height="135">
-</iframe>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework/apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../subprojects/apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Maven SCR plugin</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-maven-scr-plugin-use.html">Apache Felix Maven SCR Plugin Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-bndtools-use.html">Apache Felix SCR Annotations BndTools Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/apache-felix-scr-ant-task-use.html">Apache Felix SCR Ant Task Use</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/extending-scr-annotations.html">Extending SCR Annotations Excerpt: How add new Annotations extending the base Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-annotations.html">SCR Annotations Excerpt: Using Java 5 Annotations to describe the component or service.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../subprojects/apache-felix-maven-scr-plugin/scr-javadoc-tags.html">SCR JavaDoc Tags Excerpt: Using JavaDoc Tags to describe the component or service.</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
     </div>
-    
-    <div class="main">
-      <div class="breadcrump" style="font-size: 80%;">
-        <a href="/">Home</a>&nbsp;&raquo&nbsp;<a href="/documentation.html">Documentation</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations.html">Tutorials, Examples, and Presentations</a>&nbsp;&raquo&nbsp;<a href="/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
-      </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../tutorials-examples-and-presentations.html">Tutorials</a></li>
+    <li>OSGI Tutorial</li>
+    <li><a href="apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Apache Felix Tutorial Example 2</h1>
+<div class="sect1">
+<h2 id="_example_2_dictionary_service_bundle"><a class="anchor" href="#_example_2_dictionary_service_bundle"></a>Example 2 - Dictionary Service Bundle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This example creates a bundle that implements an OSGi service.
+Implementing an OSGi service is a two-step process, first we must define the interface of the service and then we must define an implementation of the service interface.
+In this particular example, we will create a dictionary service that we can use to check if a word exists, which indicates if the word is spelled correctly or not.
+First, we will start by defining a simple dictionary service interface in a file called <code>DictionaryService.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/*
+ * Apache Felix OSGi tutorial.
+**/
 
-      <h1>Apache Felix Tutorial Example 2</h1>
-      <style type="text/css">
-/* The following code is added by mdx_elementid.py
-   It was originally lifted from http://subversion.apache.org/style/site.css */
-/*
- * Hide class="elementid-permalink", except when an enclosing heading
- * has the :hover property.
- */
-.headerlink, .elementid-permalink {
-  visibility: hidden;
-}
-h2:hover > .headerlink, h3:hover > .headerlink, h1:hover > .headerlink, h6:hover > .headerlink, h4:hover > .headerlink, h5:hover > .headerlink, dt:hover > .elementid-permalink { visibility: visible }</style>
-<h2 id="example-2-dictionary-service-bundle">Example 2 - Dictionary Service Bundle<a class="headerlink" href="#example-2-dictionary-service-bundle" title="Permanent link">&para;</a></h2>
-<p>This example creates a bundle that implements an OSGi service. Implementing an OSGi service is a two-step process, first we must define the interface of the service and then we must define an implementation of the service interface. In this particular example, we will create a dictionary service that we can use to check if a word exists, which indicates if the word is spelled correctly or not. First, we will start by defining a simple dictionary service interface in a file called <code>DictionaryService.java</code>:</p>
-<div class="codehilite"><pre><span class="cm">/*</span>
-<span class="cm"> * Apache Felix OSGi tutorial.</span>
-<span class="cm">**/</span>
+package tutorial.example2.service;
 
-<span class="kn">package</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example2</span><span class="p">.</span><span class="n">service</span><span class="p">;</span>
+/**
+ * A simple service interface that defines a dictionary service.
+ * A dictionary service simply verifies the existence of a word.
+**/
+public interface DictionaryService
+{
+    /**
+     * Check for the existence of a word.
+     * @param word the word to be checked.
+     * @return true if the word is in the dictionary,
+     *         false otherwise.
+    **/
+    public boolean checkWord(String word);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service interface is quite simple, with only one method that needs to be implemented.
+Notice that we put the service interface in the package <code>tutorial.example2.service</code>, instead of just putting it in <code>tutorial.example2</code>.
+We did this because we need to share the interface definition with other bundles, therefore it is better to separate service interfaces that need to be shared from code that does not need to be shared.
+Such an approach ensures a strong separation between interface and implementation.</p>
+</div>
+<div class="paragraph">
+<p>In the following source code, the bundle uses its bundle context to register the dictionary service.
+We implement the dictionary service as an inner class of the bundle activator class, but we could have also put it in a separate file.
+The source code for our bundle is as follows in a file called <code>Activator.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/*
+ * Apache Felix OSGi tutorial.
+**/
 
-<span class="cm">/**</span>
-<span class="cm"> * A simple service interface that defines a dictionary service.</span>
-<span class="cm"> * A dictionary service simply verifies the existence of a word.</span>
-<span class="cm">**/</span>
-<span class="n">public</span> <span class="k">interface</span> <span class="n">DictionaryService</span>
-<span class="p">{</span>
-    <span class="cm">/**</span>
-<span class="cm">     * Check for the existence of a word.</span>
-<span class="cm">     * @param word the word to be checked.</span>
-<span class="cm">     * @return true if the word is in the dictionary,</span>
-<span class="cm">     *         false otherwise.</span>
-<span class="cm">    **/</span>
-    <span class="n">public</span> <span class="n">boolean</span> <span class="n">checkWord</span><span class="p">(</span><span class="n">String</span> <span class="n">word</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
+package tutorial.example2;
 
+import java.util.Hashtable;
 
-<p>The service interface is quite simple, with only one method that needs to be implemented. Notice that we put the service interface in the package <code>tutorial.example2.service</code>, instead of just putting it in <code>tutorial.example2</code>. We did this because we need to share the interface definition with other bundles, therefore it is better to separate service interfaces that need to be shared from code that does not need to be shared. Such an approach ensures a strong separation between interface and implementation.</p>
-<p>In the following source code, the bundle uses its bundle context to register the dictionary service. We implement the dictionary service as an inner class of the bundle activator class, but we could have also put it in a separate file. The source code for our bundle is as follows in a file called <code>Activator.java</code>:</p>
-<div class="codehilite"><pre><span class="cm">/*</span>
-<span class="cm"> * Apache Felix OSGi tutorial.</span>
-<span class="cm">**/</span>
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceEvent;
 
-<span class="kn">package</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example2</span><span class="p">;</span>
+import tutorial.example2.service.DictionaryService;
 
-<span class="kn">import</span> <span class="nn">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Hashtable</span><span class="p">;</span>
+/**
+ * This class implements a simple bundle that uses the bundle
+ * context to register an English language dictionary service
+ * with the OSGi framework. The dictionary service interface is
+ * defined in a separate class file and is implemented by an
+ * inner class.
+**/
+public class Activator implements BundleActivator
+{
+    /**
+     * Implements BundleActivator.start(). Registers an
+     * instance of a dictionary service using the bundle context;
+     * attaches properties to the service that can be queried
+     * when performing a service look-up.
+     * @param context the framework context for the bundle.
+    **/
+    public void start(BundleContext context)
+    {
+        Hashtable&lt;String, String&gt; props = new Hashtable&lt;String, String&gt;();
+        props.put("Language", "English");
+        context.registerService(
+            DictionaryService.class.getName(), new DictionaryImpl(), props);
+    }
 
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleActivator</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">BundleContext</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceListener</span><span class="p">;</span>
-<span class="kn">import</span> <span class="nn">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span><span class="p">.</span><span class="n">ServiceEvent</span><span class="p">;</span>
+    /**
+     * Implements BundleActivator.stop(). Does nothing since
+     * the framework will automatically unregister any registered services.
+     * @param context the framework context for the bundle.
+    **/
+    public void stop(BundleContext context)
+    {
+        // NOTE: The service is automatically unregistered.
+    }
 
-<span class="kn">import</span> <span class="nn">tutorial</span><span class="p">.</span><span class="n">example2</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">DictionaryService</span><span class="p">;</span>
+    /**
+     * A private inner class that implements a dictionary service;
+     * see DictionaryService for details of the service.
+    **/
+    private static class DictionaryImpl implements DictionaryService
+    {
+        // The set of words contained in the dictionary.
+        String[] m_dictionary =
+            { "welcome", "to", "the", "osgi", "tutorial" };
 
-<span class="cm">/**</span>
-<span class="cm"> * This class implements a simple bundle that uses the bundle</span>
-<span class="cm"> * context to register an English language dictionary service</span>
-<span class="cm"> * with the OSGi framework. The dictionary service interface is</span>
-<span class="cm"> * defined in a separate class file and is implemented by an</span>
-<span class="cm"> * inner class.</span>
-<span class="cm">**/</span>
-<span class="n">public</span> <span class="k">class</span> <span class="n">Activator</span> <span class="n">implements</span> <span class="n">BundleActivator</span>
-<span class="p">{</span>
-    <span class="cm">/**</span>
-<span class="cm">     * Implements BundleActivator.start(). Registers an</span>
-<span class="cm">     * instance of a dictionary service using the bundle context;</span>
-<span class="cm">     * attaches properties to the service that can be queried</span>
-<span class="cm">     * when performing a service look-up.</span>
-<span class="cm">     * @param context the framework context for the bundle.</span>
-<span class="cm">    **/</span>
-    <span class="n">public</span> <span class="k">void</span> <span class="n">start</span><span class="p">(</span><span class="n">BundleContext</span> <span class="k">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
-        <span class="n">props</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;Language&quot;</span><span class="p">,</span> <span class="s">&quot;English&quot;</span><span class="p">);</span>
-        <span class="k">context</span><span class="p">.</span><span class="n">registerService</span><span class="p">(</span>
-            <span class="n">DictionaryService</span><span class="p">.</span><span class="k">class</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="k">new</span> <span class="n">DictionaryImpl</span><span class="p">(),</span> <span class="n">props</span><span class="p">);</span>
-    <span class="p">}</span>
+        /**
+         * Implements DictionaryService.checkWord(). Determines
+         * if the passed in word is contained in the dictionary.
+         * @param word the word to be checked.
+         * @return true if the word is in the dictionary,
+         *         false otherwise.
+        **/
+        public boolean checkWord(String word)
+        {
+            word = word.toLowerCase();
 
-    <span class="cm">/**</span>
-<span class="cm">     * Implements BundleActivator.stop(). Does nothing since</span>
-<span class="cm">     * the framework will automatically unregister any registered services.</span>
-<span class="cm">     * @param context the framework context for the bundle.</span>
-<span class="cm">    **/</span>
-    <span class="n">public</span> <span class="k">void</span> <span class="n">stop</span><span class="p">(</span><span class="n">BundleContext</span> <span class="k">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// NOTE: The service is automatically unregistered.</span>
-    <span class="p">}</span>
-
-    <span class="cm">/**</span>
-<span class="cm">     * A private inner class that implements a dictionary service;</span>
-<span class="cm">     * see DictionaryService for details of the service.</span>
-<span class="cm">    **/</span>
-    <span class="n">private</span> <span class="k">static</span> <span class="k">class</span> <span class="n">DictionaryImpl</span> <span class="n">implements</span> <span class="n">DictionaryService</span>
-    <span class="p">{</span>
-        <span class="c1">// The set of words contained in the dictionary.</span>
-        <span class="n">String</span><span class="p">[]</span> <span class="n">m_dictionary</span> <span class="o">=</span>
-            <span class="p">{</span> <span class="s">&quot;welcome&quot;</span><span class="p">,</span> <span class="s">&quot;to&quot;</span><span class="p">,</span> <span class="s">&quot;the&quot;</span><span class="p">,</span> <span class="s">&quot;osgi&quot;</span><span class="p">,</span> <span class="s">&quot;tutorial&quot;</span> <span class="p">};</span>
-
-        <span class="cm">/**</span>
-<span class="cm">         * Implements DictionaryService.checkWord(). Determines</span>
-<span class="cm">         * if the passed in word is contained in the dictionary.</span>
-<span class="cm">         * @param word the word to be checked.</span>
-<span class="cm">         * @return true if the word is in the dictionary,</span>
-<span class="cm">         *         false otherwise.</span>
-<span class="cm">        **/</span>
-        <span class="n">public</span> <span class="n">boolean</span> <span class="n">checkWord</span><span class="p">(</span><span class="n">String</span> <span class="n">word</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="p">.</span><span class="n">toLowerCase</span><span class="p">();</span>
-
-            <span class="c1">// This is very inefficient</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_dictionary</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">m_dictionary</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">equals</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
-                <span class="p">{</span>
-                    <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-            <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Note that we do not need to unregister the service in the <code>stop()</code> method, because the OSGi framework will automatically do so for us. The dictionary service that we have implemented is very simple; its dictionary is a static array of only five words, so this solution is not optimal and is only intended for educational purposes. We must create a <code>manifest.mf</code> file that contains the meta-data for our bundle; the manifest file contains the following:</p>
-<div class="codehilite"><pre><span class="n">Bundle</span><span class="o">-</span><span class="n">Name</span><span class="p">:</span> <span class="n">English</span> <span class="n">dictionary</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Description</span><span class="p">:</span> <span class="n">A</span> <span class="n">bundle</span> <span class="n">that</span> <span class="n">registers</span> <span class="n">an</span> <span class="n">English</span> <span class="n">dictionary</span> <span class="n">service</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Vendor</span><span class="p">:</span> <span class="n">Apache</span> <span class="n">Felix</span>
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Version</span><span class="p">:</span> 1<span class="p">.</span>0<span class="p">.</span>0
-<span class="n">Bundle</span><span class="o">-</span><span class="n">Activator</span><span class="p">:</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example2</span><span class="p">.</span><span class="n">Activator</span>
-<span class="n">Export</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">example2</span><span class="p">.</span><span class="n">service</span>
-<span class="n">Import</span><span class="o">-</span><span class="n">Package</span><span class="p">:</span> <span class="n">org</span><span class="p">.</span><span class="n">osgi</span><span class="p">.</span><span class="n">framework</span>
-</pre></div>
-
-
-<p>We specify which class is used to activate our bundle via the <code>Bundle-Activator</code> attribute and also specify that our bundle exports a shared package using the <code>Export-Package</code> attribute. The <code>Export-Package</code> attribute makes it possible for other bundles to import our dictionary service interface. The <code>Import-Package</code> attribute informs the framework of the bundle's dependencies on external packages; all bundles with an activator must import <code>org.osgi.framework</code> since it contains the core OSGi class definitions. Any packages dependencies will be verified and resolved by the OSGi framework. (Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
-<p>To compile our source code, we need the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) in our class path. We compile the source file using a command like:</p>
-<div class="codehilite"><pre><span class="n">javac</span> <span class="o">-</span><span class="n">d</span> <span class="n">c</span><span class="p">:</span><span class="o">\</span><span class="n">classes</span> <span class="o">*</span><span class="p">.</span><span class="n">java</span>
-</pre></div>
-
-
-<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory; this subdirectory is <code>tutorial\example2</code>, named after the package we specified in the source file. For the above command to work, the <code>c:\classes</code> directory must exist. After compiling, we need to create a JAR file containing the generated package directories. We will also add our manifest file that contains the bundle's meta-data to the JAR file. To create the JAR file, we issue the command:</p>
-<div class="codehilite"><pre><span class="n">jar</span> <span class="n">cfm</span> <span class="n">example2</span><span class="p">.</span><span class="n">jar</span> <span class="n">manifest</span><span class="p">.</span><span class="n">mf</span> <span class="o">-</span><span class="n">C</span> <span class="n">c</span><span class="p">:</span><span class="o">\</span><span class="n">classes</span> <span class="n">tutorial</span><span class="o">\</span><span class="n">example2</span>
-</pre></div>
-
-
-<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example2</code> directory inside of the c:\classes directory. Once the JAR file is created, we are ready to install and start the bundle.</p>
-<p>To run Felix, we follow the instructions described in usage.html. When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>. After running Felix, we should make sure that the bundle from Example 1 is active. We can use the Felix <code>lb</code> shell command to get a list of all bundles, their state, and their bundle identifier number. If the Example 1 bundle is not active, we should start the bundle using the <code>start</code> command and the bundle's identifier number that is displayed by the <code>lb</code> command. Now we can install and start our dictionary service bundle. Assuming that we created our bundle in the directory c:\tutorial, we can install and start it in Felix' shell using the following command:</p>
-<div class="codehilite"><pre><span class="n">start</span> <span class="n">file</span><span class="p">:</span><span class="o">/</span><span class="n">c</span><span class="p">:</span><span class="o">/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">example2</span><span class="p">.</span><span class="n">jar</span>
-</pre></div>
-
-
-<p>The above command installs and starts the bundle in a single step; it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands. To stop the bundle, use the Felix <code>stop</code> shell command. If the bundle from Example 1 is still active, then we should see it print out the details of the service event it receives when our new bundle registers its dictionary service. Using the Felix shell <code>lb</code> command to get the bundle identifier number for our dictionary service bundle and we can stop and restart it at will using the <code>stop</code> and <code>start</code> commands, respectively. Each time we start and stop our dictionary service bundle, we should see the details of the associated service event printed from the bundle from Example 1. In Example 3, we will create a client for our dictionary service. To exit Felix, we use the <code>shutdown</code> command.</p>
-      <div class="timestamp" style="margin-top: 30px; font-size: 80%; text-align: right;">
-        Rev. 1700393 by cziegeler on Tue, 1 Sep 2015 06:04:06 +0000
-      </div>
-      <div class="trademarkFooter"> 
-        Apache Felix, Felix, Apache, the Apache feather logo, and the Apache Felix project
-        logo are trademarks of The Apache Software Foundation. All other marks mentioned
-        may be trademarks or registered trademarks of their respective owners.
-      </div>
-    </div>
+            // This is very inefficient
+            for (int i = 0; i &lt; m_dictionary.length; i++)
+            {
+                if (m_dictionary[i].equals(word))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that we do not need to unregister the service in the <code>stop()</code> method, because the OSGi framework will automatically do so for us.
+The dictionary service that we have implemented is very simple;
+its dictionary is a static array of only five words, so this solution is not optimal and is only intended for educational purposes.
+We must create a <code>manifest.mf</code> file that contains the meta-data for our bundle;
+the manifest file contains the following:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Bundle-Name: English dictionary
+Bundle-Description: A bundle that registers an English dictionary service
+Bundle-Vendor: Apache Felix
+Bundle-Version: 1.0.0
+Bundle-Activator: tutorial.example2.Activator
+Export-Package: tutorial.example2.service
+Import-Package: org.osgi.framework</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We specify which class is used to activate our bundle via the <code>Bundle-Activator</code> attribute and also specify that our bundle exports a shared package using the <code>Export-Package</code> attribute.
+The <code>Export-Package</code> attribute makes it possible for other bundles to import our dictionary service interface.
+The <code>Import-Package</code> attribute informs the framework of the bundle&#8217;s dependencies on external packages;
+all bundles with an activator must import <code>org.osgi.framework</code> since it contains the core OSGi class definitions.
+Any packages dependencies will be verified and resolved by the OSGi framework.
+(Note: Make sure your manifest file ends in a trailing carriage return or else the last line will be ignored.)</p>
+</div>
+<div class="paragraph">
+<p>To compile our source code, we need the <code>felix.jar</code> file (found in Felix' <code>bin</code> directory) in our class path.
+We compile the source file using a command like:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>javac -d c:\classes *.java</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command compiles all source files and outputs the generated classes into a subdirectory of the <code>c:\classes</code> directory;
+this subdirectory is <code>tutorial\example2</code>, named after the package we specified in the source file.
+For the above command to work, the <code>c:\classes</code> directory must exist.
+After compiling, we need to create a JAR file containing the generated package directories.
+We will also add our manifest file that contains the bundle&#8217;s meta-data to the JAR file.
+To create the JAR file, we issue the command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>jar cfm example2.jar manifest.mf -C c:\classes tutorial\example2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command creates a JAR file using the manifest file we created and includes all of the classes in the <code>tutorial\example2</code> directory inside of the c:\classes directory.
+Once the JAR file is created, we are ready to install and start the bundle.</p>
+</div>
+<div class="paragraph">
+<p>To run Felix, we follow the instructions described in usage.html.
+When we start Felix, it asks for a profile name, we will put all of our bundles in a profile named <code>tutorial</code>.
+After running Felix, we should make sure that the bundle from Example 1 is active.
+We can use the Felix <code>lb</code> shell command to get a list of all bundles, their state, and their bundle identifier number.
+If the Example 1 bundle is not active, we should start the bundle using the <code>start</code> command and the bundle&#8217;s identifier number that is displayed by the <code>lb</code> command.
+Now we can install and start our dictionary service bundle.
+Assuming that we created our bundle in the directory c:\tutorial, we can install and start it in Felix' shell using the following command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>start file:/c:/tutorial/example2.jar</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above command installs and starts the bundle in a single step;
+it is also possible to install and start the bundle in two steps by using the Felix <code>install</code> and <code>start</code> shell commands.
+To stop the bundle, use the Felix <code>stop</code> shell command.
+If the bundle from Example 1 is still active, then we should see it print out the details of the service event it receives when our new bundle registers its dictionary service.
+Using the Felix shell <code>lb</code> command to get the bundle identifier number for our dictionary service bundle and we can stop and restart it at will using the <code>stop</code> and <code>start</code> commands, respectively.
+Each time we start and stop our dictionary service bundle, we should see the details of the associated service event printed from the bundle from Example 1.
+In Example 3, we will create a client for our dictionary service.
+To exit Felix, we use the <code>shutdown</code> command.</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
   </body>
 </html>
