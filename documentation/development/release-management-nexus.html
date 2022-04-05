@@ -639,11 +639,13 @@ Remember to update the copyright year.</p>
 </li>
 <li>
 <p>Check that your POMs will not lose content when they are rewritten during the release process</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn release:prepare -DdryRun=true</code></pre>
+</div>
+</div>
 <div class="ulist">
 <ul>
-<li>
-<p><code>mvn release:prepare -DdryRun=true</code></p>
-</li>
 <li>
 <p>diff the original <code>pom.xml</code> with the one called <code>pom.xml.tag</code> to see if the license or any other info has been removed.
 This has been known to happen if the starting <code>&lt;project&gt;</code> tag is not on a single line.
@@ -657,29 +659,63 @@ If there are any other changes, you must fix the original <code>pom.xml</code> f
 <p>Publish a snapshot.
 This is useful for existing builds that still depend on a snapshot version of this artifact.
 It means that the snapshot they will be getting is effectively the same as the released version.</p>
-<div class="paragraph">
-<p><code>$ mvn deploy     ...
-[INFO] [deploy:deploy]    [INFO] Retrieving previous build number from apache.snapshots.https    ...</code>
- <strong> if you experience an error during deployment like a HTTP 401 check your settings for the required server entries as outlined in the <em>Prerequisites</em>
- </strong> be sure that the generated artifacts respect the Apache release <a href="https://www.apache.org/dev/release.html">rules</a>: NOTICE and LICENSE files should be present in the META-INF directory within the jar.
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ mvn deploy
+...
+[INFO] [deploy:deploy]
+[INFO] Retrieving previous build number from apache.snapshots.https
+...</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if you experience an error during deployment like a HTTP 401 check your settings for the required server entries as outlined in the <em>Prerequisites</em></p>
+</li>
+<li>
+<p>be sure that the generated artifacts respect the Apache release <a href="https://www.apache.org/dev/release.html">rules</a>: NOTICE and LICENSE files should be present in the META-INF directory within the jar.
 For -sources artifacts, be sure that your POM does not use the maven-source-plugin:2.0.3 which is broken.
-The recommended version at this time is 2.0.4
- ** you should verify the deployment under the <a href="https://repository.apache.org/content/groups/snapshots/org/apache/felix">snapshot</a> repository on Apache</p>
+The recommended version at this time is 2.0.4</p>
+</li>
+<li>
+<p>you should verify the deployment under the <a href="https://repository.apache.org/content/groups/snapshots/org/apache/felix">snapshot</a> repository on Apache</p>
+</li>
+</ul>
 </div>
 </li>
 <li>
 <p>Prepare the release</p>
-<div class="paragraph">
-<p><code>$ mvn release:clean      $ mvn release:prepare</code>
- ** preparing the release will create the new tag in git, automatically checking in on your behalf</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ mvn release:clean
+$ mvn release:prepare</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>preparing the release will create the new tag in git, automatically checking in on your behalf</p>
+</li>
+</ul>
 </div>
 </li>
 <li>
 <p>Stage the release for a vote</p>
-<div class="paragraph">
-<p><code>$ mvn release:perform</code>
- <strong> the release will automatically be inserted into a temporary staging repository for you, see the Nexus <a href="https://www.sonatype.com/books/nexus-book/reference/staging.html">staging documentation</a> for full details
- </strong> you can continue to use <code>mvn release:prepare</code> and <code>mvn release:perform</code> on other sub-projects as necessary on the same machine and they will be combined in the same staging repository - this is useful when making a release of the Felix framework and its associated bundles.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ mvn release:perform</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the release will automatically be inserted into a temporary staging repository for you, see the Nexus <a href="https://www.sonatype.com/books/nexus-book/reference/staging.html">staging documentation</a> for full details</p>
+</li>
+<li>
+<p>you can continue to use <code>mvn release:prepare</code> and <code>mvn release:perform</code> on other sub-projects as necessary on the same machine and they will be combined in the same staging repository - this is useful when making a release of the Felix framework and its associated bundles.</p>
+</li>
+</ul>
 </div>
 </li>
 <li>
