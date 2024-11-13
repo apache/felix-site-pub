@@ -747,6 +747,51 @@ However, if you&#8217;re using the <code>org.apache.felix:maven-bundle-plugin</c
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_build_with_java_17_and_21"><a class="anchor" href="#_build_with_java_17_and_21"></a>Build with Java 17 and 21</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>maven-scr-plugin</code> is not directly compatible with Java 17 and 21. However, it remains possible to generate the descriptor files by updating the ASM dependency version within the plugin configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml"> &lt;project&gt;
+   ...
+   &lt;build&gt;
+     ...
+     &lt;plugins&gt;
+       ...
+       &lt;plugin&gt;
+         &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+         &lt;artifactId&gt;maven-scr-plugin&lt;/artifactId&gt;
+         &lt;version&gt;1.26.4&lt;/version&gt;
+         &lt;executions&gt;
+           &lt;execution&gt;
+             &lt;id&gt;generate-scr-scrdescriptor&lt;/id&gt;
+             &lt;goals&gt;
+               &lt;goal&gt;scr&lt;/goal&gt;
+             &lt;/goals&gt;
+           &lt;/execution&gt;
+         &lt;/executions&gt;
+            &lt;dependencies&gt;
+                &lt;dependency&gt;
+                    &lt;groupId&gt;org.ow2.asm&lt;/groupId&gt;
+                    &lt;artifactId&gt;asm-analysis&lt;/artifactId&gt;
+                    &lt;version&gt;9.7.1&lt;/version&gt;
+                    &lt;scope&gt;compile&lt;/scope&gt;
+                &lt;/dependency&gt;
+            &lt;/dependencies&gt;
+       &lt;/plugin&gt;
+       ...
+     &lt;/plugins&gt;
+     ...
+   &lt;/build&gt;
+   ...
+ &lt;/project&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>
