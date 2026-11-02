@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Upgrading to Framework 8 (Java 25 Support) :: Apache Felix</title>
+    <link rel="canonical" href="https://felix.apache.org/documentation/subprojects/apache-felix-framework/apache-felix-framework-8-upgrade-guide.html">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="icon" href="../../../_/img/favicon.png" type="image/x-icon">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://felix.apache.org/index.html">
+        <span>
+          <img src="../../../_/img/logo.png">
+        </span>
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://felix.apache.org/index.html">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Subprojects</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="../apache-felix-dependency-manager.html">Dependency Manager</a>
+            <a class="navbar-item" href="../apache-felix-event-admin.html">Event Admin</a>
+            <a class="navbar-item" href="../apache-felix-file-install.html">File Install</a>
+            <a class="navbar-item" href="../apache-felix-framework.html">Framework</a>
+            <a class="navbar-item" href="../apache-felix-gogo.html">Gogo Shell</a>
+            <a class="navbar-item" href="../apache-felix-healthchecks.html">Health Checks</a>
+            <a class="navbar-item" href="../apache-felix-inventory.html">Inventory</a>
+            <a class="navbar-item" href="../apache-felix-log.html">Log</a>
+            <a class="navbar-item" href="../apache-felix-logback.html">Logback</a>
+            <a class="navbar-item" href="../apache-felix-maven-bundle-plugin.html">Maven bundle plugin</a>
+            <a class="navbar-item" href="../apache-felix-maven-scr-plugin.html">Maven SCR plugin</a>
+            <a class="navbar-item" href="../apache-felix-metatype-service.html">Metatype Service</a>
+            <a class="navbar-item" href="../apache-felix-preferences-service.html">Preferences Service</a>
+            <a class="navbar-item" href="../apache-felix-remote-shell.html">Remote Shell</a>
+            <a class="navbar-item" href="../apache-felix-script-console-plugin.html">Script console plugin</a>
+            <a class="navbar-item" href="../apache-felix-shell.html">Lightweight shell</a>
+            <a class="navbar-item" href="../apache-felix-shell-tui.html">Shell TUI</a>
+            <a class="navbar-item" href="../apache-felix-web-console.html">Web Console</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="../../downloads.html">Downloads</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="documentation" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../documentation.html">Documentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../downloads.html">Downloads</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../news.html">News</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Community</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/project-info.html">Apache Felix Project Info</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/contributing.html">Contributing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../community/projects-using-felix.html">Projects Using Felix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Development</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/coding-standards.html">Coding Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/dependencies-file-template.html">DEPENDENCIES file template</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/provisional-osgi-api-policy.html">Provisional OSGi API Policy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/release-management-nexus.html">Release Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/site-how-to.html">Site How To</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../development/using-the-osgi-compliance-tests.html">Using the OSGi Compliance Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../faqs.html">FAQS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-bundle-plugin-faq.html">Apache Felix Bundle Plugin Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faqs/apache-felix-scr-plugin-faq.html">Apache Felix SCR Plugin Frequently Asked Questions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../subprojects.html">Subprojects</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-dependency-manager.html">Apache Felix Dependency Manager</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-earlier-versions.html">Apache Felix Dependency Manager - Migrating from earlier versions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/background.html">Dependency Manager - Background</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/bundles-and-dependencies.html">Dependency Manager - Bundles and Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/design-patterns.html">Dependency Manager - Design Patterns</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/development.html">Dependency Manager - Development</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/history.html">Dependency Manager - History</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/javadocs.html">Dependency Manager - JavaDocs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/migrating-from-other-solutions.html">Dependency Manager - Migrating from other solutions.</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/performance-tuning.html">Dependency Manager - Performance Tuning</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/resources.html">Dependency Manager - Resource adapters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew.html">Dependency Manager - What&#8217;s new in version 4?</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/dm-lambda.html">Dependency Manager Lambda</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/guides/whatsnew-r15.html">What&#8217;s New in R15</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-adapter.html">Dependency Manager - Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-aspect.html">Dependency Manager - Aspect</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-bundle-adapter.html">Dependency Manager - Bundle Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-bundle.html">Dependency Manager - Bundle Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/components.html">Dependency Manager - Components</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-configuration.html">Dependency Manager - Configuration Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependencies.html">Dependency Manager - Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/external-links.html">Dependency Manager - External Links</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-factory-configuration-adapter.html">Dependency Manager - Factory Configuration Adapter Service</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-resource-adapter.html">Dependency Manager - Resource Adapter</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-resource.html">Dependency Manager - Resource Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dependency-service.html">Dependency Manager - Service Dependency</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/service-scopes.html">Dependency Manager - Service Scopes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/component-singleton.html">Dependency Manager - Singleton Component</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/thread-model.html">Dependency Manager - Thread Model</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/reference/dm-annotations.html">Dependency Manager Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/working-with-annotations.html">Dependency Manager - Annotations</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/getting-started.html">Dependency Manager - Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/leveraging-the-shell.html">Dependency Manager - Leveraging the shell</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-dependency-manager/tutorials/sample-code.html">Dependency Manager sample projects</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-event-admin.html">Apache Felix Event Admin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-file-install.html">Apache Felix File Install</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-framework.html">Apache Felix Framework</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-8-upgrade-guide.html">Upgrading to Framework 8 (Java 25 Support)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-bundle-cache.html">Apache Felix Framework Bundle Cache</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-configuration-properties.html">Apache Felix Framework Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-faq.html">Apache Felix Framework Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-launching-and-embedding.html">Apache Felix Framework Launching and Embedding</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="apache-felix-framework-usage-documentation.html">Apache Felix Framework Usage Documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-framework-security.html">Apache Felix Framework Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-gogo.html">Apache Felix Gogo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-gogo/rfc-147-overview.html">RFC 147 Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-healthchecks.html">Apache Felix Health Checks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-inventory.html">Apache Felix Inventory Printer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-log.html">Apache Felix Log</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-logback.html">Apache Felix Logback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-maven-bundle-plugin-bnd.html">Apache Felix Maven Bundle Plugin (BND)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-metatype-service.html">Apache Felix Metatype Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-osgi-bundle-repository.html">Apache Felix OSGi Bundle Repository (OBR)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-preferences-service.html">Apache Felix Preferences Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-remote-shell.html">Apache Felix Remote Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell.html">Apache Felix Shell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-felix-shell-tui.html">Apache Felix Shell TUI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../apache-felix-web-console.html">Apache Felix Web Console</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console.html">Extending the Apache Felix Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-restful-api.html">Web Console RESTful API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../apache-felix-web-console/web-console-security-provider.html">Web Console Security Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Extensions</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/branding-the-web-console.html">Branding the Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html">Providing Resources</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/providing-web-console-plugins.html">Providing Web Console Plugins</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-logging.html">Web Console Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../apache-felix-web-console/extending-the-apache-felix-web-console/web-console-output-templating.html">Web Console Output Templating</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorials-examples-and-presentations.html">Tutorials</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-application-demonstration.html">Apache Felix Application Demonstration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html">Apache Felix OSGi Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-faq.html">OSGi Frequently Asked Questions</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">OSGI Tutorial</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-1.html">Apache Felix Tutorial Example 1 - Service Event Listener Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2.html">Apache Felix Tutorial Example 2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-2b.html">Apache Felix Tutorial Example 2b</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-3.html">Apache Felix Tutorial Example 3</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-4.html">Apache Felix Tutorial Example 4</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-5.html">Apache Felix Tutorial Example 5</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-6.html">Example 6 - Spell Checker Service Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-7.html">Example 7 - Spell Checker Client Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-8.html">Example 8 - Spell Checker Service using Service Binder</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials-examples-and-presentations/apache-felix-osgi-tutorial/apache-felix-tutorial-example-9.html">Example 9 - Spell Checker Service using Declarative Services</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../license.html">Apache License 2.0</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../site-map.html">Site map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Documentation</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Documentation</a></li>
+    <li><a href="../../subprojects.html">Subprojects</a></li>
+    <li><a href="../apache-felix-framework.html">Apache Felix Framework</a></li>
+    <li><a href="apache-felix-framework-8-upgrade-guide.html">Upgrading to Framework 8 (Java 25 Support)</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/apache/felix-antora-site/edit/main/modules/ROOT/pages/subprojects/apache-felix-framework/apache-felix-framework-8-upgrade-guide.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Upgrading to Framework 8 (Java 25 Support)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apache Felix Framework 8.0.0 makes the framework run on current JDKs, up to and including Java 25 (<a href="https://issues.apache.org/jira/browse/FELIX-6807">FELIX-6807</a>).
+It is a deliberately <strong>breaking</strong> release: the OSGi security layer has been removed and the minimum Java version is now 11.
+The 7.x line remains available for users who need the security layer or Java 8, but it only receives critical bug fixes and no new features.</p>
+</div>
+<div class="paragraph">
+<p>This page explains what changed, who is affected, and how to upgrade.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_which_version_should_i_use"><a class="anchor" href="#_which_version_should_i_use"></a>Which version should I use?</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">7.x</th>
+<th class="tableblock halign-left valign-top">8.x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimum Java version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">11</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runs on Java 24 and later</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OSGi security layer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">supported</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>removed</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Require-Capability: osgi.ee</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JavaSE 1.8</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JavaSE 11</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>Pick <strong>7.x</strong> if you need the security layer, or if you must run on Java 8.</p>
+</li>
+<li>
+<p>Pick <strong>8.x</strong> if you need to run on Java 24 or later.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Framework 8.0.0 is built and tested in CI on Java 17, 21, 25 and 27.
+The OSGi Core R8 TCK was run on Java 17, 21, 23 and 25.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_changed"><a class="anchor" href="#_what_changed"></a>What changed</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_the_osgi_security_layer_has_been_removed"><a class="anchor" href="#_the_osgi_security_layer_has_been_removed"></a>The OSGi security layer has been removed</h3>
+<div class="paragraph">
+<p>Java SE 24 permanently disabled the Security Manager (<a href="https://openjdk.org/jeps/486">JEP 486</a>).
+<code>System.setSecurityManager</code> throws <code>UnsupportedOperationException</code> and <code>-Djava.security.manager=allow</code> is a fatal startup error, so the framework can no longer install a Security Manager and no permission check can ever run.
+Rather than appear to enforce permissions while silently enforcing nothing, the framework no longer implements the security layer at all.</p>
+</div>
+<div class="paragraph">
+<p>In practice:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Launching with <code>org.osgi.framework.security</code> set now fails</strong> with a <code>SecurityException</code>.
+Previously the framework installed a Security Manager.
+A launcher that depends on security will refuse to start rather than start unprotected.</p>
+</li>
+<li>
+<p><strong><code>Bundle.hasPermission(Object)</code> returns <code>true</code></strong> unless a <code>SecurityProvider</code> has been installed explicitly.</p>
+</li>
+<li>
+<p><strong>No permission checks are performed</strong> on bundle lifecycle operations, service registration and lookup, resource and class loading, weaving, or resolution.</p>
+</li>
+<li>
+<p><strong>The <code>org.apache.felix.framework.security</code> bundle is no longer built or released.</strong>
+It existed only to provide the <code>PermissionAdmin</code> and <code>ConditionalPermissionAdmin</code> services to the framework.
+The last release is 2.8.3 and it can only be used with the 7.x framework.
+See <a href="../apache-felix-framework-security.html" class="page">Apache Felix Framework Security</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The OSGi permission API is <strong>still exported and unchanged</strong>: <code>AdminPermission</code>, <code>ServicePermission</code>, <code>PackagePermission</code>, <code>BundlePermission</code>, <code>CapabilityPermission</code>, <code>AdaptPermission</code>, <code>Bundle.hasPermission</code>, <code>ProtectionDomain</code> and <code>org.apache.felix.framework.ext.SecurityProvider</code> all remain.
+Bundles that reference those types continue to compile and resolve; the types simply no longer gate anything.</p>
+</div>
+<div class="paragraph">
+<p>Bundles that merely <em>declare</em> permissions, for example by shipping <code>OSGI-INF/permissions.perm</code>, need no change.
+Only code that <em>relies on a permission being denied</em> is affected.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_minimum_java_version_raised_to_11"><a class="anchor" href="#_minimum_java_version_raised_to_11"></a>Minimum Java version raised to 11</h3>
+<div class="paragraph">
+<p>The framework inspects the caller&#8217;s class context in a few places to work out which framework instance or bundle a call belongs to.
+That used to be done with a <code>SecurityManager</code> subclass, purely to reach the protected <code>getClassContext()</code> method.
+It now uses <code>java.lang.StackWalker</code>, which is the supported replacement and is available from Java 9, so Java 8 is no longer possible.
+The floor is 11 rather than 9 because 9 and 10 are non-LTS and long past end of life.</p>
+</div>
+<div class="paragraph">
+<p>The framework bundle therefore declares <code>Require-Capability: osgi.ee &#8230;&#8203; JavaSE 11</code> and will not resolve on a Java 8 VM.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_other_changes"><a class="anchor" href="#_other_changes"></a>Other changes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sun.misc.Unsafe</code> is still used in one place, to obtain a trusted <code>MethodHandles.Lookup</code> for taking over the JVM-wide <code>java.net.URL</code> stream handler factory.
+It is guarded and falls back to <code>AccessibleObject.setAccessible</code>, so it degrades to a warning on recent JDKs.</p>
+</li>
+<li>
+<p><code>FilterImpl.WrapperCapability</code>: <code>Filter.matches(Map)</code> no longer throws <code>UnsupportedOperationException</code> for a non-empty map.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_related_releases"><a class="anchor" href="#_related_releases"></a>Related releases</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The same release also removes Security Manager code paths from the other bundles that used them.
+None of them changes exported API; the minor version bumps reflect the behavioural change.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Bundle</th>
+<th class="tableblock halign-left valign-top">Version</th>
+<th class="tableblock halign-left valign-top">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Framework</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Security layer removed, Java 11 baseline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Main</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Launches framework 8.0.0 and inherits its requirements, including Java 11.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration Admin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.10.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UpdateThread.terminate()</code> no longer calls <code>Thread.stop()</code> (which throws since Java 20); it interrupts the worker instead.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SCR (Declarative Services)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.3.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Security Manager based permission checks and <code>doPrivileged</code> wrappers removed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Web Console</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5.1.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Security Manager based permission checks and <code>doPrivileged</code> wrappers removed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gogo Runtime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ThreadUtils</code> no longer consults the Security Manager when selecting a thread group.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading"><a class="anchor" href="#_upgrading"></a>Upgrading</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check the Java version you run on. Framework 8 needs Java 11 or later.
+If you must stay on Java 8, stay on the 7.x line.</p>
+</li>
+<li>
+<p>If you launch with <code>org.osgi.framework.security</code>, <code>java.security.policy</code> or <code>-Djava.security.manager</code>, remove those settings.
+Framework 8 fails at startup if <code>org.osgi.framework.security</code> is set.</p>
+</li>
+<li>
+<p>Remove the <code>org.apache.felix.framework.security</code> bundle from your installation, and any bundles that depend on its <code>PermissionAdmin</code> or <code>ConditionalPermissionAdmin</code> services.</p>
+</li>
+<li>
+<p>If you embed the framework or build it from source, update to <code>org.apache.felix.framework</code> 8.0.0 or <code>org.apache.felix.main</code> 8.0.0.</p>
+</li>
+<li>
+<p>Upgrade the other bundles to the versions listed above.
+In particular, Configuration Admin 1.10.0 is needed on Java 20 and later, where the previous termination of its update thread fails.</p>
+</li>
+<li>
+<p>Review any code that relies on a permission being denied: it will now be allowed.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The security layer can&#8217;t be restored on Java 24 and later, because the JDK no longer provides a Security Manager to enforce it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_release_notes"><a class="anchor" href="#_release_notes"></a>Release notes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The full change history is in the framework&#8217;s
+<a href="https://github.com/apache/felix-dev/blob/master/framework/doc/changelog.txt">changelog</a>,
+and the 7.x/8.x split is also documented in the
+<a href="https://github.com/apache/felix-dev/blob/master/framework/README.md">framework README</a>.</p>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Content licensed under AL2. UI licensed under MPL-2.0 with extensions licensed under AL2</p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
