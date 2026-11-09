@@ -186,6 +186,9 @@
   <li class="nav-item" data-depth="4">
     <a class="nav-link" href="whatsnew-r15.html">What&#8217;s New in R15</a>
   </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="whatsnew-5.html">Dependency Manager - What&#8217;s new in version 5</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="3">
@@ -477,114 +480,136 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>When downloading or checking out the source code, please also consult release/resources/src/README.src for up to date instructions on how to build that particular version.</p>
+<p>When downloading or checking out the source code, please also consult the <code>README</code> in the <code>dependencymanager</code> directory for up to date instructions on how to build that particular version.</p>
+</div>
+<div class="paragraph">
+<p>The Dependency Manager is built with Maven since version 5, see <a href="whatsnew-5.html" class="page">What&#8217;s new in version 5</a>.
+The earlier releases (r16 and older) are built with Gradle and bndtools; the instructions for those are in the <code>README.src</code> of their source release.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>If you are using a corporate http proxy, you should set the following environment variables:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A recent JDK, 11 or later.</p>
+</li>
+<li>
+<p>Maven 3.9 or later.</p>
+</li>
+<li>
+<p>The Felix Framework, Gogo and Configuration Admin bundles which the integration tests run on have to be in the local Maven repository: either install those modules of the <code>felix-dev</code> repository first, or use released versions.</p>
+</li>
+</ul>
 </div>
+<div class="paragraph">
+<p>If you are using a corporate http proxy, set it up in your <code>~/.m2/settings.xml</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_compilation_using_maven"><a class="anchor" href="#_compilation_using_maven"></a>Compilation using Maven</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All commands are run from the <code>dependencymanager</code> directory of the <code>felix-dev</code> repository.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Compile everything, run the unit tests and the OSGi integration tests:</p>
 <div class="literalblock">
 <div class="content">
-<pre>$ export GRADLE_OPTS="-Dhttp.proxyHost=&lt;your proxy ip&gt; -Dhttp.proxyPort=&lt;your proxy port&gt; -Dhttps.proxyHost=&lt;your proxy ip&gt; -Dhttps.proxyPort=&lt;your proxy port&gt;"
-$ export http_proxy=&lt;your proxy ip&gt;:&lt;your proxy port&gt;
-$ export https_proxy=&lt;your proxy ip&gt;:&lt;your proxy port&gt;</pre>
+<pre>$ mvn clean install</pre>
 </div>
+</div>
+</li>
+<li>
+<p>Compile without running the tests:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ mvn clean install -DskipTests</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Build and test a single bundle, with the modules it depends on:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ mvn clean install -pl org.apache.felix.dependencymanager.shell -am</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The modules are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Module</th>
+<th class="tableblock halign-left valign-top">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the API and implementation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager.annotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the annotations and the bnd plugin that processes them</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager.runtime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">loads the components declared with annotations</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager.shell</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the Gogo shell commands</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager.lambda</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the lambda based API</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager.<strong>.itest.</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the integration tests, run inside a framework with the <code>bnd-testing-maven-plugin</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager.samples</code>, <code>org.apache.felix.dependencymanager.lambda.samples</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">samples</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.felix.dependencymanager.benchmark</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a stress test</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_an_ide"><a class="anchor" href="#_using_an_ide"></a>Using an IDE</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Import the <code>dependencymanager</code> directory as a Maven project, for example with m2e in Eclipse or with the Maven support of IntelliJ IDEA.
+The unit tests run as plain JUnit tests.
+The integration tests are run by Maven (<code>mvn verify</code>), because they need an OSGi framework.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_compilation_using_gradle"><a class="anchor" href="#_compilation_using_gradle"></a>Compilation Using gradle:</h2>
+<h2 id="_releasing"><a class="anchor" href="#_releasing"></a>Releasing</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Install latest Java 8 (the dm libraries has been built and tested with java 1.8.0_74)</p>
-</li>
-<li>
-<p>Compile Dependendency Manager annotations bndtools plugin:</p>
 <div class="paragraph">
-<p>$ ./gradlew org.apache.felix.dependencymanager.annotation:jar</p>
-</div>
-</li>
-<li>
-<p>Compile all other bundles:</p>
-<div class="paragraph">
-<p>$ ./gradlew jar</p>
-</div>
-</li>
-<li>
-<p>Run junit tests:</p>
-<div class="paragraph">
-<p>$ ./gradlew test</p>
-</div>
-</li>
-<li>
-<p>Run integration tests:</p>
-<div class="paragraph">
-<p>$ ./gradlew check</p>
-</div>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_compilation_using_eclipse"><a class="anchor" href="#_compilation_using_eclipse"></a>Compilation Using Eclipse:</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Install Latest Eclipse Mars.</p>
-</li>
-<li>
-<p>Use the dependency manager folder as the root of your workspace.</p>
-</li>
-<li>
-<p>Configure two JREs for Java 8:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Go to Windows -&gt; Preferences -&gt; Java -&gt; Installed JREs</p>
-</li>
-<li>
-<p>Add your jdk8 JRE</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Install BndTools 3.4.0 or later version and (optionally) a subversion plugin for Eclipse.</p>
-</li>
-<li>
-<p>Open BndTools perspective</p>
-</li>
-<li>
-<p>Import Dependency Manager into Eclipse, and compile everything</p>
-</li>
-<li>
-<p>if it&#8217;s the first time you import the project into eclipse, it may happen that some modules that requires the Dependency Manager Annotations bnd plugin don&#8217;t compile: It&#8217;s a know issue.
-To work around, restart eclipse and rebuild every modules.</p>
-</li>
-<li>
-<p>Click on org.apache.felix.dependencymanager project and run it as "JUnit test".</p>
-</li>
-<li>
-<p>Click on org.apache.felix.dependencymanager.shell and run it as "JUnit test"</p>
-</li>
-<li>
-<p>Click on org.apache.felix.dependencymanager.itest and run it as "Bnd OSGi Test Launcher (Junit)".</p>
-</li>
-<li>
-<p>Click on org.apache.felix.dependencymanager.runtime.itest and run it as ""Bnd OSGi Test Launcer (Junit)".</p>
-</li>
-<li>
-<p>Click on org.apache.felix.dependencymanager.lambda.itest and run it as ""Bnd OSGi Test Launcer (Junit)".</p>
-</li>
-</ul>
+<p>A release is made with the Maven release plugin from the <code>dependencymanager</code> directory.
+<code>release:prepare</code> tags the whole build (<code>dependencymanager-parent-x.y.z</code>) and <code>release:perform</code> also tags every released bundle (<code>&lt;artifactId&gt;-&lt;version&gt;</code>).</p>
 </div>
 </div>
 </div>
